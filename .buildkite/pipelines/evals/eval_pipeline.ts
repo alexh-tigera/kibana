@@ -7,11 +7,11 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
+import { execFileSync } from 'child_process';
 import Fs from 'fs';
 import Path from 'path';
 
-const EVALS_SUITES_METADATA_RELATIVE_PATH =
-  'x-pack/platform/packages/shared/kbn-evals/evals.suites.json';
+const EVALS_SUITES_METADATA_RELATIVE_PATH = '.buildkite/pipelines/evals/evals.suites.json';
 
 export interface EvalsSuiteMetadataEntry {
   id: string;
@@ -19,6 +19,19 @@ export interface EvalsSuiteMetadataEntry {
   ciLabels?: string[];
   configPath?: string;
   serverConfigSet?: string;
+}
+
+function pathExistsInGitTree(repoRelativePath: string): boolean {
+  try {
+    const output = execFileSync('git', ['ls-tree', '--name-only', 'HEAD', repoRelativePath], {
+      cwd: process.cwd(),
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    return output.length > 0;
+  } catch {
+    return false;
+  }
 }
 
 function readEvalsSuiteMetadata(): EvalsSuiteMetadataEntry[] {
@@ -29,11 +42,7 @@ function readEvalsSuiteMetadata(): EvalsSuiteMetadataEntry[] {
     const suites = Array.isArray(parsed.suites) ? parsed.suites : [];
     return suites.filter((suite) => {
       if (!suite?.configPath) return true;
-      try {
-        return Fs.existsSync(Path.resolve(process.cwd(), suite.configPath));
-      } catch {
-        return false;
-      }
+      return pathExistsInGitTree(suite.configPath);
     });
   } catch {
     return [];
@@ -66,23 +75,6 @@ function parseGithubPrLabels(raw: string): string[] {
     .map((label) => label.trim())
     .filter(Boolean);
 }
-
-/**
- * Named model group aliases. These allow a single label (e.g. `models:weekly-eis-models`)
- * to expand into multiple individual model groups for the eval fanout.
- *
- * Keep in sync with the weekly pipeline EVAL_MODEL_GROUPS in llm_evals.yml.
- */
-const MODEL_GROUP_ALIASES: Record<string, string[]> = {
-  'weekly-eis-models': [
-    'eis/anthropic-claude-4.5-sonnet',
-    'eis/anthropic-claude-4.6-opus',
-    'eis/google-gemini-3.0-flash',
-    'eis/google-gemini-3.0-pro',
-    'eis/openai-gpt-5.2',
-    'eis/openai-gpt-oss-120b',
-  ],
-};
 
 function normalizeEvaluationConnectorId(raw: string): string {
   // Support `models:judge:eis/<modelId>` where the judge value is a model id, not a connector id.
@@ -185,11 +177,11 @@ export function getEvalPipeline(githubPrLabels: string): string | null {
         const labels = suite.ciLabels?.length ? suite.ciLabels : [`evals:${suite.id}`];
         return labels.some((label) => parsedLabels.includes(label));
       });
-  // Model filtering for eval fanout (models:* labels).
-  // - No `models:*` labels => evals are skipped (explicit model selection is required).
+  // Optional model filtering for eval fanout (models:* labels).
+  // - No `models:*` labels => run all models returned by LiteLLM (current behavior).
   // - One or more `models:<model-group>` labels => only run connectors whose `defaultModel`
   //   matches one of those model groups.
-  // - Alias labels (e.g. `models:weekly-eis-models`) expand to their predefined model groups.
+  // - `models:all` can be used to explicitly opt into all models (ignored if combined with specifics).
   const rawEvaluationConnectorId = parsedLabels
     .find((label) => label.startsWith('models:judge:'))
     ?.slice('models:judge:'.length)
@@ -197,33 +189,24 @@ export function getEvalPipeline(githubPrLabels: string): string | null {
   const evaluationConnectorId = rawEvaluationConnectorId
     ? normalizeEvaluationConnectorId(rawEvaluationConnectorId)
     : undefined;
-
-  // Extract model groups from labels and expand any aliases.
+  const includeEisModels =
+    parsedLabels.some((label) => label === 'models:all' || label.startsWith('models:eis/')) ||
+    !!rawEvaluationConnectorId?.startsWith('eis/') ||
+    !!evaluationConnectorId?.startsWith('eis-');
   const selectedModelGroups = parsedLabels
     .filter((label) => label.startsWith('models:') && !label.startsWith('models:judge:'))
     .map((label) => label.slice('models:'.length))
     .map((value) => value.trim())
     .filter(Boolean)
-    .flatMap((value) => MODEL_GROUP_ALIASES[value] ?? [value]);
-
-  const includeEisModels =
-    selectedModelGroups.some((group) => group.startsWith('eis/')) ||
-    !!rawEvaluationConnectorId?.startsWith('eis/') ||
-    !!evaluationConnectorId?.startsWith('eis-');
+    .filter((value) => value !== 'all');
 
   if (selectedEvalSuites.length === 0) {
     return null;
   }
 
-  // Require explicit model selection — without models:* labels, evals are skipped
-  // to avoid accidentally running against all models (which is expensive).
-  if (selectedModelGroups.length === 0) {
-    return null;
-  }
-
   return buildEvalsYaml({
     selectedSuites: selectedEvalSuites,
-    modelGroups: selectedModelGroups,
+    modelGroups: selectedModelGroups.length > 0 ? selectedModelGroups : undefined,
     evaluationConnectorId,
     includeEisModels,
   });
