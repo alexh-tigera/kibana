@@ -15,14 +15,34 @@ import { useEnabledFeatures } from '../contexts/enabled_features_context';
 import { SettingsContextProvider } from '../contexts/settings_context';
 import { QueryClient, QueryClientProvider } from '@kbn/react-query';
 import { AIChatExperience } from '@kbn/ai-assistant-common';
+import { AGENT_BUILDER_EVENT_TYPES } from '@kbn/agent-builder-common/telemetry';
 import {
+  AGENT_BUILDER_EXPERIMENTAL_FEATURES_SETTING_ID,
   AI_ASSISTANT_PREFERRED_AI_ASSISTANT_TYPE,
   AI_CHAT_EXPERIENCE_TYPE,
 } from '@kbn/management-settings-ids';
+import { WORKFLOWS_UI_SETTING_ID } from '@kbn/workflows';
 
 // Mock the context hook
 jest.mock('../contexts/enabled_features_context');
 const mockUseEnabledFeatures = useEnabledFeatures as jest.MockedFunction<typeof useEnabledFeatures>;
+
+jest.mock('@kbn/ai-agent-confirmation-modal/ai_agent_confirmation_modal', () => {
+  return {
+    AIAgentConfirmationModal: ({
+      onConfirm,
+      onCancel,
+    }: {
+      onConfirm: () => void;
+      onCancel: () => void;
+    }) => (
+      <div data-test-subj="confirmModal">
+        <button data-test-subj="confirmModalConfirm" onClick={onConfirm} />
+        <button data-test-subj="confirmModalCancel" onClick={onCancel} />
+      </div>
+    ),
+  };
+});
 
 // Mock productDocBase
 const mockProductDocBase = {
@@ -47,6 +67,10 @@ describe('GenAiSettingsApp', () => {
     'genAiSettings:defaultAIConnectorOnly': {
       value: false,
       type: 'boolean',
+    },
+    'agentBuilder:prePromptWorkflowIds': {
+      value: [],
+      type: 'array',
     },
     [AI_CHAT_EXPERIENCE_TYPE]: {
       value: AIChatExperience.Classic,
@@ -97,10 +121,17 @@ describe('GenAiSettingsApp', () => {
     mockUseEnabledFeatures.mockReturnValue(createFeatureFlagsMock());
   });
 
-  const renderComponent = (props = {}) => {
+  const renderComponent = (props = {}, servicesOverrides: Record<string, unknown> = {}) => {
     const services = {
       ...coreStart,
       productDocBase: mockProductDocBase,
+      agentBuilder: {
+        tools: {
+          listWorkflows: jest.fn().mockResolvedValue({ results: [] }),
+        },
+      },
+      analytics: { reportEvent: jest.fn() },
+      ...servicesOverrides,
     };
     return renderWithI18n(
       <QueryClientProvider client={new QueryClient()}>
@@ -157,6 +188,7 @@ describe('GenAiSettingsApp', () => {
       // Feature visibility section (with default settings)
       expect(screen.getByTestId('aiFeatureVisibilitySection')).toBeInTheDocument();
       expect(screen.getByTestId('goToSpacesButton')).toBeInTheDocument();
+      expect(screen.queryByTestId('agentBuilderSectionTitle')).not.toBeInTheDocument();
     });
 
     it('should conditionally render sections based on settings', () => {
@@ -181,6 +213,59 @@ describe('GenAiSettingsApp', () => {
       renderComponent();
       expect(screen.queryByTestId('aiFeatureVisibilitySection')).not.toBeInTheDocument();
       expect(screen.queryByTestId('goToSpacesButton')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('pre-execution workflow section gating', () => {
+    it('renders pre-execution workflow section when required advanced settings are enabled', async () => {
+      jest.spyOn(coreStart.settings.client, 'get').mockImplementation((key, fallback) => {
+        if (
+          key === WORKFLOWS_UI_SETTING_ID ||
+          key === AGENT_BUILDER_EXPERIMENTAL_FEATURES_SETTING_ID
+        ) {
+          return true;
+        }
+        return fallback;
+      });
+
+      renderComponent();
+
+      expect(await screen.findByTestId('agentBuilderSectionTitle')).toBeInTheDocument();
+      expect(await screen.findByTestId('genAiSettingsPrePromptWorkflowPicker')).toBeInTheDocument();
+    });
+
+    it('does not render pre-execution workflow section when workflows UI advanced setting is disabled', () => {
+      jest.spyOn(coreStart.settings.client, 'get').mockImplementation((key, fallback) => {
+        if (key === WORKFLOWS_UI_SETTING_ID) {
+          return false;
+        }
+        return fallback;
+      });
+      jest
+        .spyOn(coreStart.featureFlags, 'getBooleanValue')
+        .mockImplementation((_flagName, _fallbackValue) => true);
+
+      renderComponent();
+
+      expect(screen.queryByTestId('agentBuilderSectionTitle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('genAiSettingsPrePromptWorkflowPicker')).not.toBeInTheDocument();
+    });
+
+    it('does not render pre-execution workflow section when experimental features setting is disabled', () => {
+      jest.spyOn(coreStart.settings.client, 'get').mockImplementation((key, fallback) => {
+        if (key === WORKFLOWS_UI_SETTING_ID) {
+          return true;
+        }
+        if (key === AGENT_BUILDER_EXPERIMENTAL_FEATURES_SETTING_ID) {
+          return false;
+        }
+        return fallback;
+      });
+
+      renderComponent();
+
+      expect(screen.queryByTestId('agentBuilderSectionTitle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('genAiSettingsPrePromptWorkflowPicker')).not.toBeInTheDocument();
     });
   });
 
@@ -275,17 +360,8 @@ describe('GenAiSettingsApp', () => {
       );
       expect(chatExperienceField).toBeInTheDocument();
 
-      const allSelects = document.querySelectorAll('select');
-
-      const chatExperienceSelect = Array.from(allSelects).find((select) => {
-        const options = Array.from(select.querySelectorAll('option'));
-        return options.some((opt) => opt.value === AIChatExperience.Agent);
-      });
-
-      expect(chatExperienceSelect).toBeTruthy();
-
       // Change the select value to Agent
-      fireEvent.change(chatExperienceSelect!, { target: { value: AIChatExperience.Agent } });
+      fireEvent.change(chatExperienceField, { target: { value: AIChatExperience.Agent } });
 
       // After changing to Agent, the AI Assistant Visibility field should be hidden
       await waitFor(() => {
@@ -328,6 +404,96 @@ describe('GenAiSettingsApp', () => {
 
       // Documentation section should be visible in Agent mode
       expect(await screen.findByTestId('documentationSection')).toBeInTheDocument();
+    });
+  });
+
+  it('returns opt out telemetry when saving a switch from Agent to Classic', async () => {
+    const reportEvent = jest.fn();
+    mockUseEnabledFeatures.mockReturnValue(createFeatureFlagsMock());
+
+    coreStart.settings.client.getAll.mockReturnValue(
+      createSettingsMock({
+        [AI_CHAT_EXPERIENCE_TYPE]: {
+          value: AIChatExperience.Classic,
+          userValue: AIChatExperience.Agent,
+          type: 'select',
+          options: [AIChatExperience.Classic, AIChatExperience.Agent],
+        },
+      }) as any
+    );
+
+    renderComponent({}, { analytics: { reportEvent } });
+
+    const chatExperienceSelect = await screen.findByTestId(
+      `management-settings-editField-${AI_CHAT_EXPERIENCE_TYPE}`
+    );
+    fireEvent.change(chatExperienceSelect, { target: { value: AIChatExperience.Classic } });
+
+    const saveButton = await screen.findByTestId('genAiSettingsSaveBarBottomBarActionsButton');
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(reportEvent).toHaveBeenCalledWith(AGENT_BUILDER_EVENT_TYPES.OptOut, {
+        source: 'stack_management',
+      });
+    });
+  });
+
+  it('returns opt out telemetry when saving a switch from default Agent to Classic (no userValue)', async () => {
+    const reportEvent = jest.fn();
+    mockUseEnabledFeatures.mockReturnValue(createFeatureFlagsMock());
+
+    coreStart.settings.client.getAll.mockReturnValue(
+      createSettingsMock({
+        [AI_CHAT_EXPERIENCE_TYPE]: {
+          value: AIChatExperience.Agent,
+          type: 'select',
+          options: [AIChatExperience.Classic, AIChatExperience.Agent],
+        },
+      }) as any
+    );
+
+    renderComponent({}, { analytics: { reportEvent } });
+
+    const chatExperienceSelect = await screen.findByTestId(
+      `management-settings-editField-${AI_CHAT_EXPERIENCE_TYPE}`
+    );
+    fireEvent.change(chatExperienceSelect, { target: { value: AIChatExperience.Classic } });
+
+    const saveButton = await screen.findByTestId('genAiSettingsSaveBarBottomBarActionsButton');
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(reportEvent).toHaveBeenCalledWith(AGENT_BUILDER_EVENT_TYPES.OptOut, {
+        source: 'stack_management',
+      });
+    });
+  });
+
+  it('returns confirmed opt in telemetry when saving a switch to Agent', async () => {
+    const reportEvent = jest.fn();
+    mockUseEnabledFeatures.mockReturnValue(createFeatureFlagsMock());
+
+    coreStart.settings.client.getAll.mockReturnValue(createSettingsMock() as any);
+
+    renderComponent({}, { analytics: { reportEvent } });
+
+    const chatExperienceSelect = await screen.findByTestId(
+      `management-settings-editField-${AI_CHAT_EXPERIENCE_TYPE}`
+    );
+    fireEvent.change(chatExperienceSelect, { target: { value: AIChatExperience.Agent } });
+
+    // Close modal to mirror the real flow before saving
+    fireEvent.click(await screen.findByTestId('confirmModalConfirm'));
+
+    const saveButton = await screen.findByTestId('genAiSettingsSaveBarBottomBarActionsButton');
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(reportEvent).toHaveBeenLastCalledWith(AGENT_BUILDER_EVENT_TYPES.OptInAction, {
+        action: 'confirmed',
+        source: 'stack_management',
+      });
     });
   });
 });

@@ -6,23 +6,24 @@
  */
 
 import type { ElasticsearchClient, Logger } from '@kbn/core/server';
-import { z } from '@kbn/zod';
-import { ToolType, ToolResultType } from '@kbn/onechat-common';
-import type { BuiltinToolDefinition, ToolAvailabilityContext } from '@kbn/onechat-server';
-import { getToolResultId } from '@kbn/onechat-server/tools';
+import { z } from '@kbn/zod/v4';
+import { ToolType, ToolResultType } from '@kbn/agent-builder-common';
+import type { BuiltinToolDefinition, ToolAvailabilityContext } from '@kbn/agent-builder-server';
+import { getToolResultId } from '@kbn/agent-builder-server/tools';
+import { AGENT_BUILDER_EXPERIMENTAL_FEATURES_SETTING_ID } from '@kbn/management-settings-ids';
 import { getAgentBuilderResourceAvailability } from '../utils/get_agent_builder_resource_availability';
 import type { SecuritySolutionPluginCoreSetupDependencies } from '../../plugin_contract';
-import { IdentifierType } from '../../../common/api/entity_analytics/common/common.gen';
 import type { EntityRiskScoreRecord } from '../../../common/api/entity_analytics/common';
 import { createGetRiskScores } from '../../lib/entity_analytics/risk_score/get_risk_score';
 import type { EntityType } from '../../../common/entity_analytics/types';
 import { DEFAULT_ALERTS_INDEX, ESSENTIAL_ALERT_FIELDS } from '../../../common/constants';
 import { getRiskIndex } from '../../../common/search_strategy/security_solution/risk_score/common';
-import { getSpaceIdFromRequest } from './helpers';
 import { securityTool } from './constants';
 
 const entityRiskScoreSchema = z.object({
-  identifierType: IdentifierType.describe('The type of entity: host, user, service, or generic'),
+  identifierType: z
+    .enum(['host', 'user', 'service', 'generic'])
+    .describe('The type of entity: host, user, service, or generic'),
   identifier: z
     .string()
     .min(1)
@@ -131,12 +132,20 @@ export const entityRiskScoreTool = (
   return {
     id: SECURITY_ENTITY_RISK_SCORE_TOOL_ID,
     type: ToolType.builtin,
-    description: `Call this tool to get the latest entity risk score and the inputs that contributed to the calculation for a specific entity (host, user, service, or generic). Use identifier "*" to get all entities of the specified type sorted by risk score. IMPORTANT: Always use 'calculated_score_norm' (0-100) when reporting risk scores, NOT 'calculated_score' which is a raw value. The 'calculated_score_norm' field is the normalized score suitable for comparison between entities.`,
+    description: `Call this tool to get the latest entity risk score and the inputs that contributed to the calculation for a specific entity (host, user, service, or generic). Use identifier "*" to get all entities of the specified type sorted by risk score. IMPORTANT: Always use 'calculated_score_norm' (0-100) when reporting risk scores, NOT 'calculated_score' which is a raw value. The 'calculated_score_norm' field is the normalized score suitable for comparison between entities. The 'modifiers' array contains risk adjustments such as asset criticality and privileged user monitoring (watchlist/privmon type).`,
     schema: entityRiskScoreSchema,
     availability: {
       cacheMode: 'space',
-      handler: async ({ request, spaceId }: ToolAvailabilityContext) => {
+      handler: async ({ request, spaceId, uiSettings }: ToolAvailabilityContext) => {
         try {
+          if ((await uiSettings.get(AGENT_BUILDER_EXPERIMENTAL_FEATURES_SETTING_ID)) === true) {
+            return {
+              status: 'unavailable',
+              reason:
+                'Skills are enabled, which takes precedence over entity risk score tool availability',
+            };
+          }
+
           const availability = await getAgentBuilderResourceAvailability({ core, request, logger });
           if (availability.status === 'available') {
             const [coreStart] = await core.getStartServices();
@@ -167,8 +176,7 @@ export const entityRiskScoreTool = (
         }
       },
     },
-    handler: async ({ identifierType, identifier, limit = 10 }, { request, esClient }) => {
-      const spaceId = getSpaceIdFromRequest(request);
+    handler: async ({ identifierType, identifier, limit = 10 }, { spaceId, esClient }) => {
       const alertsIndexPattern = `${DEFAULT_ALERTS_INDEX}-${spaceId}`;
       const entityType = identifierType as EntityType;
 

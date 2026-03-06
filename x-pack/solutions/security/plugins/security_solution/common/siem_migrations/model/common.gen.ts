@@ -14,7 +14,7 @@
  *   version: not applicable
  */
 
-import { z } from '@kbn/zod';
+import { z } from '@kbn/zod/v4';
 
 import { NonEmptyString } from '../../api/model/primitives.gen';
 import { SplunkResourceType } from './vendor/common/splunk.gen';
@@ -262,6 +262,10 @@ export const MigrationTaskStats = z.object({
    * The last execution of the migration task.
    */
   last_execution: MigrationLastExecution.optional(),
+  /**
+   * The migration vendor.
+   */
+  vendor: SiemMigrationVendor.optional(),
 });
 
 export type SiemMigrationResourceType = z.infer<typeof SiemMigrationResourceType>;
@@ -288,7 +292,7 @@ export const SiemMigrationResourceContent = z.object({
   /**
    * The resource arbitrary metadata.
    */
-  metadata: z.object({}).optional(),
+  metadata: z.object({}).catchall(z.unknown()).optional(),
 });
 
 /**

@@ -5,9 +5,11 @@
  * 2.0.
  */
 
-import { ToolResultType, type ErrorResult, type OtherResult } from '@kbn/onechat-common';
+import { ToolResultType, type ErrorResult, type OtherResult } from '@kbn/agent-builder-common';
+import type { ToolHandlerStandardReturn } from '@kbn/agent-builder-server/tools';
 import { DEFAULT_ALERTS_INDEX } from '../../../common/constants';
 import { getRiskIndex } from '../../../common/search_strategy/security_solution/risk_score/common';
+import { uiSettingsServiceMock } from '@kbn/core-ui-settings-server-mocks';
 import {
   createToolAvailabilityContext,
   createToolHandlerContext,
@@ -103,7 +105,7 @@ describe('entityRiskScoreTool', () => {
 
   describe('availability', () => {
     it('returns available when risk index exists', async () => {
-      mockEsClient.asInternalUser.indices.exists.mockResolvedValue(true);
+      mockEsClient.asInternalUser.indices.exists.mockResolvedValueOnce(true);
 
       const result = await tool.availability!.handler(
         createToolAvailabilityContext(mockRequest, 'default')
@@ -116,7 +118,7 @@ describe('entityRiskScoreTool', () => {
     });
 
     it('returns unavailable when risk index does not exist', async () => {
-      mockEsClient.asInternalUser.indices.exists.mockResolvedValue(false);
+      mockEsClient.asInternalUser.indices.exists.mockResolvedValueOnce(false);
 
       const result = await tool.availability!.handler(
         createToolAvailabilityContext(mockRequest, 'default')
@@ -127,7 +129,7 @@ describe('entityRiskScoreTool', () => {
     });
 
     it('returns unavailable when index check throws error', async () => {
-      mockEsClient.asInternalUser.indices.exists.mockRejectedValue(new Error('ES error'));
+      mockEsClient.asInternalUser.indices.exists.mockRejectedValueOnce(new Error('ES error'));
 
       const result = await tool.availability!.handler(
         createToolAvailabilityContext(mockRequest, 'default')
@@ -136,11 +138,49 @@ describe('entityRiskScoreTool', () => {
       expect(result.status).toBe('unavailable');
       expect(result.reason).toContain('Failed to check risk score index availability');
     });
+
+    it('returns unavailable when skills are enabled', async () => {
+      const mockUiSettingsClient = uiSettingsServiceMock.createClient();
+      mockUiSettingsClient.get.mockResolvedValueOnce(true);
+      const result = await tool.availability!.handler(
+        createToolAvailabilityContext(mockRequest, 'default', mockUiSettingsClient)
+      );
+
+      expect(result.status).toBe('unavailable');
+      expect(result.reason).toContain(
+        'Skills are enabled, which takes precedence over entity risk score tool availability'
+      );
+    });
   });
 
   describe('handler', () => {
     beforeEach(() => {
       mockCreateGetRiskScores.mockReturnValue(jest.fn());
+    });
+
+    it('passes handler context spaceId into createGetRiskScores', async () => {
+      const mockGetRiskScores = jest.fn().mockResolvedValue([
+        {
+          '@timestamp': '2023-01-01T00:00:00Z',
+          id_field: 'host.name',
+          id_value: 'hostname-1',
+          calculated_score_norm: 75,
+          calculated_level: 'High',
+          calculated_score: 150,
+          notes: [],
+          inputs: [],
+        },
+      ]);
+      mockCreateGetRiskScores.mockReturnValue(mockGetRiskScores);
+
+      await tool.handler(
+        { identifierType: 'host', identifier: 'hostname-1' },
+        createToolHandlerContext(mockRequest, mockEsClient, mockLogger, { spaceId: 'custom-space' })
+      );
+
+      expect(mockCreateGetRiskScores).toHaveBeenCalledWith(
+        expect.objectContaining({ spaceId: 'custom-space' })
+      );
     });
 
     it('successfully fetches risk score with valid identifierType and identifier', async () => {
@@ -183,10 +223,10 @@ describe('entityRiskScoreTool', () => {
         },
       });
 
-      const result = await tool.handler(
+      const result = (await tool.handler(
         { identifierType: 'host', identifier: 'hostname-1' },
         createToolHandlerContext(mockRequest, mockEsClient, mockLogger)
-      );
+      )) as ToolHandlerStandardReturn;
 
       expect(result.results).toHaveLength(1);
       expect(result.results[0].type).toBe(ToolResultType.other);
@@ -210,10 +250,10 @@ describe('entityRiskScoreTool', () => {
       const mockGetRiskScores = jest.fn().mockResolvedValue([]);
       mockCreateGetRiskScores.mockReturnValue(mockGetRiskScores);
 
-      const result = await tool.handler(
+      const result = (await tool.handler(
         { identifierType: 'user', identifier: 'username-1' },
         createToolHandlerContext(mockRequest, mockEsClient, mockLogger)
-      );
+      )) as ToolHandlerStandardReturn;
 
       expect(result.results).toHaveLength(1);
       const errorResult = result.results[0] as ErrorResult;
@@ -256,10 +296,10 @@ describe('entityRiskScoreTool', () => {
         },
       });
 
-      const result = await tool.handler(
+      const result = (await tool.handler(
         { identifierType: 'host', identifier: 'hostname-1' },
         createToolHandlerContext(mockRequest, mockEsClient, mockLogger)
-      );
+      )) as ToolHandlerStandardReturn;
 
       const otherResult = result.results[0] as OtherResult;
       expect(otherResult.type).toBe(ToolResultType.other);
@@ -322,10 +362,10 @@ describe('entityRiskScoreTool', () => {
         },
       });
 
-      const result = await tool.handler(
+      const result = (await tool.handler(
         { identifierType: 'user', identifier: '*', limit: 10 },
         createToolHandlerContext(mockRequest, mockEsClient, mockLogger)
-      );
+      )) as ToolHandlerStandardReturn;
 
       expect(result.results).toHaveLength(1);
       expect(result.results[0].type).toBe(ToolResultType.other);
@@ -391,10 +431,10 @@ describe('entityRiskScoreTool', () => {
         },
       });
 
-      const result = await tool.handler(
+      const result = (await tool.handler(
         { identifierType: 'user', identifier: '*' },
         createToolHandlerContext(mockRequest, mockEsClient, mockLogger)
-      );
+      )) as ToolHandlerStandardReturn;
 
       expect(result.results).toHaveLength(1);
       const errorResult = result.results[0] as ErrorResult;
@@ -406,10 +446,10 @@ describe('entityRiskScoreTool', () => {
       const mockGetRiskScores = jest.fn().mockRejectedValue(new Error('ES error'));
       mockCreateGetRiskScores.mockReturnValue(mockGetRiskScores);
 
-      const result = await tool.handler(
+      const result = (await tool.handler(
         { identifierType: 'host', identifier: 'hostname-1' },
         createToolHandlerContext(mockRequest, mockEsClient, mockLogger)
-      );
+      )) as ToolHandlerStandardReturn;
 
       expect(result.results).toHaveLength(1);
       const errorResult = result.results[0] as ErrorResult;

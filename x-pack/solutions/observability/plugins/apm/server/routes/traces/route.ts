@@ -7,6 +7,7 @@
 
 import { toNumberRt } from '@kbn/io-ts-utils';
 import * as t from 'io-ts';
+import type { Error } from '@kbn/apm-types';
 import { type ErrorsByTraceId, type UnifiedSpanDocument, type TraceRootSpan } from '@kbn/apm-types';
 import type { TraceItem } from '../../../common/waterfall/unified_trace_item';
 import { TraceSearchType } from '../../../common/trace_explorer';
@@ -36,7 +37,6 @@ import { getTraceSummaryCount } from './get_trace_summary_count';
 import { getUnifiedTraceItems } from './get_unified_trace_items';
 import { getUnifiedTraceErrors } from './get_unified_trace_errors';
 import { createLogsClient } from '../../lib/helpers/create_es_client/create_logs_client';
-import { normalizeErrors } from './normalize_errors';
 import { getUnifiedTraceSpan } from './get_unified_trace_span';
 import { asMutableArray } from '../../../common/utils/as_mutable_array';
 import {
@@ -140,7 +140,11 @@ const unifiedTracesByIdRoute = createApmServerRoute({
     }),
     query: t.intersection([
       rangeRt,
-      t.partial({ maxTraceItems: toNumberRt, serviceName: t.string }),
+      t.partial({
+        maxTraceItems: toNumberRt,
+        serviceName: t.string,
+        entryTransactionId: t.string,
+      }),
     ]),
   }),
   security: { authz: { requiredPrivileges: ['apm'] } },
@@ -148,6 +152,9 @@ const unifiedTracesByIdRoute = createApmServerRoute({
     resources
   ): Promise<{
     traceItems: TraceItem[];
+    errors: Error[];
+    agentMarks: Record<string, number>;
+    entryTransaction?: Transaction;
   }> => {
     const [apmEventClient, logsClient] = await Promise.all([
       getApmEventClient(resources),
@@ -156,21 +163,36 @@ const unifiedTracesByIdRoute = createApmServerRoute({
 
     const { params, config } = resources;
     const { traceId } = params.path;
-    const { start, end, serviceName } = params.query;
+    const { start, end, serviceName, entryTransactionId } = params.query;
 
-    const { traceItems } = await getUnifiedTraceItems({
-      apmEventClient,
-      logsClient,
-      traceId,
-      start,
-      end,
-      maxTraceItemsFromUrlParam: params.query.maxTraceItems,
-      config,
-      serviceName,
-    });
+    const [{ traceItems, agentMarks, unifiedTraceErrors }, entryTransaction] = await Promise.all([
+      getUnifiedTraceItems({
+        apmEventClient,
+        logsClient,
+        traceId,
+        start,
+        end,
+        maxTraceItemsFromUrlParam: params.query.maxTraceItems,
+        config,
+        serviceName,
+      }),
+      entryTransactionId
+        ? getTransaction({
+            transactionId: entryTransactionId,
+            traceId,
+            apmEventClient,
+            start,
+            end,
+          })
+        : Promise.resolve(undefined),
+    ]);
 
     return {
       traceItems,
+      // For now we, we only return apm errors to show as marks in the waterfall
+      errors: unifiedTraceErrors.apmErrors,
+      agentMarks,
+      entryTransaction,
     };
   },
 });
@@ -253,16 +275,10 @@ const unifiedTracesByIdErrorsRoute = createApmServerRoute({
     });
 
     if (apmErrors.length > 0) {
-      return {
-        traceErrors: normalizeErrors(apmErrors),
-        source: 'apm',
-      };
+      return { traceErrors: apmErrors, source: 'apm' };
     }
 
-    return {
-      traceErrors: normalizeErrors(unprocessedOtelErrors),
-      source: 'unprocessedOtel',
-    };
+    return { traceErrors: unprocessedOtelErrors, source: 'unprocessedOtel' };
   },
 });
 

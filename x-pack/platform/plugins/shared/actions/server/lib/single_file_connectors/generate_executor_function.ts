@@ -5,27 +5,15 @@
  * 2.0.
  */
 
-import { i18n } from '@kbn/i18n';
 import type { ConnectorSpec } from '@kbn/connector-specs';
+import type { ExecutorParams } from '../../sub_action_framework/types';
 import type {
   ActionTypeExecutorOptions as ConnectorTypeExecutorOptions,
   ActionTypeExecutorResult as ConnectorTypeExecutorResult,
 } from '../../types';
-import type { ExecutorParams } from '../../sub_action_framework/types';
 import type { GetAxiosInstanceWithAuthFn } from '../get_axios_instance';
 
 type RecordUnknown = Record<string, unknown>;
-
-function errorResultUnexpectedError(actionId: string): ConnectorTypeExecutorResult<void> {
-  const errMessage = i18n.translate('xpack.actions.singleFileConnector.unexpectedErrorMessage', {
-    defaultMessage: 'error calling connector, unexpected error',
-  });
-  return {
-    status: 'error',
-    message: errMessage,
-    actionId,
-  };
-}
 
 export const generateExecutorFunction = ({
   actions,
@@ -45,6 +33,7 @@ export const generateExecutorFunction = ({
       params,
       secrets,
       logger,
+      signal,
     } = execOptions;
     const { subAction, subActionParams } = params as ExecutorParams;
 
@@ -53,6 +42,7 @@ export const generateExecutorFunction = ({
       connectorTokenClient,
       additionalHeaders: globalAuthHeaders,
       secrets,
+      signal,
     });
 
     if (!actions[subAction]) {
@@ -78,7 +68,12 @@ export const generateExecutorFunction = ({
 
       return { status: 'ok', data, actionId: connectorId };
     } catch (error) {
-      logger.error(`error on ${connectorId} event: ${error}`);
-      return errorResultUnexpectedError(connectorId);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error(`error on ${connectorId} event: ${errorMessage}`);
+      return {
+        status: 'error',
+        message: errorMessage,
+        actionId: connectorId,
+      };
     }
   };

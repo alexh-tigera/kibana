@@ -26,13 +26,13 @@ export {
   SHOW_FIELD_STATISTICS,
   SHOW_MULTIFIELDS,
   SORT_DEFAULT_ORDER_SETTING,
+  DataGridDensity,
   IgnoredReason,
   buildDataTableRecord,
   buildDataTableRecordList,
   convertValueToString,
   createLogsContextService,
   createApmContextService,
-  createMetricsContextService,
   createDegradedDocsControl,
   createStacktraceControl,
   fieldConstants,
@@ -45,6 +45,7 @@ export {
   getIgnoredReason,
   getMessageFieldWithFallbacks,
   getAvailableResourceFields,
+  getAvailableTraceFields,
   getLogLevelFieldWithFallback,
   getLogEventTypeFieldWithFallback,
   getLogExceptionTypeFieldWithFallback,
@@ -71,17 +72,11 @@ export {
   getSortForSearchSource,
   getEsQuerySort,
   getTieBreakerFieldName,
+  escapeAndPreserveHighlightTags,
   severityOrder,
 } from './src';
 
-export type {
-  LogsContextService,
-  ApmContextService,
-  MetricsContextService,
-  SortOrder,
-  SortInput,
-  SortPair,
-} from './src';
+export type { LogsContextService, ApmContextService, SortOrder, SortInput, SortPair } from './src';
 
 export * from './src/types';
 

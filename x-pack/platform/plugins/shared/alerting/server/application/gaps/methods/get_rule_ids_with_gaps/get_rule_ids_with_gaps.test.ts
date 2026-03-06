@@ -27,6 +27,7 @@ import type { ConstructorOptions } from '../../../../rules_client';
 import { RulesClient } from '../../../../rules_client';
 import { RULE_SAVED_OBJECT_TYPE } from '../../../../saved_objects';
 import { gapFillStatus, gapStatus } from '../../../../../common';
+import { coreFeatureFlagsMock } from '@kbn/core-feature-flags-server-mocks';
 
 describe('getRuleIdsWithGaps', () => {
   let rulesClient: RulesClient;
@@ -86,6 +87,8 @@ describe('getRuleIdsWithGaps', () => {
       connectorAdapterRegistry: new ConnectorAdapterRegistry(),
       uiSettings: uiSettingsServiceMock.createStartContract(),
       eventLogger,
+      featureFlags: coreFeatureFlagsMock.createStart(),
+      isServerless: false,
     } as jest.Mocked<ConstructorOptions>;
 
     jest.clearAllMocks();
@@ -214,6 +217,17 @@ describe('getRuleIdsWithGaps', () => {
         total: 2,
         ruleIds: ['rule-1', 'rule-2'],
         latestGapTimestamp: 1704067200000,
+        summary: {
+          totalUnfilledDurationMs: 100,
+          totalInProgressDurationMs: 50,
+          totalFilledDurationMs: 0,
+          totalDurationMs: 150,
+          rulesByGapFillStatus: {
+            unfilled: 1,
+            inProgress: 1,
+            filled: 0,
+          },
+        },
       });
     });
 
@@ -249,6 +263,17 @@ describe('getRuleIdsWithGaps', () => {
         total: 0,
         ruleIds: [],
         latestGapTimestamp: undefined,
+        summary: {
+          totalUnfilledDurationMs: 0,
+          totalInProgressDurationMs: 0,
+          totalFilledDurationMs: 0,
+          totalDurationMs: 0,
+          rulesByGapFillStatus: {
+            unfilled: 0,
+            inProgress: 0,
+            filled: 0,
+          },
+        },
       });
     });
 
@@ -390,6 +415,77 @@ describe('getRuleIdsWithGaps', () => {
           filter: expect.stringContaining(
             'AND ((kibana.alert.rule.rule_type_id: "type.a" AND kibana.alert.rule.consumer: "cons-a") OR (kibana.alert.rule.rule_type_id: "type.b" AND kibana.alert.rule.consumer: "cons-b"))'
           ),
+        })
+      );
+    });
+  });
+
+  describe('ruleIds filter', () => {
+    it('should include ruleIds filter for a single rule id', async () => {
+      eventLogClient.aggregateEventsWithAuthFilter.mockResolvedValue({
+        aggregations: {
+          unique_rule_ids: { buckets: [] },
+          latest_gap_timestamp: { value: null },
+          by_rule: { buckets: [] },
+        },
+      });
+
+      await rulesClient.getRuleIdsWithGaps({
+        ...params,
+        ruleIds: ['rule-123'],
+      });
+
+      expect(eventLogClient.aggregateEventsWithAuthFilter).toHaveBeenCalledWith(
+        RULE_SAVED_OBJECT_TYPE,
+        filter,
+        expect.objectContaining({
+          filter: expect.stringContaining('AND (rule.id: "rule-123")'),
+        })
+      );
+    });
+
+    it('should include ruleIds filter joined with OR for multiple rule ids', async () => {
+      eventLogClient.aggregateEventsWithAuthFilter.mockResolvedValue({
+        aggregations: {
+          unique_rule_ids: { buckets: [] },
+          latest_gap_timestamp: { value: null },
+          by_rule: { buckets: [] },
+        },
+      });
+
+      await rulesClient.getRuleIdsWithGaps({
+        ...params,
+        ruleIds: ['rule-a', 'rule-b'],
+      });
+
+      expect(eventLogClient.aggregateEventsWithAuthFilter).toHaveBeenCalledWith(
+        RULE_SAVED_OBJECT_TYPE,
+        filter,
+        expect.objectContaining({
+          filter: expect.stringContaining('AND (rule.id: "rule-a" OR rule.id: "rule-b")'),
+        })
+      );
+    });
+
+    it('should not include ruleIds filter when ruleIds is empty', async () => {
+      eventLogClient.aggregateEventsWithAuthFilter.mockResolvedValue({
+        aggregations: {
+          unique_rule_ids: { buckets: [] },
+          latest_gap_timestamp: { value: null },
+          by_rule: { buckets: [] },
+        },
+      });
+
+      await rulesClient.getRuleIdsWithGaps({
+        ...params,
+        ruleIds: [],
+      });
+
+      expect(eventLogClient.aggregateEventsWithAuthFilter).toHaveBeenCalledWith(
+        RULE_SAVED_OBJECT_TYPE,
+        filter,
+        expect.objectContaining({
+          filter: expect.not.stringContaining('rule.id:'),
         })
       );
     });

@@ -6,7 +6,6 @@
       "jest",
       "node",
       "react",
-      "@emotion/react/types/css-prop",
       "@kbn/ambient-ui-types",
       "@testing-library/jest-dom",
     ]
@@ -22,5 +21,6 @@
   "kbn_references": [
     "@kbn/i18n",
     "@kbn/i18n-react",
+    "@kbn/doc-links",
   ]
 }

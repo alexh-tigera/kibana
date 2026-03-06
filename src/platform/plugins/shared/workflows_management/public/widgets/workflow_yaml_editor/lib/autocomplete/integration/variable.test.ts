@@ -72,7 +72,18 @@ steps:
 `.trim();
     const suggestions = await getSuggestions(yamlContent);
     expect(suggestions.map((s) => s.label).sort()).toEqual(
-      ['consts', 'event', 'kibanaUrl', 'now', 'workflow', 'steps', 'execution', 'inputs'].sort()
+      [
+        'consts',
+        'event',
+        'kibanaUrl',
+        'now',
+        'workflow',
+        'parent',
+        'steps',
+        'execution',
+        'inputs',
+        'variables',
+      ].sort()
     );
     expect(suggestions.map((s) => s.insertText).sort()).toEqual(
       [
@@ -83,7 +94,9 @@ steps:
         '"{{ inputs$0 }}"',
         '"{{ consts$0 }}"',
         '"{{ now$0 }}"',
+        '"{{ parent$0 }}"',
         '"{{ steps$0 }}"',
+        '"{{ variables$0 }}"',
       ].sort()
     );
   });
@@ -110,7 +123,9 @@ steps:
         '{{ inputs$0 }}',
         '{{ consts$0 }}',
         '{{ now$0 }}',
+        '{{ parent$0 }}',
         '{{ steps$0 }}',
+        '{{ variables$0 }}',
       ].sort()
     );
   });

@@ -14,7 +14,7 @@
  *   version: not applicable
  */
 
-import { z } from '@kbn/zod';
+import { z } from '@kbn/zod/v4';
 
 import { NonEmptyString, User, NonEmptyTimestamp } from '../common_attributes.gen';
 
@@ -421,6 +421,10 @@ export const Message = z.object({
    * Message content.
    */
   content: z.string(),
+  /**
+   * Refusal reason returned by the model when content is filtered.
+   */
+  refusal: z.string().optional(),
   /**
    * Message content.
    */

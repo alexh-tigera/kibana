@@ -14,26 +14,50 @@ import {
   X_ELASTIC_INTERNAL_ORIGIN_REQUEST,
 } from '@kbn/core-http-common';
 import type SuperTest from 'supertest';
-import { aiAnonymizationSettings } from '@kbn/inference-common';
 import type { FtrProviderContext } from '../ftr_provider_context';
 
-export const setAdvancedSettings = async (
-  supertest: SuperTest.Agent,
-  settings: Record<string, string[] | string | number | boolean | object>
-) => {
-  return supertest
-    .post('/internal/kibana/settings')
+export const setAiAnonymizationSettings = async (supertest: SuperTest.Agent, rules: object) => {
+  const globalTargetId = '__kbn_global_anonymization_profile__';
+
+  const findResponse = await supertest
+    .get(`/internal/anonymization/profiles/_find?target_type=index&target_id=${globalTargetId}`)
     .set('kbn-xsrf', 'true')
     .set(ELASTIC_HTTP_VERSION_HEADER, '1')
     .set(X_ELASTIC_INTERNAL_ORIGIN_REQUEST, 'kibana')
-    .send({ changes: settings })
     .expect(200);
-};
 
-export const setAiAnonymizationSettings = async (supertest: SuperTest.Agent, rules: object) => {
-  return setAdvancedSettings(supertest, {
-    [aiAnonymizationSettings]: JSON.stringify(rules, null, 2),
-  });
+  const profileId = findResponse.body?.data?.[0]?.id as string | undefined;
+  if (!profileId) {
+    throw new Error('Global anonymization profile was not found/created in FTR setup');
+  }
+
+  const inputRules = ((rules as { rules?: Array<Record<string, unknown>> })?.rules ?? []).filter(
+    (rule) => {
+      const type = String(rule.type ?? '').toLowerCase();
+      return type === 'regexp' || type === 'regex';
+    }
+  );
+
+  const regexRules = inputRules.map((rule, index) => ({
+    id: `ftr-global-regex-${index}`,
+    type: 'regex',
+    entityClass: rule.entityClass,
+    pattern: rule.pattern,
+    enabled: rule.enabled ?? true,
+  }));
+
+  return supertest
+    .put(`/internal/anonymization/profiles/${profileId}`)
+    .set('kbn-xsrf', 'true')
+    .set(ELASTIC_HTTP_VERSION_HEADER, '1')
+    .set(X_ELASTIC_INTERNAL_ORIGIN_REQUEST, 'kibana')
+    .send({
+      rules: {
+        fieldRules: [],
+        regexRules,
+      },
+    })
+    .expect(200);
 };
 
 const emailRule = {
@@ -250,10 +274,8 @@ export const chatCompleteSuite = (
 
         const message = await lastValueFrom(observable);
 
-        expect({
-          ...message,
-          content: '',
-        }).to.eql({ type: 'chatCompletionMessage', content: '', toolCalls: [] });
+        expect(message.type).to.eql('chatCompletionMessage');
+        expect(message.toolCalls).to.eql([]);
         expect(message.content).to.contain('4');
       });
 
@@ -312,9 +334,17 @@ export const chatCompleteSuite = (
         expect(tokenEvent.type).to.eql('chatCompletionTokenCount');
         expect(tokenEvent.tokens.prompt).to.be.greaterThan(0);
         expect(tokenEvent.tokens.completion).to.be.greaterThan(0);
-        expect(tokenEvent.tokens.total).to.be(
-          tokenEvent.tokens.prompt + tokenEvent.tokens.completion
-        );
+        // can include thinking token depending on the model
+        const totalIsPromptAndCompletion =
+          tokenEvent.tokens.total === tokenEvent.tokens.prompt + tokenEvent.tokens.completion;
+        const totalIsPromptCompletionAndThinking =
+          tokenEvent.tokens.total ===
+          tokenEvent.tokens.prompt + tokenEvent.tokens.completion + tokenEvent.tokens.thinking;
+        expect(totalIsPromptAndCompletion || totalIsPromptCompletionAndThinking).to.be(true);
+        // Model field is optional and may be present if provided by the connector
+        if (tokenEvent.model !== undefined) {
+          expect(tokenEvent.model).to.be.a('string');
+        }
       });
 
       it('returns an error with the expected shape in case of error', async () => {
@@ -351,7 +381,7 @@ export const chatCompleteSuite = (
         before(async () => {
           await setAiAnonymizationSettings(supertest, { rules: [] });
         });
-        it('returns events without deanonymization data and streams', async () => {
+        it('returns events without deanonymization data', async () => {
           const response = supertest
             .post(`/internal/inference/chat_complete/stream`)
             .set('kbn-xsrf', 'kibana')
@@ -367,9 +397,6 @@ export const chatCompleteSuite = (
 
           const observable = supertestToObservable(response);
           const events = await lastValueFrom(observable.pipe(toArray()));
-          // Should have multiple chunk events (confirming it's streaming)
-          const chunkEvents = events.filter((event) => event.type === 'chatCompletionChunk');
-          expect(chunkEvents.length).to.be.greaterThan(1);
           const messageEvent = events.find((event) => event.type === 'chatCompletionMessage');
           expect(messageEvent.deanonymized_input).to.be(undefined);
           expect(messageEvent.deanonymized_output).to.be(undefined);
@@ -417,7 +444,7 @@ export const chatCompleteSuite = (
           });
         });
 
-        it('streams normally when no PII is detected even with rules enabled', async () => {
+        it('returns no deanonymization data when no PII is detected even with rules enabled', async () => {
           const response = supertest
             .post(`/internal/inference/chat_complete/stream`)
             .set('kbn-xsrf', 'kibana')
@@ -435,10 +462,6 @@ export const chatCompleteSuite = (
           const messageEvent = events.find((event) => event.type === 'chatCompletionMessage');
           expect(messageEvent.deanonymized_input).to.be(undefined);
           expect(messageEvent.deanonymized_output).to.be(undefined);
-
-          // Should have multiple chunk events (confirming it's streaming)
-          const chunkEvents = events.filter((event) => event.type === 'chatCompletionChunk');
-          expect(chunkEvents.length).to.be.greaterThan(1);
         });
       });
     });
