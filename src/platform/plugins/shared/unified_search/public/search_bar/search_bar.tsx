@@ -180,6 +180,7 @@ export type SearchBarProps<QT extends Query | AggregateQuery = Query> = SearchBa
 export interface SearchBarState<QT extends Query | AggregateQuery = Query> {
   isFiltersVisible: boolean;
   addFilterOpen: boolean;
+  addFilterOpenFromToggle: boolean;
   highlightedFilterIndex: number | null;
   openQueryBarMenu: boolean;
   showSavedQueryPopover: boolean;
@@ -318,6 +319,7 @@ export class SearchBarUI<QT extends (Query | AggregateQuery) | Query = Query> ex
   public state = this.prefillWithInitialDraftState({
     isFiltersVisible: false,
     addFilterOpen: false,
+    addFilterOpenFromToggle: false,
     highlightedFilterIndex: null,
     openQueryBarMenu: false,
     showSavedQueryPopover: false,
@@ -497,7 +499,7 @@ export class SearchBarUI<QT extends (Query | AggregateQuery) | Query = Query> ex
   };
 
   public handleDoubleClickFilterToggle = () => {
-    this.setState({ isFiltersVisible: true, addFilterOpen: true });
+    this.setState({ addFilterOpenFromToggle: true });
   };
 
   public onTextLangQuerySubmit = (query?: Query | AggregateQuery) => {
@@ -862,6 +864,8 @@ export class SearchBarUI<QT extends (Query | AggregateQuery) | Query = Query> ex
           isFiltersVisible={this.state.isFiltersVisible}
           onToggleFiltersVisible={this.toggleFiltersVisible}
           onDoubleClickFilterToggle={this.handleDoubleClickFilterToggle}
+          addFilterOpenFromToggle={this.state.addFilterOpenFromToggle}
+          onAddFilterFromToggleClose={() => this.setState({ addFilterOpenFromToggle: false })}
           suggestionsSize={this.props.suggestionsSize}
           isScreenshotMode={this.props.isScreenshotMode}
           onTextLangQuerySubmit={this.onTextLangQuerySubmit}
