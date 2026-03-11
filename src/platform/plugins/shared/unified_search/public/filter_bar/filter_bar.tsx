@@ -47,6 +47,8 @@ export interface Props {
   prepend?: ReactNode;
   /** Array of suggestion abstraction that controls the render of the field */
   suggestionsAbstraction?: SuggestionsAbstraction;
+  /** Index of a newly added filter to highlight with a fade-out animation */
+  highlightedFilterIndex?: number | null;
 }
 
 const FilterBarUI = React.memo(function FilterBarUI(props: Props) {
@@ -68,36 +70,18 @@ const FilterBarUI = React.memo(function FilterBarUI(props: Props) {
       wrap={!isCollapsed}
       responsive={false}
     >
-      <EuiFlexItem
-        id={expandablePillsId}
-        aria-hidden={isCollapsed}
-        grow={true}
-        css={[styles.pillsScrollContainer, isCollapsed ? styles.filterBarContentCollapsed : null]}
-      >
-        <EuiFlexGroup
-          css={styles.filterPillGroup}
-          ref={groupRef}
-          wrap={true}
-          responsive={false}
-          gutterSize="none" // We use `gap` in the styles instead for better truncation of badges
-          alignItems="center"
-          tabIndex={-1}
-          data-test-subj="filter-items-group"
-          className={`filter-items-group ${props.className ?? ''}`}
-        >
-          {props.prepend}
-          <FilterItems
-            filters={props.filters!}
-            onFiltersUpdated={props.onFiltersUpdated}
-            indexPatterns={props.indexPatterns!}
-            timeRangeForSuggestionsOverride={props.timeRangeForSuggestionsOverride}
-            filtersForSuggestions={props.filtersForSuggestions}
-            hiddenPanelOptions={props.hiddenPanelOptions}
-            readOnly={props.isDisabled}
-            suggestionsAbstraction={props.suggestionsAbstraction}
-          />
-        </EuiFlexGroup>
-      </EuiFlexItem>
+      {props.prepend}
+      <FilterItems
+        filters={props.filters!}
+        onFiltersUpdated={props.onFiltersUpdated}
+        indexPatterns={props.indexPatterns!}
+        timeRangeForSuggestionsOverride={props.timeRangeForSuggestionsOverride}
+        filtersForSuggestions={props.filtersForSuggestions}
+        hiddenPanelOptions={props.hiddenPanelOptions}
+        readOnly={props.isDisabled}
+        suggestionsAbstraction={props.suggestionsAbstraction}
+        highlightedFilterIndex={props.highlightedFilterIndex}
+      />
     </EuiFlexGroup>
   );
 });

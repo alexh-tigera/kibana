@@ -176,6 +176,9 @@ export interface QueryBarTopRowProps<QT extends Query | AggregateQuery = Query> 
   textBasedLanguageModeErrors?: Error[];
   textBasedLanguageModeWarning?: string;
   filterBar?: React.ReactNode;
+  isFiltersVisible?: boolean;
+  onToggleFiltersVisible?: () => void;
+  onDoubleClickFilterToggle?: () => void;
   showDatePickerAsBadge?: boolean;
   showSubmitButton?: boolean;
   /**
@@ -293,6 +296,7 @@ export const QueryBarTopRow = React.memo(
     const [isSendingToBackground, setIsSendingToBackground] = useState(false);
     const [isCancelling, setIsCancelling] = useState(false);
     const { euiTheme } = useEuiTheme();
+    const filterToggleClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const submitButtonStyle: QueryBarTopRowProps['submitButtonStyle'] =
       props.submitButtonStyle ?? 'auto';
     const submitButtonIconOnly =
@@ -316,6 +320,12 @@ export const QueryBarTopRow = React.memo(
         setIsCancelling(false);
       }
     }, [props.isLoading]);
+
+    useEffect(() => {
+      return () => {
+        if (filterToggleClickTimer.current) clearTimeout(filterToggleClickTimer.current);
+      };
+    }, []);
 
     const {
       showQueryInput = true,
@@ -904,26 +914,81 @@ export const QueryBarTopRow = React.memo(
       );
     }
 
-    function renderFilterBarToggleButton() {
-      return <FilterBarToggleButton />;
+    function renderFilterToggleButton() {
+      if (!props.showAddFilter) return null;
+      const hasFilters = Boolean(props.filters?.length);
+
+      function handleFilterToggleClick() {
+        if (filterToggleClickTimer.current) {
+          clearTimeout(filterToggleClickTimer.current);
+          filterToggleClickTimer.current = null;
+          props.onDoubleClickFilterToggle?.();
+        } else {
+          filterToggleClickTimer.current = setTimeout(() => {
+            filterToggleClickTimer.current = null;
+            props.onToggleFiltersVisible?.();
+          }, 300);
+        }
+      }
+
+      return (
+        <EuiFlexItem grow={false}>
+          <div css={{ position: 'relative', display: 'inline-flex' }}>
+            <EuiButtonIcon
+              iconType="filter"
+              aria-label={i18n.translate('unifiedSearch.queryBar.filterPanelToggle.label', {
+                defaultMessage: 'Toggle filters panel',
+              })}
+              onClick={handleFilterToggleClick}
+              size="s"
+              display="base"
+              color="text"
+              data-test-subj="unifiedFilterPanelToggle"
+              css={
+                props.isFiltersVisible
+                  ? css({
+                      backgroundColor: euiTheme.colors.darkShade,
+                      color: euiTheme.colors.ghost,
+                      '&:hover, &:focus': {
+                        backgroundColor: euiTheme.colors.darkShade,
+                      },
+                    })
+                  : undefined
+              }
+            />
+            {hasFilters && (
+              <span
+                aria-hidden="true"
+                css={{
+                  position: 'absolute',
+                  top: 2,
+                  right: 2,
+                  width: 7,
+                  height: 7,
+                  borderRadius: '50%',
+                  backgroundColor: euiTheme.colors.primary,
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
+          </div>
+        </EuiFlexItem>
+      );
     }
 
     function renderFilterButtonGroup() {
+      // In filter-bar mode the toggle button moves to the top-level row and the
+      // QueryBarMenu moves into the filter panel, so nothing goes here.
+      // In query-only mode (no filter bar) the QueryBarMenu stays in the query row.
+      if (!props.prepend || props.showAddFilter) return null;
       return (
-        (Boolean(props.showAddFilter) || Boolean(props.prepend)) && (
-          <EuiFlexItem grow={false} className="kbnQueryBar__filterButtonGroup">
-            <EuiFlexGroup gutterSize="s">
-              <FilterButtonGroup
-                items={[renderAddButton(), props.prepend]}
-                attached={renderFilterMenuOnly()}
-                size="s"
-              />
-              {Boolean(props.showAddFilter && props.filters?.length) && (
-                <FilterButtonGroup items={[renderFilterBarToggleButton()]} size="s" />
-              )}
-            </EuiFlexGroup>
-          </EuiFlexItem>
-        )
+        <EuiFlexItem grow={false} className="kbnQueryBar__filterButtonGroup">
+          <FilterButtonGroup
+            items={[props.prepend]}
+            attached={false}
+            size="s"
+          />
+        </EuiFlexItem>
       );
     }
 
@@ -1089,19 +1154,20 @@ export const QueryBarTopRow = React.memo(
                 )}
                 {renderEsqlMenuPopover()}
               </EuiFlexGroup>
-              {!shouldShowDatePickerAsBadge() && props.filterBar}
+              {!shouldShowDatePickerAsBadge() && props.isFiltersVisible && props.filterBar}
               {renderTextLangEditor()}
             </EsqlEditorActionsProvider>
           ) : (
             <>
               <EuiFlexGroup {...queryBarFlexGroupProps}>
+                {renderFilterToggleButton()}
                 {props.dataViewPickerOverride || renderDataViewsPicker()}
                 {renderQueryInput()}
                 {props.renderQueryInputAppend?.()}
                 {shouldShowDatePickerAsBadge() && props.filterBar}
                 {renderDatePickerWithUpdateBtn()}
               </EuiFlexGroup>
-              {!shouldShowDatePickerAsBadge() && props.filterBar}
+              {!shouldShowDatePickerAsBadge() && props.isFiltersVisible && props.filterBar}
               {renderTextLangEditor()}
             </>
           ))}
