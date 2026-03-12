@@ -20,12 +20,12 @@ import type { VerificationResultDocument } from '../../../common/types/models/cl
 import { appContextService } from '../../services';
 import { throwIfAborted } from '../utils';
 
-const TASK_TYPE = 'fleet:permission-status-update-task';
-const TASK_TITLE = 'Fleet OTel Permission Status Update Task';
+const TASK_TYPE = 'fleet:otel_verifier_logs_status_change';
+const TASK_TITLE = 'OTel Verifier Logs Status Change Task';
 const TASK_TIMEOUT = '2m';
 const TASK_ID = `${TASK_TYPE}:1.0.0`;
 const TASK_INTERVAL = '1m';
-const LOG_PREFIX = '[OTelVerifier]';
+const OTEL_VERIFIER_LOGS_STATUS_UPDATE = '[OTel Verifier Logs Status Change]';
 // const VERIFICATION_INDEX = 'logs-verifier_otel.verification-default';
 
 const MOCK_VERIFICATION_RESULTS: VerificationResultDocument[] = [
@@ -102,7 +102,7 @@ const MOCK_VERIFICATION_RESULTS: VerificationResultDocument[] = [
   },
 ];
 
-export function registerPermissionStatusUpdateTask(taskManager: TaskManagerSetupContract) {
+export function registerOtelVerifierLogsStatusChangeTask(taskManager: TaskManagerSetupContract) {
   taskManager.registerTaskDefinitions({
     [TASK_TYPE]: {
       title: TASK_TITLE,
@@ -117,7 +117,7 @@ export function registerPermissionStatusUpdateTask(taskManager: TaskManagerSetup
       }) => {
         return {
           run: async () => {
-            await runPermissionStatusUpdateTask(abortController);
+            await runOtelVerifierLogsStatusChangeTask(abortController);
           },
           cancel: async () => {},
         };
@@ -126,7 +126,9 @@ export function registerPermissionStatusUpdateTask(taskManager: TaskManagerSetup
   });
 }
 
-export async function schedulePermissionStatusUpdateTask(taskManager: TaskManagerStartContract) {
+export async function scheduleOtelVerifierLogsStatusChangeTask(
+  taskManager: TaskManagerStartContract
+) {
   try {
     await taskManager.ensureScheduled({
       id: TASK_ID,
@@ -140,7 +142,10 @@ export async function schedulePermissionStatusUpdateTask(taskManager: TaskManage
   } catch (error) {
     appContextService
       .getLogger()
-      .error(`${LOG_PREFIX} Error scheduling permission status update task.`, { error });
+      .error(
+        `${OTEL_VERIFIER_LOGS_STATUS_UPDATE} Error scheduling permission status update task.`,
+        { error }
+      );
   }
 }
 
@@ -160,15 +165,17 @@ export async function schedulePermissionStatusUpdateTask(taskManager: TaskManage
  *          status (success if all granted, failed otherwise) and update the
  *          cloud connector SO one by one.
  */
-async function runPermissionStatusUpdateTask(abortController: AbortController) {
+async function runOtelVerifierLogsStatusChangeTask(abortController: AbortController) {
   const logger = appContextService.getLogger().get('otel-verifier-status');
 
   if (!appContextService.getExperimentalFeatures()?.enableOTelVerifier) {
-    logger.debug(`${LOG_PREFIX} OTel verifier is disabled, skipping status update`);
+    logger.debug(
+      `${OTEL_VERIFIER_LOGS_STATUS_UPDATE} OTel verifier is disabled, skipping status update`
+    );
     return;
   }
 
-  logger.info(`${LOG_PREFIX} Status update task started`);
+  logger.info(`${OTEL_VERIFIER_LOGS_STATUS_UPDATE} Status update task started`);
 
   const soClient = appContextService.getInternalUserSOClientWithoutSpaceExtension();
   // const esClient = appContextService.getInternalUserESClient();
@@ -180,10 +187,12 @@ async function runPermissionStatusUpdateTask(abortController: AbortController) {
     const packagePolicies = await soClient.find<{ cloud_connector_id?: string }>({
       type: PACKAGE_POLICY_SAVED_OBJECT_TYPE,
       filter: `${PACKAGE_POLICY_SAVED_OBJECT_TYPE}.attributes.cloud_connector_id: *`,
-      perPage: 1000,
+      perPage: 50,
     });
     if (packagePolicies.saved_objects.length === 0) {
-      logger.debug(`${LOG_PREFIX} No package policies with cloud connectors found`);
+      logger.debug(
+        `${OTEL_VERIFIER_LOGS_STATUS_UPDATE} No package policies with cloud connectors found`
+      );
       return;
     }
 
@@ -196,11 +205,15 @@ async function runPermissionStatusUpdateTask(abortController: AbortController) {
     ];
 
     if (connectorIds.length === 0) {
-      logger.debug(`${LOG_PREFIX} No connectors with installed packages found`);
+      logger.debug(
+        `${OTEL_VERIFIER_LOGS_STATUS_UPDATE} No connectors with installed packages found`
+      );
       return;
     }
 
-    logger.info(`${LOG_PREFIX} Found ${connectorIds.length} connectors with installed packages`);
+    logger.info(
+      `${OTEL_VERIFIER_LOGS_STATUS_UPDATE} Found ${connectorIds.length} connectors with installed packages`
+    );
 
     throwIfAborted(abortController);
 
@@ -217,7 +230,7 @@ async function runPermissionStatusUpdateTask(abortController: AbortController) {
     //       ],
     //     },
     //   },
-    //   size: 1000,
+    //   size: 100,
     //   sort: [{ '@timestamp': { order: 'desc' } }],
     //   collapse: { field: 'cloud_connector_id.keyword' },
     // });
@@ -252,7 +265,7 @@ async function runPermissionStatusUpdateTask(abortController: AbortController) {
         const latestTimestamp = result['@timestamp'] ?? new Date().toISOString();
 
         logger.info(
-          `${LOG_PREFIX} Verification for connector ${connectorId}: ${status} ` +
+          `${OTEL_VERIFIER_LOGS_STATUS_UPDATE} Verification for connector ${connectorId}: ${status} ` +
             `(action: ${permission.action}, permission: ${permission.status})`
         );
 
@@ -267,18 +280,18 @@ async function runPermissionStatusUpdateTask(abortController: AbortController) {
         );
       } catch (error) {
         logger.error(
-          `${LOG_PREFIX} Failed to update verification status for connector ${connectorId}: ${error.message}`
+          `${OTEL_VERIFIER_LOGS_STATUS_UPDATE} Failed to update verification status for connector ${connectorId}: ${error.message}`
         );
       }
     }
 
-    logger.info(`${LOG_PREFIX} Status update task completed`);
+    logger.info(`${OTEL_VERIFIER_LOGS_STATUS_UPDATE} Status update task completed`);
   } catch (error) {
     if (abortController.signal.aborted) {
-      logger.warn(`${LOG_PREFIX} Status update task was aborted`);
+      logger.warn(`${OTEL_VERIFIER_LOGS_STATUS_UPDATE} Status update task was aborted`);
       return;
     }
-    logger.error(`${LOG_PREFIX} Status update task failed: ${error.message}`);
+    logger.error(`${OTEL_VERIFIER_LOGS_STATUS_UPDATE} Status update task failed: ${error.message}`);
     throw error;
   }
 }

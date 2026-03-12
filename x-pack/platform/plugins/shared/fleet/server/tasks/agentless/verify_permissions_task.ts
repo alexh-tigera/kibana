@@ -20,20 +20,20 @@ import {
 } from '../../../common/constants';
 import type { CloudConnectorSOAttributes } from '../../types/so_attributes';
 import { appContextService } from '../../services';
-import { agentPolicyService } from '../../services/agent_policy';
+import { agentPolicyService, getAgentPolicySavedObjectType } from '../../services/agent_policy';
 import { getAgentsByKuery } from '../../services/agents';
 import { throwIfAborted } from '../utils';
 
-const TASK_TYPE = 'fleet:permission-verifier-task';
-const TASK_TITLE = 'Fleet OTel Permission Verifier Task';
+const TASK_TYPE = 'fleet:verify_permissions';
+const TASK_TITLE = 'OTel Verify Permission Task';
 const TASK_TIMEOUT = '1m'; // CHANGE TO 5m WHEN READY
 const TASK_ID = `${TASK_TYPE}:1.0.0`;
 const TASK_INTERVAL = '1m'; // CHANGE TO 5m WHEN READY
-const LOG_PREFIX = '[OTelVerifier]';
+export const VERIFY_PERMISSIONS_TASK = '[OTel Verify Permissions Task]';
 const VERIFICATION_TTL_MS = 5 * 60 * 1000;
 const ELIGIBILITY_WINDOW_MS = 5 * 60 * 1000;
 
-export function registerPermissionVerifierTask(taskManager: TaskManagerSetupContract) {
+export function registerVerifyPermissionsTask(taskManager: TaskManagerSetupContract) {
   taskManager.registerTaskDefinitions({
     [TASK_TYPE]: {
       title: TASK_TITLE,
@@ -57,7 +57,7 @@ export function registerPermissionVerifierTask(taskManager: TaskManagerSetupCont
   });
 }
 
-export async function schedulePermissionVerifierTask(taskManager: TaskManagerStartContract) {
+export async function scheduleVerifyPermissionsTask(taskManager: TaskManagerStartContract) {
   try {
     await taskManager.ensureScheduled({
       id: TASK_ID,
@@ -71,65 +71,80 @@ export async function schedulePermissionVerifierTask(taskManager: TaskManagerSta
   } catch (error) {
     appContextService
       .getLogger()
-      .error(`${LOG_PREFIX} Error scheduling permission verifier task.`, { error });
+      .error(`${VERIFY_PERMISSIONS_TASK} Error scheduling permission verifier task.`, {
+        error,
+      });
   }
 }
 
 /*
  * Task flow (runs every 5 minutes):
  *
- * Phase 1 - Cleanup: Delete expired verifier policies (TTL > 5 min)
- *           to ensure at most one active verifier deployment at a time.
+ * Phase 1 - Cleanup: Delete stale verifier policies. A policy is deleted when:
+ *           - TTL expired: has agents but the oldest enrollment exceeds TTL.
+ *           - Orphan: 0 agents and updated_at exceeds TTL (deployment never
+ *             came up or was torn down externally).
  *
  * Phase 2 - Pre-filter: Fetch package policies with cloud_connector_id to build
  *           a map of connector ID -> package policy IDs. Then fetch only the
  *           cloud connectors that have installed packages via KQL id filter.
  *
- * Phase 3 - Pick & Verify: Loop through filtered connectors, check eligibility:
+ * Phase 3 - Verify all eligible connectors, one at a time (synchronously).
+ *           Eligibility criteria:
  *             1. Never verified (verification_started_at is null)
  *             2. Recently created (created_at within last 5 min)
  *             3. Recently updated (updated_at within last 5 min)
  *             4. Due for re-verification (started_at > 5 min ago, status != failed)
  *             5. Failed with cooldown expired (failed_at > 5 min ago)
  *             6. Backwards compat (verification_status not set)
- *           First eligible connector gets verified (one deployment at a time),
- *           then break. Stamps verification_started_at, creates a verifier
- *           policy. On failure, marks as failed. On success, the separate
- *           status update task sets the final status.
+ *           Each eligible connector gets a verifier policy. On failure the
+ *           connector is marked failed; on success the separate status update
+ *           task sets the final status.
  */
 async function runPermissionVerifierTask(abortController: AbortController) {
   const logger = appContextService.getLogger().get('otel-verifier');
 
   if (!appContextService.getExperimentalFeatures()?.enableOTelVerifier) {
-    logger.debug(`${LOG_PREFIX} OTel verifier is disabled, skipping`);
+    logger.debug(`${VERIFY_PERMISSIONS_TASK} OTel verifier is disabled, skipping`);
     return;
   }
 
-  logger.info(`${LOG_PREFIX} Task run started`);
+  logger.info(`${VERIFY_PERMISSIONS_TASK} Task run started`);
 
   const soClient = appContextService.getInternalUserSOClientWithoutSpaceExtension();
   const esClient = appContextService.getInternalUserESClient();
 
+  // Phase 1: Cleanup expired verifier policies before creating new ones
   try {
-    // Phase 1: Cleanup expired verifier policies before creating new ones
     await cleanupExpiredVerifierPolicies(soClient, esClient);
+  } catch (error) {
+    logger.error(
+      `${VERIFY_PERMISSIONS_TASK} Failed to cleanup expired verifier policies: ${error.message}`
+    );
+  }
 
+  try {
     throwIfAborted(abortController);
 
     // Phase 2: Pre-filter package policies to build connector -> package policy IDs map
     const packagePolicyMap = await getPackagePolicyMap(soClient);
 
     if (packagePolicyMap.size === 0) {
-      logger.info(`${LOG_PREFIX} No connectors with installed packages found`);
-      logger.info(`${LOG_PREFIX} Task run completed`);
+      logger.info(`${VERIFY_PERMISSIONS_TASK} No connectors with installed packages found`);
+      logger.info(`${VERIFY_PERMISSIONS_TASK} Task run completed`);
       return;
     }
 
-    const connectorIds = [...packagePolicyMap.keys()];
+    const connectorIds = [...packagePolicyMap.keys()].filter((id) => id.length > 0);
+
+    if (connectorIds.length === 0) {
+      logger.info(`${VERIFY_PERMISSIONS_TASK} No valid connector IDs found after filtering`);
+      logger.info(`${VERIFY_PERMISSIONS_TASK} Task run completed`);
+      return;
+    }
+
     const SO_TYPE = CLOUD_CONNECTOR_SAVED_OBJECT_TYPE;
-    const idFilter = `(${SO_TYPE}.id:${connectorIds
-      .map((id) => `"${SO_TYPE}:${id}"`)
-      .join(' or ')})`;
+    const idFilter = connectorIds.map((id) => `${SO_TYPE}.id:"${SO_TYPE}:${id}"`).join(' or ');
 
     const connectorResults = await soClient.find<CloudConnectorSOAttributes>({
       type: CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
@@ -138,47 +153,46 @@ async function runPermissionVerifierTask(abortController: AbortController) {
     });
 
     const connectors = connectorResults.saved_objects;
-    logger.info(`${LOG_PREFIX} Found ${connectors.length} connectors with installed packages`);
+    logger.info(
+      `${VERIFY_PERMISSIONS_TASK} Found ${connectors.length} connectors with installed packages`
+    );
 
     throwIfAborted(abortController);
 
-    // Phase 3: Loop through connectors, verify the first eligible one (one at a time)
-    let verified = false;
+    // Phase 3: Loop through all eligible connectors and verify each one
     for (const connector of connectors) {
       throwIfAborted(abortController);
 
       if (!isConnectorEligible(connector.attributes)) {
-        logger.debug(`${LOG_PREFIX} Connector ${connector.id} is not eligible, skipping`);
+        logger.debug(
+          `${VERIFY_PERMISSIONS_TASK} Connector ${connector.id} is not eligible, skipping`
+        );
         continue;
       }
 
       logger.info(
-        `${LOG_PREFIX} Connector ${connector.id} is eligible (status: ${
-          connector.attributes.verification_status ?? 'unset'
+        `${VERIFY_PERMISSIONS_TASK} Connector ${connector.id} is eligible (status: ${
+          connector.attributes.verification_status ?? 'pending'
         })`
       );
 
       const packagePolicyIds = packagePolicyMap.get(connector.id) ?? [];
       try {
         await verifyConnector(soClient, esClient, connector, packagePolicyIds, abortController);
-        verified = true;
-        break;
       } catch (error) {
-        logger.error(`${LOG_PREFIX} Failed to verify connector ${connector.id}: ${error.message}`);
+        logger.error(
+          `${VERIFY_PERMISSIONS_TASK} Failed to verify connector ${connector.id}: ${error.message}`
+        );
       }
     }
 
-    if (!verified) {
-      logger.info(`${LOG_PREFIX} No eligible connectors found, skipping verification`);
-    }
-
-    logger.info(`${LOG_PREFIX} Task run completed`);
+    logger.info(`${VERIFY_PERMISSIONS_TASK} Task run completed`);
   } catch (error) {
     if (abortController.signal.aborted) {
-      logger.info(`${LOG_PREFIX} Task was aborted`);
+      logger.info(`${VERIFY_PERMISSIONS_TASK} Task was aborted`);
       return;
     }
-    logger.error(`${LOG_PREFIX} Task run failed: ${error.message}`);
+    logger.error(`${VERIFY_PERMISSIONS_TASK} Task run failed: ${error.message}`);
     throw error;
   }
 }
@@ -192,23 +206,28 @@ async function cleanupExpiredVerifierPolicies(
   esClient: ElasticsearchClient
 ) {
   const logger = appContextService.getLogger().get('otel-verifier');
+  const saveObjectType = await getAgentPolicySavedObjectType();
 
   try {
     const verifierPolicies = await agentPolicyService.list(soClient, {
-      kuery: 'ingest-agent-policies.is_verifier: true',
+      kuery: `${saveObjectType}.is_verifier: true`,
       perPage: 50,
       withAgentCount: true,
     });
 
     logger.info(
-      `${LOG_PREFIX} Found ${verifierPolicies.items.length} verifier policies for cleanup check`
+      `${VERIFY_PERMISSIONS_TASK} Found ${verifierPolicies.items.length} verifier policies for cleanup check`
     );
 
     for (const policy of verifierPolicies.items) {
-      let deployedAt: string | undefined;
+      const agentCount = policy.agents ?? 0;
+      const updatedAtMs = new Date(policy.updated_at).getTime();
+      const staleSinceMs = Date.now() - updatedAtMs;
 
-      if ((policy.agents ?? 0) > 0) {
-        logger.info(`${LOG_PREFIX} Getting agents for verifier policy ${policy.id}`);
+      const isOrphanPolicy = agentCount === 0 && staleSinceMs > VERIFICATION_TTL_MS;
+
+      let isExpiredByTTL = false;
+      if (agentCount > 0) {
         const policyKuery = `${AGENTS_PREFIX}.policy_id:"${policy.id}"`;
         const { agents } = await getAgentsByKuery(esClient, soClient, {
           kuery: policyKuery,
@@ -218,28 +237,34 @@ async function cleanupExpiredVerifierPolicies(
           sortOrder: 'asc',
           showInactive: true,
         });
-        deployedAt = agents[0]?.enrolled_at;
+        const deployedAt = agents[0]?.enrolled_at;
+        if (deployedAt) {
+          const timeElapsedMs = Date.now() - new Date(deployedAt).getTime();
+          isExpiredByTTL = timeElapsedMs > VERIFICATION_TTL_MS;
+        }
       }
 
-      if (!deployedAt) {
+      if (!isOrphanPolicy && !isExpiredByTTL) {
         continue;
       }
 
-      const timeElapsedMs = Date.now() - new Date(deployedAt).getTime();
-      if (timeElapsedMs > VERIFICATION_TTL_MS) {
-        try {
-          logger.info(`${LOG_PREFIX} TTL expired for verifier policy ${policy.id}, deleting`);
-          await agentPolicyService.deleteVerifierPolicy(soClient, esClient, policy.id);
-          logger.info(`${LOG_PREFIX} Deleted expired verifier policy ${policy.id}`);
-        } catch (err) {
-          logger.error(
-            `${LOG_PREFIX} Failed to delete expired verifier policy ${policy.id}: ${err.message}`
-          );
-        }
+      const reason = isOrphanPolicy ? 'orphan (0 agents, stale)' : 'TTL expired';
+      try {
+        logger.info(
+          `${VERIFY_PERMISSIONS_TASK} Deleting verifier policy ${policy.id} (reason: ${reason})`
+        );
+        await agentPolicyService.deleteVerifierPolicy(soClient, esClient, policy.id);
+        logger.info(`${VERIFY_PERMISSIONS_TASK} Deleted verifier policy ${policy.id}`);
+      } catch (err) {
+        logger.error(
+          `${VERIFY_PERMISSIONS_TASK} Failed to delete verifier policy ${policy.id}: ${err.message}`
+        );
       }
     }
   } catch (error) {
-    logger.error(`${LOG_PREFIX} Failed to cleanup verifier policies: ${error.message}`);
+    logger.error(
+      `${VERIFY_PERMISSIONS_TASK} Failed to cleanup verifier policies: ${error.message}`
+    );
   }
 }
 
@@ -254,12 +279,12 @@ async function getPackagePolicyMap(
   const packagePolicies = await soClient.find<{ cloud_connector_id?: string }>({
     type: PACKAGE_POLICY_SAVED_OBJECT_TYPE,
     filter: `${PACKAGE_POLICY_SAVED_OBJECT_TYPE}.attributes.cloud_connector_id: *`,
-    perPage: 1000,
+    perPage: 100,
   });
 
   const map = new Map<string, string[]>();
   for (const pp of packagePolicies.saved_objects) {
-    const connectorId = pp.attributes.cloud_connector_id;
+    const connectorId = pp.attributes.cloud_connector_id?.trim();
     if (!connectorId) continue;
     const existing = map.get(connectorId) ?? [];
     existing.push(pp.id);
@@ -313,6 +338,25 @@ function isConnectorEligible(attrs: CloudConnectorSOAttributes): boolean {
  * then creates a verifier policy using the pre-fetched package policy IDs.
  * On failure, marks the connector as failed with verification_failed_at.
  */
+async function updateConnectorStatus(
+  soClient: SavedObjectsClientContract,
+  connectorId: string,
+  attrs: Partial<CloudConnectorSOAttributes>
+): Promise<void> {
+  const logger = appContextService.getLogger().get('otel-verifier');
+  try {
+    await soClient.update<CloudConnectorSOAttributes>(
+      CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
+      connectorId,
+      attrs
+    );
+  } catch (err) {
+    logger.error(
+      `${VERIFY_PERMISSIONS_TASK} Failed to update connector ${connectorId} status: ${err.message}`
+    );
+  }
+}
+
 async function verifyConnector(
   soClient: SavedObjectsClientContract,
   esClient: ElasticsearchClient,
@@ -323,46 +367,32 @@ async function verifyConnector(
   const logger = appContextService.getLogger().get('otel-verifier');
 
   try {
-    // Create the verifier policy (triggers K8s deployment)
     logger.info(
-      `${LOG_PREFIX} Creating verifier policy for connector ${connector.id} with ${packagePolicyIds.length} package policies`
+      `${VERIFY_PERMISSIONS_TASK} Creating verifier policy for connector ${connector.id} with ${packagePolicyIds.length} package policies`
     );
-    const { policyId, startedAt } = await agentPolicyService.createVerifierPolicy(
+    const { policyId } = await agentPolicyService.createVerifierPolicy(
       soClient,
       esClient,
       connector.id,
       packagePolicyIds
     );
 
-    // Stamp verification_started_at to move connector to back of queue
-    await soClient.update<CloudConnectorSOAttributes>(
-      CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
-      connector.id,
-      { verification_started_at: startedAt }
-    );
-
-    throwIfAborted(abortController);
-
+    const startedAt = new Date().toISOString();
     logger.info(
-      `${LOG_PREFIX} Successfully created verifier policy ${policyId} for connector ${connector.id}`
+      `${VERIFY_PERMISSIONS_TASK} Verifier policy ${policyId} created for connector ${connector.id}`
     );
-  } catch (err) {
-    const failedAt = new Date().toISOString();
-    logger.error(`${LOG_PREFIX} Failed to verify connector ${connector.id}: ${err.message}`);
 
-    try {
-      await soClient.update<CloudConnectorSOAttributes>(
-        CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
-        connector.id,
-        {
-          verification_status: 'failed',
-          verification_failed_at: failedAt,
-        }
-      );
-    } catch (updateErr) {
-      logger.error(
-        `${LOG_PREFIX} Failed to update connector ${connector.id} status after error: ${updateErr.message}`
-      );
-    }
+    await updateConnectorStatus(soClient, connector.id, {
+      verification_started_at: startedAt,
+      verification_status: 'pending',
+    });
+  } catch (err) {
+    logger.error(
+      `${VERIFY_PERMISSIONS_TASK} Failed to verify connector ${connector.id}: ${err.message}`
+    );
+    await updateConnectorStatus(soClient, connector.id, {
+      verification_status: 'failed',
+      verification_failed_at: new Date().toISOString(),
+    });
   }
 }

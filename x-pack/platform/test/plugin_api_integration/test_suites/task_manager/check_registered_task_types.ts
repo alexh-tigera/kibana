@@ -194,6 +194,8 @@ export default function ({ getService }: FtrProviderContext) {
         'fleet:deploy_agent_policies',
         'fleet:migrate_action:retry',
         'fleet:packages-bulk-operations',
+        'fleet:otel_verifier_logs_status_change',
+        'fleet:verify_permissions',
         'fleet:policy-revisions-cleanup-task',
         'fleet:privilege_level_change:retry',
         'fleet:reassign_action:retry',

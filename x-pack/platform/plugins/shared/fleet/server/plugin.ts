@@ -162,13 +162,13 @@ import {
   scheduleAgentlessDeploymentSyncTask,
 } from './tasks/agentless/deployment_sync_task';
 import {
-  registerPermissionVerifierTask,
-  schedulePermissionVerifierTask,
-} from './tasks/agentless/permission_verifier_task';
+  registerVerifyPermissionsTask,
+  scheduleVerifyPermissionsTask,
+} from './tasks/agentless/verify_permissions_task';
 import {
-  registerPermissionStatusUpdateTask,
-  schedulePermissionStatusUpdateTask,
-} from './tasks/agentless/permission_status_update_task';
+  registerOtelVerifierLogsStatusChangeTask,
+  scheduleOtelVerifierLogsStatusChangeTask,
+} from './tasks/agentless/otel_verifier_logs_status_change_task';
 import { registerReindexIntegrationKnowledgeTask } from './tasks/reindex_integration_knowledge_task';
 import {
   type AgentlessPoliciesService,
@@ -706,8 +706,8 @@ export class FleetPlugin
     registerPackagesBulkOperationTask(deps.taskManager);
     registerSetupTasks(deps.taskManager);
     registerAgentlessDeploymentSyncTask(deps.taskManager, this.configInitialValue);
-    registerPermissionVerifierTask(deps.taskManager);
-    registerPermissionStatusUpdateTask(deps.taskManager);
+    registerVerifyPermissionsTask(deps.taskManager);
+    registerOtelVerifierLogsStatusChangeTask(deps.taskManager);
     registerReindexIntegrationKnowledgeTask(deps.taskManager);
     registerReassignAgentsToVersionSpecificPoliciesTask(deps.taskManager);
 
@@ -874,8 +874,8 @@ export class FleetPlugin
       plugins.taskManager,
       this.configInitialValue as FleetConfigType
     ).catch(() => {});
-    schedulePermissionVerifierTask(plugins.taskManager).catch(() => {});
-    schedulePermissionStatusUpdateTask(plugins.taskManager).catch(() => {});
+    scheduleVerifyPermissionsTask(plugins.taskManager).catch(() => {});
+    scheduleOtelVerifierLogsStatusChangeTask(plugins.taskManager).catch(() => {});
     this.fleetPolicyRevisionsCleanupTask
       ?.start({ taskManager: plugins.taskManager })
       .catch(() => {});

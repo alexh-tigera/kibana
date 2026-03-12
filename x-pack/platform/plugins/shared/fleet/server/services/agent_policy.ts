@@ -70,12 +70,10 @@ import type {
   OutputsForAgentPolicy,
   PostAgentPolicyPostUpdateCallback,
 } from '../types';
-import type { CloudConnectorSOAttributes } from '../types/so_attributes';
 import {
   AGENTLESS_AGENT_POLICY_INACTIVITY_TIMEOUT,
   AGENT_POLICY_INDEX,
   agentPolicyStatuses,
-  CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
   FLEET_ELASTIC_AGENT_PACKAGE,
   UUID_V5_NAMESPACE,
   AGENT_POLICY_SAVED_OBJECT_TYPE,
@@ -114,6 +112,8 @@ import {
   hasVersionSuffix,
   removeVersionSuffixFromPolicyId,
 } from '../../common/services/version_specific_policies_utils';
+
+import { VERIFY_PERMISSIONS_TASK } from '../tasks/agentless/verify_permissions_task';
 
 import { appContextService } from '.';
 
@@ -1544,7 +1544,7 @@ class AgentPolicyService {
       });
       try {
         // Deleting agentless deployment
-        await agentlessAgentService.deleteAgentlessAgent(id);
+        // await agentlessAgentService.deleteAgentlessAgent(id);
         logger.debug(
           `[Agentless API] Successfully deleted agentless deployment for single agent policy id ${id}`
         );
@@ -1879,7 +1879,7 @@ class AgentPolicyService {
         continue;
       }
       try {
-        await agentlessAgentService.createAgentlessAgent(esClient, soClient, agentPolicy);
+        // await agentlessAgentService.createAgentlessAgent(esClient, soClient, agentPolicy);
         logger.debug(
           `[Agentless API] Successfully deployed agentless deployment for single agent policy id ${agentPolicy.id}`
         );
@@ -2514,15 +2514,11 @@ class AgentPolicyService {
     esClient: ElasticsearchClient,
     connectorId: string,
     packagePolicyIds: string[]
-  ): Promise<{ policyId: string; startedAt: string }> {
+  ): Promise<{ policyId: string }> {
     const logger = this.getLogger('createVerifierPolicy');
     const shortId = uuidv4().slice(0, 8);
     const policyName = `verifier-${connectorId}-${shortId}`;
     const policyId = uuidv4();
-
-    logger.info(
-      `[OTelVerifier] Creating verifier policy ${policyName} for connector ${connectorId}`
-    );
 
     const agentPolicy = await this.create(
       soClient,
@@ -2568,13 +2564,24 @@ class AgentPolicyService {
       ],
     };
 
-    logger.info(
-      `[OTelVerifier] Creating OTel package policy for verifier policy ${agentPolicy.id}`
-    );
-    await packagePolicyService.create(soClient, esClient, otelPackagePolicy, {
-      bumpRevision: false,
-      force: true,
-    });
+    try {
+      logger.info(
+        `${VERIFY_PERMISSIONS_TASK} Creating OTel package policy for verifier policy ${agentPolicy.id}`
+      );
+      await packagePolicyService.create(soClient, esClient, otelPackagePolicy, {
+        bumpRevision: false,
+        force: true,
+      });
+
+      logger.info(
+        `${VERIFY_PERMISSIONS_TASK} Successfully Created OTel package policy  ${otelPackagePolicy.id} for verifier policy ${agentPolicy.id}`
+      );
+    } catch (err) {
+      logger.error(
+        `${VERIFY_PERMISSIONS_TASK} Failed to create OTel package policy for verifier policy ${agentPolicy.id}: ${err}`
+      );
+      throw err;
+    }
 
     for (const ppId of packagePolicyIds) {
       const pp = await packagePolicyService.get(soClient, ppId);
@@ -2590,25 +2597,12 @@ class AgentPolicyService {
     }
 
     logger.info(`[OTelVerifier] Deploying verifier policy ${agentPolicy.id}`);
+
     await this.deployPolicy(soClient, agentPolicy.id, undefined, {
       throwOnAgentlessError: true,
     });
 
-    const startedAt = new Date().toISOString();
-
-    await soClient.update<CloudConnectorSOAttributes>(
-      CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
-      connectorId,
-      {
-        verification_started_at: startedAt,
-      }
-    );
-
-    logger.info(
-      `[OTelVerifier] Created deployment for verifier policy ${agentPolicy.id}, verification ${verificationId}`
-    );
-
-    return { policyId: agentPolicy.id, startedAt };
+    return { policyId: agentPolicy.id };
   }
 
   public async deleteVerifierPolicy(
@@ -2617,16 +2611,12 @@ class AgentPolicyService {
     policyId: string
   ): Promise<void> {
     const logger = this.getLogger('deleteVerifierPolicy');
-    logger.info(`[OTelVerifier] Deleting verifier policy ${policyId}`);
+    const packagePolicySavedObjectType = await getPackagePolicySavedObjectType();
 
-    try {
-      await agentlessAgentService.deleteAgentlessAgent(policyId);
-    } catch (err) {
-      logger.info(`[OTelVerifier] Failed to delete agentless deployment for ${policyId}: ${err}`);
-    }
+    logger.info(`${VERIFY_PERMISSIONS_TASK} Deleting verifier policy ${policyId}`);
 
     const allPolicies = await packagePolicyService.list(soClient, {
-      kuery: `ingest-package-policies.policy_ids: "${policyId}"`,
+      kuery: `${packagePolicySavedObjectType}.policy_ids: "${policyId}"`,
       perPage: 1000,
     });
 
@@ -2639,16 +2629,18 @@ class AgentPolicyService {
         });
       } catch (err) {
         logger.warn(
-          `[OTelVerifier] Failed to remove verifier policy from package policy ${pp.id}: ${err}`
+          `${VERIFY_PERMISSIONS_TASK} Failed to remove verifier policy from package policy ${pp.id}: ${err}`
         );
       }
     }
 
     try {
       await this.delete(soClient, esClient, policyId, { force: true });
-      logger.info(`[OTelVerifier] Deleted verifier policy ${policyId}`);
+      logger.info(`${VERIFY_PERMISSIONS_TASK} Deleted verifier policy ${policyId}`);
     } catch (err) {
-      logger.error(`[OTelVerifier] Failed to delete verifier agent policy ${policyId}: ${err}`);
+      logger.error(
+        `${VERIFY_PERMISSIONS_TASK} Failed to delete verifier agent policy ${policyId}: ${err}`
+      );
     }
   }
 }
