@@ -188,7 +188,7 @@ export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: 
         </div>
       ) : null}
       <EuiResizableContainer
-        css={styles.fullHeightPanel}
+        css={styles.resizeableContainer}
         direction={isVerticalLayout ? 'vertical' : 'horizontal'}
         onPanelWidthChange={(sizes) =>
           panelStorage.setPanelSize(sizes as { inputPanel: number; outputPanel: number })
