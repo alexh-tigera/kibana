@@ -204,31 +204,61 @@ export const MonacoEditor = ({
   useEffect(() => {
     if (!editorInstance) return;
     if (!value.cursorPosition) return;
-    const model = editorInstance.getModel();
-    if (!model) return;
+    let isCancelled = false;
+    let attempts = 0;
+    const maxAttempts = 5;
 
-    const maxLine = model.getLineCount();
-    const lineNumber = Math.min(Math.max(value.cursorPosition.lineNumber, 1), maxLine);
-    const maxColumn = model.getLineMaxColumn(lineNumber);
-    const column = Math.min(Math.max(value.cursorPosition.column, 1), maxColumn);
+    const applyCursorPosition = () => {
+      const model = editorInstance.getModel();
+      if (!model) return;
 
-    const clamped: EditorCursorPosition = { lineNumber, column };
-    if (
-      lastAppliedCursorRef.current?.lineNumber === clamped.lineNumber &&
-      lastAppliedCursorRef.current?.column === clamped.column
-    ) {
-      return;
-    }
+      const maxLine = model.getLineCount();
+      const lineNumber = Math.min(Math.max(value.cursorPosition!.lineNumber, 1), maxLine);
+      const maxColumn = model.getLineMaxColumn(lineNumber);
+      const column = Math.min(Math.max(value.cursorPosition!.column, 1), maxColumn);
 
-    const current = editorInstance.getPosition();
-    if (current?.lineNumber === clamped.lineNumber && current.column === clamped.column) {
+      const clamped: EditorCursorPosition = { lineNumber, column };
+      if (
+        lastAppliedCursorRef.current?.lineNumber === clamped.lineNumber &&
+        lastAppliedCursorRef.current?.column === clamped.column
+      ) {
+        return;
+      }
+
+      const current = editorInstance.getPosition();
+      if (current?.lineNumber === clamped.lineNumber && current.column === clamped.column) {
+        lastAppliedCursorRef.current = clamped;
+        return;
+      }
+
+      editorInstance.setPosition(clamped);
+      editorInstance.revealPositionInCenterIfOutsideViewport(clamped);
       lastAppliedCursorRef.current = clamped;
-      return;
-    }
+    };
 
-    editorInstance.setPosition(clamped);
-    editorInstance.revealPositionInCenterIfOutsideViewport(clamped);
-    lastAppliedCursorRef.current = clamped;
+    const tryApplyAfterModelUpdate = () => {
+      if (isCancelled) return;
+
+      const model = editorInstance.getModel();
+      if (!model) return;
+
+      attempts += 1;
+
+      // Wait until the controlled `value.text` has been applied to Monaco's model.
+      // This avoids clamping/restoring against the previous tab's content.
+      if (model.getValue() !== value.text && attempts < maxAttempts) {
+        window.requestAnimationFrame(tryApplyAfterModelUpdate);
+        return;
+      }
+
+      applyCursorPosition();
+    };
+
+    window.requestAnimationFrame(tryApplyAfterModelUpdate);
+
+    return () => {
+      isCancelled = true;
+    };
   }, [editorInstance, value.cursorPosition, value.text]);
 
   const editorWillUnmountCallback = useCallback(() => {
