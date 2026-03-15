@@ -15,6 +15,7 @@ import { i18n } from '@kbn/i18n';
 import { useEffect, useRef } from 'react';
 import { DEFAULT_INPUT_VALUE } from '../../../../../common/constants';
 import { useEditorActionContext } from '../../../contexts';
+import type { InputEditorValue } from '../types';
 
 const httpsProtocol = 'https:';
 const elasticHostname = 'www.elastic.co';
@@ -27,7 +28,7 @@ interface SetInitialValueParams {
   /** The text value that is initially in the console editor. */
   localStorageValue?: string;
   /** The function that sets the state of the value in the console editor. */
-  setValue: (value: string) => void;
+  setValue: (value: InputEditorValue) => void;
   /** The toasts service. */
   toasts: IToasts;
 }
@@ -123,7 +124,7 @@ export const useSetInitialValue = (params: SetInitialValueParams) => {
     // Only set the value in the editor if an initial value hasn't been set yet
     if (!isInitialValueSet.current) {
       // Only set to default input value if the localstorage value is undefined
-      setValue(localStorageValue ?? DEFAULT_INPUT_VALUE);
+      setValue({ text: localStorageValue ?? DEFAULT_INPUT_VALUE });
       loadFromUrl();
       isInitialValueSet.current = true;
     }

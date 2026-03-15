@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { useCallback, memo, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, memo, useEffect, useState, useMemo, useRef } from 'react';
 
 import { debounce } from 'lodash';
 import {
@@ -40,6 +40,7 @@ import { PanelStorage } from './panel_storage';
 import { DEBOUNCE_DELAY } from '../../const';
 import { editorI18n } from './editor_i18n';
 import { useResizerButtonStyles } from '../styles';
+import type { InputEditorValue } from './types';
 
 const PANEL_MIN_SIZE = '20%';
 
@@ -85,9 +86,24 @@ export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: 
   });
 
   const [editorValueByTab, setEditorValueByTab] = useState<
-    Record<string, { inputValue: string; outputValue: string }>
-  >({});
-  const [internalInputEditorValue, setInternalInputEditorValue] = useState<string>('');
+    Record<string, { inputValue: InputEditorValue; outputValue: string }>
+  >(() => ({
+    '1': { inputValue: { text: inputEditorValue }, outputValue: '' },
+  }));
+  const [internalInputEditorValue, setInternalInputEditorValue] = useState<InputEditorValue>(
+    () => ({
+      text: inputEditorValue,
+    })
+  );
+
+  // Refs to avoid races between keystrokes and tab switching.
+  const editorValueByTabRef = useRef(editorValueByTab);
+  const internalInputEditorValueRef = useRef(internalInputEditorValue);
+  const managedSelectedItemIdRef = useRef(managedSelectedItemId);
+
+  editorValueByTabRef.current = editorValueByTab;
+  internalInputEditorValueRef.current = internalInputEditorValue;
+  managedSelectedItemIdRef.current = managedSelectedItemId;
 
   // used for showing a loading state when fetching autocomplete entities
   const [fetchingAutocompleteEntities, setFetchingAutocompleteEntities] = useState(false);
@@ -118,39 +134,43 @@ export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: 
   // Always keep the localstorage value in sync with the value in the editor
   // to avoid losing the text object when the user navigates away from the shell
   useEffect(() => {
-    debouncedUpdateLocalStorageValue(inputEditorValue);
-  }, [debouncedUpdateLocalStorageValue, inputEditorValue]);
+    debouncedUpdateLocalStorageValue(internalInputEditorValue.text);
+  }, [debouncedUpdateLocalStorageValue, internalInputEditorValue.text]);
 
   const updateInputEditorValue = useCallback(
-    (nextValue: string) => {
+    (nextValue: InputEditorValue) => {
+      const selectedId = managedSelectedItemIdRef.current;
+      if (!selectedId) return;
+
+      internalInputEditorValueRef.current = nextValue;
       setEditorValueByTab((prev) => ({
         ...prev,
-        [managedSelectedItemId!]: {
+        [selectedId]: {
           inputValue: nextValue,
-          outputValue: prev[managedSelectedItemId!]?.outputValue || '',
+          outputValue: prev[selectedId]?.outputValue || '',
         },
       }));
       setInternalInputEditorValue(nextValue);
     },
-    [managedSelectedItemId, setEditorValueByTab, setInternalInputEditorValue]
+    [setEditorValueByTab, setInternalInputEditorValue]
   );
 
-  const updateOutputEditorValue = useCallback(
-    (nextValue: string) => {
-      if (!managedSelectedItemId) {
-        return;
-      }
+  useEffect(() => {
+    setInputEditorValue(internalInputEditorValue.text);
+  }, [internalInputEditorValue.text, setInputEditorValue]);
 
-      setEditorValueByTab((prev) => ({
-        ...prev,
-        [managedSelectedItemId]: {
-          inputValue: prev[managedSelectedItemId]?.inputValue || '',
-          outputValue: nextValue,
-        },
-      }));
-    },
-    [managedSelectedItemId]
-  );
+  const updateOutputEditorValue = useCallback((nextValue: string) => {
+    const selectedId = managedSelectedItemIdRef.current;
+    if (!selectedId) return;
+
+    setEditorValueByTab((prev) => ({
+      ...prev,
+      [selectedId]: {
+        inputValue: prev[selectedId]?.inputValue ?? { text: '' },
+        outputValue: nextValue,
+      },
+    }));
+  }, []);
 
   if (!currentTextObject) return null;
 
@@ -171,14 +191,63 @@ export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: 
         onClearRecentlyClosed={() => {}}
         onEBTEvent={() => {}}
         onChanged={(nextState) => {
+          const nextSelectedTabId = nextState.selectedItem?.id;
+
+          const nextTabIds = new Set(nextState.items.map((item) => item.id));
+
+          const nextEditorValueByTab: Record<
+            string,
+            { inputValue: InputEditorValue; outputValue: string }
+          > = {};
+
+          const prevEditorValueByTab = editorValueByTabRef.current;
+          const prevSelectedTabId = managedSelectedItemIdRef.current;
+          const prevInternalValue = internalInputEditorValueRef.current;
+
+          // Carry over only tabs that still exist
+          for (const tabId of Object.keys(prevEditorValueByTab)) {
+            if (!nextTabIds.has(tabId)) continue;
+            nextEditorValueByTab[tabId] = prevEditorValueByTab[tabId];
+          }
+
+          // Persist the latest state of the previously selected tab (in case tab switching happens
+          // before a React state update flushes).
+          if (prevSelectedTabId && nextTabIds.has(prevSelectedTabId)) {
+            nextEditorValueByTab[prevSelectedTabId] = {
+              inputValue: prevInternalValue,
+              outputValue: nextEditorValueByTab[prevSelectedTabId]?.outputValue ?? '',
+            };
+          }
+
+          // Initialize state for newly created tabs.
+          for (const tabId of nextTabIds) {
+            if (!nextEditorValueByTab[tabId]) {
+              nextEditorValueByTab[tabId] = {
+                inputValue: { text: '' },
+                outputValue: '',
+              };
+            }
+          }
+
           setState({
             managedItems: nextState.items,
-            managedSelectedItemId: nextState.selectedItem?.id,
+            managedSelectedItemId: nextSelectedTabId,
           });
-          // updateInputEditorValue(editorValueByTab[nextState.selectedItem?.id!] || '');
-          setInternalInputEditorValue(
-            editorValueByTab[nextState.selectedItem?.id!]?.inputValue || ''
-          );
+
+          setEditorValueByTab(nextEditorValueByTab);
+          editorValueByTabRef.current = nextEditorValueByTab;
+          managedSelectedItemIdRef.current = nextSelectedTabId;
+
+          if (nextSelectedTabId) {
+            const nextValue = nextEditorValueByTab[nextSelectedTabId]?.inputValue ?? {
+              text: '',
+            };
+            internalInputEditorValueRef.current = nextValue;
+            setInternalInputEditorValue(nextValue);
+          } else {
+            internalInputEditorValueRef.current = { text: '' };
+            setInternalInputEditorValue({ text: '' });
+          }
         }}
         data-test-subj="consoleEditorTabs"
       />
@@ -235,7 +304,7 @@ export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: 
                       color="primary"
                       data-test-subj="clearConsoleInput"
                       onClick={() => {
-                        setInputEditorValue('');
+                        updateInputEditorValue({ text: '' });
                       }}
                     >
                       {editorI18n.clearConsoleInputButton}

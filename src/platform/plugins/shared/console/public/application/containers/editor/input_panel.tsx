@@ -14,11 +14,12 @@ import { MonacoEditor } from './monaco_editor';
 import { useEditorReadContext } from '../../contexts';
 import { getAutocompleteInfo } from '../../../services';
 import { DEBOUNCE_DELAY } from '../../const';
+import type { InputEditorValue } from './types';
 
 interface Props {
   loading: boolean;
-  inputEditorValue: string;
-  setInputEditorValue: (value: string) => void;
+  inputEditorValue: InputEditorValue;
+  setInputEditorValue: (value: InputEditorValue) => void;
   setFetchingAutocompleteEntities: (value: boolean) => void;
 }
 

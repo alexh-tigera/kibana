@@ -9,6 +9,16 @@
 
 import type { ParsedRequest } from '@kbn/monaco';
 
+export interface EditorCursorPosition {
+  lineNumber: number;
+  column: number;
+}
+
+export interface InputEditorValue {
+  text: string;
+  cursorPosition?: EditorCursorPosition;
+}
+
 export interface EditorRequest {
   method: string;
   url: string;

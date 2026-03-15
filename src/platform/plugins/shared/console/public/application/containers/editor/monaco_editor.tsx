@@ -19,7 +19,7 @@ import { CONSOLE_LANG_ID, CONSOLE_THEME_ID, ConsoleLang } from '@kbn/monaco';
 import { i18n } from '@kbn/i18n';
 import { getESQLSources, getEsqlColumns } from '@kbn/esql-utils';
 import { MonacoEditorActionsProvider } from './monaco_editor_actions_provider';
-import type { EditorRequest } from './types';
+import type { EditorCursorPosition, EditorRequest, InputEditorValue } from './types';
 import {
   useSetInitialValue,
   useSetupAutocompletePolling,
@@ -55,8 +55,8 @@ const useStyles = () => {
 
 export interface EditorProps {
   localStorageValue: string | undefined;
-  value: string;
-  setValue: (value: string) => void;
+  value: InputEditorValue;
+  setValue: (value: InputEditorValue) => void;
   customParsedRequestsProvider?: (model: any) => any;
   enableAutosave?: boolean;
 }
@@ -102,6 +102,13 @@ export const MonacoEditor = ({
   const setInputEditor = useSetInputEditor();
   const styles = useStyles();
   const highlightedLinesClassName = useHighlightedLinesClassName();
+  const latestValueRef = useRef<InputEditorValue>(value);
+  const lastAppliedCursorRef = useRef<EditorCursorPosition | undefined>(undefined);
+
+  // Keep this ref in sync during render to avoid races where the CodeEditor
+  // emits onChange due to a controlled value update (e.g. tab switch) before
+  // an effect can update the ref.
+  latestValueRef.current = value;
 
   const getRequestsCallback = useCallback(async (): Promise<EditorRequest[]> => {
     const requests = await actionsProvider.current?.getRequests();
@@ -175,6 +182,55 @@ export const MonacoEditor = ({
     context,
   ]);
 
+  useEffect(() => {
+    if (!editorInstance) return;
+    const subscription = editorInstance.onDidChangeCursorPosition((event) => {
+      const { lineNumber, column } = event.position;
+      const nextCursorPosition: EditorCursorPosition = { lineNumber, column };
+      const current = latestValueRef.current;
+      if (
+        current.cursorPosition?.lineNumber === nextCursorPosition.lineNumber &&
+        current.cursorPosition?.column === nextCursorPosition.column
+      ) {
+        return;
+      }
+      setValue({ ...current, cursorPosition: nextCursorPosition });
+    });
+    return () => {
+      subscription.dispose();
+    };
+  }, [editorInstance, setValue]);
+
+  useEffect(() => {
+    if (!editorInstance) return;
+    if (!value.cursorPosition) return;
+    const model = editorInstance.getModel();
+    if (!model) return;
+
+    const maxLine = model.getLineCount();
+    const lineNumber = Math.min(Math.max(value.cursorPosition.lineNumber, 1), maxLine);
+    const maxColumn = model.getLineMaxColumn(lineNumber);
+    const column = Math.min(Math.max(value.cursorPosition.column, 1), maxColumn);
+
+    const clamped: EditorCursorPosition = { lineNumber, column };
+    if (
+      lastAppliedCursorRef.current?.lineNumber === clamped.lineNumber &&
+      lastAppliedCursorRef.current?.column === clamped.column
+    ) {
+      return;
+    }
+
+    const current = editorInstance.getPosition();
+    if (current?.lineNumber === clamped.lineNumber && current.column === clamped.column) {
+      lastAppliedCursorRef.current = clamped;
+      return;
+    }
+
+    editorInstance.setPosition(clamped);
+    editorInstance.revealPositionInCenterIfOutsideViewport(clamped);
+    lastAppliedCursorRef.current = clamped;
+  }, [editorInstance, value.cursorPosition, value.text]);
+
   const editorWillUnmountCallback = useCallback(() => {
     destroyResizeChecker();
     unregisterKeyboardCommands();
@@ -206,7 +262,7 @@ export const MonacoEditor = ({
 
   useSetupAutocompletePolling({ autocompleteInfo, settingsService });
 
-  useSetupAutosave({ value, enabled: enableAutosave });
+  useSetupAutosave({ value: value.text, enabled: enableAutosave });
 
   // Restore the request from history if there is one
   const updateEditor = useCallback(async () => {
@@ -278,8 +334,11 @@ export const MonacoEditor = ({
       <CodeEditor
         dataTestSubj={'consoleMonacoEditor'}
         languageId={CONSOLE_LANG_ID}
-        value={value}
-        onChange={setValue}
+        value={value.text}
+        onChange={(nextText) => {
+          if (value.text === nextText) return;
+          setValue({ ...latestValueRef.current, text: nextText });
+        }}
         fullWidth={true}
         accessibilityOverlayEnabled={settings.isAccessibilityOverlayEnabled}
         editorDidMount={editorDidMountCallback}

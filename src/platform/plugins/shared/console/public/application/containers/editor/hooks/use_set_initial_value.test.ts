@@ -52,7 +52,7 @@ describe('useSetInitialValue', () => {
 
     // Verify initial value is set on first render
     expect(setValueMock).toHaveBeenCalledTimes(1);
-    expect(setValueMock).toHaveBeenCalledWith('initial value');
+    expect(setValueMock).toHaveBeenCalledWith({ text: 'initial value' });
 
     // Re-render the hook to simulate a component update
     rerender();
@@ -70,7 +70,7 @@ describe('useSetInitialValue', () => {
       })
     );
 
-    expect(setValueMock).toHaveBeenCalledWith('saved value');
+    expect(setValueMock).toHaveBeenCalledWith({ text: 'saved value' });
   });
 
   it('should set default value if localStorage is undefined and no load_from param is present', () => {
@@ -82,7 +82,7 @@ describe('useSetInitialValue', () => {
       })
     );
 
-    expect(setValueMock).toHaveBeenCalledWith(DEFAULT_INPUT_VALUE);
+    expect(setValueMock).toHaveBeenCalledWith({ text: DEFAULT_INPUT_VALUE });
   });
 
   it('should load data from load_from param if it is a valid Elastic URL', async () => {
@@ -124,7 +124,7 @@ describe('useSetInitialValue', () => {
     expect(fetchCall[0].href).toBe('https://www.elastic.co/docs/some-data');
 
     // The initial value should still be set
-    expect(setValueMock).toHaveBeenCalledWith('initial value');
+    expect(setValueMock).toHaveBeenCalledWith({ text: 'initial value' });
     // The dispatch should be called with the remote data
     expect(editorDispatchMock).toHaveBeenCalledWith({
       type: 'setRequestToRestore',
@@ -193,7 +193,7 @@ describe('useSetInitialValue', () => {
 
     expect(decompressFromEncodedURIComponent).toHaveBeenCalledWith('compressed-data');
     // The initial value should still be set
-    expect(setValueMock).toHaveBeenCalledWith('initial value');
+    expect(setValueMock).toHaveBeenCalledWith({ text: 'initial value' });
     // The dispatch should be called with the remote data
     expect(editorDispatchMock).toHaveBeenCalledWith({
       type: 'setRequestToRestore',
