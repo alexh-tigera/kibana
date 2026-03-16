@@ -219,7 +219,7 @@ export const configSchema = schema.object({
   }),
   ears: schema.maybe(
     schema.object({
-      url: schema.maybe(schema.string()),
+      url: schema.maybe(schema.uri({ scheme: ['https'] })),
     })
   ),
 });
