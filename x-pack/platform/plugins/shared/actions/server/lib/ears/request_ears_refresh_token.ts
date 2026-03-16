@@ -60,6 +60,6 @@ export async function requestEarsRefreshToken(
   } else {
     const errString = stableStringify(res.data);
     logger.debug(`error thrown refreshing the access token from EARS ${refreshUrl}: ${errString}`);
-    throw new Error(errString);
+    throw new Error('Failed to refresh token from auth redirect service');
   }
 }

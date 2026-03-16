@@ -61,6 +61,6 @@ export async function requestEarsToken(
   } else {
     const errString = stableStringify(res.data);
     logger.debug(`error thrown getting the access token from EARS ${tokenUrl}: ${errString}`);
-    throw new Error(errString);
+    throw new Error('Failed to request access token from auth redirect service');
   }
 }
