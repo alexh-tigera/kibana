@@ -60,7 +60,7 @@ export async function requestEarsToken(
     };
   } else {
     const errString = stableStringify(res.data);
-    logger.warn(`error thrown getting the access token from EARS ${tokenUrl}: ${errString}`);
+    logger.debug(`error thrown getting the access token from EARS ${tokenUrl}: ${errString}`);
     throw new Error(errString);
   }
 }

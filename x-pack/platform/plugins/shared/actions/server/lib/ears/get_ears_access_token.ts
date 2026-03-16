@@ -29,7 +29,7 @@ interface GetEarsAccessTokenOpts {
 }
 
 /**
- * Get an access token for EARS OAuth flow.
+ * Get an access token for EARS OAuth flow from storage.
  * Automatically refreshes expired tokens using the EARS refresh endpoint.
  *
  * Unlike the standard OAuth authorization code flow, EARS does not require

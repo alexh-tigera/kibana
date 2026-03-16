@@ -59,7 +59,7 @@ export async function requestEarsRefreshToken(
     };
   } else {
     const errString = stableStringify(res.data);
-    logger.warn(`error thrown refreshing the access token from EARS ${refreshUrl}: ${errString}`);
+    logger.debug(`error thrown refreshing the access token from EARS ${refreshUrl}: ${errString}`);
     throw new Error(errString);
   }
 }
