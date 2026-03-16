@@ -38,6 +38,7 @@ export class DefaultStrategy implements AxiosAuthStrategy {
         secrets: { clientSecret: oauthOpts.clientSecret },
       },
       connectorTokenClient,
+      tokenEndpointAuthMethod: oauthOpts.tokenEndpointAuthMethod,
     });
   }
 }
