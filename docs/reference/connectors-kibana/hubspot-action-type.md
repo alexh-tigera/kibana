@@ -21,7 +21,7 @@ You can create connectors in **{{stack-manage-app}} > {{connectors-ui}}**. For e
 HubSpot connectors have the following configuration properties:
 
 **Private App Access Token**
-:   The HubSpot private app access token (starts with `pat-`) used for authentication. You can obtain this by creating a private app in your HubSpot account settings.
+:   The HubSpot access token used for authentication. Use a **Service Key** (recommended) from HubSpot Development, or a **Private App** access token (starts with `pat-`) from the legacy app integration flow. See [Get API credentials](#hubspot-api-credentials) for both options.
 
 ## Test connectors [hubspot-action-configuration]
 
@@ -69,20 +69,46 @@ Use the [Action configuration settings](/reference/configuration-reference/alert
 
 ## Get API credentials [hubspot-api-credentials]
 
-To use the HubSpot connector, you need to create a private app and obtain its access token:
+You can authenticate the connector with either a **Service Key** (recommended) or a **Private App** access token. Use a Service Key when possible; creating a Private App is the legacy method and may not be available in all HubSpot accounts.
+
+### Service Key (recommended) [hubspot-service-key]
+
+Service Keys are managed under **Development** in HubSpot and can call the same CRM APIs with the scopes you assign.
+
+1. Log in to your [HubSpot account](https://app.hubspot.com/).
+2. In the main navigation, go to **Development**, then **Keys** (or **Settings → Development → Keys**).
+3. Create a new key or select an existing one, and choose **Service Key** (or the equivalent key type that supports CRM scopes).
+4. Under **Scopes**, grant at least the following (minimum for connector actions such as Search CRM Objects, Get CRM Object, List Owners, Search Deals, List Pipelines):
+   - `crm.objects.contacts.read`
+   - `crm.objects.companies.read`
+   - `crm.objects.deals.read`
+   - `crm.objects.tickets.read`
+   - `crm.objects.owners.read`
+5. If you use **List Pipelines**, also add (if available):
+   - `crm.schemas.companies.read`
+   - `crm.schemas.contacts.read`
+   - `crm.schemas.deals.read`
+6. Save the key and copy the generated token (it may start with `pat-` or another prefix).
+7. Use this value as the **Private App Access Token** when configuring the HubSpot connector in {{kib}}.
+
+:::
+
+### Private App (legacy) [hubspot-private-app-legacy]
+
+Creating a Private App (app integration) is the **legacy** way to obtain a token. Use this option if you need **Search Engagements** (notes, calls, emails, meetings, tasks), or if Service Keys are not available for your account. HubSpot may restrict or remove the ability to create new Private Apps in some accounts.
 
 1. Log in to your [HubSpot account](https://app.hubspot.com/).
 2. Select the **Settings** icon in the top navigation bar.
 3. In the left sidebar, select **Integrations → Private Apps**.
 4. Select **Create a private app**.
 5. On the **Basic Info** tab, give your app a name (for example, "Elastic Workplace AI").
-6. Go to the **Scopes** tab and add the following scopes:
+6. Go to the **Scopes** tab and add at least:
    - `crm.objects.contacts.read`
    - `crm.objects.companies.read`
    - `crm.objects.deals.read`
    - `crm.objects.tickets.read`
    - `crm.objects.owners.read`
-   - `sales-email-read` (for email engagements)
+   For **Search Engagements**, also add scopes such as `sales-email-read` (emails) and any engagement read scopes your account offers for notes, calls, and meetings.
 7. Select **Create app** and confirm by selecting **Continue Creating**.
 8. On the confirmation dialog, copy the **Access Token** (starts with `pat-`).
 9. Use this token as the **Private App Access Token** when configuring the connector in {{kib}}.
