@@ -18,6 +18,7 @@ import type { InputEditorValue } from './types';
 
 interface Props {
   loading: boolean;
+  activeTabId?: string;
   inputEditorValue: InputEditorValue;
   setInputEditorValue: (value: InputEditorValue) => void;
   setFetchingAutocompleteEntities: (value: boolean) => void;
@@ -25,6 +26,7 @@ interface Props {
 
 export const InputPanel = ({
   loading,
+  activeTabId,
   inputEditorValue,
   setInputEditorValue,
   setFetchingAutocompleteEntities,
@@ -55,6 +57,7 @@ export const InputPanel = ({
       ) : (
         <MonacoEditor
           localStorageValue={currentTextObject.text}
+          activeTabId={activeTabId}
           value={inputEditorValue}
           setValue={setInputEditorValue}
           customParsedRequestsProvider={customParsedRequestsProvider}

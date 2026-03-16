@@ -286,6 +286,7 @@ export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: 
                 >
                   <InputPanel
                     loading={loading}
+                    activeTabId={managedSelectedItemId}
                     inputEditorValue={internalInputEditorValue}
                     setInputEditorValue={updateInputEditorValue}
                     setFetchingAutocompleteEntities={setFetchingAutocompleteEntities}

@@ -363,8 +363,6 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
               loading={!done}
               inputEditorValue={inputEditorValue}
               setInputEditorValue={(val) => {
-                console.log(editorRegistry.getEditor()?.getScrollTop());
-                editorRegistry.getEditor()?.setScrollTop(62);
                 setInputEditorValue(val);
               }}
             />
