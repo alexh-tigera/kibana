@@ -7,6 +7,7 @@
 import { EARS_PROVIDERS } from '@kbn/connector-specs';
 
 const SUPPORTED_EARS_PROVIDERS = new Set<string>(EARS_PROVIDERS);
+const EARS_API_VERSION = 'v1';
 
 export function resolveEarsUrl(urlPath: string, earsBaseUrl: string | undefined): string {
   if (!earsBaseUrl) {
@@ -34,8 +35,8 @@ export function getEarsEndpointsForProvider(provider: string | undefined): EarsE
   }
 
   return {
-    authorizeEndpoint: `${provider}/oauth/authorize`,
-    tokenEndpoint: `${provider}/oauth/token`,
-    refreshEndpoint: `${provider}/oauth/refresh`,
+    authorizeEndpoint: `${EARS_API_VERSION}/${provider}/oauth/authorize`,
+    tokenEndpoint: `${EARS_API_VERSION}/${provider}/oauth/token`,
+    refreshEndpoint: `${EARS_API_VERSION}/${provider}/oauth/refresh`,
   };
 }
