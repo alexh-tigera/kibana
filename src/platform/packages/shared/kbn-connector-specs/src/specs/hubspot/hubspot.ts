@@ -10,6 +10,24 @@
 import { i18n } from '@kbn/i18n';
 import { z } from '@kbn/zod/v4';
 import type { ConnectorSpec } from '../../connector_spec';
+import {
+  SearchCrmObjectsInputSchema,
+  GetCrmObjectInputSchema,
+  SearchEngagementsInputSchema,
+  ListOwnersInputSchema,
+  SearchDealsInputSchema,
+  SearchBroadInputSchema,
+  ListPipelinesInputSchema,
+} from './types';
+import type {
+  SearchCrmObjectsInput,
+  GetCrmObjectInput,
+  SearchEngagementsInput,
+  ListOwnersInput,
+  SearchDealsInput,
+  SearchBroadInput,
+  ListPipelinesInput,
+} from './types';
 
 const HUBSPOT_API_BASE = 'https://api.hubapi.com';
 
@@ -56,80 +74,76 @@ export const HubSpotConnector: ConnectorSpec = {
   actions: {
     searchCrmObjects: {
       isTool: false,
-      input: z.object({
-        objectType: z.enum(['contacts', 'companies', 'deals', 'tickets']),
-        query: z.string().optional(),
-        properties: z.array(z.string()).optional(),
-        limit: z.number().optional(),
-        after: z.string().optional(),
-      }),
-      handler: async (ctx, input) => {
-        const typedInput = input as {
-          objectType: 'contacts' | 'companies' | 'deals' | 'tickets';
-          query?: string;
-          properties?: string[];
-          limit?: number;
-          after?: string;
-        };
+      input: SearchCrmObjectsInputSchema,
+      handler: async (ctx, input: SearchCrmObjectsInput) => {
+        let contacts: Array<{ id: string; properties: Record<string, unknown> }> | undefined;
 
-        if (typedInput.query) {
+        if (input.query) {
           // Use the CRM search API when a query is provided
           const body: Record<string, unknown> = {
-            query: typedInput.query,
-            limit: typedInput.limit ?? 10,
+            query: input.query,
+            limit: input.limit ?? 10,
           };
-          if (typedInput.properties && typedInput.properties.length > 0) {
-            body.properties = typedInput.properties;
+          if (input.properties && input.properties.length > 0) {
+            body.properties = input.properties;
           }
-          if (typedInput.after) {
-            body.after = typedInput.after;
+          if (input.after) {
+            body.after = input.after;
           }
           const response = await ctx.client.post(
-            `${HUBSPOT_API_BASE}/crm/v3/objects/${typedInput.objectType}/search`,
+            `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}/search`,
             body
           );
-          return response.data;
+          if (input.objectType === 'contacts' && input.includeAssociatedDeals) {
+            contacts = response.data?.results ?? [];
+          } else {
+            return response.data;
+          }
         } else {
           // Use the list API when no query is provided
           const params: Record<string, unknown> = {
-            limit: typedInput.limit ?? 10,
+            limit: input.limit ?? 10,
           };
-          if (typedInput.properties && typedInput.properties.length > 0) {
-            params.properties = typedInput.properties.join(',');
+          if (input.properties && input.properties.length > 0) {
+            params.properties = input.properties.join(',');
           }
-          if (typedInput.after) {
-            params.after = typedInput.after;
+          if (input.after) {
+            params.after = input.after;
           }
           const response = await ctx.client.get(
-            `${HUBSPOT_API_BASE}/crm/v3/objects/${typedInput.objectType}`,
+            `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}`,
             { params }
           );
-          return response.data;
+          if (input.objectType === 'contacts' && input.includeAssociatedDeals) {
+            contacts = response.data?.results ?? [];
+          } else {
+            return response.data;
+          }
         }
+
+        // Fetch associated deals for matched contacts
+        if (!contacts || contacts.length === 0) {
+          return { contacts: [], associated_deals: [] };
+        }
+        const assocResponse = await ctx.client.post(
+          `${HUBSPOT_API_BASE}/crm/v3/associations/contacts/deals/batch/read`,
+          { inputs: contacts.map(({ id }) => ({ id })) }
+        );
+        return { contacts, associated_deals: assocResponse.data?.results ?? [] };
       },
     },
 
     getCrmObject: {
       isTool: false,
-      input: z.object({
-        objectType: z.enum(['contacts', 'companies', 'deals', 'tickets']),
-        objectId: z.string(),
-        properties: z.string().optional(),
-      }),
-      handler: async (ctx, input) => {
-        const typedInput = input as {
-          objectType: 'contacts' | 'companies' | 'deals' | 'tickets';
-          objectId: string;
-          properties?: string;
-        };
-
+      input: GetCrmObjectInputSchema,
+      handler: async (ctx, input: GetCrmObjectInput) => {
         const params: Record<string, unknown> = {};
-        if (typedInput.properties && typedInput.properties.length > 0) {
-          params.properties = typedInput.properties;
+        if (input.properties) {
+          params.properties = input.properties;
         }
 
         const response = await ctx.client.get(
-          `${HUBSPOT_API_BASE}/crm/v3/objects/${typedInput.objectType}/${typedInput.objectId}`,
+          `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}/${input.objectId}`,
           { params }
         );
         return response.data;
@@ -138,31 +152,17 @@ export const HubSpotConnector: ConnectorSpec = {
 
     searchEngagements: {
       isTool: false,
-      input: z.object({
-        query: z.string().optional(),
-        engagementType: z
-          .enum(['calls', 'emails', 'meetings', 'notes', 'tasks'])
-          .optional(),
-        limit: z.number().optional(),
-        after: z.string().optional(),
-      }),
-      handler: async (ctx, input) => {
-        const typedInput = input as {
-          query?: string;
-          engagementType?: 'calls' | 'emails' | 'meetings' | 'notes' | 'tasks';
-          limit?: number;
-          after?: string;
-        };
+      input: SearchEngagementsInputSchema,
+      handler: async (ctx, input: SearchEngagementsInput) => {
+        const objectType = input.engagementType ?? 'notes';
 
-        const objectType = typedInput.engagementType ?? 'notes';
-
-        if (typedInput.query) {
+        if (input.query) {
           const body: Record<string, unknown> = {
-            query: typedInput.query,
-            limit: typedInput.limit ?? 10,
+            query: input.query,
+            limit: input.limit ?? 10,
           };
-          if (typedInput.after) {
-            body.after = typedInput.after;
+          if (input.after) {
+            body.after = input.after;
           }
           const response = await ctx.client.post(
             `${HUBSPOT_API_BASE}/crm/v3/objects/${objectType}/search`,
@@ -171,10 +171,10 @@ export const HubSpotConnector: ConnectorSpec = {
           return response.data;
         } else {
           const params: Record<string, unknown> = {
-            limit: typedInput.limit ?? 10,
+            limit: input.limit ?? 10,
           };
-          if (typedInput.after) {
-            params.after = typedInput.after;
+          if (input.after) {
+            params.after = input.after;
           }
           const response = await ctx.client.get(
             `${HUBSPOT_API_BASE}/crm/v3/objects/${objectType}`,
@@ -187,21 +187,13 @@ export const HubSpotConnector: ConnectorSpec = {
 
     listOwners: {
       isTool: false,
-      input: z.object({
-        limit: z.number().optional(),
-        after: z.string().optional(),
-      }),
-      handler: async (ctx, input) => {
-        const typedInput = input as {
-          limit?: number;
-          after?: string;
-        };
-
+      input: ListOwnersInputSchema,
+      handler: async (ctx, input: ListOwnersInput) => {
         const params: Record<string, unknown> = {
-          limit: typedInput.limit ?? 20,
+          limit: input.limit ?? 20,
         };
-        if (typedInput.after) {
-          params.after = typedInput.after;
+        if (input.after) {
+          params.after = input.after;
         }
 
         const response = await ctx.client.get(`${HUBSPOT_API_BASE}/crm/v3/owners`, { params });
@@ -211,50 +203,32 @@ export const HubSpotConnector: ConnectorSpec = {
 
     searchDeals: {
       isTool: false,
-      input: z.object({
-        query: z.string().optional(),
-        pipeline: z.string().optional(),
-        dealStage: z.string().optional(),
-        ownerId: z.string().optional(),
-        limit: z.number().optional(),
-        after: z.string().optional(),
-      }),
-      handler: async (ctx, input) => {
-        const typedInput = input as {
-          query?: string;
-          pipeline?: string;
-          dealStage?: string;
-          ownerId?: string;
-          limit?: number;
-          after?: string;
-        };
-
+      input: SearchDealsInputSchema,
+      handler: async (ctx, input: SearchDealsInput) => {
         const body: Record<string, unknown> = {
-          limit: typedInput.limit ?? 10,
+          limit: input.limit ?? 10,
         };
 
-        if (typedInput.query) {
-          body.query = typedInput.query;
+        if (input.query) {
+          body.query = input.query;
         }
 
-        const filterGroups: Array<{ filters: Array<Record<string, string>> }> = [];
         const filters: Array<Record<string, string>> = [];
-        if (typedInput.pipeline) {
-          filters.push({ propertyName: 'pipeline', operator: 'EQ', value: typedInput.pipeline });
+        if (input.pipeline) {
+          filters.push({ propertyName: 'pipeline', operator: 'EQ', value: input.pipeline });
         }
-        if (typedInput.dealStage) {
-          filters.push({ propertyName: 'dealstage', operator: 'EQ', value: typedInput.dealStage });
+        if (input.dealStage) {
+          filters.push({ propertyName: 'dealstage', operator: 'EQ', value: input.dealStage });
         }
-        if (typedInput.ownerId) {
-          filters.push({ propertyName: 'hubspot_owner_id', operator: 'EQ', value: typedInput.ownerId });
+        if (input.ownerId) {
+          filters.push({ propertyName: 'hubspot_owner_id', operator: 'EQ', value: input.ownerId });
         }
         if (filters.length > 0) {
-          filterGroups.push({ filters });
-          body.filterGroups = filterGroups;
+          body.filterGroups = [{ filters }];
         }
 
-        if (typedInput.after) {
-          body.after = typedInput.after;
+        if (input.after) {
+          body.after = input.after;
         }
 
         const response = await ctx.client.post(
@@ -265,91 +239,55 @@ export const HubSpotConnector: ConnectorSpec = {
       },
     },
 
-    searchAll: {
+    searchBroad: {
       isTool: false,
-      input: z.object({
-        query: z.string(),
-        limit: z.number().optional(),
-      }),
-      handler: async (ctx, input) => {
-        const typedInput = input as { query: string; limit?: number };
-        const limit = typedInput.limit ?? 5;
+      input: SearchBroadInputSchema,
+      handler: async (ctx, input: SearchBroadInput) => {
+        const limit = input.limit ?? 5;
         const objectTypes = ['contacts', 'companies', 'deals', 'tickets'] as const;
-
         const results = await Promise.all(
           objectTypes.map(async (objectType) => {
-            const body = { query: typedInput.query, limit };
             const response = await ctx.client.post(
               `${HUBSPOT_API_BASE}/crm/v3/objects/${objectType}/search`,
-              body
+              { query: input.query, limit }
             );
             return { objectType, results: response.data?.results ?? [] };
           })
         );
-
         return Object.fromEntries(results.map(({ objectType, results: r }) => [objectType, r]));
       },
     },
 
-    searchAndConnect: {
+    listPipelines: {
       isTool: false,
-      input: z.object({
-        query: z.string(),
-        limit: z.number().optional(),
-      }),
-      handler: async (ctx, input) => {
-        const typedInput = input as { query: string; limit?: number };
-        const limit = typedInput.limit ?? 5;
-
-        // Step 1: search contacts
-        const searchResponse = await ctx.client.post(
-          `${HUBSPOT_API_BASE}/crm/v3/objects/contacts/search`,
-          { query: typedInput.query, limit }
+      input: ListPipelinesInputSchema,
+      handler: async (ctx, input: ListPipelinesInput) => {
+        const objectType = input.objectType ?? 'deals';
+        const response = await ctx.client.get(
+          `${HUBSPOT_API_BASE}/crm/v3/pipelines/${objectType}`
         );
-        const contacts: Array<{ id: string; properties: Record<string, unknown> }> =
-          searchResponse.data?.results ?? [];
-
-        if (contacts.length === 0) {
-          return { contacts: [], associated_deals: [] };
-        }
-
-        // Step 2: fetch deals associated with those contacts
-        const contactIds = contacts.map((c) => c.id);
-        const assocResponse = await ctx.client.post(
-          `${HUBSPOT_API_BASE}/crm/v3/associations/contacts/deals/batch/read`,
-          { inputs: contactIds.map((id) => ({ id })) }
-        );
-
-        return {
-          contacts,
-          associated_deals: assocResponse.data?.results ?? [],
-        };
+        return response.data;
       },
     },
   },
 
   test: {
     description: i18n.translate('core.kibanaConnectorSpecs.hubspot.test.description', {
-      defaultMessage: 'Verifies HubSpot connection by fetching current user account details',
+      defaultMessage: 'Verifies HubSpot connection by fetching contacts',
     }),
     handler: async (ctx) => {
-      ctx.log.debug('HubSpot test handler');
       try {
-        const response = await ctx.client.get(`${HUBSPOT_API_BASE}/oauth/v1/access-tokens/`, {
-          validateStatus: () => true,
-        });
-        // A 200 or 401 both confirm that the API is reachable
-        if (response.status === 200) {
-          return { ok: true, message: 'Successfully connected to HubSpot API' };
-        }
-        // Try a second endpoint — the account info endpoint works with private app tokens
-        const accountResponse = await ctx.client.get(
-          `${HUBSPOT_API_BASE}/account-info/v3/api-usage/daily`
+        const response = await ctx.client.get(
+          `${HUBSPOT_API_BASE}/crm/v3/objects/contacts?limit=1`,
+          { validateStatus: () => true }
         );
-        if (accountResponse.status === 200) {
+        if (response.status === 200 || response.status === 204) {
           return { ok: true, message: 'Successfully connected to HubSpot API' };
         }
-        return { ok: false, message: 'Failed to connect to HubSpot API' };
+        return {
+          ok: false,
+          message: `HubSpot API returned status ${response.status}. Check that your private app token is valid and has the crm.objects.contacts.read scope.`,
+        };
       } catch (error) {
         const err = error as { message?: string };
         return { ok: false, message: err.message ?? 'Unknown error connecting to HubSpot' };

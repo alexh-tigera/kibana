@@ -83,6 +83,45 @@ describe('HubSpotConnector', () => {
         { params: { limit: 10, properties: 'dealname,amount,closedate' } }
       );
     });
+
+    it('should fetch associated deals when objectType is contacts and includeAssociatedDeals is true', async () => {
+      mockClient.post
+        .mockResolvedValueOnce({ data: { results: [{ id: '101', properties: { firstname: 'Alice' } }] } })
+        .mockResolvedValueOnce({ data: { results: [{ from: { id: '101' }, to: [{ id: '501' }] }] } });
+
+      const result = await HubSpotConnector.actions.searchCrmObjects.handler(mockContext, {
+        objectType: 'contacts',
+        query: 'Alice',
+        includeAssociatedDeals: true,
+      }) as { contacts: unknown[]; associated_deals: unknown[] };
+
+      expect(mockClient.post).toHaveBeenCalledTimes(2);
+      expect(mockClient.post).toHaveBeenNthCalledWith(
+        1,
+        'https://api.hubapi.com/crm/v3/objects/contacts/search',
+        { query: 'Alice', limit: 10 }
+      );
+      expect(mockClient.post).toHaveBeenNthCalledWith(
+        2,
+        'https://api.hubapi.com/crm/v3/associations/contacts/deals/batch/read',
+        { inputs: [{ id: '101' }] }
+      );
+      expect(result.contacts).toHaveLength(1);
+      expect(result.associated_deals).toHaveLength(1);
+    });
+
+    it('should return empty associated_deals when no contacts match and includeAssociatedDeals is true', async () => {
+      mockClient.post.mockResolvedValueOnce({ data: { results: [] } });
+
+      const result = await HubSpotConnector.actions.searchCrmObjects.handler(mockContext, {
+        objectType: 'contacts',
+        query: 'nobody',
+        includeAssociatedDeals: true,
+      });
+
+      expect(mockClient.post).toHaveBeenCalledTimes(1);
+      expect(result).toEqual({ contacts: [], associated_deals: [] });
+    });
   });
 
   describe('getCrmObject action', () => {
@@ -111,7 +150,7 @@ describe('HubSpotConnector', () => {
       await HubSpotConnector.actions.getCrmObject.handler(mockContext, {
         objectType: 'deals',
         objectId: '200',
-        properties: ['dealname', 'amount'],
+        properties: 'dealname,amount',
       });
 
       expect(mockClient.get).toHaveBeenCalledWith(
@@ -209,6 +248,90 @@ describe('HubSpotConnector', () => {
           ],
         }
       );
+    });
+  });
+
+  describe('searchBroad action', () => {
+    it('should search all four object types simultaneously', async () => {
+      const mockResponse = { data: { results: [{ id: '1', properties: {} }] } };
+      mockClient.post.mockResolvedValue(mockResponse);
+
+      const result = await HubSpotConnector.actions.searchBroad.handler(mockContext, {
+        query: 'Acme',
+        limit: 3,
+      });
+
+      expect(mockClient.post).toHaveBeenCalledTimes(4);
+      expect(mockClient.post).toHaveBeenCalledWith(
+        'https://api.hubapi.com/crm/v3/objects/contacts/search',
+        { query: 'Acme', limit: 3 }
+      );
+      expect(result).toHaveProperty('contacts');
+      expect(result).toHaveProperty('companies');
+      expect(result).toHaveProperty('deals');
+      expect(result).toHaveProperty('tickets');
+    });
+  });
+
+  describe('listPipelines action', () => {
+    it('should list deal pipelines by default', async () => {
+      const mockResponse = {
+        data: {
+          results: [
+            {
+              id: 'default',
+              label: 'Sales Pipeline',
+              stages: [
+                { id: 'appointmentscheduled', label: 'Appointment Scheduled' },
+                { id: 'closedwon', label: 'Closed Won' },
+              ],
+            },
+          ],
+        },
+      };
+      mockClient.get.mockResolvedValue(mockResponse);
+
+      const result = await HubSpotConnector.actions.listPipelines.handler(mockContext, {});
+
+      expect(mockClient.get).toHaveBeenCalledWith(
+        'https://api.hubapi.com/crm/v3/pipelines/deals'
+      );
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it('should list ticket pipelines when objectType is tickets', async () => {
+      const mockResponse = { data: { results: [] } };
+      mockClient.get.mockResolvedValue(mockResponse);
+
+      await HubSpotConnector.actions.listPipelines.handler(mockContext, {
+        objectType: 'tickets',
+      });
+
+      expect(mockClient.get).toHaveBeenCalledWith(
+        'https://api.hubapi.com/crm/v3/pipelines/tickets'
+      );
+    });
+  });
+
+  describe('test handler', () => {
+    it('should return ok when contacts endpoint returns 200', async () => {
+      mockClient.get.mockResolvedValue({ status: 200, data: { results: [] } });
+
+      const result = await HubSpotConnector.test!.handler(mockContext);
+
+      expect(mockClient.get).toHaveBeenCalledWith(
+        'https://api.hubapi.com/crm/v3/objects/contacts?limit=1',
+        { validateStatus: expect.any(Function) }
+      );
+      expect(result).toEqual({ ok: true, message: 'Successfully connected to HubSpot API' });
+    });
+
+    it('should return not ok when contacts endpoint returns 401', async () => {
+      mockClient.get.mockResolvedValue({ status: 401 });
+
+      const result = await HubSpotConnector.test!.handler(mockContext);
+
+      expect(result.ok).toBe(false);
     });
   });
 });

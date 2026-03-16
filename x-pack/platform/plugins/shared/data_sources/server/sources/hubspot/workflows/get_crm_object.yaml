@@ -1,6 +1,6 @@
 version: '1'
 name: 'sources.hubspot.get_crm_object'
-description: 'Retrieve the full details of a specific HubSpot CRM record by its ID and type. Use when you already have the object ID and need all available metadata. Inputs: objectType (choice: contacts|companies|deals|tickets), objectId (string), properties (string, optional comma-separated list of property names).'
+description: 'Retrieve the full details of a specific HubSpot CRM record by its ID and type. Use when you already have the object ID and need all available metadata. Inputs: objectType (choice: contacts|companies|deals|tickets), objectId (string), properties (list of property names, optional).'
 tags: ['agent-builder-tool']
 enabled: true
 triggers:
@@ -13,6 +13,7 @@ inputs:
       - 'companies'
       - 'deals'
       - 'tickets'
+    description: 'The type of CRM record to retrieve.'
   - name: objectId
     type: string
     required: true
@@ -20,7 +21,7 @@ inputs:
   - name: properties
     type: string
     required: false
-    description: 'Optional comma-separated list of property names to include in the response (e.g. "firstname,lastname,email").'
+    description: 'Optional comma-separated list of property names to include in the response (for example, "firstname,lastname,email").'
 steps:
   - name: get-crm-object
     type: hubspot.getCrmObject
