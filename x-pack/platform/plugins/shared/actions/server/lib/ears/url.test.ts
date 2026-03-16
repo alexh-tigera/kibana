@@ -40,14 +40,14 @@ describe('resolveEarsUrl', () => {
 });
 
 describe('getEarsEndpointsForProvider', () => {
-  it.each(['github', 'google', 'microsoft'])(
+  it.each(['google', 'microsoft', 'slack'])(
     'returns authorize, token and refresh endpoints for supported provider "%s"',
     (provider) => {
       const { authorizeEndpoint, tokenEndpoint, refreshEndpoint } =
         getEarsEndpointsForProvider(provider);
-      expect(authorizeEndpoint).toBe(`${provider}/oauth/authorize`);
-      expect(tokenEndpoint).toBe(`${provider}/oauth/token`);
-      expect(refreshEndpoint).toBe(`${provider}/oauth/refresh`);
+      expect(authorizeEndpoint).toBe(`v1/${provider}/oauth/authorize`);
+      expect(tokenEndpoint).toBe(`v1/${provider}/oauth/token`);
+      expect(refreshEndpoint).toBe(`v1/${provider}/oauth/refresh`);
     }
   );
 
