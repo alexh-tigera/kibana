@@ -230,15 +230,15 @@ EOF
           echo "**Number of Nodes**: $NODE_COUNT" >> "$REPORT_FILE"
           echo "" >> "$REPORT_FILE"
           
-          # Extract metrics for each node
-          echo "$JSON_PART" | jq -r '.nodes[] | 
-            "#### \(.node_name) (\(.node_id))",
-            "- **CPU Usage**: \(.os.cpu.percent // .cpu.percent // "unknown")%",
-            "- **JVM Heap Used**: \(.jvm.mem.heap_used_percent)% (\(.jvm.mem.heap_used_in_bytes // 0 / 1024 / 1024 | floor)MB / \(.jvm.mem.heap_max_in_bytes // 0 / 1024 / 1024 | floor)MB)",
-            "- **OS Memory Used**: \(.os.mem.used_percent)% (\(.os.mem.used_in_bytes // 0 / 1024 / 1024 | floor)MB / \(.os.mem.total_in_bytes // 0 / 1024 / 1024 | floor)MB)",
-            "- **Load Average (1m/5m/15m)**: \(.os.cpu.load_average."1m" | tostring) / \(.os.cpu.load_average."5m" | tostring) / \(.os.cpu.load_average."15m" | tostring)",
-            "- **GC Young Collections**: \(.jvm.gc.collectors.young.collection_count) (total time: \(.jvm.gc.collectors.young.collection_time_in_millis)ms)",
-            "- **GC Old Collections**: \(.jvm.gc.collectors.old.collection_count) (total time: \(.jvm.gc.collectors.old.collection_time_in_millis)ms)",
+          # Extract metrics for each node (anonymized as "Node 1", "Node 2", ...)
+          echo "$JSON_PART" | jq -r '.nodes | to_entries[] |
+            "#### Node \(.key + 1)",
+            "- **CPU Usage**: \(.value.os.cpu.percent // .value.cpu.percent // "unknown")%",
+            "- **JVM Heap Used**: \(.value.jvm.mem.heap_used_percent)% (\((.value.jvm.mem.heap_used_in_bytes // 0) / 1024 / 1024 | floor)MB / \((.value.jvm.mem.heap_max_in_bytes // 0) / 1024 / 1024 | floor)MB)",
+            "- **OS Memory Used**: \(.value.os.mem.used_percent)% (\(((.value.os.mem.total_in_bytes // 0) - (.value.os.mem.free_in_bytes // 0)) / 1024 / 1024 | floor)MB / \((.value.os.mem.total_in_bytes // 0) / 1024 / 1024 | floor)MB)",
+            "- **Load Average (1m/5m/15m)**: \(.value.os.cpu.load_average."1m" | tostring) / \(.value.os.cpu.load_average."5m" | tostring) / \(.value.os.cpu.load_average."15m" | tostring)",
+            "- **GC Young Collections**: \(.value.jvm.gc.collectors.young.collection_count) (total time: \(.value.jvm.gc.collectors.young.collection_time_in_millis)ms)",
+            "- **GC Old Collections**: \(.value.jvm.gc.collectors.old.collection_count) (total time: \(.value.jvm.gc.collectors.old.collection_time_in_millis)ms)",
             ""' >> "$REPORT_FILE"
         fi
       fi
