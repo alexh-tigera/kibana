@@ -43,7 +43,6 @@ describe('ConnectionWizard', () => {
     updateServices: jest.fn(),
     disconnectCluster: jest.fn(),
   };
-  const mockSetJustConnected = jest.fn();
   const mockContext: CloudConnectedAppContextValue = {
     chrome: {} as any,
     application: {} as any,
@@ -67,10 +66,6 @@ describe('ConnectionWizard', () => {
     },
     hasConfigurePermission: true,
     licensing: {} as any,
-    justConnected: false,
-    setJustConnected: mockSetJustConnected,
-    autoEnablingEis: false,
-    setAutoEnablingEis: jest.fn(),
   };
 
   beforeEach(() => {
@@ -237,24 +232,5 @@ describe('ConnectionWizard', () => {
 
     // No error should be displayed
     expect(screen.queryByTestId('connectionWizardError')).not.toBeInTheDocument();
-  });
-
-  it('should set justConnected to true on successful authentication', async () => {
-    mockApiService.authenticate = jest.fn().mockResolvedValue({
-      data: { success: true, cluster_id: 'cluster-123', organization_id: 'org-123' },
-      error: null,
-    });
-
-    renderWithIntl(<ConnectionWizard onConnect={mockOnConnect} />);
-
-    const input = screen.getByTestId('connectionWizardApiKeyInput');
-    const connectButton = screen.getByTestId('connectionWizardConnectButton');
-
-    await userEvent.type(input, 'valid-api-key');
-    await userEvent.click(connectButton);
-
-    await waitFor(() => {
-      expect(mockSetJustConnected).toHaveBeenCalledWith(true);
-    });
   });
 });
