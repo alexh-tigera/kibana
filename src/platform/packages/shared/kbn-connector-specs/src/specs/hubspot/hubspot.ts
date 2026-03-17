@@ -158,8 +158,11 @@ export const HubSpotConnector: ConnectorSpec = {
             if (assocResponse.status !== 200) {
               return { ...ticketData, notes: [] };
             }
-            const assocResults = assocResponse.data?.results as Array<{ to?: Array<{ toObjectId: string }> }> | undefined;
-            const noteIds = assocResults?.flatMap((r) => r.to?.map((t) => t.toObjectId) ?? []) ?? [];
+            const assocResults = assocResponse.data?.results as
+              | Array<{ to?: Array<{ toObjectId: string }> }>
+              | undefined;
+            const noteIds =
+              assocResults?.flatMap((r) => r.to?.map((t) => t.toObjectId) ?? []) ?? [];
             if (noteIds.length === 0) {
               return { ...ticketData, notes: [] };
             }
@@ -175,7 +178,18 @@ export const HubSpotConnector: ConnectorSpec = {
             if (notesResponse.status !== 200) {
               return { ...ticketData, notes: [] };
             }
-            const rawResults = (notesResponse.data as { results?: Array<{ id: string; createdAt?: string; updatedAt?: string; archived?: boolean; properties?: Record<string, unknown> }> })?.results ?? [];
+            const rawResults =
+              (
+                notesResponse.data as {
+                  results?: Array<{
+                    id: string;
+                    createdAt?: string;
+                    updatedAt?: string;
+                    archived?: boolean;
+                    properties?: Record<string, unknown>;
+                  }>;
+                }
+              )?.results ?? [];
             const notesResults = rawResults.map((note) => ({
               id: note.id,
               createdAt: note.createdAt,
@@ -189,7 +203,9 @@ export const HubSpotConnector: ConnectorSpec = {
           }
         }
 
-        return input.objectType === 'tickets' ? { ...ticketData, notes: ticketData.notes ?? [] } : ticketData;
+        return input.objectType === 'tickets'
+          ? { ...ticketData, notes: ticketData.notes ?? [] }
+          : ticketData;
       },
     },
 
@@ -306,9 +322,7 @@ export const HubSpotConnector: ConnectorSpec = {
       input: ListPipelinesInputSchema,
       handler: async (ctx, input: ListPipelinesInput) => {
         const objectType = input.objectType ?? 'deals';
-        const response = await ctx.client.get(
-          `${HUBSPOT_API_BASE}/crm/v3/pipelines/${objectType}`
-        );
+        const response = await ctx.client.get(`${HUBSPOT_API_BASE}/crm/v3/pipelines/${objectType}`);
         return response.data;
       },
     },

@@ -78,22 +78,25 @@ describe('HubSpotConnector', () => {
         properties: ['dealname', 'amount', 'closedate'],
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'https://api.hubapi.com/crm/v3/objects/deals',
-        { params: { limit: 10, properties: 'dealname,amount,closedate' } }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('https://api.hubapi.com/crm/v3/objects/deals', {
+        params: { limit: 10, properties: 'dealname,amount,closedate' },
+      });
     });
 
     it('should fetch associated deals when objectType is contacts and includeAssociatedDeals is true', async () => {
       mockClient.post
-        .mockResolvedValueOnce({ data: { results: [{ id: '101', properties: { firstname: 'Alice' } }] } })
-        .mockResolvedValueOnce({ data: { results: [{ from: { id: '101' }, to: [{ id: '501' }] }] } });
+        .mockResolvedValueOnce({
+          data: { results: [{ id: '101', properties: { firstname: 'Alice' } }] },
+        })
+        .mockResolvedValueOnce({
+          data: { results: [{ from: { id: '101' }, to: [{ id: '501' }] }] },
+        });
 
-      const result = await HubSpotConnector.actions.searchCrmObjects.handler(mockContext, {
+      const result = (await HubSpotConnector.actions.searchCrmObjects.handler(mockContext, {
         objectType: 'contacts',
         query: 'Alice',
         includeAssociatedDeals: true,
-      }) as { contacts: unknown[]; associated_deals: unknown[] };
+      })) as { contacts: unknown[]; associated_deals: unknown[] };
 
       expect(mockClient.post).toHaveBeenCalledTimes(2);
       expect(mockClient.post).toHaveBeenNthCalledWith(
@@ -127,7 +130,10 @@ describe('HubSpotConnector', () => {
   describe('getCrmObject action', () => {
     it('should fetch a contact by ID', async () => {
       const mockResponse = {
-        data: { id: '101', properties: { firstname: 'Bob', lastname: 'Jones', email: 'bob@example.com' } },
+        data: {
+          id: '101',
+          properties: { firstname: 'Bob', lastname: 'Jones', email: 'bob@example.com' },
+        },
       };
       mockClient.get.mockResolvedValue(mockResponse);
 
@@ -162,7 +168,12 @@ describe('HubSpotConnector', () => {
 
   describe('searchEngagements action', () => {
     it('should search notes when a query is provided', async () => {
-      const mockResponse = { data: { total: 1, results: [{ id: '301', properties: { hs_note_body: 'Follow up call' } }] } };
+      const mockResponse = {
+        data: {
+          total: 1,
+          results: [{ id: '301', properties: { hs_note_body: 'Follow up call' } }],
+        },
+      };
       mockClient.post.mockResolvedValue(mockResponse);
 
       const result = await HubSpotConnector.actions.searchEngagements.handler(mockContext, {
@@ -186,10 +197,9 @@ describe('HubSpotConnector', () => {
         limit: 5,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'https://api.hubapi.com/crm/v3/objects/emails',
-        { params: { limit: 5 } }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('https://api.hubapi.com/crm/v3/objects/emails', {
+        params: { limit: 5 },
+      });
     });
   });
 
@@ -200,17 +210,18 @@ describe('HubSpotConnector', () => {
 
       const result = await HubSpotConnector.actions.listOwners.handler(mockContext, {});
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'https://api.hubapi.com/crm/v3/owners',
-        { params: { limit: 20 } }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('https://api.hubapi.com/crm/v3/owners', {
+        params: { limit: 20 },
+      });
       expect(result).toEqual(mockResponse.data);
     });
   });
 
   describe('searchDeals action', () => {
     it('should search deals by query', async () => {
-      const mockResponse = { data: { total: 2, results: [{ id: '401', properties: { dealname: 'Enterprise Deal' } }] } };
+      const mockResponse = {
+        data: { total: 2, results: [{ id: '401', properties: { dealname: 'Enterprise Deal' } }] },
+      };
       mockClient.post.mockResolvedValue(mockResponse);
 
       const result = await HubSpotConnector.actions.searchDeals.handler(mockContext, {
@@ -293,9 +304,7 @@ describe('HubSpotConnector', () => {
 
       const result = await HubSpotConnector.actions.listPipelines.handler(mockContext, {});
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'https://api.hubapi.com/crm/v3/pipelines/deals'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('https://api.hubapi.com/crm/v3/pipelines/deals');
       expect(result).toEqual(mockResponse.data);
     });
 

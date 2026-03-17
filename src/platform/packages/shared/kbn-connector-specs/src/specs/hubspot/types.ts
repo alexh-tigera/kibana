@@ -20,11 +20,15 @@ export const SearchCrmObjectsInputSchema = z.object({
   query: z
     .string()
     .optional()
-    .describe('Keyword to search CRM records by name, email, company, or other text. Omit to list all records.'),
+    .describe(
+      'Keyword to search CRM records by name, email, company, or other text. Omit to list all records.'
+    ),
   properties: z
     .array(z.string())
     .optional()
-    .describe('List of property names to include in the response (e.g. ["firstname","email","phone"]).'),
+    .describe(
+      'List of property names to include in the response (e.g. ["firstname","email","phone"]).'
+    ),
   limit: z.number().optional().describe('Maximum number of results to return (default: 10).'),
   after: z.string().optional().describe('Pagination cursor returned in a previous response.'),
   includeAssociatedDeals: z
@@ -100,10 +104,7 @@ export const SearchBroadInputSchema = z.object({
     .describe(
       'Search term to look for across all HubSpot CRM object types (contacts, companies, deals, tickets).'
     ),
-  limit: z
-    .number()
-    .optional()
-    .describe('Maximum number of results per object type (default: 5).'),
+  limit: z.number().optional().describe('Maximum number of results per object type (default: 5).'),
 });
 export type SearchBroadInput = z.infer<typeof SearchBroadInputSchema>;
 
