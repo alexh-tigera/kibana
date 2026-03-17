@@ -6,7 +6,7 @@
  */
 
 import type { AxiosInstance } from 'axios';
-import type { OAuthGetTokenOpts } from '@kbn/connector-specs';
+import type { GetTokenOpts } from '@kbn/connector-specs';
 import type { AxiosErrorWithRetry } from '../axios_utils';
 import { getOAuthAuthorizationCodeAccessToken } from '../get_oauth_authorization_code_access_token';
 import type { AxiosAuthStrategy, AuthStrategyDeps } from './types';
@@ -88,7 +88,11 @@ export class OAuthAuthCodeStrategy implements AxiosAuthStrategy {
     );
   }
 
-  async getToken(opts: OAuthGetTokenOpts, deps: AuthStrategyDeps): Promise<string | null> {
+  async getToken(opts: GetTokenOpts, deps: AuthStrategyDeps): Promise<string | null> {
+    if (opts.authType !== 'oauth') {
+      throw new Error('OAuthAuthCodeStrategy received non-oauth token opts');
+    }
+
     const {
       connectorId,
       connectorTokenClient,
@@ -97,7 +101,6 @@ export class OAuthAuthCodeStrategy implements AxiosAuthStrategy {
       authMode,
       profileUid,
     } = deps;
-
     if (!connectorTokenClient) {
       throw new Error('ConnectorTokenClient is required for OAuth authorization code flow');
     }

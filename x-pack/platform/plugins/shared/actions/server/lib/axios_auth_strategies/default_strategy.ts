@@ -6,7 +6,7 @@
  */
 
 import type { AxiosInstance } from 'axios';
-import type { GetTokenOpts, OAuthGetTokenOpts } from '@kbn/connector-specs';
+import type { GetTokenOpts } from '@kbn/connector-specs';
 import { getOAuthClientCredentialsAccessToken } from '../get_oauth_client_credentials_access_token';
 import { getDeleteTokenAxiosInterceptor } from '../delete_token_axios_interceptor';
 import type { AxiosAuthStrategy, AuthStrategyDeps } from './types';
@@ -25,23 +25,27 @@ export class DefaultStrategy implements AxiosAuthStrategy {
   }
 
   async getToken(opts: GetTokenOpts, deps: AuthStrategyDeps): Promise<string | null> {
+    if (opts.authType !== 'oauth') {
+      throw new Error('DefaultStrategy received non-oauth token opts');
+    }
+
     const { connectorId, connectorTokenClient, logger, configurationUtilities } = deps;
-    const oauthOpts = opts as OAuthGetTokenOpts;
+
     return getOAuthClientCredentialsAccessToken({
       connectorId,
       logger,
-      tokenUrl: oauthOpts.tokenUrl,
-      oAuthScope: oauthOpts.scope,
+      tokenUrl: opts.tokenUrl,
+      oAuthScope: opts.scope,
       configurationUtilities,
       credentials: {
         config: {
-          clientId: oauthOpts.clientId,
-          ...(oauthOpts.additionalFields ? { additionalFields: oauthOpts.additionalFields } : {}),
+          clientId: opts.clientId,
+          ...(opts.additionalFields ? { additionalFields: opts.additionalFields } : {}),
         },
-        secrets: { clientSecret: oauthOpts.clientSecret },
+        secrets: { clientSecret: opts.clientSecret },
       },
       connectorTokenClient,
-      tokenEndpointAuthMethod: oauthOpts.tokenEndpointAuthMethod,
+      tokenEndpointAuthMethod: opts.tokenEndpointAuthMethod,
     });
   }
 }

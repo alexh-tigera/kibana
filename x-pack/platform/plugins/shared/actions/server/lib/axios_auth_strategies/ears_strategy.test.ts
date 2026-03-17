@@ -9,7 +9,7 @@ jest.mock('../ears/get_ears_access_token');
 jest.mock('../ears/url');
 
 import type { AxiosInstance } from 'axios';
-import type { EarsGetTokenOpts } from '@kbn/connector-specs';
+import type { EarsGetTokenOpts, GetTokenOpts } from '@kbn/connector-specs';
 import { loggerMock } from '@kbn/logging-mocks';
 import { actionsConfigMock } from '../../actions_config.mock';
 import { connectorTokenClientMock } from '../connector_token_client.mock';
@@ -176,17 +176,29 @@ describe('EarsStrategy', () => {
   });
 
   describe('getToken', () => {
+    it('throws when opts authType is not ears', async () => {
+      const opts: GetTokenOpts = {
+        authType: 'oauth',
+        tokenUrl: 'https://example.com/token',
+        clientId: 'id',
+        clientSecret: 'secret',
+      };
+      await expect(strategy.getToken(opts, baseDeps)).rejects.toThrow(
+        'EarsStrategy received non-ears token opts'
+      );
+    });
+
     it('throws when connectorTokenClient is absent', async () => {
       const { connectorTokenClient: _ctc, ...depsWithoutClient } = baseDeps;
       await expect(
-        strategy.getToken({ provider: 'my-provider' }, depsWithoutClient)
+        strategy.getToken({ authType: 'ears', provider: 'my-provider' }, depsWithoutClient)
       ).rejects.toThrow('ConnectorTokenClient is required for EARS OAuth flow');
     });
 
     it('delegates to getEarsAccessToken with provider', async () => {
       mockGetEarsAccessToken.mockResolvedValue('Bearer token');
 
-      const opts: EarsGetTokenOpts = { provider: 'my-provider' };
+      const opts: EarsGetTokenOpts = { authType: 'ears', provider: 'my-provider' };
       await strategy.getToken(opts, baseDeps);
 
       expect(mockGetEarsAccessToken).toHaveBeenCalledWith(

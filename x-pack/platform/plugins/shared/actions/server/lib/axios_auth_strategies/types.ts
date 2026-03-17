@@ -24,7 +24,7 @@ export interface AuthStrategyDeps {
 export interface AxiosAuthStrategy {
   /**
    * Attach whichever Axios response interceptor is appropriate for this auth type.
-   * Only called when connectorTokenClient is present.
+   * Only called when the connectorTokenClient is present.
    */
   installResponseInterceptor(axiosInstance: AxiosInstance, deps: AuthStrategyDeps): void;
 

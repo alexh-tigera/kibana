@@ -6,7 +6,7 @@
  */
 
 import type { AxiosInstance } from 'axios';
-import type { EarsGetTokenOpts } from '@kbn/connector-specs';
+import type { GetTokenOpts } from '@kbn/connector-specs';
 import type { AxiosErrorWithRetry } from '../axios_utils';
 import { getEarsAccessToken } from '../ears';
 import type { AxiosAuthStrategy, AuthStrategyDeps } from './types';
@@ -79,7 +79,11 @@ export class EarsStrategy implements AxiosAuthStrategy {
     );
   }
 
-  async getToken(opts: EarsGetTokenOpts, deps: AuthStrategyDeps): Promise<string | null> {
+  async getToken(opts: GetTokenOpts, deps: AuthStrategyDeps): Promise<string | null> {
+    if (opts.authType !== 'ears') {
+      throw new Error('EarsStrategy received non-ears token opts');
+    }
+
     const {
       connectorId,
       connectorTokenClient,
@@ -88,7 +92,6 @@ export class EarsStrategy implements AxiosAuthStrategy {
       authMode,
       profileUid,
     } = deps;
-
     if (!connectorTokenClient) {
       throw new Error('ConnectorTokenClient is required for EARS OAuth flow');
     }

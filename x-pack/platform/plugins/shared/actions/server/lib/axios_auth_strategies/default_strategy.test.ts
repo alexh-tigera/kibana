@@ -9,7 +9,7 @@ jest.mock('../get_oauth_client_credentials_access_token');
 jest.mock('../delete_token_axios_interceptor');
 
 import type { AxiosInstance } from 'axios';
-import type { OAuthGetTokenOpts } from '@kbn/connector-specs';
+import type { GetTokenOpts, OAuthGetTokenOpts } from '@kbn/connector-specs';
 import { loggerMock } from '@kbn/logging-mocks';
 import { actionsConfigMock } from '../../actions_config.mock';
 import { connectorTokenClientMock } from '../connector_token_client.mock';
@@ -80,10 +80,18 @@ describe('DefaultStrategy', () => {
   });
 
   describe('getToken', () => {
+    it('throws when opts authType is not oauth', async () => {
+      const opts: GetTokenOpts = { authType: 'ears', provider: 'google' };
+      await expect(strategy.getToken(opts, baseDeps)).rejects.toThrow(
+        'DefaultStrategy received non-oauth token opts'
+      );
+    });
+
     it('delegates to getOAuthClientCredentialsAccessToken with correct args', async () => {
       mockGetOAuthClientCredentialsAccessToken.mockResolvedValue('Bearer clientcred');
 
       const opts: OAuthGetTokenOpts = {
+        authType: 'oauth',
         tokenUrl: 'https://provider.example.com/token',
         clientId: 'the-client-id',
         clientSecret: 'the-client-secret',
@@ -110,6 +118,7 @@ describe('DefaultStrategy', () => {
       mockGetOAuthClientCredentialsAccessToken.mockResolvedValue('Bearer token');
 
       const opts: OAuthGetTokenOpts = {
+        authType: 'oauth',
         tokenUrl: 'https://provider.example.com/token',
         clientId: 'id',
         clientSecret: 'secret',
