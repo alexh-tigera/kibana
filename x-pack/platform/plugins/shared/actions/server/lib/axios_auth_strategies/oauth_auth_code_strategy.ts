@@ -31,6 +31,10 @@ export class OAuthAuthCodeStrategy implements AxiosAuthStrategy {
       profileUid,
     } = deps;
 
+    if (!connectorTokenClient) {
+      throw new Error('ConnectorTokenClient is required for OAuth authorization code flow');
+    }
+
     axiosInstance.interceptors.response.use(
       (response) => response,
       async (error: AxiosErrorWithRetry) => {
@@ -62,7 +66,7 @@ export class OAuthAuthCodeStrategy implements AxiosAuthStrategy {
             config: { clientId, tokenUrl, useBasicAuth },
             secrets: { clientSecret },
           },
-          connectorTokenClient: connectorTokenClient!,
+          connectorTokenClient,
           scope,
           authMode,
           profileUid,

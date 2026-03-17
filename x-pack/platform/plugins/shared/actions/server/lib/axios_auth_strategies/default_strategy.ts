@@ -14,8 +14,11 @@ import type { AxiosAuthStrategy, AuthStrategyDeps } from './types';
 export class DefaultStrategy implements AxiosAuthStrategy {
   installResponseInterceptor(axiosInstance: AxiosInstance, deps: AuthStrategyDeps): void {
     const { connectorId, connectorTokenClient } = deps;
+    if (!connectorTokenClient) {
+      throw new Error('Failed to delete invalid tokens: missing required ConnectorTokenClient.');
+    }
     const { onFulfilled, onRejected } = getDeleteTokenAxiosInterceptor({
-      connectorTokenClient: connectorTokenClient!,
+      connectorTokenClient,
       connectorId,
     });
     axiosInstance.interceptors.response.use(onFulfilled, onRejected);

@@ -58,6 +58,14 @@ describe('EarsStrategy', () => {
   });
 
   describe('installResponseInterceptor', () => {
+    it('throws synchronously when connectorTokenClient is absent', () => {
+      const { instance } = createMockAxiosInstance();
+      const { connectorTokenClient: _ctc, ...depsWithoutClient } = baseDeps;
+      expect(() => strategy.installResponseInterceptor(instance, depsWithoutClient)).toThrow(
+        'ConnectorTokenClient is required for EARS authorization code flow'
+      );
+    });
+
     it('passes non-401 errors through unchanged', async () => {
       const { instance } = createMockAxiosInstance();
       strategy.installResponseInterceptor(instance, baseDeps);

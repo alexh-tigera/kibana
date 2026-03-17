@@ -27,6 +27,10 @@ export class EarsStrategy implements AxiosAuthStrategy {
       profileUid,
     } = deps;
 
+    if (!connectorTokenClient) {
+      throw new Error('ConnectorTokenClient is required for EARS authorization code flow');
+    }
+
     axiosInstance.interceptors.response.use(
       (response) => response,
       async (error: AxiosErrorWithRetry) => {
@@ -48,12 +52,13 @@ export class EarsStrategy implements AxiosAuthStrategy {
           error.message = 'Authentication failed: Missing required EARS provider.';
           return Promise.reject(error);
         }
+
         const newAccessToken = await getEarsAccessToken({
           connectorId,
           logger,
           configurationUtilities,
           provider,
-          connectorTokenClient: connectorTokenClient!,
+          connectorTokenClient,
           authMode,
           profileUid,
           forceRefresh: true,
