@@ -1,6 +1,6 @@
 ---
 navigation_title: "HubSpot"
-description: "Use the HubSpot connector to search and retrieve contacts, companies, deals, tickets, and engagements from HubSpot CRM in Workplace AI agents."
+description: "Use the HubSpot connector to search and retrieve contacts, companies, deals, tickets, and engagements from HubSpot CRM."
 mapped_pages:
   - https://www.elastic.co/guide/en/kibana/current/hubspot-action-type.html
 applies_to:
@@ -69,7 +69,7 @@ Use the [Action configuration settings](/reference/configuration-reference/alert
 
 ## Get API credentials [hubspot-api-credentials]
 
-You can authenticate the connector with either a **Service Key** (recommended) or a **Private App** access token. Use a Service Key when possible; creating a Private App is the legacy method and may not be available in all HubSpot accounts.
+You can authenticate the connector with either a **Service Key** (recommended) or a **Private App** access token. Use a Service Key when possible; creating a Private App is the legacy method and might not be available in all HubSpot accounts.
 
 ### Service Key (recommended) [hubspot-service-key]
 

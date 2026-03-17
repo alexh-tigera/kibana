@@ -54,11 +54,11 @@ export const HubSpotConnector: ConnectorSpec = {
             token: {
               sensitive: true,
               label: i18n.translate('core.kibanaConnectorSpecs.hubspot.auth.token.label', {
-                defaultMessage: 'Private App Access Token',
+                defaultMessage: 'Access Token (Service Key or Private App)',
               }),
               helpText: i18n.translate('core.kibanaConnectorSpecs.hubspot.auth.token.helpText', {
                 defaultMessage:
-                  'Your HubSpot private app access token (starts with pat-). Create one in HubSpot Settings > Integrations > Private Apps.',
+                  'HubSpot Service Key (recommended) from Development > Keys, or a Private App access token (pat- prefix) from Settings > Integrations > Private Apps.',
               }),
               placeholder: 'pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
             },
@@ -68,7 +68,7 @@ export const HubSpotConnector: ConnectorSpec = {
     ],
   },
 
-  // No additional configuration fields needed — the private app token covers auth
+  // No additional configuration fields needed — Service Key or Private App token covers auth
   schema: z.object({}),
 
   actions: {
@@ -146,7 +146,50 @@ export const HubSpotConnector: ConnectorSpec = {
           `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}/${input.objectId}`,
           { params }
         );
-        return response.data;
+        const ticketData = response.data as Record<string, unknown>;
+
+        if (input.objectType === 'tickets') {
+          try {
+            const assocResponse = await ctx.client.post(
+              `${HUBSPOT_API_BASE}/crm/v4/associations/tickets/notes/batch/read`,
+              { inputs: [{ id: input.objectId }] },
+              { validateStatus: () => true }
+            );
+            if (assocResponse.status !== 200) {
+              return { ...ticketData, notes: [] };
+            }
+            const assocResults = assocResponse.data?.results as Array<{ to?: Array<{ toObjectId: string }> }> | undefined;
+            const noteIds = assocResults?.flatMap((r) => r.to?.map((t) => t.toObjectId) ?? []) ?? [];
+            if (noteIds.length === 0) {
+              return { ...ticketData, notes: [] };
+            }
+            const notesResponse = await ctx.client.post(
+              `${HUBSPOT_API_BASE}/crm/v3/objects/notes/batch/read`,
+              {
+                inputs: noteIds.map((id) => ({ id })),
+                properties: ['hs_note_body'],
+                propertiesWithHistory: [],
+              },
+              { validateStatus: () => true }
+            );
+            if (notesResponse.status !== 200) {
+              return { ...ticketData, notes: [] };
+            }
+            const rawResults = (notesResponse.data as { results?: Array<{ id: string; createdAt?: string; updatedAt?: string; archived?: boolean; properties?: Record<string, unknown> }> })?.results ?? [];
+            const notesResults = rawResults.map((note) => ({
+              id: note.id,
+              createdAt: note.createdAt,
+              updatedAt: note.updatedAt,
+              archived: note.archived,
+              body: (note.properties?.hs_note_body as string) ?? '',
+            }));
+            return { ...ticketData, notes: notesResults };
+          } catch {
+            // Return ticket without notes if associations or notes API fails (e.g. missing scope)
+          }
+        }
+
+        return input.objectType === 'tickets' ? { ...ticketData, notes: ticketData.notes ?? [] } : ticketData;
       },
     },
 
@@ -286,7 +329,7 @@ export const HubSpotConnector: ConnectorSpec = {
         }
         return {
           ok: false,
-          message: `HubSpot API returned status ${response.status}. Check that your private app token is valid and has the crm.objects.contacts.read scope.`,
+          message: `HubSpot API returned status ${response.status}. Check that your Service Key or Private App token is valid and has the crm.objects.contacts.read scope.`,
         };
       } catch (error) {
         const err = error as { message?: string };
