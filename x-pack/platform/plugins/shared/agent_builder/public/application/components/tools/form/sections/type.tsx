@@ -6,6 +6,7 @@
  */
 
 import { EuiBetaBadge, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiSuperSelect } from '@elastic/eui';
+import { css } from '@emotion/react';
 import { ToolType } from '@kbn/agent-builder-common';
 import { i18n } from '@kbn/i18n';
 import React, { useMemo } from 'react';
@@ -78,20 +79,33 @@ export const TypeSection = ({ mode }: TypeProps) => {
       }}
     >
       <EuiFormRow label={i18nMessages.configuration.form.type.label} error={errors.type?.message}>
-        <Controller
-          control={control}
-          name="type"
-          render={({ field: { value, onChange } }) => (
-            <EuiSuperSelect
-              data-test-subj="agentBuilderToolTypeSelect"
-              options={editableToolTypes}
-              valueOfSelected={value}
-              onChange={onChange}
-              disabled={mode === ToolFormMode.Edit}
-              fullWidth
-            />
-          )}
-        />
+        <div
+          className="agentBuilderToolTypeSelectWrapper"
+          css={css`
+            /* Prevent ES|QL and other type labels from being cropped in EuiSuperSelect */
+            .euiSuperSelectControl {
+              overflow: visible !important;
+              text-overflow: clip !important;
+              white-space: nowrap !important;
+              min-width: fit-content !important;
+            }
+          `}
+        >
+          <Controller
+            control={control}
+            name="type"
+            render={({ field: { value, onChange } }) => (
+              <EuiSuperSelect
+                data-test-subj="agentBuilderToolTypeSelect"
+                options={editableToolTypes}
+                valueOfSelected={value}
+                onChange={onChange}
+                disabled={mode === ToolFormMode.Edit}
+                fullWidth
+              />
+            )}
+          />
+        </div>
       </EuiFormRow>
       <ConfigurationComponent mode={mode} />
     </ToolFormSection>
