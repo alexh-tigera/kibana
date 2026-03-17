@@ -228,9 +228,6 @@ export const PipelineTable: FunctionComponent<Props> = ({
   const tableProps: EuiInMemoryTableProps<Pipeline> = {
     itemId: 'name',
     'data-test-subj': 'pipelinesTable',
-    tableCaption: i18n.translate('xpack.ingestPipelines.list.table.tableCaption', {
-      defaultMessage: 'List of ingest pipelines',
-    }),
     sorting,
     selection: {
       onSelectionChange: setSelection,
@@ -442,5 +439,12 @@ export const PipelineTable: FunctionComponent<Props> = ({
     loading: isLoading,
   };
 
-  return <EuiInMemoryTable {...tableProps} />;
+  return (
+    <EuiInMemoryTable
+      tableCaption={i18n.translate('xpack.ingestPipelines.list.table.tableCaption', {
+        defaultMessage: 'List of ingest pipelines',
+      })}
+      {...tableProps}
+    />
+  );
 };

@@ -65,9 +65,6 @@ export const GeoipList: React.FunctionComponent = () => {
   );
   const tableProps: EuiInMemoryTableProps<GeoipDatabase> = {
     'data-test-subj': 'geoipDatabaseList',
-    tableCaption: i18n.translate('xpack.ingestPipelines.manageProcessors.geoip.list.tableCaption', {
-      defaultMessage: 'List of geoIP databases',
-    }),
     rowProps: () => ({
       'data-test-subj': 'geoipDatabaseListRow',
     }),
@@ -179,7 +176,16 @@ export const GeoipList: React.FunctionComponent = () => {
         </EuiFlexGroup>
 
         <EuiSpacer size="l" />
-        <EuiInMemoryTable css={styles.table} {...tableProps} />
+        <EuiInMemoryTable
+          tableCaption={i18n.translate(
+            'xpack.ingestPipelines.manageProcessors.geoip.list.tableCaption',
+            {
+              defaultMessage: 'List of geoIP databases',
+            }
+          )}
+          css={styles.table}
+          {...tableProps}
+        />
       </>
     );
   }
