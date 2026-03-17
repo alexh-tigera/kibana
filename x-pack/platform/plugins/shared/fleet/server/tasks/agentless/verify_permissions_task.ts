@@ -149,7 +149,7 @@ async function runPermissionVerifierTask(abortController: AbortController) {
     const connectorResults = await soClient.find<CloudConnectorSOAttributes>({
       type: CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
       filter: idFilter,
-      perPage: 1000,
+      perPage: 50,
     });
 
     const connectors = connectorResults.saved_objects;
@@ -373,7 +373,7 @@ async function verifyConnector(
     const { policyId } = await agentPolicyService.createVerifierPolicy(
       soClient,
       esClient,
-      connector.id,
+      connector,
       packagePolicyIds
     );
 
