@@ -41,6 +41,7 @@ import { DEBOUNCE_DELAY } from '../../const';
 import { editorI18n } from './editor_i18n';
 import { useResizerButtonStyles } from '../styles';
 import type { InputEditorValue } from './types';
+import { instance as editorRegistry } from '../../contexts/editor_context/editor_registry';
 
 const PANEL_MIN_SIZE = '20%';
 
@@ -203,6 +204,10 @@ export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: 
           const prevEditorValueByTab = editorValueByTabRef.current;
           const prevSelectedTabId = managedSelectedItemIdRef.current;
           const prevInternalValue = internalInputEditorValueRef.current;
+          const liveViewState = editorRegistry.getEditor()?.saveViewState();
+          const prevInternalValueWithLiveViewState: InputEditorValue = liveViewState
+            ? { ...prevInternalValue, viewState: liveViewState }
+            : prevInternalValue;
 
           // Carry over only tabs that still exist
           for (const tabId of Object.keys(prevEditorValueByTab)) {
@@ -214,7 +219,7 @@ export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: 
           // before a React state update flushes).
           if (prevSelectedTabId && nextTabIds.has(prevSelectedTabId)) {
             nextEditorValueByTab[prevSelectedTabId] = {
-              inputValue: prevInternalValue,
+              inputValue: prevInternalValueWithLiveViewState,
               outputValue: nextEditorValueByTab[prevSelectedTabId]?.outputValue ?? '',
             };
           }

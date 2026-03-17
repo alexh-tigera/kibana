@@ -19,7 +19,7 @@ import { CONSOLE_LANG_ID, CONSOLE_THEME_ID, ConsoleLang } from '@kbn/monaco';
 import { i18n } from '@kbn/i18n';
 import { getESQLSources, getEsqlColumns } from '@kbn/esql-utils';
 import { MonacoEditorActionsProvider } from './monaco_editor_actions_provider';
-import type { EditorCursorPosition, EditorRequest, InputEditorValue } from './types';
+import type { EditorRequest, InputEditorValue } from './types';
 import {
   useSetInitialValue,
   useSetupAutocompletePolling,
@@ -105,7 +105,10 @@ export const MonacoEditor = ({
   const styles = useStyles();
   const highlightedLinesClassName = useHighlightedLinesClassName();
   const latestValueRef = useRef<InputEditorValue>(value);
-  const lastAppliedCursorRef = useRef<EditorCursorPosition | undefined>(undefined);
+  const isRestoringViewStateRef = useRef(false);
+  const viewStateRafIdRef = useRef<number | null>(null);
+  const viewStateDirtyRef = useRef(false);
+  const restoreSequenceRef = useRef(0);
 
   // Keep this ref in sync during render to avoid races where the CodeEditor
   // emits onChange due to a controlled value update (e.g. tab switch) before
@@ -186,20 +189,33 @@ export const MonacoEditor = ({
 
   useEffect(() => {
     if (!editorInstance) return;
-    const subscription = editorInstance.onDidChangeCursorPosition((event) => {
-      const { lineNumber, column } = event.position;
-      const nextCursorPosition: EditorCursorPosition = { lineNumber, column };
-      const current = latestValueRef.current;
-      if (
-        current.cursorPosition?.lineNumber === nextCursorPosition.lineNumber &&
-        current.cursorPosition?.column === nextCursorPosition.column
-      ) {
-        return;
-      }
-      setValue({ ...current, cursorPosition: nextCursorPosition });
-    });
+    const scheduleSaveViewState = () => {
+      if (isRestoringViewStateRef.current) return;
+      viewStateDirtyRef.current = true;
+      if (viewStateRafIdRef.current !== null) return;
+
+      viewStateRafIdRef.current = window.requestAnimationFrame(() => {
+        viewStateRafIdRef.current = null;
+        if (!viewStateDirtyRef.current) return;
+        viewStateDirtyRef.current = false;
+
+        const current = latestValueRef.current;
+        setValue({ ...current, viewState: editorInstance.saveViewState() });
+      });
+    };
+
+    const subscriptions = [
+      editorInstance.onDidChangeCursorPosition(scheduleSaveViewState),
+      editorInstance.onDidChangeCursorSelection(scheduleSaveViewState),
+      editorInstance.onDidScrollChange(scheduleSaveViewState),
+    ];
+
     return () => {
-      subscription.dispose();
+      for (const sub of subscriptions) sub.dispose();
+      if (viewStateRafIdRef.current !== null) {
+        window.cancelAnimationFrame(viewStateRafIdRef.current);
+        viewStateRafIdRef.current = null;
+      }
     };
   }, [editorInstance, setValue]);
 
@@ -207,40 +223,75 @@ export const MonacoEditor = ({
     if (!editorInstance) return;
     if (!activeTabId) return;
     const targetText = latestValueRef.current.text;
-    const targetCursorPosition = latestValueRef.current.cursorPosition;
-    if (!targetCursorPosition) return;
+    const targetViewState = latestValueRef.current.viewState ?? null;
 
     let isCancelled = false;
+    const restoreSequence = ++restoreSequenceRef.current;
     let attempts = 0;
-    const maxAttempts = 10;
+    const maxAttempts = 30;
+    let contentSizeSubscription: { dispose: () => void } | undefined;
+    let fallbackRaf1: number | undefined;
+    let fallbackRaf2: number | undefined;
 
-    const tryApplyAfterModelUpdate = () => {
+    const tryRestoreAfterTextApplied = () => {
       if (isCancelled) return;
+      if (restoreSequenceRef.current !== restoreSequence) return;
 
       const model = editorInstance.getModel();
       if (!model) return;
 
       attempts += 1;
 
-      // Only restore cursor after the newly selected tab's text
+      // Only restore view state after the newly selected tab's text
       // has been applied to Monaco's model.
       if (model.getValue() !== targetText && attempts < maxAttempts) {
-        window.requestAnimationFrame(tryApplyAfterModelUpdate);
+        window.requestAnimationFrame(tryRestoreAfterTextApplied);
         return;
       }
 
-      editorInstance.setPosition(targetCursorPosition);
-      // editorInstance.revealPositionInCenterIfOutsideViewport(targetCursorPosition);
-      lastAppliedCursorRef.current = targetCursorPosition;
+      const applyViewState = () => {
+        if (isCancelled) return;
+        if (restoreSequenceRef.current !== restoreSequence) return;
+
+        isRestoringViewStateRef.current = true;
+        editorInstance.layout();
+        editorInstance.restoreViewState(targetViewState);
+
+        window.requestAnimationFrame(() => {
+          if (isCancelled) return;
+          if (restoreSequenceRef.current !== restoreSequence) return;
+          editorInstance.restoreViewState(targetViewState);
+          isRestoringViewStateRef.current = false;
+        });
+      };
+
+      contentSizeSubscription?.dispose();
+      contentSizeSubscription = editorInstance.onDidContentSizeChange(() => {
+        contentSizeSubscription?.dispose();
+        contentSizeSubscription = undefined;
+        window.requestAnimationFrame(applyViewState);
+      });
+
+      // Fallback: apply after 2 frames even if no content size event arrives.
+      fallbackRaf1 = window.requestAnimationFrame(() => {
+        fallbackRaf2 = window.requestAnimationFrame(() => {
+          contentSizeSubscription?.dispose();
+          contentSizeSubscription = undefined;
+          applyViewState();
+        });
+      });
     };
 
-    window.requestAnimationFrame(tryApplyAfterModelUpdate);
+    window.requestAnimationFrame(tryRestoreAfterTextApplied);
 
     return () => {
       isCancelled = true;
+      isRestoringViewStateRef.current = false;
+      contentSizeSubscription?.dispose();
+      if (fallbackRaf1 !== undefined) window.cancelAnimationFrame(fallbackRaf1);
+      if (fallbackRaf2 !== undefined) window.cancelAnimationFrame(fallbackRaf2);
     };
-    // Intentionally only restore cursor on tab switches.
-    // We do NOT want to set cursor on every cursor move or text update.
+    // Intentionally only restore view state on tab switches.
   }, [editorInstance, activeTabId]);
 
   const editorWillUnmountCallback = useCallback(() => {

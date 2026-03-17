@@ -7,16 +7,13 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { ParsedRequest } from '@kbn/monaco';
+import type { monaco, ParsedRequest } from '@kbn/monaco';
 
-export interface EditorCursorPosition {
-  lineNumber: number;
-  column: number;
-}
+export type EditorViewState = ReturnType<monaco.editor.IStandaloneCodeEditor['saveViewState']>;
 
 export interface InputEditorValue {
   text: string;
-  cursorPosition?: EditorCursorPosition;
+  viewState?: EditorViewState;
 }
 
 export interface EditorRequest {
