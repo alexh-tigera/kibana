@@ -165,7 +165,7 @@ async function handleEars401Error({
   logger.debug(`Attempting EARS token refresh for connectorId ${connectorId} after 401 error`);
 
   const { provider, tokenUrl: rawTokenUrl } = secrets;
-  const derivedTokenPath = provider ? `/${provider}/oauth/token` : rawTokenUrl;
+  const derivedTokenPath = provider ? `/v1/${provider}/oauth/token` : rawTokenUrl;
   if (!derivedTokenPath) {
     error.message =
       'Authentication failed: Missing required EARS configuration (provider or tokenUrl).';

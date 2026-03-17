@@ -158,7 +158,7 @@ export class OAuthAuthorizationService {
     // Fallback to config for backwards compatibility with legacy connectors
     const provider = secrets.provider;
     const authorizationUrl = provider
-      ? `/${provider}/oauth/authorize`
+      ? `/v1/${provider}/oauth/authorize`
       : secrets.authorizationUrl || config?.authorizationUrl;
     const scope = secrets.scope || config?.scope;
 

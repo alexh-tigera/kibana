@@ -547,7 +547,7 @@ export const oauthCallbackRoute = (
 
           // For EARS, derive the token path from the provider field; fall back to stored tokenUrl
           const storedTokenUrl = secrets.provider
-            ? `/${secrets.provider}/oauth/token`
+            ? `/v1/${secrets.provider}/oauth/token`
             : secrets.tokenUrl || config?.tokenUrl;
 
           if (!storedTokenUrl) {
