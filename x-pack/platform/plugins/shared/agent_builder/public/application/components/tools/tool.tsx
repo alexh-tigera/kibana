@@ -379,15 +379,6 @@ export const Tool: React.FC<ToolProps> = ({ mode, tool, isLoading, isSubmitting,
             css={css`
               background-color: ${euiTheme.colors.backgroundBasePlain};
               border-block-end: none;
-
-              /* Fix title cropping: allow title area to shrink and display fully in flex layout */
-              .euiPageHeaderContent__top .euiTitle {
-                min-width: 0;
-                overflow: visible;
-              }
-              .euiPageHeaderContent__top > *:first-of-type {
-                min-width: 0;
-              }
             `}
           />
           <KibanaPageTemplate.Section>
