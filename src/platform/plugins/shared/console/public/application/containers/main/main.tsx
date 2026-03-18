@@ -18,6 +18,7 @@ import {
   EuiHorizontalRule,
   EuiScreenReaderOnly,
 } from '@elastic/eui';
+import { i18n } from '@kbn/i18n';
 
 import { getConsoleTourStepProps } from './get_console_tour_step_props';
 import { useServicesContext } from '../../contexts';
@@ -32,7 +33,6 @@ import {
 } from '../../contexts';
 import type { ConsoleTourStepProps } from '../../components';
 import {
-  TopNavMenu,
   SomethingWentWrongCallout,
   HelpPopover,
   ShortcutsPopover,
@@ -40,7 +40,6 @@ import {
 } from '../../components';
 import { History } from '../history';
 import { useDataInit } from '../../hooks';
-import { getTopNavConfig } from './get_top_nav';
 import { getTourSteps } from './get_tour_steps';
 import {
   SHELL_TAB_ID,
@@ -151,35 +150,6 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
       <EuiSplitPanel.Outer grow={true} borderRadius={isEmbeddable ? 'none' : 'm'}>
         <EuiSplitPanel.Inner grow={false} css={styles.consoleTabs}>
           <EuiFlexGroup direction="row" alignItems="center" gutterSize="s" responsive={false}>
-            <EuiFlexItem>
-              <TopNavMenu
-                disabled={!done}
-                items={getTopNavConfig({
-                  selectedTab: currentTab,
-                  setSelectedTab: (tab) => updateTab(tab),
-                })}
-                tourStepProps={consoleTourStepProps}
-              />
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <ShortcutsPopover
-                button={shortcutsButton}
-                isOpen={isShortcutsOpen}
-                closePopover={() => setIsShortcutsOpen(false)}
-              />
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <HelpPopover
-                button={helpButton}
-                isOpen={isHelpOpen}
-                closePopover={() => setIsHelpOpen(false)}
-                resetTour={() => {
-                  setIsHelpOpen(false);
-                  updateTab(SHELL_TAB_ID);
-                  actions.resetTour();
-                }}
-              />
-            </EuiFlexItem>
             {isEmbeddable && (
               <EuiFlexItem grow={false}>
                 <NavIconButton
@@ -227,15 +197,101 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
           data-test-subj="console-variables-bottom-bar"
           color="plain"
         >
-          <EuiButtonEmpty
-            onClick={() => updateTab(CONFIG_TAB_ID)}
-            iconType="editorCodeBlock"
-            size="xs"
-            color="text"
-            aria-label={MAIN_PANEL_LABELS.variablesButton}
+          <EuiFlexGroup
+            gutterSize="s"
+            responsive={false}
+            alignItems="center"
+            justifyContent="spaceBetween"
           >
-            {MAIN_PANEL_LABELS.variablesButton}
-          </EuiButtonEmpty>
+            <EuiFlexItem grow={false}>
+              <EuiFlexGroup gutterSize="s" responsive={false} alignItems="center">
+                <EuiFlexItem grow={false}>
+                  <EuiButtonEmpty
+                    onClick={() => updateTab(SHELL_TAB_ID)}
+                    size="xs"
+                    color="text"
+                    data-test-subj="consoleShellButton"
+                    aria-label={i18n.translate('console.topNav.shellTabLabel', {
+                      defaultMessage: 'Shell',
+                    })}
+                  >
+                    {i18n.translate('console.topNav.shellTabLabel', {
+                      defaultMessage: 'Shell',
+                    })}
+                  </EuiButtonEmpty>
+                </EuiFlexItem>
+
+                <EuiFlexItem grow={false}>
+                  <EuiButtonEmpty
+                    onClick={() => updateTab(HISTORY_TAB_ID)}
+                    size="xs"
+                    color="text"
+                    data-test-subj="consoleHistoryButton"
+                    aria-label={i18n.translate('console.topNav.historyTabLabel', {
+                      defaultMessage: 'History',
+                    })}
+                  >
+                    {i18n.translate('console.topNav.historyTabLabel', {
+                      defaultMessage: 'History',
+                    })}
+                  </EuiButtonEmpty>
+                </EuiFlexItem>
+
+                <EuiFlexItem grow={false}>
+                  <EuiButtonEmpty
+                    onClick={() => updateTab(CONFIG_TAB_ID)}
+                    size="xs"
+                    color="text"
+                    data-test-subj="consoleConfigButton"
+                    aria-label={i18n.translate('console.topNav.configTabLabel', {
+                      defaultMessage: 'Config',
+                    })}
+                  >
+                    {i18n.translate('console.topNav.configTabLabel', {
+                      defaultMessage: 'Config',
+                    })}
+                  </EuiButtonEmpty>
+                </EuiFlexItem>
+
+                <EuiFlexItem grow={false}>
+                  <EuiButtonEmpty
+                    onClick={() => updateTab(CONFIG_TAB_ID)}
+                    iconType="editorCodeBlock"
+                    size="xs"
+                    color="text"
+                    aria-label={MAIN_PANEL_LABELS.variablesButton}
+                  >
+                    {MAIN_PANEL_LABELS.variablesButton}
+                  </EuiButtonEmpty>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+
+            <EuiFlexItem grow={false}>
+              <EuiFlexGroup gutterSize="s" responsive={false} alignItems="center">
+                <EuiFlexItem grow={false}>
+                  <ShortcutsPopover
+                    button={shortcutsButton}
+                    isOpen={isShortcutsOpen}
+                    closePopover={() => setIsShortcutsOpen(false)}
+                  />
+                </EuiFlexItem>
+
+                <EuiFlexItem grow={false}>
+                  <HelpPopover
+                    button={helpButton}
+                    isOpen={isHelpOpen}
+                    closePopover={() => setIsHelpOpen(false)}
+                    resetTour={() => {
+                      setIsHelpOpen(false);
+                      updateTab(SHELL_TAB_ID);
+                      actions.resetTour();
+                    }}
+                  />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+          </EuiFlexGroup>
         </EuiSplitPanel.Inner>
       </EuiSplitPanel.Outer>
 
