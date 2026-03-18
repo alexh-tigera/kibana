@@ -26,7 +26,7 @@ export const SettingsFlyout = ({ onClose }: Props) => {
         defaultMessage: 'Console settings',
       })}
       data-test-subj="consoleSettingsFlyout"
-      size="m"
+      size="s"
     >
       <EuiFlyoutBody>
         <Settings />

@@ -27,11 +27,7 @@ import { NavIconButton } from './nav_icon_button';
 import { Editor } from '../editor';
 import { VariablesFlyout } from '../config/variables_flyout';
 import { SettingsFlyout } from '../config/settings_flyout';
-import {
-  useEditorReadContext,
-  useEditorActionContext,
-  useRequestActionContext,
-} from '../../contexts';
+import { useEditorReadContext, useRequestActionContext } from '../../contexts';
 import type { ConsoleTourStepProps } from '../../components';
 import {
   SomethingWentWrongCallout,
@@ -39,17 +35,11 @@ import {
   ShortcutsPopover,
   ConsoleTourStep,
 } from '../../components';
-import { History } from '../history';
+import { HistoryFlyout } from '../history/history_flyout';
 import { useDataInit } from '../../hooks';
 import { getTourSteps } from './get_tour_steps';
-import {
-  SHELL_TAB_ID,
-  HISTORY_TAB_ID,
-  CONFIG_TAB_ID,
-  EDITOR_TOUR_STEP,
-  INITIAL_TOUR_CONFIG,
-  FILES_TOUR_STEP,
-} from './constants';
+// todo remove SHELL_TAB_ID from constants and use currentView instead
+import { SHELL_TAB_ID, EDITOR_TOUR_STEP, INITIAL_TOUR_CONFIG, FILES_TOUR_STEP } from './constants';
 import { useMainStyles } from './main_styles';
 
 interface MainProps {
@@ -58,7 +48,6 @@ interface MainProps {
 }
 
 export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
-  const dispatch = useEditorActionContext();
   const requestDispatch = useRequestActionContext();
   const { currentView } = useEditorReadContext();
   const currentTab = currentTabProp ?? currentView;
@@ -67,12 +56,10 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
   const [isFullscreenOpen, setIsFullScreen] = useState(false);
   const [isVariablesFlyoutOpen, setIsVariablesFlyoutOpen] = useState(false);
   const [isSettingsFlyoutOpen, setIsSettingsFlyoutOpen] = useState(false);
+  const [isHistoryFlyoutOpen, setIsHistoryFlyoutOpen] = useState(false);
   const styles = useMainStyles(isEmbeddable);
 
-  const {
-    docLinks,
-    services: { routeHistory },
-  } = useServicesContext();
+  const { docLinks } = useServicesContext();
 
   const [tourStepProps, actions, tourState] = useEuiTour(
     getTourSteps(docLinks),
@@ -84,14 +71,6 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
     requestDispatch({ type: 'cleanRequest', payload: undefined });
   }, [currentView, requestDispatch]);
 
-  useEffect(() => {
-    if (currentTab === CONFIG_TAB_ID) {
-      setIsSettingsFlyoutOpen(true);
-    } else if (isSettingsFlyoutOpen) {
-      setIsSettingsFlyoutOpen(false);
-    }
-  }, [currentTab, isSettingsFlyoutOpen]);
-
   const consoleTourStepProps: ConsoleTourStepProps[] = getConsoleTourStepProps(
     tourStepProps,
     actions,
@@ -102,14 +81,6 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
 
   const { currentTextObject } = useEditorReadContext();
   const [inputEditorValue, setInputEditorValue] = useState<string>(currentTextObject?.text ?? '');
-
-  const updateTab = (tab: string) => {
-    if (routeHistory) {
-      routeHistory?.push(`/console/${tab}`);
-    } else {
-      dispatch({ type: 'setCurrentView', payload: tab });
-    }
-  };
 
   const toggleFullscreen = () => {
     const isEnabled = !isFullscreenOpen;
@@ -198,7 +169,6 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
               filesTourStepProps={consoleTourStepProps[FILES_TOUR_STEP - 1]}
             />
           )}
-          {currentTab === HISTORY_TAB_ID && <History />}
         </EuiSplitPanel.Inner>
         <EuiHorizontalRule margin="none" />
         <EuiSplitPanel.Inner
@@ -217,23 +187,7 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
               <EuiFlexGroup gutterSize="s" responsive={false} alignItems="center">
                 <EuiFlexItem grow={false}>
                   <EuiButtonEmpty
-                    onClick={() => updateTab(SHELL_TAB_ID)}
-                    size="xs"
-                    color="text"
-                    data-test-subj="consoleShellButton"
-                    aria-label={i18n.translate('console.topNav.shellTabLabel', {
-                      defaultMessage: 'Shell',
-                    })}
-                  >
-                    {i18n.translate('console.topNav.shellTabLabel', {
-                      defaultMessage: 'Shell',
-                    })}
-                  </EuiButtonEmpty>
-                </EuiFlexItem>
-
-                <EuiFlexItem grow={false}>
-                  <EuiButtonEmpty
-                    onClick={() => updateTab(HISTORY_TAB_ID)}
+                    onClick={() => setIsHistoryFlyoutOpen(true)}
                     size="xs"
                     color="text"
                     data-test-subj="consoleHistoryButton"
@@ -249,10 +203,7 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
 
                 <EuiFlexItem grow={false}>
                   <EuiButtonEmpty
-                    onClick={() => {
-                      updateTab(CONFIG_TAB_ID);
-                      setIsSettingsFlyoutOpen(true);
-                    }}
+                    onClick={() => setIsSettingsFlyoutOpen(true)}
                     size="xs"
                     color="text"
                     data-test-subj="consoleConfigButton"
@@ -297,7 +248,6 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
                     closePopover={() => setIsHelpOpen(false)}
                     resetTour={() => {
                       setIsHelpOpen(false);
-                      updateTab(SHELL_TAB_ID);
                       actions.resetTour();
                     }}
                   />
@@ -320,9 +270,14 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
         <SettingsFlyout
           onClose={() => {
             setIsSettingsFlyoutOpen(false);
-            if (currentTab === CONFIG_TAB_ID) {
-              updateTab(SHELL_TAB_ID);
-            }
+          }}
+        />
+      )}
+
+      {isHistoryFlyoutOpen && (
+        <HistoryFlyout
+          onClose={() => {
+            setIsHistoryFlyoutOpen(false);
           }}
         />
       )}
