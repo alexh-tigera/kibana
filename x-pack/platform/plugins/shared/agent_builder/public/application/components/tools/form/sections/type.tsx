@@ -82,12 +82,13 @@ export const TypeSection = ({ mode }: TypeProps) => {
         <div
           className="agentBuilderToolTypeSelectWrapper"
           css={css`
-            /* Prevent ES|QL and other type labels from being cropped in EuiSuperSelect */
-            .euiSuperSelectControl {
-              overflow: visible !important;
-              text-overflow: clip !important;
-              white-space: nowrap !important;
-              min-width: fit-content !important;
+            /* Ensure the select can grow/shrink without clipping its label text */
+            display: flex;
+            min-width: 0;
+
+            .agentBuilderToolTypeSelect {
+              flex: 1 1 auto;
+              min-width: 0;
             }
           `}
         >
@@ -96,6 +97,7 @@ export const TypeSection = ({ mode }: TypeProps) => {
             name="type"
             render={({ field: { value, onChange } }) => (
               <EuiSuperSelect
+                className="agentBuilderToolTypeSelect"
                 data-test-subj="agentBuilderToolTypeSelect"
                 options={editableToolTypes}
                 valueOfSelected={value}
