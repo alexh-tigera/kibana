@@ -21,6 +21,7 @@ import {
 } from '@elastic/eui';
 
 import { UnifiedTabs, type UnifiedTabsProps } from '@kbn/unified-tabs';
+import type { ConsoleTourStepProps } from '../../components';
 
 import type { TextObject } from '../../../../common/text_object';
 
@@ -34,6 +35,7 @@ import {
 } from '../../contexts';
 import { OutputPanel } from './output_panel';
 import { InputPanel } from './input_panel';
+import { ImportExportRequestsButtons } from './import_export_requests_buttons';
 import { getResponseWithMostSevereStatusCode } from '../../../lib/utils';
 import { useStyles } from './editor_styles';
 import { PanelStorage } from './panel_storage';
@@ -49,338 +51,364 @@ interface Props {
   loading: boolean;
   inputEditorValue: string;
   setInputEditorValue: (value: string) => void;
+  filesTourStepProps?: ConsoleTourStepProps;
 }
 
-export const Editor = memo(({ loading, inputEditorValue, setInputEditorValue }: Props) => {
-  const {
-    services: { objectStorageClient },
-  } = useServicesContext();
-  const styles = useStyles();
-  const resizerStyles = useResizerButtonStyles();
+export const Editor = memo(
+  ({ loading, inputEditorValue, setInputEditorValue, filesTourStepProps }: Props) => {
+    const {
+      services: { objectStorageClient },
+    } = useServicesContext();
+    const styles = useStyles();
+    const resizerStyles = useResizerButtonStyles();
 
-  const panelStorage = useMemo(() => new PanelStorage(), []);
-  const [firstPanelSize, secondPanelSize] = useMemo(
-    () => panelStorage.getPanelSize(),
-    [panelStorage]
-  );
+    const panelStorage = useMemo(() => new PanelStorage(), []);
+    const [firstPanelSize, secondPanelSize] = useMemo(
+      () => panelStorage.getPanelSize(),
+      [panelStorage]
+    );
 
-  // only used to hide content
-  const { currentTextObject } = useEditorReadContext();
+    // only used to hide content
+    const { currentTextObject } = useEditorReadContext();
 
-  const {
-    requestInFlight,
-    lastResult: { data: requestData, error: requestError },
-  } = useRequestReadContext();
+    const {
+      requestInFlight,
+      lastResult: { data: requestData, error: requestError },
+    } = useRequestReadContext();
 
-  // request related
-  const dispatch = useRequestActionContext();
-  // localStorage related
-  const editorDispatch = useEditorActionContext();
+    // request related
+    const dispatch = useRequestActionContext();
+    // localStorage related
+    const editorDispatch = useEditorActionContext();
 
-  // const [selectedTabId, setSelectedTabId] = useState<EditorTabId>('request');
-  const [{ managedItems, managedSelectedItemId }, setState] = useState<{
-    managedItems: UnifiedTabsProps['items'];
-    managedSelectedItemId: UnifiedTabsProps['selectedItemId'];
-  }>({
-    managedItems: [{ label: 'Untitled', id: '1' }],
-    managedSelectedItemId: '1',
-  });
+    // const [selectedTabId, setSelectedTabId] = useState<EditorTabId>('request');
+    const [{ managedItems, managedSelectedItemId }, setState] = useState<{
+      managedItems: UnifiedTabsProps['items'];
+      managedSelectedItemId: UnifiedTabsProps['selectedItemId'];
+    }>({
+      managedItems: [{ label: 'Untitled', id: '1' }],
+      managedSelectedItemId: '1',
+    });
 
-  const [editorValueByTab, setEditorValueByTab] = useState<
-    Record<string, { inputValue: InputEditorValue; outputValue: string }>
-  >(() => ({
-    '1': { inputValue: { text: inputEditorValue }, outputValue: '' },
-  }));
-  const [internalInputEditorValue, setInternalInputEditorValue] = useState<InputEditorValue>(
-    () => ({
-      text: inputEditorValue,
-    })
-  );
+    const [editorValueByTab, setEditorValueByTab] = useState<
+      Record<string, { inputValue: InputEditorValue; outputValue: string }>
+    >(() => ({
+      '1': { inputValue: { text: inputEditorValue }, outputValue: '' },
+    }));
+    const [internalInputEditorValue, setInternalInputEditorValue] = useState<InputEditorValue>(
+      () => ({
+        text: inputEditorValue,
+      })
+    );
 
-  // Refs to avoid races between keystrokes and tab switching.
-  const editorValueByTabRef = useRef(editorValueByTab);
-  const internalInputEditorValueRef = useRef(internalInputEditorValue);
-  const managedSelectedItemIdRef = useRef(managedSelectedItemId);
+    // Refs to avoid races between keystrokes and tab switching.
+    const editorValueByTabRef = useRef(editorValueByTab);
+    const internalInputEditorValueRef = useRef(internalInputEditorValue);
+    const managedSelectedItemIdRef = useRef(managedSelectedItemId);
 
-  editorValueByTabRef.current = editorValueByTab;
-  internalInputEditorValueRef.current = internalInputEditorValue;
-  managedSelectedItemIdRef.current = managedSelectedItemId;
+    editorValueByTabRef.current = editorValueByTab;
+    internalInputEditorValueRef.current = internalInputEditorValue;
+    managedSelectedItemIdRef.current = managedSelectedItemId;
 
-  // used for showing a loading state when fetching autocomplete entities
-  const [fetchingAutocompleteEntities, setFetchingAutocompleteEntities] = useState(false);
+    // used for showing a loading state when fetching autocomplete entities
+    const [fetchingAutocompleteEntities, setFetchingAutocompleteEntities] = useState(false);
 
-  const isVerticalLayout = useIsWithinBreakpoints(['xs', 's', 'm']);
+    const isVerticalLayout = useIsWithinBreakpoints(['xs', 's', 'm']);
 
-  // note that the currentTextObject isn't updated, but its ok
-  // because its really just providing a createdAt date
-  /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  const debouncedUpdateLocalStorageValue = useCallback(
-    debounce((newValue: string | undefined) => {
-      const textObject = {
-        ...currentTextObject,
-        text: newValue,
-        updatedAt: Date.now(),
-      } as TextObject;
+    // note that the currentTextObject isn't updated, but its ok
+    // because its really just providing a createdAt date
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    const debouncedUpdateLocalStorageValue = useCallback(
+      debounce((newValue: string | undefined) => {
+        const textObject = {
+          ...currentTextObject,
+          text: newValue,
+          updatedAt: Date.now(),
+        } as TextObject;
 
-      objectStorageClient.text.update(textObject);
+        objectStorageClient.text.update(textObject);
 
-      editorDispatch({
-        type: 'setCurrentTextObject',
-        payload: textObject,
-      });
-    }, DEBOUNCE_DELAY),
-    []
-  );
+        editorDispatch({
+          type: 'setCurrentTextObject',
+          payload: textObject,
+        });
+      }, DEBOUNCE_DELAY),
+      []
+    );
 
-  // Always keep the localstorage value in sync with the value in the editor
-  // to avoid losing the text object when the user navigates away from the shell
-  useEffect(() => {
-    debouncedUpdateLocalStorageValue(internalInputEditorValue.text);
-  }, [debouncedUpdateLocalStorageValue, internalInputEditorValue.text]);
+    // Always keep the localstorage value in sync with the value in the editor
+    // to avoid losing the text object when the user navigates away from the shell
+    useEffect(() => {
+      debouncedUpdateLocalStorageValue(internalInputEditorValue.text);
+    }, [debouncedUpdateLocalStorageValue, internalInputEditorValue.text]);
 
-  const updateInputEditorValue = useCallback(
-    (nextValue: InputEditorValue) => {
+    const updateInputEditorValue = useCallback(
+      (nextValue: InputEditorValue) => {
+        const selectedId = managedSelectedItemIdRef.current;
+        if (!selectedId) return;
+
+        internalInputEditorValueRef.current = nextValue;
+        setEditorValueByTab((prev) => ({
+          ...prev,
+          [selectedId]: {
+            inputValue: nextValue,
+            outputValue: prev[selectedId]?.outputValue || '',
+          },
+        }));
+        setInternalInputEditorValue(nextValue);
+      },
+      [setEditorValueByTab, setInternalInputEditorValue]
+    );
+
+    useEffect(() => {
+      setInputEditorValue(internalInputEditorValue.text);
+    }, [internalInputEditorValue.text, setInputEditorValue]);
+
+    const updateOutputEditorValue = useCallback((nextValue: string) => {
       const selectedId = managedSelectedItemIdRef.current;
       if (!selectedId) return;
 
-      internalInputEditorValueRef.current = nextValue;
       setEditorValueByTab((prev) => ({
         ...prev,
         [selectedId]: {
-          inputValue: nextValue,
-          outputValue: prev[selectedId]?.outputValue || '',
+          inputValue: prev[selectedId]?.inputValue ?? { text: '' },
+          outputValue: nextValue,
         },
       }));
-      setInternalInputEditorValue(nextValue);
-    },
-    [setEditorValueByTab, setInternalInputEditorValue]
-  );
+    }, []);
 
-  useEffect(() => {
-    setInputEditorValue(internalInputEditorValue.text);
-  }, [internalInputEditorValue.text, setInputEditorValue]);
+    if (!currentTextObject) return null;
 
-  const updateOutputEditorValue = useCallback((nextValue: string) => {
-    const selectedId = managedSelectedItemIdRef.current;
-    if (!selectedId) return;
+    const data = getResponseWithMostSevereStatusCode(requestData) ?? requestError;
+    const isLoading = loading || requestInFlight;
+    // todo seems this should be one of these
+    const exportContent =
+      editorRegistry.getInputModel()?.getValue() ?? internalInputEditorValue.text;
 
-    setEditorValueByTab((prev) => ({
-      ...prev,
-      [selectedId]: {
-        inputValue: prev[selectedId]?.inputValue ?? { text: '' },
-        outputValue: nextValue,
-      },
-    }));
-  }, []);
+    return (
+      <>
+        <UnifiedTabs
+          items={managedItems}
+          selectedItemId={managedSelectedItemId}
+          recentlyClosedItems={[]}
+          services={{ core: {} }}
+          createItem={() => ({
+            id: `${Date.now()}`,
+            label: editorI18n.newTabLabel,
+          })}
+          onClearRecentlyClosed={() => {}}
+          onEBTEvent={() => {}}
+          onChanged={(nextState) => {
+            const nextSelectedTabId = nextState.selectedItem?.id;
 
-  if (!currentTextObject) return null;
+            const nextTabIds = new Set(nextState.items.map((item) => item.id));
 
-  const data = getResponseWithMostSevereStatusCode(requestData) ?? requestError;
-  const isLoading = loading || requestInFlight;
+            const nextEditorValueByTab: Record<
+              string,
+              { inputValue: InputEditorValue; outputValue: string }
+            > = {};
 
-  return (
-    <>
-      <UnifiedTabs
-        items={managedItems}
-        selectedItemId={managedSelectedItemId}
-        recentlyClosedItems={[]}
-        services={{ core: {} }}
-        createItem={() => ({
-          id: `${Date.now()}`,
-          label: editorI18n.newTabLabel,
-        })}
-        onClearRecentlyClosed={() => {}}
-        onEBTEvent={() => {}}
-        onChanged={(nextState) => {
-          const nextSelectedTabId = nextState.selectedItem?.id;
+            const prevEditorValueByTab = editorValueByTabRef.current;
+            const prevSelectedTabId = managedSelectedItemIdRef.current;
+            const prevInternalValue = internalInputEditorValueRef.current;
+            const liveViewState = editorRegistry.getEditor()?.saveViewState();
+            const prevInternalValueWithLiveViewState: InputEditorValue = liveViewState
+              ? { ...prevInternalValue, viewState: liveViewState }
+              : prevInternalValue;
 
-          const nextTabIds = new Set(nextState.items.map((item) => item.id));
+            // Carry over only tabs that still exist
+            for (const tabId of Object.keys(prevEditorValueByTab)) {
+              if (!nextTabIds.has(tabId)) continue;
+              nextEditorValueByTab[tabId] = prevEditorValueByTab[tabId];
+            }
 
-          const nextEditorValueByTab: Record<
-            string,
-            { inputValue: InputEditorValue; outputValue: string }
-          > = {};
-
-          const prevEditorValueByTab = editorValueByTabRef.current;
-          const prevSelectedTabId = managedSelectedItemIdRef.current;
-          const prevInternalValue = internalInputEditorValueRef.current;
-          const liveViewState = editorRegistry.getEditor()?.saveViewState();
-          const prevInternalValueWithLiveViewState: InputEditorValue = liveViewState
-            ? { ...prevInternalValue, viewState: liveViewState }
-            : prevInternalValue;
-
-          // Carry over only tabs that still exist
-          for (const tabId of Object.keys(prevEditorValueByTab)) {
-            if (!nextTabIds.has(tabId)) continue;
-            nextEditorValueByTab[tabId] = prevEditorValueByTab[tabId];
-          }
-
-          // Persist the latest state of the previously selected tab (in case tab switching happens
-          // before a React state update flushes).
-          if (prevSelectedTabId && nextTabIds.has(prevSelectedTabId)) {
-            nextEditorValueByTab[prevSelectedTabId] = {
-              inputValue: prevInternalValueWithLiveViewState,
-              outputValue: nextEditorValueByTab[prevSelectedTabId]?.outputValue ?? '',
-            };
-          }
-
-          // Initialize state for newly created tabs.
-          for (const tabId of nextTabIds) {
-            if (!nextEditorValueByTab[tabId]) {
-              nextEditorValueByTab[tabId] = {
-                inputValue: { text: '' },
-                outputValue: '',
+            // Persist the latest state of the previously selected tab (in case tab switching happens
+            // before a React state update flushes).
+            if (prevSelectedTabId && nextTabIds.has(prevSelectedTabId)) {
+              nextEditorValueByTab[prevSelectedTabId] = {
+                inputValue: prevInternalValueWithLiveViewState,
+                outputValue: nextEditorValueByTab[prevSelectedTabId]?.outputValue ?? '',
               };
             }
-          }
 
-          setState({
-            managedItems: nextState.items,
-            managedSelectedItemId: nextSelectedTabId,
-          });
-
-          setEditorValueByTab(nextEditorValueByTab);
-          editorValueByTabRef.current = nextEditorValueByTab;
-          managedSelectedItemIdRef.current = nextSelectedTabId;
-
-          if (nextSelectedTabId) {
-            const nextValue = nextEditorValueByTab[nextSelectedTabId]?.inputValue ?? {
-              text: '',
-            };
-            internalInputEditorValueRef.current = nextValue;
-            setInternalInputEditorValue(nextValue);
-          } else {
-            internalInputEditorValueRef.current = { text: '' };
-            setInternalInputEditorValue({ text: '' });
-          }
-        }}
-        data-test-subj="consoleEditorTabs"
-      />
-      {fetchingAutocompleteEntities ? (
-        <div css={styles.requestProgressBarContainer}>
-          <EuiProgress size="xs" color="accent" position="absolute" />
-        </div>
-      ) : null}
-      <EuiResizableContainer
-        css={styles.resizeableContainer}
-        direction={isVerticalLayout ? 'vertical' : 'horizontal'}
-        onPanelWidthChange={(sizes) =>
-          panelStorage.setPanelSize(sizes as { inputPanel: number; outputPanel: number })
-        }
-        data-test-subj="consoleEditorContainer"
-      >
-        {(EuiResizablePanel, EuiResizableButton) => (
-          <>
-            <EuiResizablePanel
-              initialSize={firstPanelSize}
-              minSize={PANEL_MIN_SIZE}
-              tabIndex={0}
-              paddingSize="none"
-              id="inputPanel"
-            >
-              <EuiSplitPanel.Outer
-                grow={true}
-                borderRadius="none"
-                hasShadow={false}
-                css={styles.fullHeightPanel}
-              >
-                <EuiSplitPanel.Inner
-                  paddingSize="none"
-                  grow={true}
-                  css={[styles.consoleEditorPanel, styles.editorPanelPositioned]}
-                >
-                  <InputPanel
-                    loading={loading}
-                    activeTabId={managedSelectedItemId}
-                    inputEditorValue={internalInputEditorValue}
-                    setInputEditorValue={updateInputEditorValue}
-                    setFetchingAutocompleteEntities={setFetchingAutocompleteEntities}
-                  />
-                </EuiSplitPanel.Inner>
-
-                {!loading && (
-                  <EuiSplitPanel.Inner
-                    grow={false}
-                    paddingSize="s"
-                    color="subdued"
-                    css={styles.consoleEditorPanel}
-                  >
-                    <EuiButtonEmpty
-                      size="xs"
-                      color="primary"
-                      data-test-subj="clearConsoleInput"
-                      onClick={() => {
-                        updateInputEditorValue({ text: '' });
-                      }}
-                    >
-                      {editorI18n.clearConsoleInputButton}
-                    </EuiButtonEmpty>
-                  </EuiSplitPanel.Inner>
-                )}
-              </EuiSplitPanel.Outer>
-            </EuiResizablePanel>
-
-            <EuiResizableButton
-              css={resizerStyles}
-              aria-label={
-                isVerticalLayout
-                  ? editorI18n.adjustPanelSizeVertical
-                  : editorI18n.adjustPanelSizeHorizontal
+            // Initialize state for newly created tabs.
+            for (const tabId of nextTabIds) {
+              if (!nextEditorValueByTab[tabId]) {
+                nextEditorValueByTab[tabId] = {
+                  inputValue: { text: '' },
+                  outputValue: '',
+                };
               }
-            />
+            }
 
-            <EuiResizablePanel
-              initialSize={secondPanelSize}
-              minSize={PANEL_MIN_SIZE}
-              tabIndex={0}
-              paddingSize="none"
-              id="outputPanel"
-            >
-              <EuiSplitPanel.Outer
-                borderRadius="none"
-                hasShadow={false}
-                css={styles.fullHeightPanel}
+            setState({
+              managedItems: nextState.items,
+              managedSelectedItemId: nextSelectedTabId,
+            });
+
+            setEditorValueByTab(nextEditorValueByTab);
+            editorValueByTabRef.current = nextEditorValueByTab;
+            managedSelectedItemIdRef.current = nextSelectedTabId;
+
+            if (nextSelectedTabId) {
+              const nextValue = nextEditorValueByTab[nextSelectedTabId]?.inputValue ?? {
+                text: '',
+              };
+              internalInputEditorValueRef.current = nextValue;
+              setInternalInputEditorValue(nextValue);
+            } else {
+              internalInputEditorValueRef.current = { text: '' };
+              setInternalInputEditorValue({ text: '' });
+            }
+          }}
+          data-test-subj="consoleEditorTabs"
+        />
+        {fetchingAutocompleteEntities ? (
+          <div css={styles.requestProgressBarContainer}>
+            <EuiProgress size="xs" color="accent" position="absolute" />
+          </div>
+        ) : null}
+        <EuiResizableContainer
+          css={styles.resizeableContainer}
+          direction={isVerticalLayout ? 'vertical' : 'horizontal'}
+          onPanelWidthChange={(sizes) =>
+            panelStorage.setPanelSize(sizes as { inputPanel: number; outputPanel: number })
+          }
+          data-test-subj="consoleEditorContainer"
+        >
+          {(EuiResizablePanel, EuiResizableButton) => (
+            <>
+              <EuiResizablePanel
+                initialSize={firstPanelSize}
+                minSize={PANEL_MIN_SIZE}
+                tabIndex={0}
+                paddingSize="none"
+                id="inputPanel"
               >
-                <EuiSplitPanel.Inner
-                  paddingSize="none"
-                  css={[styles.consoleEditorPanel, styles.outputPanelCentered]}
+                <EuiSplitPanel.Outer
+                  grow={true}
+                  borderRadius="none"
+                  hasShadow={false}
+                  css={styles.fullHeightPanel}
                 >
-                  <OutputPanel
-                    loading={isLoading}
-                    setVal={updateOutputEditorValue}
-                    val={editorValueByTab[managedSelectedItemId!]?.outputValue || ''}
-                  />
-                </EuiSplitPanel.Inner>
-
-                {(data || isLoading) && (
                   <EuiSplitPanel.Inner
-                    grow={false}
-                    paddingSize="s"
-                    css={[styles.consoleEditorPanel, styles.actionsPanelWithBackground]}
+                    paddingSize="none"
+                    grow={true}
+                    css={[styles.consoleEditorPanel, styles.editorPanelPositioned]}
                   >
-                    <EuiFlexGroup gutterSize="none" responsive={false}>
-                      <EuiFlexItem grow={false}>
-                        <EuiButtonEmpty
-                          size="xs"
-                          color="primary"
-                          data-test-subj="clearConsoleOutput"
-                          onClick={() => dispatch({ type: 'cleanRequest', payload: undefined })}
-                        >
-                          {editorI18n.clearConsoleOutputButton}
-                        </EuiButtonEmpty>
-                      </EuiFlexItem>
-
-                      <EuiFlexItem>
-                        <NetworkRequestStatusBar />
-                      </EuiFlexItem>
-                    </EuiFlexGroup>
+                    <InputPanel
+                      loading={loading}
+                      activeTabId={managedSelectedItemId}
+                      inputEditorValue={internalInputEditorValue}
+                      setInputEditorValue={updateInputEditorValue}
+                      setFetchingAutocompleteEntities={setFetchingAutocompleteEntities}
+                    />
                   </EuiSplitPanel.Inner>
-                )}
-              </EuiSplitPanel.Outer>
-            </EuiResizablePanel>
-          </>
-        )}
-      </EuiResizableContainer>
-    </>
-  );
-});
+
+                  {!loading && (
+                    <EuiSplitPanel.Inner
+                      grow={false}
+                      paddingSize="s"
+                      color="subdued"
+                      css={styles.consoleEditorPanel}
+                    >
+                      <EuiFlexGroup
+                        responsive={false}
+                        gutterSize="s"
+                        justifyContent="spaceBetween"
+                        alignItems="center"
+                      >
+                        <EuiFlexItem grow={false}>
+                          <EuiButtonEmpty
+                            size="xs"
+                            color="primary"
+                            data-test-subj="clearConsoleInput"
+                            onClick={() => {
+                              updateInputEditorValue({ text: '' });
+                            }}
+                          >
+                            {editorI18n.clearConsoleInputButton}
+                          </EuiButtonEmpty>
+                        </EuiFlexItem>
+
+                        <EuiFlexItem grow={false}>
+                          <EuiFlexGroup responsive={false} gutterSize="s" justifyContent="flexEnd">
+                            <EuiFlexItem grow={false}>
+                              <ImportExportRequestsButtons
+                                exportContent={exportContent}
+                                tourStepProps={filesTourStepProps}
+                              />
+                            </EuiFlexItem>
+                          </EuiFlexGroup>
+                        </EuiFlexItem>
+                      </EuiFlexGroup>
+                    </EuiSplitPanel.Inner>
+                  )}
+                </EuiSplitPanel.Outer>
+              </EuiResizablePanel>
+
+              <EuiResizableButton
+                css={resizerStyles}
+                aria-label={
+                  isVerticalLayout
+                    ? editorI18n.adjustPanelSizeVertical
+                    : editorI18n.adjustPanelSizeHorizontal
+                }
+              />
+
+              <EuiResizablePanel
+                initialSize={secondPanelSize}
+                minSize={PANEL_MIN_SIZE}
+                tabIndex={0}
+                paddingSize="none"
+                id="outputPanel"
+              >
+                <EuiSplitPanel.Outer
+                  borderRadius="none"
+                  hasShadow={false}
+                  css={styles.fullHeightPanel}
+                >
+                  <EuiSplitPanel.Inner
+                    paddingSize="none"
+                    css={[styles.consoleEditorPanel, styles.outputPanelCentered]}
+                  >
+                    <OutputPanel
+                      loading={isLoading}
+                      setVal={updateOutputEditorValue}
+                      val={editorValueByTab[managedSelectedItemId!]?.outputValue || ''}
+                    />
+                  </EuiSplitPanel.Inner>
+
+                  {(data || isLoading) && (
+                    <EuiSplitPanel.Inner
+                      grow={false}
+                      paddingSize="s"
+                      css={[styles.consoleEditorPanel, styles.actionsPanelWithBackground]}
+                    >
+                      <EuiFlexGroup gutterSize="none" responsive={false}>
+                        <EuiFlexItem grow={false}>
+                          <EuiButtonEmpty
+                            size="xs"
+                            color="primary"
+                            data-test-subj="clearConsoleOutput"
+                            onClick={() => dispatch({ type: 'cleanRequest', payload: undefined })}
+                          >
+                            {editorI18n.clearConsoleOutputButton}
+                          </EuiButtonEmpty>
+                        </EuiFlexItem>
+
+                        <EuiFlexItem>
+                          <NetworkRequestStatusBar />
+                        </EuiFlexItem>
+                      </EuiFlexGroup>
+                    </EuiSplitPanel.Inner>
+                  )}
+                </EuiSplitPanel.Outer>
+              </EuiResizablePanel>
+            </>
+          )}
+        </EuiResizableContainer>
+      </>
+    );
+  }
+);
