@@ -8,17 +8,8 @@
  */
 
 import React from 'react';
-import {
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiPanel,
-  EuiSpacer,
-  useIsWithinBreakpoints,
-} from '@elastic/eui';
+import { EuiPanel } from '@elastic/eui';
 import { css } from '@emotion/react';
-
-import { Settings } from './settings';
-import { Variables } from './variables';
 
 const styles = {
   fullHeightPanel: css`
@@ -27,8 +18,6 @@ const styles = {
 };
 
 export function Config() {
-  const isVerticalLayout = useIsWithinBreakpoints(['xs', 's', 'm']);
-
   return (
     <EuiPanel
       color="plain"
@@ -37,22 +26,6 @@ export function Config() {
       borderRadius="none"
       css={styles.fullHeightPanel}
       data-test-subj="consoleConfigPanel"
-    >
-      <EuiFlexGroup
-        gutterSize="xl"
-        direction={isVerticalLayout ? 'column' : 'row'}
-        // Turn off default responsiveness
-        responsive={false}
-      >
-        <EuiFlexItem>
-          <Settings />
-          <EuiSpacer size="m" />
-        </EuiFlexItem>
-        <EuiFlexItem>
-          <Variables />
-          <EuiSpacer size="m" />
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    </EuiPanel>
+    />
   );
 }

@@ -25,7 +25,8 @@ import { useServicesContext } from '../../contexts';
 import { MAIN_PANEL_LABELS } from './i18n';
 import { NavIconButton } from './nav_icon_button';
 import { Editor } from '../editor';
-import { Config } from '../config';
+import { VariablesFlyout } from '../config/variables_flyout';
+import { SettingsFlyout } from '../config/settings_flyout';
 import {
   useEditorReadContext,
   useEditorActionContext,
@@ -64,6 +65,8 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isFullscreenOpen, setIsFullScreen] = useState(false);
+  const [isVariablesFlyoutOpen, setIsVariablesFlyoutOpen] = useState(false);
+  const [isSettingsFlyoutOpen, setIsSettingsFlyoutOpen] = useState(false);
   const styles = useMainStyles(isEmbeddable);
 
   const {
@@ -80,6 +83,14 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
   useEffect(() => {
     requestDispatch({ type: 'cleanRequest', payload: undefined });
   }, [currentView, requestDispatch]);
+
+  useEffect(() => {
+    if (currentTab === CONFIG_TAB_ID) {
+      setIsSettingsFlyoutOpen(true);
+    } else if (isSettingsFlyoutOpen) {
+      setIsSettingsFlyoutOpen(false);
+    }
+  }, [currentTab, isSettingsFlyoutOpen]);
 
   const consoleTourStepProps: ConsoleTourStepProps[] = getConsoleTourStepProps(
     tourStepProps,
@@ -188,7 +199,6 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
             />
           )}
           {currentTab === HISTORY_TAB_ID && <History />}
-          {currentTab === CONFIG_TAB_ID && <Config />}
         </EuiSplitPanel.Inner>
         <EuiHorizontalRule margin="none" />
         <EuiSplitPanel.Inner
@@ -239,7 +249,10 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
 
                 <EuiFlexItem grow={false}>
                   <EuiButtonEmpty
-                    onClick={() => updateTab(CONFIG_TAB_ID)}
+                    onClick={() => {
+                      updateTab(CONFIG_TAB_ID);
+                      setIsSettingsFlyoutOpen(true);
+                    }}
                     size="xs"
                     color="text"
                     data-test-subj="consoleConfigButton"
@@ -255,7 +268,7 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
 
                 <EuiFlexItem grow={false}>
                   <EuiButtonEmpty
-                    onClick={() => updateTab(CONFIG_TAB_ID)}
+                    onClick={() => setIsVariablesFlyoutOpen(true)}
                     iconType="editorCodeBlock"
                     size="xs"
                     color="text"
@@ -294,6 +307,25 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
           </EuiFlexGroup>
         </EuiSplitPanel.Inner>
       </EuiSplitPanel.Outer>
+
+      {isVariablesFlyoutOpen && (
+        <VariablesFlyout
+          onClose={() => {
+            setIsVariablesFlyoutOpen(false);
+          }}
+        />
+      )}
+
+      {isSettingsFlyoutOpen && (
+        <SettingsFlyout
+          onClose={() => {
+            setIsSettingsFlyoutOpen(false);
+            if (currentTab === CONFIG_TAB_ID) {
+              updateTab(SHELL_TAB_ID);
+            }
+          }}
+        />
+      )}
 
       {/* Empty container for Editor Tour Step */}
       <ConsoleTourStep tourStepProps={consoleTourStepProps[EDITOR_TOUR_STEP - 1]}>
