@@ -14,7 +14,7 @@ The HubSpot connector communicates with the HubSpot CRM API to search and retrie
 
 ## Create connectors in {{kib}} [define-hubspot-ui]
 
-You can create connectors in **{{stack-manage-app}} > {{connectors-ui}}**. For example:
+You can create connectors in **{{stack-manage-app}} > {{connectors-ui}}**.
 
 ### Connector configuration [hubspot-connector-configuration]
 
