@@ -306,7 +306,12 @@ export const Tool: React.FC<ToolProps> = ({ mode, tool, isLoading, isSubmitting,
         <KibanaPageTemplate data-test-subj="agentBuilderToolFormPage">
           <KibanaPageTemplate.Header
             pageTitle={
-              <EuiFlexGroup alignItems="center" gutterSize="m" responsive={false} css={{ minWidth: 0 }}>
+              <EuiFlexGroup
+                alignItems="center"
+                gutterSize="m"
+                responsive={false}
+                css={{ minWidth: 0 }}
+              >
                 <EuiFlexItem
                   grow={true}
                   css={css`
