@@ -9,7 +9,7 @@ import Fs from 'fs';
 import Path from 'path';
 import type { ToolingLog } from '@kbn/tooling-log';
 
-const METADATA_RELATIVE_PATH = 'x-pack/platform/packages/shared/kbn-evals/evals.suites.json';
+const METADATA_RELATIVE_PATH = '.buildkite/pipelines/evals/evals.suites.json';
 
 const SKIP_DIRS = new Set([
   '.git',
@@ -34,7 +34,6 @@ export interface EvalSuiteMetadata {
   configPath: string;
   tags?: string[];
   ciLabels?: string[];
-  serverConfigSet?: string;
 }
 
 export interface EvalSuiteDefinition {
@@ -48,7 +47,6 @@ export interface EvalSuiteDefinition {
   ciLabels: string[];
   description?: string;
   source: 'metadata' | 'discovery';
-  serverConfigSet?: string;
 }
 
 interface MetadataFile {
@@ -153,7 +151,6 @@ const normalizeSuite = (
     ciLabels,
     description: metadata?.description,
     source: metadata ? 'metadata' : 'discovery',
-    serverConfigSet: metadata?.serverConfigSet,
   };
 };
 

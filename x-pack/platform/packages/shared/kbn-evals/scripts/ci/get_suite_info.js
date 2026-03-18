@@ -15,7 +15,7 @@ if (!suiteId) {
   process.exit(1);
 }
 
-const suitesPath = path.resolve(__dirname, '../../evals.suites.json');
+const suitesPath = path.resolve(process.cwd(), '.buildkite/pipelines/evals/evals.suites.json');
 const raw = readFileSync(suitesPath, 'utf8');
 const parsed = JSON.parse(raw);
 const suites = Array.isArray(parsed?.suites) ? parsed.suites : [];
