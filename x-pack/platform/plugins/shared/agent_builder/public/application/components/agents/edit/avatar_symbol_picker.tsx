@@ -81,7 +81,12 @@ export const AvatarSymbolPicker: React.FC<AvatarSymbolPickerProps> = ({
       isDropdown={!value && !disabled}
       clear={
         value && !disabled
-          ? { onClick: (e) => { e.stopPropagation(); onChange(''); } }
+          ? {
+              onClick: (e) => {
+                e.stopPropagation();
+                onChange('');
+              },
+            }
           : undefined
       }
     >
