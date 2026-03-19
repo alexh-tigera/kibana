@@ -25,11 +25,13 @@ export type FixtureMap = Record<string, TypeVersionFixtures>;
 
 export interface TaskContext {
   gitRev: string;
+  serverlessGitRev?: string;
   esServer?: TestElasticsearchUtils;
   kibanaServer?: Root;
   registeredTypes?: SavedObjectsType<any>[];
   encryptedSavedObjects?: EncryptedSavedObjectsPluginStart;
   from?: MigrationSnapshot;
+  serverlessFrom?: MigrationSnapshot;
   to?: MigrationSnapshot;
   updatedTypes: SavedObjectsType<any>[];
   currentRemovedTypes: string[];
@@ -44,7 +46,6 @@ export interface TaskContext {
 }
 
 export const encryptionOverrides: EncryptedSavedObjectTypeRegistration[] = [
-  // Placeholder for manually specifying any previous versions of ESO registrations
   {
     type: 'connector_token',
     attributesToEncrypt: new Set(['token']),

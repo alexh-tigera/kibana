@@ -12,11 +12,11 @@ import type { AxiosInstance } from 'axios';
 import type { AuthContext, AuthTypeSpec } from '../connector_spec';
 import * as i18n from './translations';
 
+export const EARS_PROVIDERS = ['google', 'microsoft', 'slack'] as const;
+
 const authSchema = z
   .object({
-    provider: z
-      .enum(['google', 'microsoft', 'github'])
-      .meta({ label: i18n.EARS_PROVIDER_LABEL, widget: 'select', disabled: true }),
+    provider: z.enum(EARS_PROVIDERS).meta({ hidden: true }),
     scope: z.string().meta({ label: i18n.OAUTH_SCOPE_LABEL }).optional(),
   })
   .meta({ label: i18n.EARS_LABEL });
@@ -52,7 +52,8 @@ export const Ears: AuthTypeSpec<AuthSchemaType> = {
     let token;
     try {
       token = await ctx.getToken({
-        tokenUrl: `/v1/${secret.provider}/oauth/token`,
+        authType: 'ears',
+        provider: secret.provider,
         scope: secret.scope,
       });
     } catch (error) {

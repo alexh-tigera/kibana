@@ -8,7 +8,8 @@
 import { schema } from '@kbn/config-schema';
 import type { CoreSetup, IRouter, KibanaResponseFactory, Logger } from '@kbn/core/server';
 import { i18n } from '@kbn/i18n';
-import { capitalize, escape } from 'lodash';
+import { escape } from 'lodash';
+import { OAuthAuthorizationService } from '../lib';
 import type { ActionsPluginsStart } from '../plugin';
 import type { ILicenseState } from '../lib';
 import {
@@ -22,9 +23,8 @@ import type { ActionsConfigurationUtilities } from '../actions_config';
 import { DEFAULT_ACTION_ROUTE_SECURITY } from './constants';
 import { verifyAccessAndContext } from './verify_access_and_context';
 import { OAuthStateClient } from '../lib/oauth_state_client';
-import { OAuthAuthorizationService } from '../lib/oauth_authorization_service';
 import { requestOAuthAuthorizationCodeToken } from '../lib/request_oauth_authorization_code_token';
-import { requestEarsToken } from '../lib/request_ears_token';
+import { requestEarsToken } from '../lib/ears/request_ears_token';
 import type { OAuthRateLimiter } from '../lib/oauth_rate_limiter';
 import { UserConnectorTokenClient } from '../lib/user_connector_token_client';
 
@@ -82,21 +82,6 @@ const querySchema = schema.object(
   // Allow unknown query parameters to be passed in like scope, authuser, etc.
   { unknowns: 'allow' }
 );
-
-/**
- * Resolves the full EARS URL by combining the configured base URL with the path
- * from the stored URL (which may be a full URL or just a path).
- */
-function resolveEarsUrl(storedUrl: string, earsBaseUrl: string): string {
-  const base = earsBaseUrl.replace(/\/$/, '');
-  let path: string;
-  try {
-    path = new URL(storedUrl).pathname;
-  } catch {
-    path = storedUrl.startsWith('/') ? storedUrl : `/${storedUrl}`;
-  }
-  return `${base}${path}`;
-}
 
 interface OAuthConnectorSecrets {
   authType?: string;
@@ -545,26 +530,15 @@ export const oauthCallbackRoute = (
           const secrets = rawAction.attributes.secrets;
           const authType = secrets.authType;
 
-          // For EARS, derive the token path from the provider field; fall back to stored tokenUrl
-          const storedTokenUrl = secrets.provider
-            ? `/v1/${secrets.provider}/oauth/token`
-            : secrets.tokenUrl || config?.tokenUrl;
-
-          if (!storedTokenUrl) {
-            throw new Error(
-              'Connector missing required OAuth configuration (tokenUrl or provider)'
-            );
-          }
-
           let tokenResult;
           if (authType === 'ears') {
-            const earsBaseUrl = configurationUtilities.getEarsUrl();
-            const tokenUrl = earsBaseUrl
-              ? resolveEarsUrl(storedTokenUrl, earsBaseUrl)
-              : storedTokenUrl;
-            // EARS flow: JSON body with { code, pkce_verifier }, no client credentials
+            const provider = secrets.provider;
+            if (!provider) {
+              throw new Error('Connector missing required OAuth configuration (provider)');
+            }
+
             tokenResult = await requestEarsToken(
-              tokenUrl,
+              provider,
               logger,
               {
                 code,
@@ -573,13 +547,13 @@ export const oauthCallbackRoute = (
               configurationUtilities
             );
           } else {
-            // Standard OAuth Authorization Code flow
             const clientId = secrets.clientId || config?.clientId;
             const clientSecret = secrets.clientSecret;
             const useBasicAuth = secrets.useBasicAuth ?? config?.useBasicAuth ?? true;
-            if (!clientId || !clientSecret) {
+            const tokenUrl = secrets.tokenUrl || config?.tokenUrl;
+            if (!clientId || !clientSecret || !tokenUrl) {
               throw new Error(
-                'Connector missing required OAuth configuration (clientId, clientSecret)'
+                'Connector missing required OAuth configuration (clientId, clientSecret, tokenUrl)'
               );
             }
 
@@ -589,7 +563,7 @@ export const oauthCallbackRoute = (
             );
 
             tokenResult = await requestOAuthAuthorizationCodeToken(
-              storedTokenUrl,
+              tokenUrl,
               logger,
               {
                 code,
@@ -621,7 +595,7 @@ export const oauthCallbackRoute = (
             tokenType: 'access_token',
             profileUid,
           });
-          const formattedToken = `${capitalize(tokenResult.tokenType)} ${tokenResult.accessToken}`;
+          const formattedToken = `${tokenResult.tokenType} ${tokenResult.accessToken}`;
           await userConnectorTokenClient.createWithRefreshToken({
             connectorId: stateConnectorId,
             accessToken: formattedToken,
