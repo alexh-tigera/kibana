@@ -26,11 +26,11 @@ Key differences from a standard OAuth authorization code grant flow:
 All EARS endpoints are derived from the configured `earsBaseUrl`
 (`xpack.actions.ears.url` in `kibana.yml`) and the provider name:
 
-| Purpose        | Path                                       |
-|----------------|--------------------------------------------|
-| Authorize      | `{earsBaseUrl}/{provider}/oauth/authorize` |
-| Token exchange | `{earsBaseUrl}/{provider}/oauth/token`     |
-| Token refresh  | `{earsBaseUrl}/{provider}/oauth/refresh`   |
+| Purpose        | Path                                          |
+|----------------|-----------------------------------------------|
+| Authorize      | `{earsBaseUrl}/v1/{provider}/oauth/authorize` |
+| Token exchange | `{earsBaseUrl}/v1/{provider}/oauth/token`     |
+| Token refresh  | `{earsBaseUrl}/v1/{provider}/oauth/refresh`   |
 
 `getEarsEndpointsForProvider(provider)` in `url.ts` builds the path segments;
 `resolveEarsUrl(path, earsBaseUrl)` assembles the full URL.
