@@ -114,6 +114,9 @@ export class OAuthAuthCodeStrategy implements AxiosAuthStrategy {
         config: {
           clientId: opts.clientId,
           tokenUrl: opts.tokenUrl,
+          ...(opts.tokenEndpointAuthMethod !== undefined
+            ? { useBasicAuth: opts.tokenEndpointAuthMethod !== 'client_secret_post' }
+            : {}),
           ...(opts.additionalFields ? { additionalFields: opts.additionalFields } : {}),
         },
         secrets: { clientSecret: opts.clientSecret },
