@@ -83,6 +83,7 @@ export class OAuthAuthCodeStrategy implements AxiosAuthStrategy {
           `Token refreshed successfully for connectorId ${connectorId}. Retrying request.`
         );
         error.config.headers.Authorization = newAccessToken;
+        axiosInstance.defaults.headers.common.Authorization = newAccessToken;
         return axiosInstance.request(error.config);
       }
     );

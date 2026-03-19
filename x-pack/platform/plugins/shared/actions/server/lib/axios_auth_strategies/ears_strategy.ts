@@ -74,6 +74,7 @@ export class EarsStrategy implements AxiosAuthStrategy {
           `EARS token refreshed successfully for connectorId ${connectorId}. Retrying request.`
         );
         error.config.headers.Authorization = newAccessToken;
+        axiosInstance.defaults.headers.common.Authorization = newAccessToken;
         return axiosInstance.request(error.config);
       }
     );
