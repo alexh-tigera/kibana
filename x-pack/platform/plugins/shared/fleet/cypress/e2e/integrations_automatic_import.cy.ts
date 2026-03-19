@@ -71,7 +71,8 @@ describe('Add Integration - Automatic Import', () => {
     logout();
   });
 
-  it('should create an integration', () => {
+  // Failing test https://github.com/elastic/kibana/issues/258522
+  it.skip('should create an integration', () => {
     cy.visit(CREATE_INTEGRATION_LANDING_PAGE);
 
     cy.getBySel(ASSISTANT_BUTTON).should('exist');
