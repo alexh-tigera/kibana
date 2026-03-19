@@ -300,3 +300,15 @@ xpack.actions.preconfigured:
       inferenceId: ".google-gemini-3.0-flash-chat_completion"
       providerConfig:
         model_id: "google-gemini-3.0-flash"
+
+
+uiSettings:
+  overrides:
+    'workflows:ui:enabled': true
+
+logging:
+  loggers:
+    - name: plugins.actions
+      level: debug
+      appenders: [default]
+
