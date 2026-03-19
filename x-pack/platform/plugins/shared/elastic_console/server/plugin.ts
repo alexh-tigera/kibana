@@ -13,6 +13,8 @@ import type {
   ElasticConsoleSetupDependencies,
   ElasticConsoleStartDependencies,
 } from './types';
+import type { ElasticConsoleConfig } from './config';
+import { SLACK_CREDENTIALS_SO_TYPE } from './lib/slack_credentials_so';
 import { registerUiSettings } from './ui_settings';
 import { registerRoutes } from './routes';
 
@@ -26,15 +28,37 @@ export class ElasticConsolePlugin
     >
 {
   private logger: Logger;
+  private config: ElasticConsoleConfig;
 
   constructor(context: PluginInitializerContext) {
     this.logger = context.logger.get();
+    this.config = context.config.get<ElasticConsoleConfig>();
   }
 
   setup(
     coreSetup: CoreSetup<ElasticConsoleStartDependencies, ElasticConsolePluginStart>,
     setupDeps: ElasticConsoleSetupDependencies
   ): ElasticConsolePluginSetup {
+    // Register the saved object type for Slack credentials (bot token)
+    coreSetup.savedObjects.registerType({
+      name: SLACK_CREDENTIALS_SO_TYPE,
+      hidden: true,
+      namespaceType: 'agnostic', // global singleton — one per Kibana instance
+      mappings: {
+        dynamic: false,
+        properties: {
+          bot_token: { type: 'binary' }, // encrypted at rest by ESO
+          updated_at: { type: 'date' },
+        },
+      },
+    });
+
+    // Tell ESO which attributes to encrypt
+    setupDeps.encryptedSavedObjects.registerType({
+      type: SLACK_CREDENTIALS_SO_TYPE,
+      attributesToEncrypt: new Set(['bot_token']),
+    });
+
     registerUiSettings(coreSetup);
 
     const router = coreSetup.http.createRouter();
@@ -44,6 +68,7 @@ export class ElasticConsolePlugin
       coreSetup,
       logger: this.logger,
       cloud: setupDeps.cloud,
+      config: this.config,
     });
 
     return {};

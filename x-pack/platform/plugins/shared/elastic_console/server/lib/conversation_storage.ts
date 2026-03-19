@@ -27,7 +27,18 @@ const storageSettings = {
       updated_at: types.date({}),
       conversation_rounds: types.object({ dynamic: false, properties: {} }),
       attachments: types.object({ dynamic: false, properties: {} }),
-      state: types.object({ dynamic: false, properties: {} }),
+      state: types.object({
+        dynamic: false,
+        properties: {
+          location: types.keyword({}),
+          origin_ref: types.keyword({}),
+          origin_location: types.keyword({}),
+          fork_context: types.text({}),
+          connector_id: types.keyword({}),
+          located_at: types.date({}),
+          handoff_summary: types.text({}),
+        },
+      }),
     },
   },
 } satisfies IndexStorageSettings;
