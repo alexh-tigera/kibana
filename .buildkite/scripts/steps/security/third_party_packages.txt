@@ -91,3 +91,8 @@ resolve.exports
 storybook
 trace
 @opentelemetry/exporter-trace-otlp-grpc
+@ai-sdk/langchain
+@swc/core
+lightningcss
+tar-fs
+browserslist
