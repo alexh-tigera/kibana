@@ -326,7 +326,9 @@ describe('HubSpotConnector', () => {
     it('should return ok when contacts endpoint returns 200', async () => {
       mockClient.get.mockResolvedValue({ status: 200, data: { results: [] } });
 
-      const result = await HubSpotConnector.test!.handler(mockContext);
+      const test = HubSpotConnector.test;
+      if (!test) throw new Error('Expected HubSpotConnector.test to be defined');
+      const result = await test.handler(mockContext);
 
       expect(mockClient.get).toHaveBeenCalledWith(
         'https://api.hubapi.com/crm/v3/objects/contacts?limit=1',
@@ -338,7 +340,9 @@ describe('HubSpotConnector', () => {
     it('should return not ok when contacts endpoint returns 401', async () => {
       mockClient.get.mockResolvedValue({ status: 401 });
 
-      const result = await HubSpotConnector.test!.handler(mockContext);
+      const test = HubSpotConnector.test;
+      if (!test) throw new Error('Expected HubSpotConnector.test to be defined');
+      const result = await test.handler(mockContext);
 
       expect(result.ok).toBe(false);
     });
