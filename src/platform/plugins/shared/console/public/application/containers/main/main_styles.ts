@@ -20,7 +20,7 @@ export const useMainStyles = (isEmbeddable: boolean) => {
       // Make sure the editor actions don't create scrollbars on this container
       // SASSTODO: Uncomment when tooltips are EUI-ified (inside portals)
       overflow: hidden;
-      padding: ${euiTheme.size.m};
+      padding-top: ${euiTheme.size.m};
       gap: 0;
       ${isEmbeddable &&
       css`

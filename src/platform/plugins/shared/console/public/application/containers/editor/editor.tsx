@@ -8,6 +8,7 @@
  */
 
 import React, { useCallback, memo, useEffect, useState, useMemo, useRef } from 'react';
+import { useEuiTheme } from '@elastic/eui';
 
 import { debounce } from 'lodash';
 import {
@@ -19,6 +20,7 @@ import {
   EuiResizableContainer,
   useIsWithinBreakpoints,
 } from '@elastic/eui';
+import { css } from '@emotion/react';
 
 import { UnifiedTabs, type UnifiedTabsProps } from '@kbn/unified-tabs';
 import type { ConsoleTourStepProps } from '../../components';
@@ -45,6 +47,7 @@ import { useResizerButtonStyles } from '../styles';
 import type { InputEditorValue, PersistedEditorTabsState } from './types';
 import { instance as editorRegistry } from '../../contexts/editor_context/editor_registry';
 import { StorageKeys } from '../../../services';
+import { FullscreenButton } from './fullscreen_button';
 
 const PANEL_MIN_SIZE = '20%';
 
@@ -91,15 +94,25 @@ interface Props {
   inputEditorValue: string;
   setInputEditorValue: (value: string) => void;
   filesTourStepProps?: ConsoleTourStepProps;
+  isFullscreenOpen: boolean;
+  toggleFullscreen: () => void;
 }
 
 export const Editor = memo(
-  ({ loading, inputEditorValue, setInputEditorValue, filesTourStepProps }: Props) => {
+  ({
+    loading,
+    inputEditorValue,
+    setInputEditorValue,
+    filesTourStepProps,
+    isFullscreenOpen,
+    toggleFullscreen,
+  }: Props) => {
     const {
       services: { objectStorageClient, storage },
     } = useServicesContext();
     const styles = useStyles();
     const resizerStyles = useResizerButtonStyles();
+    const { euiTheme } = useEuiTheme();
 
     const panelStorage = useMemo(() => new PanelStorage(), []);
     const [firstPanelSize, secondPanelSize] = useMemo(
@@ -300,88 +313,104 @@ export const Editor = memo(
 
     return (
       <>
-        <UnifiedTabs
-          items={managedItems}
-          selectedItemId={managedSelectedItemId}
-          recentlyClosedItems={[]}
-          services={{ core: {} }}
-          createItem={() => ({
-            id: `${Date.now()}`,
-            label: editorI18n.newTabLabel,
-          })}
-          onClearRecentlyClosed={() => {}}
-          onEBTEvent={() => {}}
-          onChanged={(nextState) => {
-            const nextSelectedTabId = nextState.selectedItem?.id;
+        <EuiFlexGroup
+          direction="row"
+          alignItems="center"
+          gutterSize="s"
+          responsive={false}
+          css={css`
+            padding-right: 8px;
+            background-color: ${euiTheme.colors.backgroundBaseAccent};
+          `}
+        >
+          <EuiFlexItem grow={true}>
+            <UnifiedTabs
+              items={managedItems}
+              selectedItemId={managedSelectedItemId}
+              recentlyClosedItems={[]}
+              services={{ core: {} }}
+              createItem={() => ({
+                id: `${Date.now()}`,
+                label: editorI18n.newTabLabel,
+              })}
+              onClearRecentlyClosed={() => {}}
+              onEBTEvent={() => {}}
+              onChanged={(nextState) => {
+                const nextSelectedTabId = nextState.selectedItem?.id;
 
-            const nextTabIds = new Set(nextState.items.map((item) => item.id));
+                const nextTabIds = new Set(nextState.items.map((item) => item.id));
 
-            const nextEditorValueByTab: Record<
-              string,
-              { inputValue: InputEditorValue; outputValue: string }
-            > = {};
+                const nextEditorValueByTab: Record<
+                  string,
+                  { inputValue: InputEditorValue; outputValue: string }
+                > = {};
 
-            const prevEditorValueByTab = editorValueByTabRef.current;
-            const prevSelectedTabId = managedSelectedItemIdRef.current;
-            const prevInternalValue = internalInputEditorValueRef.current;
-            const liveViewState = editorRegistry.getEditor()?.saveViewState();
-            const prevInternalValueWithLiveViewState: InputEditorValue = liveViewState
-              ? { ...prevInternalValue, viewState: liveViewState }
-              : prevInternalValue;
+                const prevEditorValueByTab = editorValueByTabRef.current;
+                const prevSelectedTabId = managedSelectedItemIdRef.current;
+                const prevInternalValue = internalInputEditorValueRef.current;
+                const liveViewState = editorRegistry.getEditor()?.saveViewState();
+                const prevInternalValueWithLiveViewState: InputEditorValue = liveViewState
+                  ? { ...prevInternalValue, viewState: liveViewState }
+                  : prevInternalValue;
 
-            // Carry over only tabs that still exist
-            for (const tabId of Object.keys(prevEditorValueByTab)) {
-              if (!nextTabIds.has(tabId)) continue;
-              nextEditorValueByTab[tabId] = prevEditorValueByTab[tabId];
-            }
+                // Carry over only tabs that still exist
+                for (const tabId of Object.keys(prevEditorValueByTab)) {
+                  if (!nextTabIds.has(tabId)) continue;
+                  nextEditorValueByTab[tabId] = prevEditorValueByTab[tabId];
+                }
 
-            // Persist the latest state of the previously selected tab (in case tab switching happens
-            // before a React state update flushes).
-            if (prevSelectedTabId && nextTabIds.has(prevSelectedTabId)) {
-              nextEditorValueByTab[prevSelectedTabId] = {
-                inputValue: prevInternalValueWithLiveViewState,
-                outputValue: nextEditorValueByTab[prevSelectedTabId]?.outputValue ?? '',
-              };
-            }
+                // Persist the latest state of the previously selected tab (in case tab switching happens
+                // before a React state update flushes).
+                if (prevSelectedTabId && nextTabIds.has(prevSelectedTabId)) {
+                  nextEditorValueByTab[prevSelectedTabId] = {
+                    inputValue: prevInternalValueWithLiveViewState,
+                    outputValue: nextEditorValueByTab[prevSelectedTabId]?.outputValue ?? '',
+                  };
+                }
 
-            // Initialize state for newly created tabs.
-            for (const tabId of nextTabIds) {
-              if (!nextEditorValueByTab[tabId]) {
-                nextEditorValueByTab[tabId] = {
-                  inputValue: { text: '' },
-                  outputValue: '',
-                };
-              }
-            }
+                // Initialize state for newly created tabs.
+                for (const tabId of nextTabIds) {
+                  if (!nextEditorValueByTab[tabId]) {
+                    nextEditorValueByTab[tabId] = {
+                      inputValue: { text: '' },
+                      outputValue: '',
+                    };
+                  }
+                }
 
-            setState({
-              managedItems: nextState.items,
-              managedSelectedItemId: nextSelectedTabId,
-            });
+                setState({
+                  managedItems: nextState.items,
+                  managedSelectedItemId: nextSelectedTabId,
+                });
 
-            setEditorValueByTab(nextEditorValueByTab);
-            editorValueByTabRef.current = nextEditorValueByTab;
-            managedSelectedItemIdRef.current = nextSelectedTabId;
+                setEditorValueByTab(nextEditorValueByTab);
+                editorValueByTabRef.current = nextEditorValueByTab;
+                managedSelectedItemIdRef.current = nextSelectedTabId;
 
-            if (nextSelectedTabId) {
-              const nextValue = nextEditorValueByTab[nextSelectedTabId]?.inputValue ?? {
-                text: '',
-              };
-              internalInputEditorValueRef.current = nextValue;
-              setInternalInputEditorValue(nextValue);
-            } else {
-              internalInputEditorValueRef.current = { text: '' };
-              setInternalInputEditorValue({ text: '' });
-            }
+                if (nextSelectedTabId) {
+                  const nextValue = nextEditorValueByTab[nextSelectedTabId]?.inputValue ?? {
+                    text: '',
+                  };
+                  internalInputEditorValueRef.current = nextValue;
+                  setInternalInputEditorValue(nextValue);
+                } else {
+                  internalInputEditorValueRef.current = { text: '' };
+                  setInternalInputEditorValue({ text: '' });
+                }
 
-            persistTabsStateDebounced({
-              items: nextState.items,
-              selectedTabId: nextSelectedTabId,
-              editorValueByTab: nextEditorValueByTab,
-            });
-          }}
-          data-test-subj="consoleEditorTabs"
-        />
+                persistTabsStateDebounced({
+                  items: nextState.items,
+                  selectedTabId: nextSelectedTabId,
+                  editorValueByTab: nextEditorValueByTab,
+                });
+              }}
+              data-test-subj="consoleEditorTabs"
+            />
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <FullscreenButton isFullscreenOpen={isFullscreenOpen} onToggle={toggleFullscreen} />
+          </EuiFlexItem>
+        </EuiFlexGroup>
         {fetchingAutocompleteEntities ? (
           <div css={styles.requestProgressBarContainer}>
             <EuiProgress size="xs" color="accent" position="absolute" />

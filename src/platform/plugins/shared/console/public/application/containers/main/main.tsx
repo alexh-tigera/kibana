@@ -130,30 +130,6 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
         <h1>{MAIN_PANEL_LABELS.consolePageHeading}</h1>
       </EuiScreenReaderOnly>
       <EuiSplitPanel.Outer grow={true} borderRadius={isEmbeddable ? 'none' : 'm'}>
-        <EuiSplitPanel.Inner grow={false} css={styles.consoleTabs}>
-          <EuiFlexGroup direction="row" alignItems="center" gutterSize="s" responsive={false}>
-            {isEmbeddable && (
-              <EuiFlexItem grow={false}>
-                <NavIconButton
-                  iconType={isFullscreenOpen ? 'fullScreenExit' : 'fullScreen'}
-                  onClick={toggleFullscreen}
-                  ariaLabel={
-                    isFullscreenOpen
-                      ? MAIN_PANEL_LABELS.closeFullscrenButton
-                      : MAIN_PANEL_LABELS.openFullscrenButton
-                  }
-                  dataTestSubj="consoleToggleFullscreenButton"
-                  toolTipContent={
-                    isFullscreenOpen
-                      ? MAIN_PANEL_LABELS.closeFullscrenButton
-                      : MAIN_PANEL_LABELS.openFullscrenButton
-                  }
-                />
-              </EuiFlexItem>
-            )}
-          </EuiFlexGroup>
-        </EuiSplitPanel.Inner>
-        <EuiHorizontalRule margin="none" />
         <EuiSplitPanel.Inner
           paddingSize="none"
           css={styles.scrollablePanelWithBackground}
@@ -166,6 +142,8 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
               setInputEditorValue={(val) => {
                 setInputEditorValue(val);
               }}
+              isFullscreenOpen={isFullscreenOpen}
+              toggleFullscreen={toggleFullscreen}
               filesTourStepProps={consoleTourStepProps[FILES_TOUR_STEP - 1]}
             />
           )}
