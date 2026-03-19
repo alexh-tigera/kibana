@@ -86,7 +86,7 @@ export const ImportExportRequestsButtons = ({ exportContent, tourStepProps }: Pr
         <EuiFlexItem grow={false}>
           <EuiToolTip content={MAIN_PANEL_LABELS.exportButtonTooltip}>
             <EuiButtonEmpty
-              iconType="exportAction"
+              iconType="upload"
               disabled={exportContent === ''}
               onClick={() =>
                 downloadFileAs(EXPORT_FILE_NAME, {
@@ -106,7 +106,7 @@ export const ImportExportRequestsButtons = ({ exportContent, tourStepProps }: Pr
         <EuiFlexItem grow={false}>
           <EuiToolTip content={MAIN_PANEL_LABELS.importButtonTooltip}>
             <EuiButtonEmpty
-              iconType="importAction"
+              iconType="download"
               onClick={() => importFileInputRef.current?.click()}
               size="xs"
               data-test-subj="consoleImportButton"
