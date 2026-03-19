@@ -22,6 +22,8 @@ interface Props {
   inputEditorValue: InputEditorValue;
   setInputEditorValue: (value: InputEditorValue) => void;
   setFetchingAutocompleteEntities: (value: boolean) => void;
+  skipInitialValue?: boolean;
+  allowDefaultValueWhenEmpty?: boolean;
 }
 
 export const InputPanel = ({
@@ -30,6 +32,8 @@ export const InputPanel = ({
   inputEditorValue,
   setInputEditorValue,
   setFetchingAutocompleteEntities,
+  skipInitialValue,
+  allowDefaultValueWhenEmpty,
 }: Props) => {
   const { currentTextObject, customParsedRequestsProvider } = useEditorReadContext();
 
@@ -61,6 +65,8 @@ export const InputPanel = ({
           value={inputEditorValue}
           setValue={setInputEditorValue}
           customParsedRequestsProvider={customParsedRequestsProvider}
+          skipInitialValue={skipInitialValue}
+          allowDefaultValueWhenEmpty={allowDefaultValueWhenEmpty}
         />
       )}
     </>

@@ -16,6 +16,17 @@ export interface InputEditorValue {
   viewState?: EditorViewState;
 }
 
+export interface PersistedEditorTab {
+  id: string;
+  label: string;
+  inputValue: InputEditorValue;
+}
+
+export interface PersistedEditorTabsState {
+  selectedTabId: string;
+  tabs: PersistedEditorTab[];
+}
+
 export interface EditorRequest {
   method: string;
   url: string;

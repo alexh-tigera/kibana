@@ -60,6 +60,8 @@ export interface EditorProps {
   setValue: (value: InputEditorValue) => void;
   customParsedRequestsProvider?: (model: any) => any;
   enableAutosave?: boolean;
+  skipInitialValue?: boolean;
+  allowDefaultValueWhenEmpty?: boolean;
 }
 
 export const MonacoEditor = ({
@@ -69,6 +71,8 @@ export const MonacoEditor = ({
   setValue,
   customParsedRequestsProvider,
   enableAutosave = true,
+  skipInitialValue = false,
+  allowDefaultValueWhenEmpty,
 }: EditorProps) => {
   const context = useServicesContext();
   const {
@@ -321,7 +325,14 @@ export const MonacoEditor = ({
     [esqlCallbacks]
   );
 
-  useSetInitialValue({ localStorageValue, setValue, toasts });
+  useSetInitialValue({
+    localStorageValue,
+    currentValueText: value.text,
+    skipInitialValue,
+    allowDefaultValueWhenEmpty,
+    setValue,
+    toasts,
+  });
 
   useSetupAutocompletePolling({ autocompleteInfo, settingsService });
 

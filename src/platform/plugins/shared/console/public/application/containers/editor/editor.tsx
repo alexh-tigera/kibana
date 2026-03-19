@@ -42,10 +42,49 @@ import { PanelStorage } from './panel_storage';
 import { DEBOUNCE_DELAY } from '../../const';
 import { editorI18n } from './editor_i18n';
 import { useResizerButtonStyles } from '../styles';
-import type { InputEditorValue } from './types';
+import type { InputEditorValue, PersistedEditorTabsState } from './types';
 import { instance as editorRegistry } from '../../contexts/editor_context/editor_registry';
+import { StorageKeys } from '../../../services';
 
 const PANEL_MIN_SIZE = '20%';
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const isPersistedEditorTabsState = (value: unknown): value is PersistedEditorTabsState => {
+  if (!isRecord(value)) return false;
+  if (typeof value.selectedTabId !== 'string') return false;
+  if (!Array.isArray(value.tabs)) return false;
+
+  for (const tab of value.tabs) {
+    if (!isRecord(tab)) return false;
+    if (typeof tab.id !== 'string') return false;
+    if (typeof tab.label !== 'string') return false;
+    if (!isRecord(tab.inputValue)) return false;
+    if (typeof tab.inputValue.text !== 'string') return false;
+  }
+
+  return true;
+};
+
+const persistEditorTabsState = (params: {
+  storage: { set: (key: string, val: unknown) => unknown };
+  items: UnifiedTabsProps['items'];
+  selectedTabId?: string;
+  editorValueByTab: Record<string, { inputValue: InputEditorValue; outputValue: string }>;
+}) => {
+  const { storage, items, selectedTabId, editorValueByTab } = params;
+  const fallbackSelectedTabId = items[0]?.id ?? '1';
+
+  storage.set(StorageKeys.EDITOR_TABS_STATE, {
+    selectedTabId: selectedTabId ?? fallbackSelectedTabId,
+    tabs: items.map((item) => ({
+      id: item.id,
+      label: item.label,
+      inputValue: editorValueByTab[item.id]?.inputValue ?? { text: '' },
+    })),
+  } satisfies PersistedEditorTabsState);
+};
 
 interface Props {
   loading: boolean;
@@ -57,7 +96,7 @@ interface Props {
 export const Editor = memo(
   ({ loading, inputEditorValue, setInputEditorValue, filesTourStepProps }: Props) => {
     const {
-      services: { objectStorageClient },
+      services: { objectStorageClient, storage },
     } = useServicesContext();
     const styles = useStyles();
     const resizerStyles = useResizerButtonStyles();
@@ -82,33 +121,68 @@ export const Editor = memo(
     const editorDispatch = useEditorActionContext();
 
     // const [selectedTabId, setSelectedTabId] = useState<EditorTabId>('request');
+    const persistedTabsStateRaw = storage.get<unknown>(StorageKeys.EDITOR_TABS_STATE);
+    const persistedTabsState = isPersistedEditorTabsState(persistedTabsStateRaw)
+      ? persistedTabsStateRaw
+      : undefined;
+
+    const areAllTabsEmpty = persistedTabsState?.tabs.length
+      ? persistedTabsState.tabs.every((tab) => tab.inputValue.text.trim() === '')
+      : true;
+
+    const initialManagedItems: UnifiedTabsProps['items'] = persistedTabsState?.tabs.length
+      ? persistedTabsState.tabs.map((tab) => ({ id: tab.id, label: tab.label }))
+      : [{ label: 'Untitled', id: '1' }];
+
+    const initialManagedSelectedItemId: UnifiedTabsProps['selectedItemId'] =
+      persistedTabsState?.selectedTabId &&
+      initialManagedItems.some((t) => t.id === persistedTabsState.selectedTabId)
+        ? persistedTabsState.selectedTabId
+        : initialManagedItems[0]?.id;
+
+    const initialEditorValueByTab: Record<
+      string,
+      { inputValue: InputEditorValue; outputValue: string }
+    > = persistedTabsState?.tabs.length
+      ? persistedTabsState.tabs.reduce<
+          Record<string, { inputValue: InputEditorValue; outputValue: string }>
+        >((acc, tab) => {
+          acc[tab.id] = { inputValue: tab.inputValue, outputValue: '' };
+          return acc;
+        }, {})
+      : {
+          '1': { inputValue: { text: inputEditorValue }, outputValue: '' },
+        };
+
+    const initialInternalInputEditorValue: InputEditorValue = (initialManagedSelectedItemId
+      ? initialEditorValueByTab[initialManagedSelectedItemId]?.inputValue
+      : undefined) ?? { text: inputEditorValue };
+
     const [{ managedItems, managedSelectedItemId }, setState] = useState<{
       managedItems: UnifiedTabsProps['items'];
       managedSelectedItemId: UnifiedTabsProps['selectedItemId'];
     }>({
-      managedItems: [{ label: 'Untitled', id: '1' }],
-      managedSelectedItemId: '1',
+      managedItems: initialManagedItems,
+      managedSelectedItemId: initialManagedSelectedItemId,
     });
 
     const [editorValueByTab, setEditorValueByTab] = useState<
       Record<string, { inputValue: InputEditorValue; outputValue: string }>
-    >(() => ({
-      '1': { inputValue: { text: inputEditorValue }, outputValue: '' },
-    }));
+    >(() => initialEditorValueByTab);
     const [internalInputEditorValue, setInternalInputEditorValue] = useState<InputEditorValue>(
-      () => ({
-        text: inputEditorValue,
-      })
+      () => initialInternalInputEditorValue
     );
 
     // Refs to avoid races between keystrokes and tab switching.
     const editorValueByTabRef = useRef(editorValueByTab);
     const internalInputEditorValueRef = useRef(internalInputEditorValue);
     const managedSelectedItemIdRef = useRef(managedSelectedItemId);
+    const managedItemsRef = useRef(managedItems);
 
     editorValueByTabRef.current = editorValueByTab;
     internalInputEditorValueRef.current = internalInputEditorValue;
     managedSelectedItemIdRef.current = managedSelectedItemId;
+    managedItemsRef.current = managedItems;
 
     // used for showing a loading state when fetching autocomplete entities
     const [fetchingAutocompleteEntities, setFetchingAutocompleteEntities] = useState(false);
@@ -142,22 +216,61 @@ export const Editor = memo(
       debouncedUpdateLocalStorageValue(internalInputEditorValue.text);
     }, [debouncedUpdateLocalStorageValue, internalInputEditorValue.text]);
 
+    const persistTabsStateDebounced = useMemo(() => {
+      return debounce(
+        (params: {
+          items: UnifiedTabsProps['items'];
+          selectedTabId?: string;
+          editorValueByTab: Record<string, { inputValue: InputEditorValue; outputValue: string }>;
+        }) => {
+          persistEditorTabsState({ storage, ...params });
+        },
+        DEBOUNCE_DELAY
+      );
+    }, [storage]);
+
+    useEffect(() => {
+      // Seed/migrate persisted tab state when absent or invalid.
+      if (persistedTabsState) return;
+      persistEditorTabsState({
+        storage,
+        items: managedItemsRef.current,
+        selectedTabId: managedSelectedItemIdRef.current,
+        editorValueByTab: editorValueByTabRef.current,
+      });
+    }, [persistedTabsState, storage]);
+
+    useEffect(() => {
+      return () => {
+        persistTabsStateDebounced.cancel();
+      };
+    }, [persistTabsStateDebounced]);
+
     const updateInputEditorValue = useCallback(
       (nextValue: InputEditorValue) => {
         const selectedId = managedSelectedItemIdRef.current;
         if (!selectedId) return;
 
         internalInputEditorValueRef.current = nextValue;
-        setEditorValueByTab((prev) => ({
-          ...prev,
-          [selectedId]: {
-            inputValue: nextValue,
-            outputValue: prev[selectedId]?.outputValue || '',
-          },
-        }));
+        setEditorValueByTab((prev) => {
+          const next = {
+            ...prev,
+            [selectedId]: {
+              inputValue: nextValue,
+              outputValue: prev[selectedId]?.outputValue || '',
+            },
+          };
+          editorValueByTabRef.current = next;
+          persistTabsStateDebounced({
+            items: managedItemsRef.current,
+            selectedTabId: selectedId,
+            editorValueByTab: next,
+          });
+          return next;
+        });
         setInternalInputEditorValue(nextValue);
       },
-      [setEditorValueByTab, setInternalInputEditorValue]
+      [persistTabsStateDebounced, setEditorValueByTab, setInternalInputEditorValue]
     );
 
     useEffect(() => {
@@ -260,6 +373,12 @@ export const Editor = memo(
               internalInputEditorValueRef.current = { text: '' };
               setInternalInputEditorValue({ text: '' });
             }
+
+            persistTabsStateDebounced({
+              items: nextState.items,
+              selectedTabId: nextSelectedTabId,
+              editorValueByTab: nextEditorValueByTab,
+            });
           }}
           data-test-subj="consoleEditorTabs"
         />
@@ -301,6 +420,8 @@ export const Editor = memo(
                       activeTabId={managedSelectedItemId}
                       inputEditorValue={internalInputEditorValue}
                       setInputEditorValue={updateInputEditorValue}
+                      skipInitialValue={Boolean(persistedTabsState)}
+                      allowDefaultValueWhenEmpty={areAllTabsEmpty}
                       setFetchingAutocompleteEntities={setFetchingAutocompleteEntities}
                     />
                   </EuiSplitPanel.Inner>

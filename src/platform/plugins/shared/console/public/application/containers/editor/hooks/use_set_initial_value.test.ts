@@ -45,6 +45,7 @@ describe('useSetInitialValue', () => {
     const { rerender } = renderHook(() =>
       useSetInitialValue({
         localStorageValue: 'initial value',
+        currentValueText: '',
         setValue: setValueMock,
         toasts: toastsMock,
       })
@@ -65,6 +66,7 @@ describe('useSetInitialValue', () => {
     renderHook(() =>
       useSetInitialValue({
         localStorageValue: 'saved value',
+        currentValueText: '',
         setValue: setValueMock,
         toasts: toastsMock,
       })
@@ -77,6 +79,65 @@ describe('useSetInitialValue', () => {
     renderHook(() =>
       useSetInitialValue({
         localStorageValue: undefined,
+        currentValueText: '',
+        setValue: setValueMock,
+        toasts: toastsMock,
+      })
+    );
+
+    expect(setValueMock).toHaveBeenCalledWith({ text: DEFAULT_INPUT_VALUE });
+  });
+
+  it('should not overwrite a controlled value that is already set', () => {
+    renderHook(() =>
+      useSetInitialValue({
+        localStorageValue: 'saved value',
+        currentValueText: 'restored from tabs',
+        setValue: setValueMock,
+        toasts: toastsMock,
+      })
+    );
+
+    expect(setValueMock).not.toHaveBeenCalled();
+  });
+
+  it('should still set default value when skipping initial value and all tabs are empty', () => {
+    renderHook(() =>
+      useSetInitialValue({
+        localStorageValue: undefined,
+        currentValueText: '',
+        skipInitialValue: true,
+        allowDefaultValueWhenEmpty: true,
+        setValue: setValueMock,
+        toasts: toastsMock,
+      })
+    );
+
+    expect(setValueMock).toHaveBeenCalledWith({ text: DEFAULT_INPUT_VALUE });
+  });
+
+  it('should not set default value when skipping initial value and not all tabs are empty', () => {
+    renderHook(() =>
+      useSetInitialValue({
+        localStorageValue: undefined,
+        currentValueText: '',
+        skipInitialValue: true,
+        allowDefaultValueWhenEmpty: false,
+        setValue: setValueMock,
+        toasts: toastsMock,
+      })
+    );
+
+    expect(setValueMock).not.toHaveBeenCalled();
+  });
+
+  it('should treat an empty localStorage value as missing when skipping initial value', () => {
+    renderHook(() =>
+      useSetInitialValue({
+        localStorageValue: '',
+        currentValueText: '',
+        skipInitialValue: true,
+        allowDefaultValueWhenEmpty: true,
         setValue: setValueMock,
         toasts: toastsMock,
       })
@@ -104,6 +165,7 @@ describe('useSetInitialValue', () => {
       renderHook(() =>
         useSetInitialValue({
           localStorageValue: 'initial value',
+          currentValueText: '',
           setValue: setValueMock,
           toasts: toastsMock,
         })
@@ -144,6 +206,7 @@ describe('useSetInitialValue', () => {
       renderHook(() =>
         useSetInitialValue({
           localStorageValue: 'initial value',
+          currentValueText: '',
           setValue: setValueMock,
           toasts: toastsMock,
         })
@@ -177,6 +240,7 @@ describe('useSetInitialValue', () => {
       renderHook(() =>
         useSetInitialValue({
           localStorageValue: 'initial value',
+          currentValueText: '',
           setValue: setValueMock,
           toasts: toastsMock,
         })
@@ -214,6 +278,7 @@ describe('useSetInitialValue', () => {
       renderHook(() =>
         useSetInitialValue({
           localStorageValue: 'initial value',
+          currentValueText: '',
           setValue: setValueMock,
           toasts: toastsMock,
         })
