@@ -31,7 +31,6 @@ const bodySchema = schema.object({
  * Initiates OAuth2 Authorization Code flow
  * Returns authorization URL for user to visit
  */
-
 export const oauthAuthorizeRoute = (
   router: IRouter<ActionsRequestHandlerContext>,
   licenseState: ILicenseState,
