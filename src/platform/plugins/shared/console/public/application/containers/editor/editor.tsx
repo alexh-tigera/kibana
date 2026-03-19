@@ -336,6 +336,7 @@ export const Editor = memo(
               onClearRecentlyClosed={() => {}}
               onEBTEvent={() => {}}
               onChanged={(nextState) => {
+                // todo check for duplicated tab and duplicate content
                 const nextSelectedTabId = nextState.selectedItem?.id;
 
                 const nextTabIds = new Set(nextState.items.map((item) => item.id));
