@@ -13,10 +13,10 @@ import { handleSlackEvent } from '../lib/slack_handler';
 
 // POST /api/elastic_console/slack/events
 //
-// Receives Slack events forwarded by the router.
-// Auth: standard Kibana API key (Authorization: ApiKey <key>).
-// The key was generated during /slack/connect and is stored by the router.
-// Kibana verifies the key before the handler runs — no custom auth code needed.
+// Receives Slack events directly from Slack (no router intermediary).
+// Auth: none required — Slack sends no credentials. The bot_token stored
+// in ESO is used to authenticate outbound Slack API calls.
+// The URL verification challenge is handled before any auth check.
 
 export const registerSlackEventsRoute = ({
   router,
@@ -33,10 +33,10 @@ export const registerSlackEventsRoute = ({
       security: {
         authz: {
           enabled: false,
-          reason: 'Authenticated via scoped Kibana API key generated during Slack OAuth',
+          reason: 'Public Slack webhook — no user auth; bot_token provides outbound auth',
         },
       },
-      options: { access: 'public' },
+      options: { access: 'public', authRequired: false },
       validate: {
         body: schema.object({}, { unknowns: 'allow' }),
       },
