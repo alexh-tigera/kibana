@@ -260,11 +260,13 @@ export const MonacoEditor = ({
         isRestoringViewStateRef.current = true;
         editorInstance.layout();
         editorInstance.restoreViewState(targetViewState);
+        editorInstance.focus();
 
         window.requestAnimationFrame(() => {
           if (isCancelled) return;
           if (restoreSequenceRef.current !== restoreSequence) return;
           editorInstance.restoreViewState(targetViewState);
+          editorInstance.focus();
           isRestoringViewStateRef.current = false;
         });
       };
