@@ -14,14 +14,12 @@ import type {
 } from '@kbn/task-manager-plugin/server';
 
 import {
-  AGENTS_PREFIX,
   CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
   PACKAGE_POLICY_SAVED_OBJECT_TYPE,
 } from '../../../common/constants';
 import type { CloudConnectorSOAttributes } from '../../types/so_attributes';
 import { appContextService } from '../../services';
 import { agentPolicyService, getAgentPolicySavedObjectType } from '../../services/agent_policy';
-import { getAgentsByKuery } from '../../services/agents';
 import { throwIfAborted } from '../utils';
 
 const TASK_TYPE = 'fleet:verify_permissions';
@@ -89,7 +87,7 @@ export async function scheduleVerifyPermissionsTask(taskManager: TaskManagerStar
  *           a map of connector ID -> package policy IDs. Then fetch only the
  *           cloud connectors that have installed packages via KQL id filter.
  *
- * Phase 3 - Verify all eligible connectors, one at a time (synchronously).
+ * Phase 3 - Verify one eligible connector per task run (one deployment at a time).
  *           Eligibility criteria:
  *             1. Never verified (verification_started_at is null)
  *             2. Recently created (created_at within last 5 min)
@@ -126,6 +124,28 @@ async function runPermissionVerifierTask(abortController: AbortController) {
   try {
     throwIfAborted(abortController);
 
+    // Gate check: only one verifier deployment at a time.
+    // If a non-expired verifier policy still exists, skip this run.
+    const saveObjectType = await getAgentPolicySavedObjectType();
+    const activeVerifiers = await agentPolicyService.list(soClient, {
+      kuery: `${saveObjectType}.is_verifier: true`,
+      perPage: 1,
+    });
+
+    if (activeVerifiers.items.length > 0) {
+      const policy = activeVerifiers.items[0];
+      const createdAt = policy.created_at ?? policy.updated_at;
+      const ageMs = Date.now() - new Date(createdAt).getTime();
+      const ageSec = Math.round(ageMs / 1000);
+      if (ageMs <= VERIFICATION_TTL_MS) {
+        logger.info(
+          `${VERIFY_PERMISSIONS_TASK} Active verifier policy ${policy.id} exists (age: ${ageSec}s), skipping new verifications`
+        );
+        logger.info(`${VERIFY_PERMISSIONS_TASK} Task run completed`);
+        return;
+      }
+    }
+
     // Phase 2: Pre-filter package policies to build connector -> package policy IDs map
     const packagePolicyMap = await getPackagePolicyMap(soClient);
 
@@ -159,7 +179,7 @@ async function runPermissionVerifierTask(abortController: AbortController) {
 
     throwIfAborted(abortController);
 
-    // Phase 3: Loop through all eligible connectors and verify each one
+    // Phase 3: Verify the first eligible connector (one at a time per task run)
     for (const connector of connectors) {
       throwIfAborted(abortController);
 
@@ -184,6 +204,7 @@ async function runPermissionVerifierTask(abortController: AbortController) {
           `${VERIFY_PERMISSIONS_TASK} Failed to verify connector ${connector.id}: ${error.message}`
         );
       }
+      break;
     }
 
     logger.info(`${VERIFY_PERMISSIONS_TASK} Task run completed`);
@@ -198,7 +219,8 @@ async function runPermissionVerifierTask(abortController: AbortController) {
 }
 
 /**
- * Phase 1: Delete verifier policies whose deployed agent has exceeded the TTL.
+ * Phase 1: Delete verifier policies whose creation time has exceeded the TTL.
+ * Uses the immutable `created_at` timestamp — unaffected by subsequent SO updates.
  * Runs before picking a new connector to ensure at most one active verifier deployment.
  */
 async function cleanupExpiredVerifierPolicies(
@@ -212,7 +234,6 @@ async function cleanupExpiredVerifierPolicies(
     const verifierPolicies = await agentPolicyService.list(soClient, {
       kuery: `${saveObjectType}.is_verifier: true`,
       perPage: 50,
-      withAgentCount: true,
     });
 
     logger.info(
@@ -220,38 +241,18 @@ async function cleanupExpiredVerifierPolicies(
     );
 
     for (const policy of verifierPolicies.items) {
-      const agentCount = policy.agents ?? 0;
-      const updatedAtMs = new Date(policy.updated_at).getTime();
-      const staleSinceMs = Date.now() - updatedAtMs;
+      const createdAt = policy.created_at ?? policy.updated_at;
+      const ageMs = Date.now() - new Date(createdAt).getTime();
 
-      const isOrphanPolicy = agentCount === 0 && staleSinceMs > VERIFICATION_TTL_MS;
-
-      let isExpiredByTTL = false;
-      if (agentCount > 0) {
-        const policyKuery = `${AGENTS_PREFIX}.policy_id:"${policy.id}"`;
-        const { agents } = await getAgentsByKuery(esClient, soClient, {
-          kuery: policyKuery,
-          perPage: 1,
-          page: 1,
-          sortField: 'enrolled_at',
-          sortOrder: 'asc',
-          showInactive: true,
-        });
-        const deployedAt = agents[0]?.enrolled_at;
-        if (deployedAt) {
-          const timeElapsedMs = Date.now() - new Date(deployedAt).getTime();
-          isExpiredByTTL = timeElapsedMs > VERIFICATION_TTL_MS;
-        }
-      }
-
-      if (!isOrphanPolicy && !isExpiredByTTL) {
+      if (ageMs <= VERIFICATION_TTL_MS) {
         continue;
       }
 
-      const reason = isOrphanPolicy ? 'orphan (0 agents, stale)' : 'TTL expired';
       try {
+        const ageSec = Math.round(ageMs / 1000);
+        const ttlSec = Math.round(VERIFICATION_TTL_MS / 1000);
         logger.info(
-          `${VERIFY_PERMISSIONS_TASK} Deleting verifier policy ${policy.id} (reason: ${reason})`
+          `${VERIFY_PERMISSIONS_TASK} Deleting verifier policy ${policy.id} (age: ${ageSec}s, TTL: ${ttlSec}s)`
         );
         await agentPolicyService.deleteVerifierPolicy(soClient, esClient, policy.id);
         logger.info(`${VERIFY_PERMISSIONS_TASK} Deleted verifier policy ${policy.id}`);

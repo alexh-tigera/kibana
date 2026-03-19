@@ -2502,12 +2502,14 @@ class AgentPolicyService {
     options: { username?: string }
   ): AgentPolicySOAttributes {
     const { space_ids: _, ...baseAgentPolicySo } = agentPolicy;
+    const now = new Date().toISOString();
     return {
       ...baseAgentPolicySo,
       status: 'active',
       is_managed: agentPolicy.is_managed ?? false,
       revision: 1,
-      updated_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
       updated_by: options?.username || 'system',
       schema_version: FLEET_AGENT_POLICIES_SCHEMA_VERSION,
       is_protected: false,
@@ -2542,7 +2544,7 @@ class AgentPolicyService {
         inactivity_timeout: AGENTLESS_AGENT_POLICY_INACTIVITY_TIMEOUT,
         supports_agentless: true,
         is_verifier: true,
-        namespace: connector.attributes.namespace ?? 'default',
+        namespace: 'default',
         monitoring_enabled: [],
         keep_monitoring_alive: true,
         is_protected: false,
@@ -2568,7 +2570,7 @@ class AgentPolicyService {
 
       const verifierPackagePolicy: NewPackagePolicy = {
         name: `verifier-${connectorName}-${policyTemplate}`,
-        namespace: connector.attributes.namespace ?? 'default',
+        namespace: 'default',
         enabled: true,
         policy_ids: [agentPolicy.id],
         package: {

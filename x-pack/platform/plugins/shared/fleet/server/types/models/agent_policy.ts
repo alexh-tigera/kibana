@@ -230,6 +230,13 @@ export const AgentPolicyBaseSchema = {
       },
     })
   ),
+  created_at: schema.maybe(
+    schema.string({
+      meta: {
+        description: 'ISO timestamp of when the agent policy was originally created.',
+      },
+    })
+  ),
 };
 
 function validateGlobalDataTagInput(tags: GlobalDataTag[]): string | undefined {

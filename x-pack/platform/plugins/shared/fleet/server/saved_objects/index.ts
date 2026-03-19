@@ -347,6 +347,7 @@ export const getSavedObjectTypes = (
           required_versions: { type: 'flattened', index: false },
           has_agent_version_conditions: { type: 'boolean' },
           is_verifier: { type: 'boolean' },
+          created_at: { type: 'date' },
         },
       },
       migrations: {
@@ -457,6 +458,24 @@ export const getSavedObjectTypes = (
               },
             },
           ],
+          schemas: {
+            forwardCompatibility: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
+            create: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
+          },
+        },
+        '10': {
+          changes: [
+            {
+              type: 'mappings_addition',
+              addedMappings: {
+                created_at: { type: 'date' },
+              },
+            },
+          ],
+          schemas: {
+            forwardCompatibility: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
+            create: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
+          },
         },
       },
     },
@@ -509,6 +528,7 @@ export const getSavedObjectTypes = (
           required_versions: { type: 'flattened', index: false },
           has_agent_version_conditions: { type: 'boolean' },
           is_verifier: { type: 'boolean' },
+          created_at: { type: 'date' },
         },
       },
       modelVersions: {
@@ -553,6 +573,24 @@ export const getSavedObjectTypes = (
               },
             },
           ],
+          schemas: {
+            forwardCompatibility: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
+            create: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
+          },
+        },
+        '5': {
+          changes: [
+            {
+              type: 'mappings_addition',
+              addedMappings: {
+                created_at: { type: 'date' },
+              },
+            },
+          ],
+          schemas: {
+            forwardCompatibility: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
+            create: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
+          },
         },
       },
     },
