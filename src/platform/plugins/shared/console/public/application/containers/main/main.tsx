@@ -198,7 +198,7 @@ export function Main({ currentTabProp, isEmbeddable = false }: MainProps) {
                 <EuiFlexItem grow={false}>
                   <EuiButtonEmpty
                     onClick={() => setIsVariablesFlyoutOpen(true)}
-                    iconType="editorCodeBlock"
+                    iconType="code"
                     size="xs"
                     color="text"
                     aria-label={MAIN_PANEL_LABELS.variablesButton}
