@@ -125,6 +125,34 @@ describe('github workflows', () => {
     });
   });
 
+  describe('get_my_pull_requests workflow', () => {
+    it('calls MCP search_pull_requests with author:@me open PR query', async () => {
+      await fixture.runWorkflow({
+        workflowYaml: getWorkflowYaml(workflows, 'get_my_pull_requests'),
+        inputs: { per_page: 5, page: 2 },
+      });
+
+      expect(getWorkflowExecution()?.status).toBe(ExecutionStatus.COMPLETED);
+      expect(getStepExecutions('get-my-pull-requests')).toHaveLength(1);
+
+      expect(fixture.scopedActionsClientMock.execute).toHaveBeenCalledWith(
+        expect.objectContaining({
+          params: expect.objectContaining({
+            subAction: 'callTool',
+            subActionParams: {
+              name: 'search_pull_requests',
+              arguments: {
+                query: 'is:open is:pr author:@me',
+                page: 2,
+                perPage: 5,
+              },
+            },
+          }),
+        })
+      );
+    });
+  });
+
   describe('get_doc workflow', () => {
     it('forwards repository and path parameters to the connector', async () => {
       await fixture.runWorkflow({

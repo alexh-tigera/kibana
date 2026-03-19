@@ -75,6 +75,11 @@ The GitHub data source exposes the following tools through MCP:
 
 The following workflow actions are also available:
 
+Get my pull requests
+:   Get all pull requests authored by the authenticated user that are in Open or Draft state.
+    - `per_page` (optional): Number of results per page. Defaults to 10.
+    - `page` (optional): Page number for pagination. Defaults to 1.
+
 Search
 :   Search through GitHub code, repositories, issues, pull requests, and users using GitHub query syntax.
     - `tool_name` (required): The type of search to perform. Valid values: `search_code`, `search_repositories`, `search_issues`, `search_pull_requests`, `search_users`.

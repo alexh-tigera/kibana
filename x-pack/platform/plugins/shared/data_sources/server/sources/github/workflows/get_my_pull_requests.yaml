@@ -1,0 +1,28 @@
+version: '1'
+name: 'sources.github.get_my_pull_requests'
+description: 'Get all pull requests authored by the authenticated user that are in Open or Draft state'
+tags: ['agent-builder-tool']
+enabled: true
+triggers:
+  - type: 'manual'
+inputs:
+  - name: per_page
+    type: number
+    default: 10
+    required: false
+    description: 'Number of results per page'
+  - name: page
+    type: number
+    default: 1
+    required: false
+    description: 'Page number for pagination'
+steps:
+  - name: get-my-pull-requests
+    type: mcp.callTool
+    connector-id: <%= mcp-stack-connector-id %>
+    with:
+      name: "search_pull_requests"
+      arguments:
+        query: "is:open is:pr author:@me"
+        page: "${{inputs.page}}"
+        perPage: "${{inputs.per_page}}"

@@ -51,6 +51,7 @@ export const githubDataSource: DataSource = {
         { name: 'list_releases' },
         { name: 'list_tags' },
         { name: 'pull_request_read' },
+        { name: 'search_pull_requests' },
       ],
     },
     {
