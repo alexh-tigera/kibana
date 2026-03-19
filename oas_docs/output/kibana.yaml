@@ -26627,6 +26627,9 @@ paths:
                               - count
                           maxItems: 1000
                           type: array
+                        created_at:
+                          description: ISO timestamp of when the agent policy was originally created.
+                          type: string
                         data_output_id:
                           nullable: true
                           type: string
@@ -27453,6 +27456,9 @@ paths:
                               type: string
                             memory:
                               type: string
+                created_at:
+                  description: ISO timestamp of when the agent policy was originally created.
+                  type: string
                 data_output_id:
                   nullable: true
                   type: string
@@ -27709,6 +27715,9 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        description: ISO timestamp of when the agent policy was originally created.
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -28570,6 +28579,9 @@ paths:
                               - count
                           maxItems: 1000
                           type: array
+                        created_at:
+                          description: ISO timestamp of when the agent policy was originally created.
+                          type: string
                         data_output_id:
                           nullable: true
                           type: string
@@ -29410,6 +29422,9 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        description: ISO timestamp of when the agent policy was originally created.
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -30235,6 +30250,9 @@ paths:
                               type: string
                 bumpRevision:
                   type: boolean
+                created_at:
+                  description: ISO timestamp of when the agent policy was originally created.
+                  type: string
                 data_output_id:
                   nullable: true
                   type: string
@@ -30491,6 +30509,9 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        description: ISO timestamp of when the agent policy was originally created.
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -31444,6 +31465,9 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        description: ISO timestamp of when the agent policy was originally created.
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
