@@ -42,13 +42,6 @@ export const registerSlackConnectRoute = ({
       validate: false,
     },
     async (ctx, request, response) => {
-      const slackConfig = config.slack;
-      if (!slackConfig?.client_id) {
-        logger.warn('Slack connect attempted but slack config is missing');
-        return response.badRequest({
-          body: { message: 'Slack integration is not configured' },
-        });
-      }
 
       const [coreStart] = await coreSetup.getStartServices();
 
@@ -104,8 +97,13 @@ export const registerSlackConnectRoute = ({
 
       const state = signJwt(jwtPayload, kibanaApiKey);
 
+      const clientId = config.slack?.client_id;
+      if (!clientId) {
+        return response.badRequest({ body: { message: 'xpack.elastic_console.slack.client_id is not configured' } });
+      }
+
       const params = new URLSearchParams({
-        client_id: slackConfig.client_id,
+        client_id: clientId,
         redirect_uri: SLACK_REDIRECT_URI,
         scope: SLACK_SCOPES,
         state,

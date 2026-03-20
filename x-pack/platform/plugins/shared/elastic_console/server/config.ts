@@ -12,9 +12,6 @@ export const configSchema = schema.object({
   slack: schema.maybe(
     schema.object({
       client_id: schema.string(),
-      // No state_secret needed — the OAuth state JWT is self-authenticating:
-      // signed with the kibana_api_key embedded in the payload. The router
-      // verifies by re-deriving the HMAC using the key from the payload itself.
     })
   ),
 });

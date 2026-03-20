@@ -153,6 +153,10 @@ export const SetupPage: React.FC = () => {
     <EuiBadge color="danger">Slack: Disconnected</EuiBadge>
   ) : null;
 
+  const handleConnectSlack = useCallback(() => {
+    window.location.href = '/internal/elastic_console/slack/connect';
+  }, []);
+
   return (
     <EuiPageTemplate>
       <EuiPageTemplate.Header
@@ -188,9 +192,22 @@ export const SetupPage: React.FC = () => {
 
         <EuiSpacer />
 
-        <EuiButton fill onClick={handleSetup} isLoading={isLoading}>
-          Generate credentials
-        </EuiButton>
+        <EuiFlexGroup gutterSize="s">
+          <EuiFlexItem grow={false}>
+            <EuiButton fill onClick={handleSetup} isLoading={isLoading}>
+              Generate credentials
+            </EuiButton>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton
+              iconType="logoSlack"
+              onClick={handleConnectSlack}
+              color={slackStatus?.status === 'connected' ? 'success' : 'primary'}
+            >
+              {slackStatus?.status === 'connected' ? 'Reconnect Slack' : 'Connect Slack'}
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
 
         <EuiSpacer />
 
