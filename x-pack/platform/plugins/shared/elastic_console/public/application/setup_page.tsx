@@ -153,9 +153,12 @@ export const SetupPage: React.FC = () => {
     <EuiBadge color="danger">Slack: Disconnected</EuiBadge>
   ) : null;
 
-  const handleConnectSlack = useCallback(() => {
-    window.location.href = '/internal/elastic_console/slack/connect';
-  }, []);
+  const handleConnectSlack = useCallback(async () => {
+    const { url } = await services.http.get<{ url: string }>(
+      '/internal/elastic_console/slack/connect'
+    );
+    window.location.href = url;
+  }, [services.http]);
 
   return (
     <EuiPageTemplate>

@@ -38,9 +38,7 @@ export const registerSlackConnectRoute = ({
     {
       path: '/internal/elastic_console/slack/connect',
       security: { authz: { requiredPrivileges: ['agentBuilder:write'] } },
-      // access: 'public' — browser navigates directly to this URL for the OAuth redirect;
-      // browser navigation never sends x-elastic-internal-origin so internal routes are blocked.
-      options: { access: 'public' },
+      options: { access: 'internal' },
       validate: false,
     },
     async (ctx, request, response) => {
@@ -111,7 +109,7 @@ export const registerSlackConnectRoute = ({
         state,
       });
 
-      return response.redirected({ headers: { location: `${SLACK_OAUTH_URL}?${params}` } });
+      return response.ok({ body: { url: `${SLACK_OAUTH_URL}?${params}` } });
     }
   );
 };
