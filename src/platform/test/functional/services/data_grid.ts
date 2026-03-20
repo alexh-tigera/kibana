@@ -725,11 +725,29 @@ export class DataGridService extends FtrService {
       : `tableDocViewRow-${fieldName}-name`;
     await this.retry.try(async () => {
       const cell = await this.testSubjects.find(cellSelector);
-      await cell.pressKeys(Key.ENTER);
+      await cell.scrollIntoViewIfNecessary();
+
+      const activateCell = async () => {
+        await this.browser.execute(
+          'arguments[0].setAttribute("tabindex", "-1"); arguments[0].focus();',
+          cell._webElement
+        );
+        const active = await this.find.activeElement();
+
+        try {
+          await active.pressKeys(Key.ENTER);
+        } catch (error) {
+          // Fallback to browser-level key events when element-level keys are rejected
+          await this.browser.pressKeys(this.browser.keys.SPACE);
+          await this.browser.pressKeys(this.browser.keys.ENTER);
+        }
+      };
+
+      await activateCell();
 
       const actionVisible = await this.testSubjects.exists(`${actionName}-${fieldName}`);
       if (!actionVisible) {
-        await cell.pressKeys(Key.ENTER);
+        await activateCell();
       }
 
       if (!(await this.testSubjects.exists(`${actionName}-${fieldName}`))) {
@@ -744,7 +762,19 @@ export class DataGridService extends FtrService {
     const actionSelector = `${actionName}-${fieldName}`;
     await this.retry.try(async () => {
       const action = await this.testSubjects.find(actionSelector);
-      await action.pressKeys(Key.ENTER);
+      await action.scrollIntoViewIfNecessary();
+      await this.browser.execute(
+        'arguments[0].setAttribute("tabindex", "-1"); arguments[0].focus();',
+        action._webElement
+      );
+      const active = await this.find.activeElement();
+
+      try {
+        await active.pressKeys(Key.ENTER);
+      } catch (error) {
+        await this.browser.pressKeys(this.browser.keys.SPACE);
+        await this.browser.pressKeys(this.browser.keys.ENTER);
+      }
     });
   }
 
