@@ -15,6 +15,8 @@ import { ExpandableSection } from '../../shared/components/expandable_section';
 import { useExpandSection } from '../../shared/hooks/use_expand_section';
 import { AlertDescription } from './alert_description';
 import { AlertReason } from './alert_reason';
+import { AlertStatus } from './alert_status';
+import { MitreAttack } from './mitre_attack';
 
 export const ABOUT_SECTION_TEST_ID = `${PREFIX}AboutSection` as const;
 
@@ -65,6 +67,12 @@ export const AboutSection = memo(({ hit }: AboutSectionProps) => {
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <AlertReason hit={hit} onShowFullReason={undefined} />
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <MitreAttack hit={hit} />
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <AlertStatus hit={hit} />
           </EuiFlexItem>
         </>
       ) : null}

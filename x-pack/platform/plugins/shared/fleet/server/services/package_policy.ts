@@ -90,6 +90,7 @@ import type {
 import type {
   AzureCloudConnectorVars,
   CloudConnectorVar,
+  GcpCloudConnectorVars,
 } from '../../common/types/models/cloud_connector';
 import {
   FleetError,
@@ -143,6 +144,12 @@ import {
   TENANT_ID_VAR_NAME,
   CLIENT_ID_VAR_NAME,
   AZURE_CREDENTIALS_CLOUD_CONNECTOR_ID,
+  GCP_SERVICE_ACCOUNT_VAR_NAME,
+  GCP_AUDIENCE_VAR_NAME,
+  GCP_CREDENTIALS_CLOUD_CONNECTOR_ID_VAR_NAME,
+  SERVICE_ACCOUNT_VAR_NAME,
+  AUDIENCE_VAR_NAME,
+  GCP_CREDENTIALS_CLOUD_CONNECTOR_ID,
 } from '../../common/constants/cloud_connector';
 
 import { createSoFindIterable } from './utils/create_so_find_iterable';
@@ -398,6 +405,42 @@ const extractPackagePolicyVars = (
       );
     }
   }
+
+  if (packagePolicy.supports_cloud_connector && cloudProvider === 'gcp') {
+    const vars = packagePolicy.inputs.find((input) => input.enabled)?.streams[0]?.vars;
+
+    if (!vars) {
+      logger.error('Package policy must contain vars');
+      throw new CloudConnectorInvalidVarsError('Package policy must contain vars');
+    }
+
+    const serviceAccount = vars[SERVICE_ACCOUNT_VAR_NAME] || vars[GCP_SERVICE_ACCOUNT_VAR_NAME];
+    const audience = vars[AUDIENCE_VAR_NAME] || vars[GCP_AUDIENCE_VAR_NAME];
+    const gcpCredentials =
+      vars[GCP_CREDENTIALS_CLOUD_CONNECTOR_ID] || vars[GCP_CREDENTIALS_CLOUD_CONNECTOR_ID_VAR_NAME];
+
+    if (serviceAccount && audience && gcpCredentials) {
+      // Type assertions are needed because PackagePolicyConfigRecordEntry has loose types (type?: string, value?: any)
+      // service_account and audience are non-secret text fields (CloudConnectorVar);
+      // only gcp_credentials_cloud_connector_id is a secret (CloudConnectorSecretVar).
+      // Runtime validation occurs in cloudConnectorService.validateCloudConnectorDetails()
+      const gcpCloudConnectorVars: GcpCloudConnectorVars = {
+        service_account: serviceAccount as CloudConnectorVar,
+        audience: audience as CloudConnectorVar,
+        gcp_credentials_cloud_connector_id: gcpCredentials as CloudConnectorSecretVar,
+      };
+
+      logger.debug(
+        `Extracted GCP cloud connector vars: service_account=${!!serviceAccount}, audience=${!!audience}, gcp_credentials=[REDACTED]`
+      );
+
+      return gcpCloudConnectorVars;
+    } else {
+      logger.error(
+        `Missing required GCP vars: service_account=${!!serviceAccount}, audience=${!!audience}, gcp_credentials=[REDACTED]`
+      );
+    }
+  }
 };
 
 class PackagePolicyClientImpl implements PackagePolicyClient {
@@ -472,7 +515,7 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
       request
     );
 
-    const agentPolicies = [];
+    const agentPolicies: AgentPolicy[] = [];
 
     for (const policyId of enrichedPackagePolicy.policy_ids) {
       const agentPolicy = await agentPolicyService.get(soClient, policyId, true);
@@ -654,6 +697,7 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
           created_by: options?.user?.username ?? 'system',
           updated_at: isoDate,
           updated_by: options?.user?.username ?? 'system',
+          package_agent_version_condition: pkgInfo.conditions?.agent?.version,
         },
 
         { ...options, id: packagePolicyId }
@@ -1645,6 +1689,7 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
           revision: oldPackagePolicy.revision + 1,
           updated_at: new Date().toISOString(),
           updated_by: options?.user?.username ?? 'system',
+          package_agent_version_condition: pkgInfo?.conditions?.agent?.version,
         },
         {
           version,
@@ -2258,7 +2303,7 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
     ];
 
     const hostedAgentPolicies: string[] = [];
-    const agentlessAgentPolicies = [];
+    const agentlessAgentPolicies: string[] = [];
 
     for (const agentPolicyId of uniqueAgentPolicyIds) {
       try {
