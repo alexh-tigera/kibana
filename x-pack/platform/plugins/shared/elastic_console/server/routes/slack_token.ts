@@ -10,7 +10,7 @@ import type { CoreSetup, IRouter, Logger } from '@kbn/core/server';
 import type { ElasticConsolePluginStart, ElasticConsoleStartDependencies } from '../types';
 import { SLACK_CREDENTIALS_SO_TYPE, SLACK_CREDENTIALS_SO_ID } from '../lib/slack_credentials_so';
 
-// POST /internal/elastic_console/slack/token
+// POST /api/elastic_console/slack/token
 //
 // Called by the router after completing OAuth:
 //   1. Router receives bot_token from Slack
@@ -56,9 +56,12 @@ export const registerSlackTokenRoute = ({
       try {
         const [coreStart] = await coreSetup.getStartServices();
 
-        // Auto-generate a scoped API key so the Slack event handler can make
+        // Auto-generate an API key so the Slack event handler can make
         // authenticated inference calls even though Slack events are unauthenticated.
-        const esClient = coreStart.elasticsearch.client.asScoped(request).asCurrentUser;
+        // Must use asInternalUser — the connect API key is a derived key and ES
+        // requires derived keys to have explicit (empty) role descriptors, which
+        // would create a useless key. Internal user creates an unrestricted key.
+        const esClient = coreStart.elasticsearch.client.asInternalUser;
         const apiKeyResult = await esClient.security.createApiKey({
           name: `elastic-console-slack-inference-${Date.now()}`,
           expiration: '365d',
