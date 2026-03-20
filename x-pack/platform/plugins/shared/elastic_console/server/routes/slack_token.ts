@@ -32,17 +32,16 @@ export const registerSlackTokenRoute = ({
 }) => {
   router.post(
     {
-      path: '/internal/elastic_console/slack/token',
+      path: '/api/elastic_console/slack/token',
+      // Called by the elastic-console-connect router (external service) after OAuth.
       // Only the Kibana API key created during /slack/connect — which carries the
       // 'api:elastic_console/slack/events' privilege — can call this route.
-      // This prevents any other authenticated session or API key from overwriting
-      // the stored credentials.
       security: {
         authz: {
           requiredPrivileges: ['api:elastic_console/slack/events'],
         },
       },
-      options: { access: 'internal' },
+      options: { access: 'public', xsrfRequired: false },
       validate: {
         body: schema.object({
           bot_token: schema.string({ minLength: 1 }),
