@@ -20,7 +20,7 @@ export class ElasticConsolePlugin implements Plugin {
 
   setup(core: CoreSetup) {
     core.application.register({
-      id: 'elastic-console',
+      id: 'elasticConsole',
       title: 'Elastic Console',
       visibleIn: [],
       async mount(params: AppMountParameters) {
