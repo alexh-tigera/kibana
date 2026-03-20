@@ -7,11 +7,7 @@
 
 import { z } from '@kbn/zod';
 
-export const InitializationFlowId = z.enum([
-  'bootstrap-prebuilt-rules',
-  'create-list-indices',
-  'rule-monitoring-setup',
-]);
+export const InitializationFlowId = z.enum(['create-list-indices']);
 
 export type InitializationFlowId = z.infer<typeof InitializationFlowId>;
 
