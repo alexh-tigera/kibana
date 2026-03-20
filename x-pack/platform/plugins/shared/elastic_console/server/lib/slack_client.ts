@@ -15,7 +15,7 @@ async function slackCall(
   botToken: string,
   method: string,
   body: Record<string, unknown>
-): Promise<{ ok: boolean; ts?: string; error?: string }> {
+): Promise<{ ok: boolean; ts?: string; error?: string; needed?: string }> {
   const res = await fetch(`${SLACK_API}/${method}`, {
     method: 'POST',
     headers: {
@@ -24,7 +24,7 @@ async function slackCall(
     },
     body: JSON.stringify(body),
   });
-  return res.json() as Promise<{ ok: boolean; ts?: string; error?: string }>;
+  return res.json() as Promise<{ ok: boolean; ts?: string; error?: string; needed?: string }>;
 }
 
 export const postMessage = async (
@@ -36,7 +36,8 @@ export const postMessage = async (
     text,
     ...(thread_ts ? { thread_ts } : {}),
   });
-  if (!result.ok) throw new Error(`Slack postMessage failed: ${result.error}`);
+  if (!result.ok)
+    throw new Error(`Slack postMessage failed: ${result.error} (needed: ${result.needed})`);
   return result.ts ?? '';
 };
 

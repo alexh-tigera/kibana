@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { createHmac } from 'crypto';
+import { createHmac, createHash, randomBytes, createCipheriv } from 'crypto';
 import type { CoreSetup, IRouter, Logger } from '@kbn/core/server';
 import type { ElasticConsoleConfig } from '../config';
 import type { ElasticConsolePluginStart, ElasticConsoleStartDependencies } from '../types';
@@ -20,6 +20,19 @@ const signJwt = (payload: Record<string, unknown>, secret: string): string => {
   const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
   const signature = createHmac('sha256', secret).update(`${header}.${body}`).digest('base64url');
   return `${header}.${body}.${signature}`;
+};
+
+// Encrypts a plaintext string using AES-256-GCM so sensitive fields (like kibana_api_key)
+// are not readable in plaintext within the JWT state parameter.
+// The key is derived from the state_secret so no additional config is needed.
+// Output format: base64url(iv):base64url(ciphertext):base64url(authTag)
+const encryptForState = (plaintext: string, stateSecret: string): string => {
+  const key = createHash('sha256').update(stateSecret).update(':state-enc').digest();
+  const iv = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', key, iv);
+  const ciphertext = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
+  const authTag = cipher.getAuthTag();
+  return [iv, ciphertext, authTag].map((b) => b.toString('base64url')).join(':');
 };
 
 export const registerSlackConnectRoute = ({
@@ -88,14 +101,13 @@ export const registerSlackConnectRoute = ({
         coreStart.http.basePath.publicBaseUrl ??
         `${coreStart.http.getServerInfo().protocol}://localhost:5601`;
 
-      // Embed both kibana_url and kibana_api_key in the state JWT.
-      // The router verifies the JWT signature, then:
-      //   1. Uses kibana_url to know which Kibana instance this connect belongs to
-      //   2. Stores kibana_api_key to authenticate future event forwarding
-      //   3. POSTs the bot_token to /internal/elastic_console/slack/token after OAuth
+      // Embed kibana_url and kibana_api_key in the state JWT.
+      // kibana_api_key is AES-256-GCM encrypted so it is not readable in browser
+      // history, proxy logs, or Slack's redirect logs — only the router (which
+      // shares state_secret) can decrypt it.
       const jwtPayload = {
         kibana_url: kibanaUrl,
-        kibana_api_key: kibanaApiKey,
+        kibana_api_key_enc: encryptForState(kibanaApiKey, slackConfig.state_secret),
         exp: Math.floor(Date.now() / 1000) + JWT_EXPIRY_SECS,
       };
 

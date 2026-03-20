@@ -8,9 +8,19 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { CoreStart, KibanaRequest, Logger } from '@kbn/core/server';
 import type { InferenceServerStart } from '@kbn/inference-plugin/server';
-import { MessageRole, ChatCompletionEventType } from '@kbn/inference-common';
+import { MessageRole, ChatCompletionEventType, type Message } from '@kbn/inference-common';
 import { createConversationStorage } from './conversation_storage';
 import { resolveConnector } from './resolve_connector';
+import {
+  SLACK_USER_MAPPING_SO_TYPE,
+  type SlackUserMappingAttributes,
+} from './slack_user_mapping_so';
+import {
+  SLACK_SESSION_SO_TYPE,
+  slackSessionSoId,
+  conversationIdFromSoId,
+  type SlackSessionAttributes,
+} from './slack_session_so';
 import {
   postMessage,
   createStreamUpdater,
@@ -35,7 +45,7 @@ const RESET_RE = /^(?:reset|new\s+session)$/i;
 const inFlightEvents = new Set<string>();
 
 // ---------------------------------------------------------------------------
-// Conversation lookup helpers
+// Helpers
 // ---------------------------------------------------------------------------
 
 const getSpace = (basePath: string): string => {
@@ -43,23 +53,49 @@ const getSpace = (basePath: string): string => {
   return spaceMatch ? spaceMatch[1] : 'default';
 };
 
-const findConversationByOriginRef = async (
-  storage: ReturnType<typeof createConversationStorage>,
+/**
+ * Find the active conversation for a Slack thread by querying the slack session SO.
+ * The SO is stored separately from the conversation document so agentBuilder's
+ * full-document replaces cannot overwrite Slack routing metadata.
+ */
+const findSessionByOriginRef = async (
+  coreStart: CoreStart,
   originRef: string
-): Promise<{ id: string; state: Record<string, unknown> } | null> => {
-  const results = await storage.search({
-    track_total_hits: false,
-    size: 1,
-    query: { bool: { filter: [{ term: { 'state.origin_ref': originRef } }] } },
-  });
+): Promise<{ conversationId: string; session: SlackSessionAttributes } | null> => {
+  try {
+    const soClient = coreStart.savedObjects.createInternalRepository([SLACK_SESSION_SO_TYPE]);
+    const results = await soClient.find<SlackSessionAttributes>({
+      type: SLACK_SESSION_SO_TYPE,
+      filter: `elastic-console-slack-session.attributes.origin_ref: "${originRef}"`,
+      perPage: 1,
+      sortField: 'updated_at',
+      sortOrder: 'desc',
+    });
+    if (results.total === 0) return null;
+    const so = results.saved_objects[0];
+    return {
+      conversationId: conversationIdFromSoId(so.id),
+      session: so.attributes,
+    };
+  } catch {
+    return null;
+  }
+};
 
-  const hit = results.hits.hits[0];
-  if (!hit?._id) return null;
-
-  return {
-    id: hit._id,
-    state: (hit._source?.state as Record<string, unknown>) ?? {},
-  };
+const lookupKibanaUser = async (
+  coreStart: CoreStart,
+  slackUserId: string
+): Promise<{ username: string; userId?: string } | null> => {
+  try {
+    const soClient = coreStart.savedObjects.createInternalRepository([SLACK_USER_MAPPING_SO_TYPE]);
+    const so = await soClient.get<SlackUserMappingAttributes>(
+      SLACK_USER_MAPPING_SO_TYPE,
+      slackUserId
+    );
+    return { username: so.attributes.kibana_username, userId: so.attributes.kibana_user_id };
+  } catch {
+    return null;
+  }
 };
 
 // ---------------------------------------------------------------------------
@@ -118,18 +154,23 @@ export const handleSlackEvent = async ({
   const basePath = coreStart.http.basePath.get(request);
   const space = getSpace(basePath);
   const storage = createConversationStorage({ esClient, logger });
+  const soClient = coreStart.savedObjects.createInternalRepository([SLACK_SESSION_SO_TYPE]);
+
+  // Resolve the Kibana user identity for this Slack user so conversations are
+  // attributed correctly and visible to the user across all surfaces.
+  const kibanaUser = event.user ? await lookupKibanaUser(coreStart, event.user) : null;
 
   try {
     // --- Command: status ---
     if (STATUS_RE.test(text)) {
-      const conv = await findConversationByOriginRef(storage, originRef);
+      const existing = await findSessionByOriginRef(coreStart, originRef);
       const lines = ['*Elastic Console — session status*'];
-      if (conv) {
-        const state = conv.state;
+      if (existing) {
+        const { session } = existing;
         lines.push(`• Conversation: active`);
-        if (state.location) lines.push(`• Location: \`${state.location}\``);
-        if (state.located_at) {
-          const ageMs = Date.now() - new Date(state.located_at as string).getTime();
+        if (session.location) lines.push(`• Location: \`${session.location}\``);
+        if (session.located_at) {
+          const ageMs = Date.now() - new Date(session.located_at).getTime();
           const ageStr =
             ageMs < 60_000
               ? 'just now'
@@ -147,24 +188,28 @@ export const handleSlackEvent = async ({
 
     // --- Command: reset ---
     if (RESET_RE.test(text)) {
-      const conv = await findConversationByOriginRef(storage, originRef);
-      if (conv) {
-        const fullConv = await storage.get({ id: conv.id });
+      const existing = await findSessionByOriginRef(coreStart, originRef);
+      if (existing) {
+        const { conversationId, session } = existing;
+        const fullConv = await storage.get({ id: conversationId });
         if (fullConv.found) {
           await storage.index({
-            id: conv.id,
+            id: conversationId,
             document: {
               ...fullConv._source,
               conversation_rounds: [],
-              state: {
-                ...(fullConv._source?.state as Record<string, unknown>),
-                location: originRef,
-                located_at: new Date().toISOString(),
-              },
               updated_at: new Date().toISOString(),
             },
           });
         }
+        const now = new Date().toISOString();
+        await soClient.update<SlackSessionAttributes>(
+          SLACK_SESSION_SO_TYPE,
+          slackSessionSoId(conversationId),
+          { location: originRef, located_at: now, updated_at: now, fork_context: null }
+        );
+        // If the SO doesn't exist (race), fall through — session was already reset
+        void session; // suppress unused warning
       }
       await postMessage(botToken, { channel, thread_ts: threadTs, text: 'Session reset.' });
       return;
@@ -172,8 +217,8 @@ export const handleSlackEvent = async ({
 
     // --- Command: fork ---
     if (FORK_RE.test(text)) {
-      const conv = await findConversationByOriginRef(storage, originRef);
-      if (!conv) {
+      const existing = await findSessionByOriginRef(coreStart, originRef);
+      if (!existing) {
         await postMessage(botToken, {
           channel,
           thread_ts: threadTs,
@@ -182,7 +227,8 @@ export const handleSlackEvent = async ({
         return;
       }
 
-      const fullConv = await storage.get({ id: conv.id });
+      const { conversationId, session } = existing;
+      const fullConv = await storage.get({ id: conversationId });
       if (!fullConv.found) {
         await postMessage(botToken, {
           channel,
@@ -203,52 +249,58 @@ export const handleSlackEvent = async ({
         return;
       }
 
-      const lastRound = rounds[rounds.length - 1];
-      const forkContext =
-        ((lastRound?.response as Record<string, unknown> | undefined)?.message as string) ?? '';
-
-      // Carry the connector_id from the parent conversation into the fork
-      const parentConnectorId = (fullConv._source?.state as Record<string, unknown> | undefined)
-        ?.connector_id as string | undefined;
-
       const forkId = uuidv4();
       const now = new Date().toISOString();
 
+      // Create a child conversation pre-seeded with parent history so the CLI
+      // has full context. After handoff the summary is posted back to this
+      // Slack thread and the parent conversation continues as normal.
       await storage.index({
         id: forkId,
         document: {
           agent_id: fullConv._source?.agent_id,
-          title: `Fork of ${conv.id}`,
-          conversation_rounds: [],
+          title: `[Investigation] ${(fullConv._source?.title as string) ?? conversationId}`,
+          conversation_rounds: rounds,
           user_id: fullConv._source?.user_id,
           user_name: fullConv._source?.user_name,
           space,
           created_at: now,
           updated_at: now,
-          state: {
-            fork_context: forkContext,
-            origin_ref: originRef,
-            origin_location: originRef,
-            connector_id: parentConnectorId ?? null,
-            location: null,
-          },
         },
       });
+
+      // fork_context stores the parent round count so the handoff notification
+      // only shows rounds added during the investigation, not the inherited history.
+      await soClient.create<SlackSessionAttributes>(
+        SLACK_SESSION_SO_TYPE,
+        {
+          origin_ref: originRef,
+          origin_location: originRef,
+          location: null,
+          connector_id: session.connector_id,
+          fork_context: String(rounds.length),
+          handoff_summary: null,
+          located_at: null,
+          updated_at: now,
+        },
+        { id: slackSessionSoId(forkId), overwrite: true }
+      );
+
+      const kibanaBase =
+        coreStart.http.basePath.publicBaseUrl ?? '';
+      const kibanaConvUrl = `${kibanaBase}/app/agent-builder/conversations/${forkId}`;
 
       await postMessage(botToken, {
         channel,
         thread_ts: threadTs,
         text: [
-          `*Session forked*`,
+          `*Session forked* — \`${forkId}\``,
           ``,
-          `*Claude Code*`,
+          `Pick up in your editor:`,
           '```',
-          `norb fork ${forkId} --agent claude`,
+          `elastic-console fork ${forkId}`,
           '```',
-          `*Cursor*`,
-          '```',
-          `norb fork ${forkId} --agent cursor`,
-          '```',
+          `Or open in Kibana: ${kibanaConvUrl}`,
         ].join('\n'),
       });
       return;
@@ -256,19 +308,33 @@ export const handleSlackEvent = async ({
 
     // --- Regular question — find or create conversation, call inference ---
 
-    const existingConv = await findConversationByOriginRef(storage, originRef);
+    const existingSession = await findSessionByOriginRef(coreStart, originRef);
     let existingConvId: string | null = null;
-    let conversationId: string | undefined;
+    let existingRounds: Array<Record<string, unknown>> = [];
 
-    if (existingConv) {
-      const fullConv = await storage.get({ id: existingConv.id });
+    // First message in a new thread from an unmapped Slack user — prompt them to link
+    // their Kibana account so the conversation shows up in Agent Builder.
+    if (!existingSession && !kibanaUser && event.user) {
+      await postMessage(botToken, {
+        channel,
+        thread_ts: threadTs,
+        text: [
+          `👋 Hi! Your Slack account isn't linked to a Kibana user yet.`,
+          `Your Slack user ID is \`${event.user}\`.`,
+          ``,
+          `To link your account, open *Elastic Console Setup* in Kibana and enter your Slack user ID in the *Link Slack Account* section.`,
+          ``,
+          `I'll still answer your question, but the conversation won't appear in Kibana Agent Builder until you link.`,
+        ].join('\n'),
+      });
+    }
+
+    if (existingSession) {
+      const fullConv = await storage.get({ id: existingSession.conversationId });
       if (fullConv.found) {
-        existingConvId = existingConv.id;
-        const rounds =
+        existingConvId = existingSession.conversationId;
+        existingRounds =
           (fullConv._source?.conversation_rounds as Array<Record<string, unknown>>) ?? [];
-        if (rounds.length > 0) {
-          conversationId = existingConv.id;
-        }
       }
     }
 
@@ -308,13 +374,24 @@ export const handleSlackEvent = async ({
       return msg || `_Thinking…_`;
     };
 
-    // Resolve connector: use the one stored in conversation state, or fall back to default
-    const stateConnectorId = existingConv?.state?.connector_id as string | undefined;
+    // Resolve connector: use the one from the session SO, or fall back to default
     const resolvedConnectorId = await resolveConnector(
       inference,
       request,
-      stateConnectorId ?? 'default'
+      existingSession?.session.connector_id ?? 'default'
     );
+
+    // Build full message history so the LLM has conversation context.
+    // The inference plugin is a raw LLM interface — it doesn't load conversation
+    // history itself, so we pass all prior rounds as messages.
+    const historyMessages = existingRounds.flatMap((round) => {
+      const input = (round.input as Record<string, unknown> | undefined)?.message as string | undefined;
+      const responseMsg = (round.response as Record<string, unknown> | undefined)?.message as string | undefined;
+      const msgs: Message[] = [];
+      if (input) msgs.push({ role: MessageRole.User, content: input });
+      if (responseMsg) msgs.push({ role: MessageRole.Assistant, content: responseMsg } as Message);
+      return msgs;
+    });
 
     // Call inference plugin directly via Observable
     const inferenceClient = inference.getClient({ request });
@@ -324,10 +401,18 @@ export const handleSlackEvent = async ({
 
     try {
       await new Promise<void>((resolve, reject) => {
+        const handoffSummary = existingSession?.session.handoff_summary;
+        const systemPrompt =
+          'You are a helpful Elastic AI assistant embedded in Slack. ' +
+          'Use the full conversation history when answering questions.' +
+          (handoffSummary
+            ? ` A previous investigation was completed with this summary: "${handoffSummary}". Reference it when relevant.`
+            : '');
+
         const events$ = inferenceClient.chatComplete({
           connectorId: resolvedConnectorId,
-          conversationId,
-          messages: [{ role: MessageRole.User, content: text }],
+          system: systemPrompt,
+          messages: [...historyMessages, { role: MessageRole.User, content: text }],
           stream: true,
           abortSignal: abortController.signal,
         });
@@ -370,12 +455,12 @@ export const handleSlackEvent = async ({
       await postMessage(botToken, { channel, thread_ts: threadTs, text: part });
     }
 
-    // Persist the conversation round
+    // Persist the conversation round and update session SO
     const now = new Date().toISOString();
     if (existingConvId) {
       const existing = await storage.get({ id: existingConvId });
       if (existing.found) {
-        const rounds = (existing._source?.conversation_rounds as unknown[]) ?? [];
+        const rounds = (existing._source?.conversation_rounds as Array<Record<string, unknown>>) ?? [];
         await storage.index({
           id: existingConvId,
           document: {
@@ -383,43 +468,80 @@ export const handleSlackEvent = async ({
             conversation_rounds: [
               ...rounds,
               {
-                request: { message: text },
+                id: `round-${uuidv4()}`,
+                status: 'completed',
+                input: { message: text },
+                steps: [],
                 response: { message: responseText },
+                started_at: now,
+                time_to_first_token: 0,
+                time_to_last_token: 0,
+                model_usage: {
+                  connector_id: resolvedConnectorId,
+                  llm_calls: 1,
+                  input_tokens: 0,
+                  output_tokens: 0,
+                },
               },
             ],
-            state: {
-              ...(existing._source?.state as Record<string, unknown>),
-              location: originRef,
-              located_at: now,
-            },
             updated_at: now,
           },
         });
+        // Update session SO location — stored outside the conversation doc so agentBuilder
+        // full-document replaces can't overwrite it.
+        await soClient.update<SlackSessionAttributes>(
+          SLACK_SESSION_SO_TYPE,
+          slackSessionSoId(existingConvId),
+          { location: originRef, located_at: now, updated_at: now }
+        );
       }
     } else {
+      // Create new conversation document and session SO
+      const newConvId = uuidv4();
       await storage.index({
-        id: uuidv4(),
+        id: newConvId,
         document: {
-          agent_id: 'elastic-console-slack',
+          agent_id: 'elastic-ai-agent',
           title: text.slice(0, 100),
           conversation_rounds: [
             {
-              request: { message: text },
+              id: `round-${uuidv4()}`,
+              status: 'completed',
+              input: { message: text },
+              steps: [],
               response: { message: responseText },
+              started_at: now,
+              time_to_first_token: 0,
+              time_to_last_token: 0,
+              model_usage: {
+                connector_id: resolvedConnectorId,
+                llm_calls: 1,
+                input_tokens: 0,
+                output_tokens: 0,
+              },
             },
           ],
+          user_id: kibanaUser?.userId,
+          user_name: kibanaUser?.username,
           space,
           created_at: now,
           updated_at: now,
-          state: {
-            origin_ref: originRef,
-            origin_location: originRef,
-            location: originRef,
-            located_at: now,
-            connector_id: resolvedConnectorId,
-          },
         },
       });
+      await soClient.create<SlackSessionAttributes>(
+        SLACK_SESSION_SO_TYPE,
+        {
+          origin_ref: originRef,
+          origin_location: originRef,
+          location: originRef,
+          connector_id: resolvedConnectorId,
+          fork_context: null,
+          handoff_summary: null,
+          located_at: now,
+          updated_at: now,
+        },
+        { id: slackSessionSoId(newConvId), overwrite: true }
+      );
     }
   } catch (error) {
     logger.error(`Slack handler error: ${(error as Error).message}`);

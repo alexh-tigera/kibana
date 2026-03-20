@@ -53,16 +53,27 @@ export const registerSlackTokenRoute = ({
       try {
         const [coreStart] = await coreSetup.getStartServices();
 
-        // Use internal client: the SO type is 'agnostic' (global, not space-scoped)
-        // and hidden, so a scoped client would not reach it.
-        const soClient = coreStart.savedObjects.createInternalRepository([
-          SLACK_CREDENTIALS_SO_TYPE,
-        ]);
+        // Auto-generate a scoped API key so the Slack event handler can make
+        // authenticated inference calls even though Slack events are unauthenticated.
+        const esClient = coreStart.elasticsearch.client.asScoped(request).asCurrentUser;
+        const apiKeyResult = await esClient.security.createApiKey({
+          name: `elastic-console-slack-inference-${Date.now()}`,
+          expiration: '365d',
+        });
+        const kibanaApiKey = Buffer.from(`${apiKeyResult.id}:${apiKeyResult.api_key}`).toString(
+          'base64'
+        );
+
+        // Use a scoped client so ESO's encryption wrapper intercepts the write.
+        const soClient = coreStart.savedObjects.getScopedClient(request, {
+          includedHiddenTypes: [SLACK_CREDENTIALS_SO_TYPE],
+        });
 
         await soClient.create(
           SLACK_CREDENTIALS_SO_TYPE,
           {
             bot_token: request.body.bot_token,
+            kibana_api_key: kibanaApiKey,
             updated_at: new Date().toISOString(),
           },
           { overwrite: true, id: SLACK_CREDENTIALS_SO_ID }

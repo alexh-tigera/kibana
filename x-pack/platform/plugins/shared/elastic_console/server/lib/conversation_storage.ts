@@ -27,7 +27,8 @@ const storageSettings = {
       updated_at: types.date({}),
       conversation_rounds: types.object({ dynamic: false, properties: {} }),
       attachments: types.object({ dynamic: false, properties: {} }),
-      state: types.object({
+      state: types.object({ dynamic: false, properties: {} }),
+      slack_state: types.object({
         dynamic: false,
         properties: {
           location: types.keyword({}),
@@ -55,6 +56,7 @@ export interface ConversationDocument {
   conversation_rounds?: unknown[];
   attachments?: unknown[];
   state?: Record<string, unknown>;
+  slack_state?: Record<string, unknown>;
 }
 
 type ConversationStorageSettings = typeof storageSettings;

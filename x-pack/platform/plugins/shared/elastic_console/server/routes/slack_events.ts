@@ -6,7 +6,7 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import type { CoreSetup, IRouter, Logger } from '@kbn/core/server';
+import type { CoreSetup, IRouter, KibanaRequest, Logger } from '@kbn/core/server';
 import type { ElasticConsolePluginStart, ElasticConsoleStartDependencies } from '../types';
 import { SLACK_CREDENTIALS_SO_TYPE, SLACK_CREDENTIALS_SO_ID } from '../lib/slack_credentials_so';
 import { handleSlackEvent } from '../lib/slack_handler';
@@ -36,7 +36,7 @@ export const registerSlackEventsRoute = ({
           reason: 'Public Slack webhook — no user auth; bot_token provides outbound auth',
         },
       },
-      options: { access: 'public', authRequired: false },
+      options: { access: 'public', authRequired: false, xsrfRequired: false },
       validate: {
         body: schema.object({}, { unknowns: 'allow' }),
       },
@@ -70,12 +70,22 @@ export const registerSlackEventsRoute = ({
           });
 
           let botToken: string;
+          let inferenceRequest: KibanaRequest;
           try {
-            const creds = await esoClient.getDecryptedAsInternalUser<{ bot_token: string }>(
-              SLACK_CREDENTIALS_SO_TYPE,
-              SLACK_CREDENTIALS_SO_ID
-            );
+            const creds = await esoClient.getDecryptedAsInternalUser<{
+              bot_token: string;
+              kibana_api_key: string;
+            }>(SLACK_CREDENTIALS_SO_TYPE, SLACK_CREDENTIALS_SO_ID);
             botToken = creds.attributes.bot_token;
+            // Use the stored API key to create an authenticated request for
+            // inference calls — Slack events arrive unauthenticated.
+            inferenceRequest = {
+              ...request,
+              headers: {
+                ...request.headers,
+                authorization: `ApiKey ${creds.attributes.kibana_api_key}`,
+              },
+            } as unknown as KibanaRequest;
           } catch (credErr) {
             logger.warn(
               `Slack event received but no bot_token stored yet — run /slack/connect first: ${
@@ -97,7 +107,7 @@ export const registerSlackEventsRoute = ({
             botToken,
             coreStart,
             inference: pluginsStart.inference,
-            request,
+            request: inferenceRequest,
             logger,
           });
         } catch (error) {

@@ -10,4 +10,4 @@
 // received from the router after OAuth completion.
 
 export const SLACK_CREDENTIALS_SO_TYPE = 'elastic-console-slack-credentials';
-export const SLACK_CREDENTIALS_SO_ID = 'singleton';
+export const SLACK_CREDENTIALS_SO_ID = '550e8400-e29b-41d4-a716-446655440001';

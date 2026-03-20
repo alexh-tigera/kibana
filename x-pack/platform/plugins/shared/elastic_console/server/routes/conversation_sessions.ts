@@ -5,18 +5,22 @@
  * 2.0.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { schema } from '@kbn/config-schema';
 import type { CoreSetup, IRouter, Logger } from '@kbn/core/server';
 import type { ElasticConsolePluginStart, ElasticConsoleStartDependencies } from '../types';
 import { createConversationStorage } from '../lib/conversation_storage';
 import { SLACK_CREDENTIALS_SO_TYPE, SLACK_CREDENTIALS_SO_ID } from '../lib/slack_credentials_so';
-import { sendHandoffNotification } from '../lib/notification_service';
+import {
+  SLACK_SESSION_SO_TYPE,
+  slackSessionSoId,
+  type SlackSessionAttributes,
+} from '../lib/slack_session_so';
+import { sendHandoffNotification, type ConversationRound } from '../lib/notification_service';
 import { isElasticConsoleEnabled } from './is_enabled';
 
-const getSpace = (basePath: string): string => {
-  const spaceMatch = basePath.match(/(?:^|\/)s\/([^/]+)/);
-  return spaceMatch ? spaceMatch[1] : 'default';
+const isNotFound = (error: unknown): boolean => {
+  const e = error as { statusCode?: number; meta?: { statusCode?: number } };
+  return e?.statusCode === 404 || e?.meta?.statusCode === 404;
 };
 
 export const registerConversationSessionRoutes = ({
@@ -28,107 +32,18 @@ export const registerConversationSessionRoutes = ({
   coreSetup: CoreSetup<ElasticConsoleStartDependencies, ElasticConsolePluginStart>;
   logger: Logger;
 }) => {
-  // POST /internal/elastic_console/conversations/:id/fork
-  // Creates a new forked conversation seeded with the parent's last response.
-  router.post(
-    {
-      path: '/internal/elastic_console/conversations/{id}/fork',
-      security: {
-        authz: {
-          enabled: false,
-          reason: 'This route is called by external agents using router secret auth',
-        },
-      },
-      options: { access: 'internal' },
-      validate: {
-        params: schema.object({ id: schema.string() }),
-        body: schema.object({
-          origin_ref: schema.string(),
-          origin_location: schema.string(),
-          connector_id: schema.maybe(schema.string()),
-        }),
-      },
-    },
-    async (ctx, request, response) => {
-      try {
-        const [coreStart] = await coreSetup.getStartServices();
-
-        if (!(await isElasticConsoleEnabled(coreStart, request))) {
-          return response.notFound();
-        }
-
-        const esClient = coreStart.elasticsearch.client.asScoped(request).asInternalUser;
-        const storage = createConversationStorage({ esClient, logger });
-
-        const parent = await storage.get({ id: request.params.id });
-        if (!parent.found) {
-          return response.notFound({ body: { message: 'Conversation not found' } });
-        }
-
-        const rounds =
-          (parent._source?.conversation_rounds as Array<Record<string, unknown>>) ?? [];
-        if (rounds.length === 0) {
-          return response.badRequest({
-            body: { message: 'Cannot fork a conversation with no history yet' },
-          });
-        }
-
-        const lastRound = rounds[rounds.length - 1];
-        const forkContext =
-          (lastRound?.response as Record<string, unknown> | undefined)?.message ?? '';
-
-        const { origin_ref, origin_location, connector_id } = request.body;
-
-        const id = uuidv4();
-        const now = new Date().toISOString();
-        const basePath = coreStart.http.basePath.get(request);
-        const space = getSpace(basePath);
-
-        await storage.index({
-          id,
-          document: {
-            agent_id: parent._source?.agent_id,
-            title: `Fork of ${request.params.id}`,
-            conversation_rounds: [],
-            user_id: parent._source?.user_id,
-            user_name: parent._source?.user_name,
-            space,
-            created_at: now,
-            updated_at: now,
-            state: {
-              fork_context: forkContext,
-              origin_ref,
-              origin_location,
-              connector_id: connector_id ?? null,
-              location: null,
-            },
-          },
-        });
-
-        return response.ok({ body: { id, fork_context: forkContext } });
-      } catch (error) {
-        logger.error(`Fork conversation error: ${error.message}`);
-        return response.customError({
-          statusCode: error.statusCode || 500,
-          body: { message: error.message },
-        });
-      }
-    }
-  );
-
-  // POST /internal/elastic_console/conversations/:id/locate
+  // POST /api/elastic_console/conversations/:id/locate
   // Moves a conversation to a new location (e.g. cli, mcp).
-  // On first Slack→other transition, captures origin fields automatically.
   router.post(
     {
-      path: '/internal/elastic_console/conversations/{id}/locate',
+      path: '/api/elastic_console/conversations/{id}/locate',
       security: {
         authz: {
           enabled: false,
           reason: 'This route is called by external agents using router secret auth',
         },
       },
-      options: { access: 'internal' },
+      options: { access: 'public' },
       validate: {
         params: schema.object({ id: schema.string() }),
         body: schema.object({ location: schema.string() }),
@@ -142,70 +57,65 @@ export const registerConversationSessionRoutes = ({
           return response.notFound();
         }
 
-        const esClient = coreStart.elasticsearch.client.asScoped(request).asInternalUser;
-        const storage = createConversationStorage({ esClient, logger });
+        const soClient = coreStart.savedObjects.createInternalRepository([SLACK_SESSION_SO_TYPE]);
+        const soId = slackSessionSoId(request.params.id);
 
-        const result = await storage.get({ id: request.params.id });
-        if (!result.found) {
-          return response.notFound({ body: { message: 'Conversation not found' } });
+        let sessionSo;
+        try {
+          sessionSo = await soClient.get<SlackSessionAttributes>(SLACK_SESSION_SO_TYPE, soId);
+        } catch (soErr) {
+          if (isNotFound(soErr)) {
+            return response.notFound({ body: { message: 'Session not found' } });
+          }
+          throw soErr;
         }
 
-        const currentState = (result._source?.state as Record<string, unknown>) ?? {};
-        const currentLocation = currentState.location as string | undefined;
-        const forkContext = currentState.fork_context as string | undefined;
         const { location } = request.body;
+        const { origin_ref: originRef, connector_id: connectorId } = sessionSo.attributes;
 
-        // Detect first Slack→other transition and capture origin fields
-        const isSlackOrigin =
-          typeof currentLocation === 'string' && currentLocation.startsWith('slack:');
-        const isMovingOut = location !== currentLocation;
-        const originNotSet = !currentState.origin_location;
-
-        const stateUpdates: Record<string, unknown> = {
+        await soClient.update<SlackSessionAttributes>(SLACK_SESSION_SO_TYPE, soId, {
           location,
           located_at: new Date().toISOString(),
-          fork_context: null,
-        };
-
-        if (isSlackOrigin && isMovingOut && originNotSet) {
-          stateUpdates.origin_location = currentLocation;
-          stateUpdates.origin_ref = currentLocation;
-        }
-
-        const updatedDoc = {
-          ...result._source,
-          state: { ...currentState, ...stateUpdates },
           updated_at: new Date().toISOString(),
-        };
+        });
 
-        await storage.index({ id: request.params.id, document: updatedDoc });
+        // Fetch the conversation doc so the CLI gets full history + metadata in one call
+        const esClient = coreStart.elasticsearch.client.asScoped(request).asInternalUser;
+        const storage = createConversationStorage({ esClient, logger });
+        const conv = await storage.get({ id: request.params.id });
 
         return response.ok({
-          body: { conversation: updatedDoc, fork_context: forkContext ?? null },
+          body: {
+            conversation: conv.found ? { id: request.params.id, ...conv._source } : null,
+            origin_ref: originRef ?? null,
+            connector_id: connectorId ?? null,
+          },
         });
       } catch (error) {
-        logger.error(`Locate conversation error: ${error.message}`);
+        if (isNotFound(error)) {
+          return response.notFound({ body: { message: 'Session not found' } });
+        }
+        logger.error(`Locate conversation error: ${(error as Error).message}`);
         return response.customError({
-          statusCode: error.statusCode || 500,
-          body: { message: error.message },
+          statusCode: (error as { statusCode?: number }).statusCode || 500,
+          body: { message: (error as Error).message },
         });
       }
     }
   );
 
-  // POST /internal/elastic_console/conversations/:id/handoff
+  // POST /api/elastic_console/conversations/:id/handoff
   // Returns a conversation to its origin location.
-  // Slack notification is handled separately by the Slack handler.
   router.post(
     {
-      path: '/internal/elastic_console/conversations/{id}/handoff',
+      path: '/api/elastic_console/conversations/{id}/handoff',
       security: {
         authz: {
           enabled: false,
           reason: 'This route is called by external agents using router secret auth',
         },
       },
-      options: { access: 'internal' },
+      options: { access: 'public' },
       validate: {
         params: schema.object({ id: schema.string() }),
         body: schema.object({
@@ -221,38 +131,58 @@ export const registerConversationSessionRoutes = ({
           return response.notFound();
         }
 
-        const esClient = coreStart.elasticsearch.client.asScoped(request).asInternalUser;
-        const storage = createConversationStorage({ esClient, logger });
+        const soClient = coreStart.savedObjects.createInternalRepository([SLACK_SESSION_SO_TYPE]);
+        const soId = slackSessionSoId(request.params.id);
 
-        const result = await storage.get({ id: request.params.id });
-        if (!result.found) {
-          return response.notFound({ body: { message: 'Conversation not found' } });
+        let sessionSo;
+        try {
+          sessionSo = await soClient.get<SlackSessionAttributes>(SLACK_SESSION_SO_TYPE, soId);
+        } catch (soErr) {
+          if (isNotFound(soErr)) {
+            return response.notFound({ body: { message: 'Session not found' } });
+          }
+          throw soErr;
         }
 
-        const currentState = (result._source?.state as Record<string, unknown>) ?? {};
-        const originLocation = currentState.origin_location as string | undefined;
-        const originRef = currentState.origin_ref as string | undefined;
+        const {
+          origin_location: originLocation,
+          origin_ref: originRef,
+          fork_context: forkContext,
+        } = sessionSo.attributes;
 
-        const stateUpdates: Record<string, unknown> = {};
+        const updates: Partial<SlackSessionAttributes> = {
+          updated_at: new Date().toISOString(),
+        };
         if (originLocation) {
-          stateUpdates.location = originLocation;
+          updates.location = originLocation;
         }
         if (request.body.summary) {
-          stateUpdates.handoff_summary = request.body.summary;
+          updates.handoff_summary = request.body.summary;
         }
 
-        await storage.index({
-          id: request.params.id,
-          document: {
-            ...result._source,
-            state: { ...currentState, ...stateUpdates },
-            updated_at: new Date().toISOString(),
-          },
-        });
+        await soClient.update<SlackSessionAttributes>(SLACK_SESSION_SO_TYPE, soId, updates);
+
+        // Load the conversation for the notification rounds.
+        const esClient = coreStart.elasticsearch.client.asScoped(request).asInternalUser;
+        const storage = createConversationStorage({ esClient, logger });
+        const conv = await storage.get({ id: request.params.id });
+        const existingRounds = conv.found
+          ? ((conv._source?.conversation_rounds as ConversationRound[]) ?? [])
+          : [];
+
+        // The summary is stored in handoff_summary on the SO and injected into
+        // the system prompt by the Slack handler — no synthetic conversation round
+        // needed (which would confuse the LLM with "[Investigation complete]" as
+        // a prior user message).
 
         // If the origin is Slack, post a notification to the original thread.
         // Best-effort — a notification failure does not fail the handoff.
         if (originRef?.startsWith('slack:')) {
+          // Only include rounds added after the fork (not the inherited parent history).
+          const parentRoundCount = forkContext ? parseInt(forkContext, 10) : 0;
+          const roundsForNotification = isNaN(parentRoundCount)
+            ? existingRounds
+            : existingRounds.slice(parentRoundCount);
           setImmediate(async () => {
             try {
               const esoClient = pluginsStart.encryptedSavedObjects.getClient({
@@ -265,6 +195,7 @@ export const registerConversationSessionRoutes = ({
               await sendHandoffNotification(creds.attributes.bot_token, {
                 originRef,
                 summary: request.body.summary,
+                rounds: roundsForNotification,
               });
             } catch (notifyErr) {
               logger.warn(`Handoff Slack notification failed: ${(notifyErr as Error).message}`);
@@ -279,6 +210,9 @@ export const registerConversationSessionRoutes = ({
           },
         });
       } catch (error) {
+        if (isNotFound(error)) {
+          return response.notFound({ body: { message: 'Session not found' } });
+        }
         logger.error(`Handoff conversation error: ${(error as Error).message}`);
         return response.customError({
           statusCode: (error as { statusCode?: number }).statusCode || 500,

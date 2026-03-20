@@ -15,6 +15,8 @@ import type {
 } from './types';
 import type { ElasticConsoleConfig } from './config';
 import { SLACK_CREDENTIALS_SO_TYPE } from './lib/slack_credentials_so';
+import { SLACK_USER_MAPPING_SO_TYPE } from './lib/slack_user_mapping_so';
+import { SLACK_SESSION_SO_TYPE } from './lib/slack_session_so';
 import { registerUiSettings } from './ui_settings';
 import { registerRoutes } from './routes';
 
@@ -47,7 +49,45 @@ export class ElasticConsolePlugin
       mappings: {
         dynamic: false,
         properties: {
-          bot_token: { type: 'binary' }, // encrypted at rest by ESO
+          bot_token: { type: 'keyword', index: false }, // encrypted at rest by ESO
+          kibana_api_key: { type: 'keyword', index: false }, // encrypted at rest by ESO
+          updated_at: { type: 'date' },
+        },
+      },
+    });
+
+    // Register SO type for Slack user → Kibana user mappings (one per Slack user)
+    coreSetup.savedObjects.registerType({
+      name: SLACK_USER_MAPPING_SO_TYPE,
+      hidden: true,
+      namespaceType: 'agnostic', // user identity is global, not space-scoped
+      mappings: {
+        dynamic: false,
+        properties: {
+          slack_user_id: { type: 'keyword' },
+          kibana_username: { type: 'keyword' },
+          kibana_user_id: { type: 'keyword', index: false },
+          created_at: { type: 'date' },
+          updated_at: { type: 'date' },
+        },
+      },
+    });
+
+    // Register SO type for Slack session state per conversation (survives agentBuilder updates)
+    coreSetup.savedObjects.registerType({
+      name: SLACK_SESSION_SO_TYPE,
+      hidden: true,
+      namespaceType: 'agnostic',
+      mappings: {
+        dynamic: false,
+        properties: {
+          origin_ref: { type: 'keyword' },
+          location: { type: 'keyword' },
+          origin_location: { type: 'keyword' },
+          connector_id: { type: 'keyword', index: false },
+          fork_context: { type: 'text', index: false },
+          handoff_summary: { type: 'text', index: false },
+          located_at: { type: 'date' },
           updated_at: { type: 'date' },
         },
       },
@@ -56,7 +96,7 @@ export class ElasticConsolePlugin
     // Tell ESO which attributes to encrypt
     setupDeps.encryptedSavedObjects.registerType({
       type: SLACK_CREDENTIALS_SO_TYPE,
-      attributesToEncrypt: new Set(['bot_token']),
+      attributesToEncrypt: new Set(['bot_token', 'kibana_api_key']),
     });
 
     registerUiSettings(coreSetup);
