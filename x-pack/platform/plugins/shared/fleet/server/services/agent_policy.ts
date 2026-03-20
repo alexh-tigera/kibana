@@ -2520,7 +2520,12 @@ class AgentPolicyService {
     soClient: SavedObjectsClientContract,
     esClient: ElasticsearchClient,
     connector: { id: string; attributes: CloudConnectorSOAttributes },
-    packagePolicyIds: string[]
+    verificationInfo: {
+      policyTemplates: string[];
+      packageName: string;
+      packageTitle: string;
+      packageVersion: string;
+    }
   ): Promise<{ policyId: string }> {
     const logger = this.getLogger('createVerifierPolicy');
     const connectorId = connector.id;
@@ -2529,7 +2534,9 @@ class AgentPolicyService {
       cloudProvider,
       accountType,
       vars: connectorVars,
+      namespace: connectorNamespace,
     } = connector.attributes;
+    const { policyTemplates, packageName, packageTitle, packageVersion } = verificationInfo;
     const shortId = uuidv4().slice(0, 8);
     const policyName = `verifier-${connectorId}-${shortId}`;
     const policyId = uuidv4();
@@ -2554,122 +2561,80 @@ class AgentPolicyService {
 
     const credentialVars = buildVerifierCredentialVars(cloudProvider, connectorVars);
 
-    // Create one verifier_otel package policy per integration being verified.
-    // verifier_otel is an input-type package; vars belong on the stream level.
-    for (const ppId of packagePolicyIds) {
-      const pp = await packagePolicyService.get(soClient, ppId);
-      if (!pp) {
-        logger.warn(
-          `${VERIFY_PERMISSIONS_TASK} Package policy ${ppId} not found, skipping verifier creation`
-        );
-        continue;
-      }
-
-      const enabledInput = pp.inputs.find((i) => i.enabled);
-      const policyTemplate = enabledInput?.policy_template ?? '';
-
-      const verifierPackagePolicy: NewPackagePolicy = {
-        name: `verifier-${connectorName}-${policyTemplate}`,
-        namespace: 'default',
-        enabled: true,
-        policy_ids: [agentPolicy.id],
-        package: {
-          name: 'verifier_otel',
-          title: 'Permission Verifier',
-          version: '0.0.0',
-        },
-        inputs: [
-          {
-            type: 'otelcol',
-            policy_template: 'verifierreceiver',
-            enabled: true,
-            streams: [
-              {
-                enabled: true,
-                data_stream: {
-                  type: 'logs',
-                  dataset: 'verifier_otel.verifierreceiver',
-                },
-                vars: {
-                  'data_stream.dataset': {
-                    type: 'text',
-                    value: 'verifier_otel.verifierreceiver',
-                  },
-                  cloud_connector_id: { type: 'text', value: connectorId },
-                  cloud_connector_name: { type: 'text', value: connectorName },
-                  verification_id: { type: 'text', value: verificationId },
-                  verification_type: { type: 'select', value: 'scheduled' },
-                  provider: { type: 'text', value: cloudProvider },
-                  account_type: {
-                    type: 'select',
-                    value: accountType ?? 'single_account',
-                  },
-                  ...credentialVars,
-                  policy_id: { type: 'text', value: pp.policy_ids[0] ?? '' },
-                  policy_name: { type: 'text', value: '' },
-                  package_policy_id: { type: 'text', value: ppId },
-                  policy_template: { type: 'text', value: policyTemplate },
-                  package_name: { type: 'text', value: pp.package?.name ?? '' },
-                  package_title: { type: 'text', value: pp.package?.title ?? '' },
-                  package_version: { type: 'text', value: pp.package?.version ?? '' },
-                  namespace: { type: 'text', value: pp.namespace ?? 'default' },
-                },
+    const verifierPackagePolicy: NewPackagePolicy = {
+      name: `verifier-${connectorName}-${shortId}`,
+      namespace: 'default',
+      enabled: true,
+      policy_ids: [agentPolicy.id],
+      package: {
+        name: 'verifier_otel',
+        title: 'Permission Verifier',
+        version: '0.0.0',
+      },
+      inputs: [
+        {
+          type: 'otelcol',
+          policy_template: 'verifierreceiver',
+          enabled: true,
+          streams: [
+            {
+              enabled: true,
+              data_stream: {
+                type: 'logs',
+                dataset: 'verifier_otel.verifierreceiver',
               },
-            ],
-          },
-        ],
-      };
+              vars: {
+                'data_stream.dataset': {
+                  type: 'text',
+                  value: 'verifier_otel.verifierreceiver',
+                },
+                cloud_connector_id: { type: 'text', value: connectorId },
+                cloud_connector_name: { type: 'text', value: connectorName },
+                verification_id: { type: 'text', value: verificationId },
+                verification_type: { type: 'select', value: 'scheduled' },
+                provider: { type: 'text', value: cloudProvider },
+                account_type: {
+                  type: 'select',
+                  value: accountType ?? 'single_account',
+                },
+                ...credentialVars,
+                policy_id: { type: 'text', value: '' },
+                policy_name: { type: 'text', value: `Verifier-Policy-${connectorName}-${shortId}` },
+                policy_templates: { type: 'multi', value: policyTemplates },
+                package_name: { type: 'text', value: packageName },
+                package_title: { type: 'text', value: packageTitle },
+                package_version: { type: 'text', value: packageVersion },
+                namespace: { type: 'text', value: connectorNamespace ?? 'default' },
+              },
+            },
+          ],
+        },
+      ],
+    };
 
-      try {
-        logger.info(
-          `${VERIFY_PERMISSIONS_TASK} Creating verifier_otel package policy for ` +
-            `connector ${connectorId}, integration ${pp.package?.name}/${policyTemplate}`
-        );
-        const otelPackagePolicy = await packagePolicyService.create(
-          soClient,
-          esClient,
-          verifierPackagePolicy,
-          {
-            bumpRevision: false,
-            force: true,
-          }
-        );
-        logger.info(
-          `${VERIFY_PERMISSIONS_TASK} Successfully Created OTel package policy  ${otelPackagePolicy.id} for verifier policy ${agentPolicy.id}`
-        );
-      } catch (err) {
-        logger.error(
-          `${VERIFY_PERMISSIONS_TASK} Failed to create verifier_otel package policy ` +
-            `for ${policyTemplate}: ${err}`
-        );
-        throw err;
-      }
-    }
-
-    // Attach existing package policies to the verifier agent policy
-    for (const ppId of packagePolicyIds) {
-      const pp = await packagePolicyService.get(soClient, ppId);
-      if (!pp) {
-        logger.warn(`${VERIFY_PERMISSIONS_TASK} Package policy ${ppId} not found, skipping`);
-        continue;
-      }
-      const {
-        id: _id,
-        revision: _rev,
-        secret_references: _secrets,
-        updated_at: _updatedAt,
-        updated_by: _updatedBy,
-        created_at: _createdAt,
-        created_by: _createdBy,
-        spaceIds: _spaceIds,
-        agents: _agents,
-        ...updatePayload
-      } = pp;
-      const updatedPolicyIds = [...(pp.policy_ids ?? []), agentPolicy.id];
-      await packagePolicyService.update(soClient, esClient, ppId, {
-        ...updatePayload,
-        policy_ids: updatedPolicyIds,
-      });
+    try {
+      logger.info(
+        `${VERIFY_PERMISSIONS_TASK} Creating verifier_otel package policy for ` +
+          `connector ${connectorId}, templates [${policyTemplates.join(', ')}]`
+      );
+      const otelPackagePolicy = await packagePolicyService.create(
+        soClient,
+        esClient,
+        verifierPackagePolicy,
+        {
+          bumpRevision: false,
+          force: true,
+        }
+      );
+      logger.info(
+        `${VERIFY_PERMISSIONS_TASK} Created OTel package policy ${otelPackagePolicy.id} for verifier policy ${agentPolicy.id}`
+      );
+    } catch (err) {
+      logger.error(
+        `${VERIFY_PERMISSIONS_TASK} Failed to create verifier_otel package policy ` +
+          `for connector ${connectorId}: ${err}`
+      );
+      throw err;
     }
 
     logger.info(`${VERIFY_PERMISSIONS_TASK} Deploying verifier policy ${agentPolicy.id}`);
@@ -2687,40 +2652,7 @@ class AgentPolicyService {
     policyId: string
   ): Promise<void> {
     const logger = this.getLogger('deleteVerifierPolicy');
-    const packagePolicySavedObjectType = await getPackagePolicySavedObjectType();
-
     logger.info(`${VERIFY_PERMISSIONS_TASK} Deleting verifier policy ${policyId}`);
-
-    const allPolicies = await packagePolicyService.list(soClient, {
-      kuery: `${packagePolicySavedObjectType}.policy_ids: "${policyId}"`,
-      perPage: 1000,
-    });
-
-    for (const pp of allPolicies?.items ?? []) {
-      const {
-        id: ppId,
-        revision: _rev,
-        secret_references: _secrets,
-        updated_at: _updatedAt,
-        updated_by: _updatedBy,
-        created_at: _createdAt,
-        created_by: _createdBy,
-        spaceIds: _spaceIds,
-        agents: _agents,
-        ...updatePayload
-      } = pp;
-      const updatedPolicyIds = (pp.policy_ids ?? []).filter((id) => id !== policyId);
-      try {
-        await packagePolicyService.update(soClient, esClient, ppId, {
-          ...updatePayload,
-          policy_ids: updatedPolicyIds,
-        });
-      } catch (err) {
-        logger.warn(
-          `${VERIFY_PERMISSIONS_TASK} Failed to remove verifier policy from package policy ${ppId}: ${err}`
-        );
-      }
-    }
 
     try {
       await this.delete(soClient, esClient, policyId, { force: true });

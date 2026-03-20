@@ -24,9 +24,9 @@ import { throwIfAborted } from '../utils';
 
 const TASK_TYPE = 'fleet:verify_permissions';
 const TASK_TITLE = 'OTel Verify Permission Task';
-const TASK_TIMEOUT = '1m'; // CHANGE TO 5m WHEN READY
+const TASK_TIMEOUT = '10m'; // CHANGE TO 5m WHEN READY
 const TASK_ID = `${TASK_TYPE}:1.0.0`;
-const TASK_INTERVAL = '1m'; // CHANGE TO 5m WHEN READY
+const TASK_INTERVAL = '5m'; // CHANGE TO 5m WHEN READY
 export const VERIFY_PERMISSIONS_TASK = '[OTel Verify Permissions Task]';
 const VERIFICATION_TTL_MS = 5 * 60 * 1000;
 const ELIGIBILITY_WINDOW_MS = 5 * 60 * 1000;
@@ -196,9 +196,15 @@ async function runPermissionVerifierTask(abortController: AbortController) {
         })`
       );
 
-      const packagePolicyIds = packagePolicyMap.get(connector.id) ?? [];
+      const verificationInfo = packagePolicyMap.get(connector.id);
+      if (!verificationInfo || verificationInfo.policyTemplates.length === 0) {
+        logger.debug(
+          `${VERIFY_PERMISSIONS_TASK} Connector ${connector.id} has no policy templates, skipping`
+        );
+        continue;
+      }
       try {
-        await verifyConnector(soClient, esClient, connector, packagePolicyIds, abortController);
+        await verifyConnector(soClient, esClient, connector, verificationInfo, abortController);
       } catch (error) {
         logger.error(
           `${VERIFY_PERMISSIONS_TASK} Failed to verify connector ${connector.id}: ${error.message}`
@@ -269,26 +275,50 @@ async function cleanupExpiredVerifierPolicies(
   }
 }
 
+interface ConnectorVerificationInfo {
+  policyTemplates: string[];
+  packageName: string;
+  packageTitle: string;
+  packageVersion: string;
+}
+
 /**
- * Build a map of connector ID -> package policy IDs from package policies
- * that have a cloud_connector_id set. This serves as both the pre-filter
- * (which connectors have packages) and avoids re-querying later.
+ * Build a map of connector ID -> verification info from package policies
+ * that have a cloud_connector_id set. Extracts policy_templates from each
+ * package policy's enabled input and captures package metadata.
  */
 async function getPackagePolicyMap(
   soClient: SavedObjectsClientContract
-): Promise<Map<string, string[]>> {
-  const packagePolicies = await soClient.find<{ cloud_connector_id?: string }>({
+): Promise<Map<string, ConnectorVerificationInfo>> {
+  const packagePolicies = await soClient.find<{
+    cloud_connector_id?: string;
+    inputs?: Array<{ enabled: boolean; policy_template?: string }>;
+    package?: { name: string; title: string; version: string };
+  }>({
     type: PACKAGE_POLICY_SAVED_OBJECT_TYPE,
     filter: `${PACKAGE_POLICY_SAVED_OBJECT_TYPE}.attributes.cloud_connector_id: *`,
     perPage: 100,
   });
 
-  const map = new Map<string, string[]>();
+  const map = new Map<string, ConnectorVerificationInfo>();
   for (const pp of packagePolicies.saved_objects) {
     const connectorId = pp.attributes.cloud_connector_id?.trim();
     if (!connectorId) continue;
-    const existing = map.get(connectorId) ?? [];
-    existing.push(pp.id);
+
+    const enabledInput = pp.attributes.inputs?.find((i) => i.enabled);
+    const template = enabledInput?.policy_template ?? '';
+
+    const existing = map.get(connectorId) ?? {
+      policyTemplates: [],
+      packageName: pp.attributes.package?.name ?? '',
+      packageTitle: pp.attributes.package?.title ?? '',
+      packageVersion: pp.attributes.package?.version ?? '',
+    };
+
+    if (template && !existing.policyTemplates.includes(template)) {
+      existing.policyTemplates.push(template);
+    }
+
     map.set(connectorId, existing);
   }
   return map;
@@ -362,20 +392,21 @@ async function verifyConnector(
   soClient: SavedObjectsClientContract,
   esClient: ElasticsearchClient,
   connector: SavedObject<CloudConnectorSOAttributes>,
-  packagePolicyIds: string[],
+  verificationInfo: ConnectorVerificationInfo,
   abortController: AbortController
 ) {
   const logger = appContextService.getLogger().get('otel-verifier');
 
   try {
     logger.info(
-      `${VERIFY_PERMISSIONS_TASK} Creating verifier policy for connector ${connector.id} with ${packagePolicyIds.length} package policies`
+      `${VERIFY_PERMISSIONS_TASK} Creating verifier policy for connector ${connector.id} with templates [` +
+        `${verificationInfo.policyTemplates.join(', ')}]`
     );
     const { policyId } = await agentPolicyService.createVerifierPolicy(
       soClient,
       esClient,
       connector,
-      packagePolicyIds
+      verificationInfo
     );
 
     const startedAt = new Date().toISOString();
