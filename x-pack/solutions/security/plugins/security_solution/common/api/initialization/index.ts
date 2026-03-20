@@ -13,4 +13,7 @@ export {
   InitializationFlowResult,
 } from './model';
 
-export { INITIALIZE_SECURITY_SOLUTION_URL, INITIALIZE_SECURITY_SOLUTION_SOCKET_TIMEOUT_MS } from './constants';
+export {
+  INITIALIZE_SECURITY_SOLUTION_URL,
+  INITIALIZE_SECURITY_SOLUTION_SOCKET_TIMEOUT_MS,
+} from './constants';

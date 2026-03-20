@@ -25,8 +25,8 @@ export const initializeRoute = (router: SecuritySolutionPluginRouter, logger: Lo
       path: INITIALIZE_SECURITY_SOLUTION_URL,
       options: {
         timeout: {
-          idleSocket: INITIALIZE_SECURITY_SOLUTION_SOCKET_TIMEOUT_MS
-        }
+          idleSocket: INITIALIZE_SECURITY_SOLUTION_SOCKET_TIMEOUT_MS,
+        },
       },
       security: {
         authz: {
