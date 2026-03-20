@@ -186,34 +186,22 @@ export const SetupPage: React.FC = () => {
           </>
         )}
 
-        <EuiText>
+        {/* ── CLI / MCP Setup ── */}
+        <EuiTitle size="s">
+          <h2>CLI / MCP Setup</h2>
+        </EuiTitle>
+        <EuiSpacer size="s" />
+        <EuiText size="s">
           <p>
-            <strong>CLI / MCP Setup</strong> — generate credentials for the local{' '}
-            <code>elastic-console</code> agent or any MCP-compatible tool.
-            <br />
-            <strong>Connect Slack</strong> — authorise the Slack bot so your team can interact with
-            the AI assistant directly from Slack.
+            Generate credentials for the local <code>elastic-console</code> agent or any
+            MCP-compatible tool.
           </p>
         </EuiText>
-
         <EuiSpacer />
 
-        <EuiFlexGroup gutterSize="s">
-          <EuiFlexItem grow={false}>
-            <EuiButton fill onClick={handleSetup} isLoading={isLoading}>
-              CLI / MCP Setup
-            </EuiButton>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              iconType="logoSlack"
-              onClick={handleConnectSlack}
-              color={slackStatus?.status === 'connected' ? 'success' : 'primary'}
-            >
-              {slackStatus?.status === 'connected' ? 'Reconnect Slack' : 'Connect Slack'}
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
+        <EuiButton fill onClick={handleSetup} isLoading={isLoading}>
+          CLI / MCP Setup
+        </EuiButton>
 
         <EuiSpacer />
 
@@ -257,8 +245,70 @@ export const SetupPage: React.FC = () => {
           </>
         )}
 
+        {setupData && (
+          <EuiFlexGroup direction="column" gutterSize="m">
+            <EuiFlexItem>
+              <EuiFormRow label="Kibana URL" fullWidth>
+                <EuiFieldText value={setupData.kibanaUrl} readOnly fullWidth />
+              </EuiFormRow>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiFormRow label="Elasticsearch URL" fullWidth>
+                <EuiFieldText value={setupData.elasticsearchUrl} readOnly fullWidth />
+              </EuiFormRow>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <EuiFormRow label="API Key (Base64)" fullWidth>
+                <EuiCodeBlock language="text" paddingSize="s" isCopyable>
+                  {setupData.apiKeyEncoded}
+                </EuiCodeBlock>
+              </EuiFormRow>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiCopy
+                textToCopy={JSON.stringify(
+                  {
+                    kibanaUrl: setupData.kibanaUrl,
+                    elasticsearchUrl: setupData.elasticsearchUrl,
+                    apiKey: setupData.apiKeyEncoded,
+                  },
+                  null,
+                  2
+                )}
+              >
+                {(copy) => (
+                  <EuiButton onClick={copy} iconType="copy">
+                    Copy all as JSON
+                  </EuiButton>
+                )}
+              </EuiCopy>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        )}
+
         <EuiHorizontalRule />
 
+        {/* ── Connect Slack ── */}
+        <EuiTitle size="s">
+          <h2>Connect Slack</h2>
+        </EuiTitle>
+        <EuiSpacer size="s" />
+        <EuiText size="s">
+          <p>Authorise the Slack bot so your team can interact with the AI assistant from Slack.</p>
+        </EuiText>
+        <EuiSpacer />
+
+        <EuiButton
+          iconType="logoSlack"
+          onClick={handleConnectSlack}
+          color={slackStatus?.status === 'connected' ? 'success' : 'primary'}
+        >
+          {slackStatus?.status === 'connected' ? 'Reconnect Slack' : 'Connect Slack'}
+        </EuiButton>
+
+        <EuiHorizontalRule />
+
+        {/* ── Link Slack Account ── */}
         <EuiTitle size="s">
           <h2>Link Slack Account</h2>
         </EuiTitle>
@@ -314,54 +364,6 @@ export const SetupPage: React.FC = () => {
             </EuiFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
-
-        <EuiHorizontalRule />
-
-        <EuiTitle size="s">
-          <h2>CLI / MCP Setup</h2>
-        </EuiTitle>
-        <EuiSpacer size="s" />
-
-        {setupData && (
-          <EuiFlexGroup direction="column" gutterSize="m">
-            <EuiFlexItem>
-              <EuiFormRow label="Kibana URL" fullWidth>
-                <EuiFieldText value={setupData.kibanaUrl} readOnly fullWidth />
-              </EuiFormRow>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormRow label="Elasticsearch URL" fullWidth>
-                <EuiFieldText value={setupData.elasticsearchUrl} readOnly fullWidth />
-              </EuiFormRow>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormRow label="API Key (Base64)" fullWidth>
-                <EuiCodeBlock language="text" paddingSize="s" isCopyable>
-                  {setupData.apiKeyEncoded}
-                </EuiCodeBlock>
-              </EuiFormRow>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiCopy
-                textToCopy={JSON.stringify(
-                  {
-                    kibanaUrl: setupData.kibanaUrl,
-                    elasticsearchUrl: setupData.elasticsearchUrl,
-                    apiKey: setupData.apiKeyEncoded,
-                  },
-                  null,
-                  2
-                )}
-              >
-                {(copy) => (
-                  <EuiButton onClick={copy} iconType="copy">
-                    Copy all as JSON
-                  </EuiButton>
-                )}
-              </EuiCopy>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        )}
       </EuiPageTemplate.Section>
     </EuiPageTemplate>
   );
