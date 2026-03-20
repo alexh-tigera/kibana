@@ -12,6 +12,7 @@ export const configSchema = schema.object({
   slack: schema.maybe(
     schema.object({
       client_id: schema.string(),
+      redirect_uri: schema.maybe(schema.string()), // defaults to connect.elastic.co
     })
   ),
 });
