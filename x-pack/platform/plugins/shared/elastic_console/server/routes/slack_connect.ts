@@ -79,9 +79,10 @@ export const registerSlackConnectRoute = ({
         });
       }
 
+      const serverInfo = coreStart.http.getServerInfo();
       const kibanaUrl =
         coreStart.http.basePath.publicBaseUrl ??
-        `${coreStart.http.getServerInfo().protocol}://localhost:5601`;
+        `${serverInfo.protocol}://localhost:${serverInfo.port}${coreStart.http.basePath.serverBasePath}`;
 
       // Self-authenticating state JWT: signed with the kibana_api_key itself.
       // No shared secret needed — the router verifies by extracting kibana_api_key
