@@ -1,10 +1,8 @@
 ---
 navigation_title: "HubSpot"
 description: "Use the HubSpot connector to search and retrieve contacts, companies, deals, tickets, and engagements from HubSpot CRM."
-mapped_pages:
-  - https://www.elastic.co/guide/en/kibana/current/hubspot-action-type.html
 applies_to:
-  stack: preview 9.3
+  stack: preview 9.4
   serverless: preview
 ---
 
@@ -88,10 +86,8 @@ Service Keys are managed under **Development** in HubSpot and can call the same 
    - `crm.schemas.companies.read`
    - `crm.schemas.contacts.read`
    - `crm.schemas.deals.read`
-6. Save the key and copy the generated token (it may start with `pat-` or another prefix).
+6. Save the key and copy the generated token (it can start with `pat-` or another prefix).
 7. Use this value as the **Private App Access Token** when configuring the HubSpot connector in {{kib}}.
-
-:::
 
 ### Private App (legacy) [hubspot-private-app-legacy]
 
@@ -113,6 +109,6 @@ Creating a Private App (app integration) is the **legacy** way to obtain a token
 8. On the confirmation dialog, copy the **Access Token** (starts with `pat-`).
 9. Use this token as the **Private App Access Token** when configuring the connector in {{kib}}.
 
-:::note
+:::{note}
 Keep your access token secure. Anyone with this token can access your HubSpot CRM data.
 :::
