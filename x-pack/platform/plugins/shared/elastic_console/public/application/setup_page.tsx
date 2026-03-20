@@ -188,8 +188,11 @@ export const SetupPage: React.FC = () => {
 
         <EuiText>
           <p>
-            Generate connection credentials for external tools to use Kibana-configured AI
-            connectors via an OpenAI-compatible API.
+            <strong>CLI / MCP Setup</strong> — generate credentials for the local{' '}
+            <code>elastic-console</code> agent or any MCP-compatible tool.
+            <br />
+            <strong>Connect Slack</strong> — authorise the Slack bot so your team can interact with
+            the AI assistant directly from Slack.
           </p>
         </EuiText>
 
@@ -198,7 +201,7 @@ export const SetupPage: React.FC = () => {
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiButton fill onClick={handleSetup} isLoading={isLoading}>
-              Generate credentials
+              CLI / MCP Setup
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
@@ -315,7 +318,7 @@ export const SetupPage: React.FC = () => {
         <EuiHorizontalRule />
 
         <EuiTitle size="s">
-          <h2>Generate Credentials</h2>
+          <h2>CLI / MCP Setup</h2>
         </EuiTitle>
         <EuiSpacer size="s" />
 
