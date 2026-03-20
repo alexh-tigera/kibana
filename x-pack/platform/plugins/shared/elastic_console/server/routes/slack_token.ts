@@ -70,10 +70,11 @@ export const registerSlackTokenRoute = ({
           'base64'
         );
 
-        // Use a scoped client so ESO's encryption wrapper intercepts the write.
-        const soClient = coreStart.savedObjects.getScopedClient(request, {
-          includedHiddenTypes: [SLACK_CREDENTIALS_SO_TYPE],
-        });
+        // Use the internal repository so ESO's encryption wrapper intercepts the write
+        // without requiring Kibana RBAC on the scoped (connect API key) request.
+        // The endpoint is already authenticated via the connect API key — writing
+        // through the internal repo is safe here.
+        const soClient = coreStart.savedObjects.createInternalRepository([SLACK_CREDENTIALS_SO_TYPE]);
 
         await soClient.create(
           SLACK_CREDENTIALS_SO_TYPE,
