@@ -14,9 +14,10 @@ import {
 } from '@kbn/core-test-helpers-kbn-server';
 import { esTestConfig } from '@kbn/test';
 import { firstValueFrom, Subject } from 'rxjs';
-import { CliArgs } from '@kbn/config';
+import type { CliArgs } from '@kbn/config';
 import Semver from 'semver';
 import { unsafeConsole } from '@kbn/security-hardening';
+import { getFips } from 'crypto';
 
 function nextMinor() {
   return Semver.inc(esTestConfig.getVersion(), 'minor') || '10.0.0';
@@ -43,14 +44,9 @@ describe('Version Compatibility', () => {
 
   afterEach(async () => {
     consoleSpy.mockRestore();
-    if (kibanaServer) {
-      await kibanaServer.stop();
-    } else {
-      abortController?.abort();
-    }
-    if (esServer) {
-      await esServer.stop();
-    }
+    await kibanaServer?.stop();
+    abortController?.abort();
+    await esServer?.stop();
     kibanaServer = undefined;
     abortController = undefined;
     esServer = undefined;
@@ -130,9 +126,15 @@ describe('Version Compatibility', () => {
     );
   });
 
-  it('should ignore version mismatch when running on serverless mode and complete startup', async () => {
-    await expect(
-      startServers({ customKibanaVersion: nextMinor(), cliArgs: { serverless: true } })
-    ).resolves.toBeUndefined();
-  });
+  if (getFips() === 0) {
+    it('should ignore version mismatch when running on serverless mode and complete startup', async () => {
+      await expect(
+        startServers({ customKibanaVersion: nextMinor(), cliArgs: { serverless: true } })
+      ).resolves.toBeUndefined();
+    });
+  } else {
+    it('fips is enabled, serverless doesnt like the config overrides', () => {
+      expect(getFips()).toBe(1);
+    });
+  }
 });

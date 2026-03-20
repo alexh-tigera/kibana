@@ -11,7 +11,9 @@
         "tags": [],
         "label": "AppContext",
         "description": [],
-        "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+        "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+        "lineNumber": 38,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -22,7 +24,9 @@
             "tags": [],
             "label": "isDev",
             "description": [],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 39,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -33,7 +37,9 @@
             "tags": [],
             "label": "isCloud",
             "description": [],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 40,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -44,7 +50,9 @@
             "tags": [],
             "label": "isServerless",
             "description": [],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 41,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -55,7 +63,25 @@
             "tags": [],
             "label": "stackVersion",
             "description": [],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 42,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "observabilityOnboarding",
+            "id": "def-public.AppContext.cloudServiceProvider",
+            "type": "string",
+            "tags": [],
+            "label": "cloudServiceProvider",
+            "description": [],
+            "signature": [
+              "string | undefined"
+            ],
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 43,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -69,7 +95,9 @@
         "tags": [],
         "label": "ConfigSchema",
         "description": [],
-        "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+        "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+        "lineNumber": 29,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -83,7 +111,9 @@
             "signature": [
               "{ enabled: boolean; }"
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -97,7 +127,9 @@
             "signature": [
               "{ enabled: boolean; }"
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -111,10 +143,34 @@
         "tags": [],
         "label": "ObservabilityOnboardingAppServices",
         "description": [],
-        "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+        "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+        "lineNumber": 46,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
+          {
+            "parentPluginId": "observabilityOnboarding",
+            "id": "def-public.ObservabilityOnboardingAppServices.analytics",
+            "type": "Object",
+            "tags": [],
+            "label": "analytics",
+            "description": [],
+            "signature": [
+              "{ optIn: (optInConfig: ",
+              "OptInConfig",
+              ") => void; reportEvent: <EventTypeData extends object>(eventType: string, eventData: EventTypeData) => void; readonly telemetryCounter$: ",
+              "Observable",
+              "<",
+              "TelemetryCounter",
+              ">; }"
+            ],
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 47,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
           {
             "parentPluginId": "observabilityOnboarding",
             "id": "def-public.ObservabilityOnboardingAppServices.application",
@@ -123,15 +179,11 @@
             "label": "application",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-application-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreApplicationBrowserPluginApi",
-                "section": "def-public.ApplicationStart",
-                "text": "ApplicationStart"
-              }
+              "ApplicationStart"
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 48,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -143,15 +195,59 @@
             "label": "http",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-http-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreHttpBrowserPluginApi",
-                "section": "def-public.HttpSetup",
-                "text": "HttpSetup"
-              }
+              "HttpSetup"
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 49,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "observabilityOnboarding",
+            "id": "def-public.ObservabilityOnboardingAppServices.notifications",
+            "type": "Object",
+            "tags": [],
+            "label": "notifications",
+            "description": [],
+            "signature": [
+              "NotificationsStart"
+            ],
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 50,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "observabilityOnboarding",
+            "id": "def-public.ObservabilityOnboardingAppServices.pricing",
+            "type": "Object",
+            "tags": [],
+            "label": "pricing",
+            "description": [],
+            "signature": [
+              "PricingServiceStart"
+            ],
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 51,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "observabilityOnboarding",
+            "id": "def-public.ObservabilityOnboardingAppServices.rendering",
+            "type": "Object",
+            "tags": [],
+            "label": "rendering",
+            "description": [],
+            "signature": [
+              "RenderingService"
+            ],
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 52,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -171,7 +267,25 @@
                 "section": "def-public.ShowShareMenuOptions",
                 "text": "ShowShareMenuOptions"
               },
-              ") => void; } & { url: ",
+              ") => Promise<void>; getExportHandler: (options: Omit<",
+              {
+                "pluginId": "share",
+                "scope": "public",
+                "docId": "kibSharePluginApi",
+                "section": "def-public.ShowShareMenuOptions",
+                "text": "ShowShareMenuOptions"
+              },
+              ", \"asExport\" | \"anchorElement\">, exportId: string, intl: ",
+              "IntlShape",
+              ") => Promise<(() => Promise<void>) | null>; getExportDerivativeHandler: (options: Omit<",
+              {
+                "pluginId": "share",
+                "scope": "public",
+                "docId": "kibSharePluginApi",
+                "section": "def-public.ShowShareMenuOptions",
+                "text": "ShowShareMenuOptions"
+              },
+              ", \"asExport\" | \"anchorElement\">, derivativeId: string) => Promise<(() => Promise<void>) | null>; } & { url: ",
               {
                 "pluginId": "share",
                 "scope": "public",
@@ -189,9 +303,13 @@
                 "section": "def-common.SerializableRecord",
                 "text": "SerializableRecord"
               },
-              ">): void; }"
+              ">): void; availableIntegrations: (objectType: string, groupId?: string | undefined) => ",
+              "ShareActionIntents",
+              "[]; }"
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 53,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -211,7 +329,9 @@
                 "text": "AppContext"
               }
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 54,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -231,7 +351,9 @@
                 "text": "ConfigSchema"
               }
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 55,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -243,15 +365,11 @@
             "label": "docLinks",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-doc-links-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreDocLinksBrowserPluginApi",
-                "section": "def-public.DocLinksStart",
-                "text": "DocLinksStart"
-              }
+              "DocLinksStart"
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 56,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -263,15 +381,100 @@
             "label": "chrome",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-chrome-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreChromeBrowserPluginApi",
-                "section": "def-public.ChromeStart",
-                "text": "ChromeStart"
-              }
+              "ChromeStart"
             ],
-            "path": "x-pack/plugins/observability_solution/observability_onboarding/public/index.ts",
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 57,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "observabilityOnboarding",
+            "id": "def-public.ObservabilityOnboardingAppServices.featureFlags",
+            "type": "Object",
+            "tags": [],
+            "label": "featureFlags",
+            "description": [],
+            "signature": [
+              "FeatureFlagsStart"
+            ],
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 58,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "observabilityOnboarding",
+            "id": "def-public.ObservabilityOnboardingAppServices.observability",
+            "type": "Object",
+            "tags": [],
+            "label": "observability",
+            "description": [],
+            "signature": [
+              "{ config: ",
+              {
+                "pluginId": "observability",
+                "scope": "public",
+                "docId": "kibObservabilityPluginApi",
+                "section": "def-public.ConfigSchema",
+                "text": "ConfigSchema"
+              },
+              "; observabilityRuleTypeRegistry: { register: (type: ",
+              {
+                "pluginId": "observability",
+                "scope": "public",
+                "docId": "kibObservabilityPluginApi",
+                "section": "def-public.ObservabilityRuleTypeModel",
+                "text": "ObservabilityRuleTypeModel"
+              },
+              "<any>) => void; getFormatter: (typeId: string) => ",
+              {
+                "pluginId": "observability",
+                "scope": "public",
+                "docId": "kibObservabilityPluginApi",
+                "section": "def-public.ObservabilityRuleTypeFormatter",
+                "text": "ObservabilityRuleTypeFormatter"
+              },
+              " | undefined; list: () => string[]; }; useRulesLink: (options?: ",
+              {
+                "pluginId": "observabilityShared",
+                "scope": "public",
+                "docId": "kibObservabilitySharedPluginApi",
+                "section": "def-public.Options",
+                "text": "Options"
+              },
+              ") => ",
+              "LinkProps",
+              "; }"
+            ],
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 59,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "observabilityOnboarding",
+            "id": "def-public.ObservabilityOnboardingAppServices.streams",
+            "type": "Object",
+            "tags": [],
+            "label": "streams",
+            "description": [],
+            "signature": [
+              {
+                "pluginId": "streams",
+                "scope": "public",
+                "docId": "kibStreamsPluginApi",
+                "section": "def-public.StreamsPluginStart",
+                "text": "StreamsPluginStart"
+              },
+              " | undefined"
+            ],
+            "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/index.ts",
+            "lineNumber": 60,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -292,7 +495,9 @@
       "signature": [
         "void"
       ],
-      "path": "x-pack/plugins/observability_solution/observability_onboarding/public/plugin.ts",
+      "path": "x-pack/solutions/observability/plugins/observability_onboarding/public/plugin.ts",
+      "lineNumber": 49,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "lifecycle": "start",
@@ -315,7 +520,9 @@
         "signature": [
           "{ readonly ui: Readonly<{} & { enabled: boolean; }>; readonly serverless: Readonly<{} & { enabled: true; }>; }"
         ],
-        "path": "x-pack/plugins/observability_solution/observability_onboarding/server/index.ts",
+        "path": "x-pack/solutions/observability/plugins/observability_onboarding/server/config.ts",
+        "lineNumber": 24,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -329,7 +536,9 @@
       "tags": [],
       "label": "ObservabilityOnboardingPluginSetup",
       "description": [],
-      "path": "x-pack/plugins/observability_solution/observability_onboarding/server/types.ts",
+      "path": "x-pack/solutions/observability/plugins/observability_onboarding/server/types.ts",
+      "lineNumber": 44,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "children": [],
@@ -343,7 +552,9 @@
       "tags": [],
       "label": "ObservabilityOnboardingPluginStart",
       "description": [],
-      "path": "x-pack/plugins/observability_solution/observability_onboarding/server/types.ts",
+      "path": "x-pack/solutions/observability/plugins/observability_onboarding/server/types.ts",
+      "lineNumber": 46,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "children": [],
@@ -367,7 +578,9 @@
         "signature": [
           "\"observabilityOnboarding\""
         ],
-        "path": "x-pack/plugins/observability_solution/observability_onboarding/common/index.ts",
+        "path": "x-pack/solutions/observability/plugins/observability_onboarding/common/index.ts",
+        "lineNumber": 8,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -382,7 +595,9 @@
         "signature": [
           "\"observabilityOnboarding\""
         ],
-        "path": "x-pack/plugins/observability_solution/observability_onboarding/common/index.ts",
+        "path": "x-pack/solutions/observability/plugins/observability_onboarding/common/index.ts",
+        "lineNumber": 9,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false

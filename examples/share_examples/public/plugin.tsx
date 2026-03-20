@@ -7,8 +7,8 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { SharePluginStart, SharePluginSetup } from '@kbn/share-plugin/public';
-import { Plugin, CoreSetup, CoreStart } from '@kbn/core/public';
+import type { SharePluginStart, SharePluginSetup } from '@kbn/share-plugin/public';
+import type { Plugin, CoreSetup, CoreStart } from '@kbn/core/public';
 
 interface SetupDeps {
   share: SharePluginSetup;
@@ -22,7 +22,7 @@ export class ShareDemoPlugin implements Plugin<void, void, SetupDeps, StartDeps>
   public setup(core: CoreSetup<StartDeps>, { share }: SetupDeps) {
     share.register({
       id: 'demo',
-      getShareMenuItems: (context) => [
+      getShareMenuItemsLegacy: (context) => [
         {
           panel: {
             id: 'demo',

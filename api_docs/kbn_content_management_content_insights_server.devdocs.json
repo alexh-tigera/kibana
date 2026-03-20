@@ -25,7 +25,9 @@
           "ContentInsightsConfig",
           ") => void"
         ],
-        "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+        "lineNumber": 72,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -39,7 +41,9 @@
             "signature": [
               "ContentInsightsDependencies"
             ],
-            "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+            "lineNumber": 73,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -54,7 +58,9 @@
             "signature": [
               "ContentInsightsConfig"
             ],
-            "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+            "lineNumber": 74,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -72,7 +78,9 @@
         "tags": [],
         "label": "ContentInsightsStats",
         "description": [],
-        "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+        "lineNumber": 51,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -85,7 +93,9 @@
             "description": [
               "\nThe date from which the data is counted"
             ],
-            "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+            "lineNumber": 52,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -98,7 +108,9 @@
             "description": [
               "\nTotal count of events"
             ],
-            "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+            "lineNumber": 56,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -114,7 +126,9 @@
             "signature": [
               "{ date: string; count: number; }[]"
             ],
-            "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+            "lineNumber": 60,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -128,7 +142,9 @@
         "tags": [],
         "label": "ContentInsightsStatsResponse",
         "description": [],
-        "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+        "lineNumber": 47,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -148,7 +164,9 @@
                 "text": "ContentInsightsStats"
               }
             ],
-            "path": "packages/content-management/content_insights/content_insights_server/src/register.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_server/src/register.ts",
+            "lineNumber": 48,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }

@@ -15,7 +15,7 @@
           "\nReact Component that acts as a wrapper for DatePickerContext.\n"
         ],
         "signature": [
-          "(props: React.PropsWithChildren<React.PropsWithChildren<",
+          "(props: React.PropsWithChildren<",
           {
             "pluginId": "@kbn/ml-date-picker",
             "scope": "public",
@@ -23,9 +23,11 @@
             "section": "def-public.DatePickerDependencies",
             "text": "DatePickerDependencies"
           },
-          ">>) => JSX.Element"
+          ">) => React.JSX.Element"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+        "lineNumber": 96,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -39,7 +41,7 @@
               "- The component props"
             ],
             "signature": [
-              "React.PropsWithChildren<React.PropsWithChildren<",
+              "React.PropsWithChildren<",
               {
                 "pluginId": "@kbn/ml-date-picker",
                 "scope": "public",
@@ -47,9 +49,11 @@
                 "section": "def-public.DatePickerDependencies",
                 "text": "DatePickerDependencies"
               },
-              ">>"
+              ">"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 96,
+            "columnNumber": 90,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -72,25 +76,29 @@
           "\nDatePickerWrapper React Component\n"
         ],
         "signature": [
-          "(props: React.PropsWithChildren<DatePickerWrapperProps>) => JSX.Element | null"
+          "(props: DatePickerWrapperProps) => React.JSX.Element | null"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/components/date_picker_wrapper.tsx",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/components/date_picker_wrapper.tsx",
+        "lineNumber": 120,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
           {
             "parentPluginId": "@kbn/ml-date-picker",
             "id": "def-public.DatePickerWrapper.$1",
-            "type": "CompoundType",
+            "type": "Object",
             "tags": [],
             "label": "props",
             "description": [
               "- `DatePickerWrapper` component props"
             ],
             "signature": [
-              "React.PropsWithChildren<DatePickerWrapperProps>"
+              "DatePickerWrapperProps"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/date_picker_wrapper.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/date_picker_wrapper.tsx",
+            "lineNumber": 120,
+            "columnNumber": 63,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -113,7 +121,7 @@
           "\nComponent for rendering a button which automatically sets the range of the time filter\nto the time range of data in the index(es) mapped to the supplied Kibana data view or query.\n"
         ],
         "signature": [
-          "(props: React.PropsWithChildren<",
+          "(props: ",
           {
             "pluginId": "@kbn/ml-date-picker",
             "scope": "public",
@@ -121,33 +129,35 @@
             "section": "def-public.FullTimeRangeSelectorProps",
             "text": "FullTimeRangeSelectorProps"
           },
-          ">) => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+        "lineNumber": 86,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
           {
             "parentPluginId": "@kbn/ml-date-picker",
             "id": "def-public.FullTimeRangeSelector.$1",
-            "type": "CompoundType",
+            "type": "Object",
             "tags": [],
             "label": "props",
             "description": [
               "- `FullTimeRangeSelectorProps` component props"
             ],
             "signature": [
-              "React.PropsWithChildren<",
               {
                 "pluginId": "@kbn/ml-date-picker",
                 "scope": "public",
                 "docId": "kibKbnMlDatePickerPluginApi",
                 "section": "def-public.FullTimeRangeSelectorProps",
                 "text": "FullTimeRangeSelectorProps"
-              },
-              ">"
+              }
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 86,
+            "columnNumber": 71,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -178,7 +188,9 @@
           },
           ">"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/services/time_field_range.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/services/time_field_range.ts",
+        "lineNumber": 51,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -194,7 +206,9 @@
             "signature": [
               "GetTimeFieldRangeOptions"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/time_field_range.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/time_field_range.ts",
+            "lineNumber": 56,
+            "columnNumber": 41,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -232,7 +246,9 @@
             "text": "TimeRange"
           }
         ],
-        "path": "x-pack/packages/ml/date_picker/src/services/full_time_range_selector_service.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/services/full_time_range_selector_service.ts",
+        "lineNumber": 112,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -254,7 +270,9 @@
                 "text": "TimefilterContract"
               }
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/full_time_range_selector_service.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/full_time_range_selector_service.ts",
+            "lineNumber": 118,
+            "columnNumber": 36,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -285,7 +303,9 @@
           },
           " | undefined"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/hooks/use_timefilter.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_timefilter.ts",
+        "lineNumber": 110,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -302,16 +322,11 @@
           "\nCustom hook to return refresh interval updates from the `refreshIntervalObservable$` observable.\n"
         ],
         "signature": [
-          "() => ",
-          {
-            "pluginId": "data",
-            "scope": "common",
-            "docId": "kibDataQueryPluginApi",
-            "section": "def-common.RefreshInterval",
-            "text": "RefreshInterval"
-          }
+          "() => Readonly<{} & { value: number; pause: boolean; }>"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/hooks/use_timefilter.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_timefilter.ts",
+        "lineNumber": 73,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -339,7 +354,9 @@
             "text": "TimefilterContract"
           }
         ],
-        "path": "x-pack/packages/ml/date_picker/src/hooks/use_timefilter.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_timefilter.ts",
+        "lineNumber": 41,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -355,7 +372,9 @@
             "signature": [
               "UseTimefilterOptions"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_timefilter.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_timefilter.ts",
+            "lineNumber": 41,
+            "columnNumber": 31,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -385,7 +404,9 @@
             "text": "TimeRange"
           }
         ],
-        "path": "x-pack/packages/ml/date_picker/src/hooks/use_timefilter.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_timefilter.ts",
+        "lineNumber": 90,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -401,7 +422,9 @@
             "signature": [
               "boolean"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_timefilter.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_timefilter.ts",
+            "lineNumber": 90,
+            "columnNumber": 37,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -423,7 +446,9 @@
         "description": [
           "\nDate Picker Dependencies to be passed on via `DatePickerContextProvider`."
         ],
-        "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+        "lineNumber": 22,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -445,7 +470,9 @@
                 "text": "DataPublicPluginStart"
               }
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -459,15 +486,11 @@
               "\nhttp service"
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-http-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreHttpBrowserPluginApi",
-                "section": "def-public.HttpSetup",
-                "text": "HttpSetup"
-              }
+              "HttpSetup"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -481,15 +504,29 @@
               "\nnotifications service"
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-notifications-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreNotificationsBrowserPluginApi",
-                "section": "def-public.NotificationsSetup",
-                "text": "NotificationsSetup"
-              }
+              "NotificationsStart"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 34,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/ml-date-picker",
+            "id": "def-public.DatePickerDependencies.userProfile",
+            "type": "Object",
+            "tags": [],
+            "label": "userProfile",
+            "description": [
+              "\nKibana Security User Profile Service"
+            ],
+            "signature": [
+              "UserProfileService"
+            ],
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 38,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -503,15 +540,11 @@
               "\nEUI theme"
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-theme-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreThemeBrowserPluginApi",
-                "section": "def-public.ThemeServiceSetup",
-                "text": "ThemeServiceSetup"
-              }
+              "ThemeServiceSetup"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 42,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -525,15 +558,11 @@
               "\nKibana UI advanced settings"
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-ui-settings-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreUiSettingsBrowserPluginApi",
-                "section": "def-public.IUiSettingsClient",
-                "text": "IUiSettingsClient"
-              }
+              "IUiSettingsClient"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 46,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -549,7 +578,9 @@
             "signature": [
               "{ readonly META_FIELDS: \"metaFields\"; readonly DOC_HIGHLIGHT: \"doc_table:highlight\"; readonly QUERY_STRING_OPTIONS: \"query:queryString:options\"; readonly QUERY_ALLOW_LEADING_WILDCARDS: \"query:allowLeadingWildcards\"; readonly SEARCH_QUERY_LANGUAGE: \"search:queryLanguage\"; readonly SORT_OPTIONS: \"sort:options\"; readonly COURIER_IGNORE_FILTER_IF_FIELD_NOT_IN_INDEX: \"courier:ignoreFilterIfFieldNotInIndex\"; readonly COURIER_SET_REQUEST_PREFERENCE: \"courier:setRequestPreference\"; readonly COURIER_CUSTOM_REQUEST_PREFERENCE: \"courier:customRequestPreference\"; readonly COURIER_MAX_CONCURRENT_SHARD_REQUESTS: \"courier:maxConcurrentShardRequests\"; readonly SEARCH_INCLUDE_FROZEN: \"search:includeFrozen\"; readonly SEARCH_TIMEOUT: \"search:timeout\"; readonly HISTOGRAM_BAR_TARGET: \"histogram:barTarget\"; readonly HISTOGRAM_MAX_BARS: \"histogram:maxBars\"; readonly HISTORY_LIMIT: \"history:limit\"; readonly TIMEPICKER_REFRESH_INTERVAL_DEFAULTS: \"timepicker:refreshIntervalDefaults\"; readonly TIMEPICKER_QUICK_RANGES: \"timepicker:quickRanges\"; readonly TIMEPICKER_TIME_DEFAULTS: \"timepicker:timeDefaults\"; readonly FILTERS_PINNED_BY_DEFAULT: \"filters:pinnedByDefault\"; readonly FILTERS_EDITOR_SUGGEST_VALUES: \"filterEditor:suggestValues\"; readonly AUTOCOMPLETE_USE_TIMERANGE: \"autocomplete:useTimeRange\"; readonly AUTOCOMPLETE_VALUE_SUGGESTION_METHOD: \"autocomplete:valueSuggestionMethod\"; readonly DATE_FORMAT: \"dateFormat\"; readonly DATEFORMAT_TZ: \"dateFormat:tz\"; }"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 50,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -563,15 +594,11 @@
               "\nInternationalisation service"
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-i18n-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreI18nBrowserPluginApi",
-                "section": "def-public.I18nStart",
-                "text": "I18nStart"
-              }
+              "I18nStart"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 54,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -587,7 +614,34 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 58,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/ml-date-picker",
+            "id": "def-public.DatePickerDependencies.cps",
+            "type": "Object",
+            "tags": [],
+            "label": "cps",
+            "description": [
+              "\nCPS plugin for project routing"
+            ],
+            "signature": [
+              {
+                "pluginId": "cps",
+                "scope": "public",
+                "docId": "kibCpsPluginApi",
+                "section": "def-public.CPSPluginStart",
+                "text": "CPSPluginStart"
+              },
+              " | undefined"
+            ],
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/hooks/use_date_picker_context.tsx",
+            "lineNumber": 62,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -603,7 +657,9 @@
         "description": [
           "\nFullTimeRangeSelectorProps React Component props interface"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+        "lineNumber": 37,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -619,7 +675,9 @@
             "signature": [
               "\"exclude-frozen\" | \"include-frozen\""
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 41,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -643,7 +701,9 @@
               },
               " | undefined) => void"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 45,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -666,7 +726,9 @@
                   },
                   " | undefined"
                 ],
-                "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+                "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+                "lineNumber": 49,
+                "columnNumber": 29,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": false
@@ -684,7 +746,15 @@
               "\ntimefilter service."
             ],
             "signature": [
-              "{ isTimeRangeSelectorEnabled: () => boolean; isAutoRefreshSelectorEnabled: () => boolean; isTimeTouched: () => boolean; isRefreshIntervalTouched: () => boolean; getEnabledUpdated$: () => ",
+              "{ readonly useTimefilter: () => ",
+              {
+                "pluginId": "data",
+                "scope": "public",
+                "docId": "kibDataQueryPluginApi",
+                "section": "def-public.TimefilterHook",
+                "text": "TimefilterHook"
+              },
+              "; isTimeRangeSelectorEnabled: () => boolean; isAutoRefreshSelectorEnabled: () => boolean; isTimeTouched: () => boolean; isRefreshIntervalTouched: () => boolean; getEnabledUpdated$: () => ",
               "Observable",
               "<boolean>; getTimeUpdate$: () => ",
               "Observable",
@@ -700,7 +770,7 @@
                 "section": "def-public.AutoRefreshDoneFn",
                 "text": "AutoRefreshDoneFn"
               },
-              ">; getFetch$: () => ",
+              ">; triggerFetch: () => void; getFetch$: () => ",
               "Observable",
               "<void>; getTime: () => ",
               {
@@ -720,23 +790,7 @@
               },
               "; setTime: (time: ",
               "InputTimeRange",
-              ") => void; getRefreshInterval: () => ",
-              {
-                "pluginId": "data",
-                "scope": "common",
-                "docId": "kibDataQueryPluginApi",
-                "section": "def-common.RefreshInterval",
-                "text": "RefreshInterval"
-              },
-              "; getMinRefreshInterval: () => number; setRefreshInterval: (refreshInterval: Partial<",
-              {
-                "pluginId": "data",
-                "scope": "common",
-                "docId": "kibDataQueryPluginApi",
-                "section": "def-common.RefreshInterval",
-                "text": "RefreshInterval"
-              },
-              ">) => void; createFilter: (indexPattern: ",
+              ") => void; getRefreshInterval: () => Readonly<{} & { value: number; pause: boolean; }>; getMinRefreshInterval: () => number; setRefreshInterval: (refreshInterval: Partial<Readonly<{} & { value: number; pause: boolean; }>>) => void; createFilter: (indexPattern: ",
               {
                 "pluginId": "dataViews",
                 "scope": "common",
@@ -844,17 +898,11 @@
                 "section": "def-common.TimeRange",
                 "text": "TimeRange"
               },
-              "; getRefreshIntervalDefaults: () => ",
-              {
-                "pluginId": "data",
-                "scope": "common",
-                "docId": "kibDataQueryPluginApi",
-                "section": "def-common.RefreshInterval",
-                "text": "RefreshInterval"
-              },
-              "; }"
+              "; getRefreshIntervalDefaults: () => Readonly<{} & { value: number; pause: boolean; }>; }"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 50,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -876,7 +924,9 @@
                 "text": "DataView"
               }
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 54,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -889,24 +939,155 @@
             "description": [
               "\nBoolean flag to enable/disable the full time range button."
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 58,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "@kbn/ml-date-picker",
             "id": "def-public.FullTimeRangeSelectorProps.query",
-            "type": "Object",
+            "type": "CompoundType",
             "tags": [],
             "label": "query",
             "description": [
               "\nOptional DSL query."
             ],
             "signature": [
-              "QueryDslQueryContainer",
-              " | undefined"
+              "({ prefix?: Partial<Record<string, string | ",
+              "QueryDslPrefixQuery",
+              ">> | undefined; } & { type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ type?: ",
+              "QueryDslTypeQuery",
+              " | undefined; } & { prefix?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ exists?: ",
+              "QueryDslExistsQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ bool?: ",
+              "QueryDslBoolQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ boosting?: ",
+              "QueryDslBoostingQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ common?: Partial<Record<string, string | ",
+              "QueryDslCommonTermsQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ combined_fields?: ",
+              "QueryDslCombinedFieldsQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ constant_score?: ",
+              "QueryDslConstantScoreQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ dis_max?: ",
+              "QueryDslDisMaxQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ distance_feature?: ",
+              "QueryDslDistanceFeatureQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ function_score?: ",
+              "QueryDslFunctionScoreQuery",
+              " | ",
+              "QueryDslFunctionScoreContainer",
+              "[] | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ fuzzy?: Partial<Record<string, string | number | boolean | ",
+              "QueryDslFuzzyQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_bounding_box?: ",
+              "QueryDslGeoBoundingBoxQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_distance?: ",
+              "QueryDslGeoDistanceQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_grid?: Partial<Record<string, ",
+              "QueryDslGeoGridQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_polygon?: ",
+              "QueryDslGeoPolygonQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_shape?: ",
+              "QueryDslGeoShapeQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ has_child?: ",
+              "QueryDslHasChildQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ has_parent?: ",
+              "QueryDslHasParentQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ ids?: ",
+              "QueryDslIdsQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ intervals?: Partial<Record<string, ",
+              "QueryDslIntervalsQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ knn?: ",
+              "KnnQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match?: Partial<Record<string, string | number | boolean | ",
+              "QueryDslMatchQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_all?: ",
+              "QueryDslMatchAllQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_bool_prefix?: Partial<Record<string, string | ",
+              "QueryDslMatchBoolPrefixQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_none?: ",
+              "QueryDslMatchNoneQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_phrase?: Partial<Record<string, string | ",
+              "QueryDslMatchPhraseQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_phrase_prefix?: Partial<Record<string, string | ",
+              "QueryDslMatchPhrasePrefixQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ more_like_this?: ",
+              "QueryDslMoreLikeThisQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ multi_match?: ",
+              "QueryDslMultiMatchQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ nested?: ",
+              "QueryDslNestedQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ parent_id?: ",
+              "QueryDslParentIdQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ percolate?: ",
+              "QueryDslPercolateQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ pinned?: ",
+              "QueryDslPinnedQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ query_string?: ",
+              "QueryDslQueryStringQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ range?: Partial<Record<string, ",
+              "QueryDslRangeQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ rank_feature?: ",
+              "QueryDslRankFeatureQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ regexp?: Partial<Record<string, string | ",
+              "QueryDslRegexpQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ rule?: ",
+              "QueryDslRuleQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ script?: ",
+              "QueryDslScriptQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ script_score?: ",
+              "QueryDslScriptScoreQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ semantic?: ",
+              "QueryDslSemanticQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ shape?: ",
+              "QueryDslShapeQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ simple_query_string?: ",
+              "QueryDslSimpleQueryStringQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_containing?: ",
+              "QueryDslSpanContainingQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_field_masking?: ",
+              "QueryDslSpanFieldMaskingQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_first?: ",
+              "QueryDslSpanFirstQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_multi?: ",
+              "QueryDslSpanMultiTermQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_near?: ",
+              "QueryDslSpanNearQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_not?: ",
+              "QueryDslSpanNotQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_or?: ",
+              "QueryDslSpanOrQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_term?: Partial<Record<string, ",
+              "QueryDslSpanTermQuery",
+              " | ",
+              "FieldValue",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_within?: ",
+              "QueryDslSpanWithinQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ sparse_vector?: ",
+              "QueryDslSparseVectorQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ term?: Partial<Record<string, ",
+              "FieldValue",
+              " | ",
+              "QueryDslTermQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ terms?: ",
+              "QueryDslTermsQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ terms_set?: Partial<Record<string, ",
+              "QueryDslTermsSetQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ text_expansion?: Partial<Record<string, ",
+              "QueryDslTextExpansionQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ weighted_tokens?: Partial<Record<string, ",
+              "QueryDslWeightedTokensQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ wildcard?: Partial<Record<string, string | ",
+              "QueryDslWildcardQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wrapper?: undefined; }) | ({ wrapper?: ",
+              "QueryDslWrapperQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; }) | undefined"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 62,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -930,7 +1111,9 @@
               },
               ") => void) | undefined"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 66,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -952,7 +1135,9 @@
                     "text": "GetTimeFieldRangeResponse"
                   }
                 ],
-                "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+                "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+                "lineNumber": 70,
+                "columnNumber": 15,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -979,7 +1164,9 @@
               },
               " | undefined"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/components/full_time_range_selector.tsx",
+            "lineNumber": 71,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -995,7 +1182,9 @@
         "description": [
           "\nResponse interface for the `setFullTimeRange` function."
         ],
-        "path": "x-pack/packages/ml/date_picker/src/services/types.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/services/types.ts",
+        "lineNumber": 22,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1008,7 +1197,9 @@
             "description": [
               "\nSuccess boolean flag."
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/types.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/types.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1024,7 +1215,9 @@
             "signature": [
               "GetTimeFieldRangeResponseTime"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/types.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/types.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1040,7 +1233,9 @@
             "signature": [
               "GetTimeFieldRangeResponseTime"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/types.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/types.ts",
+            "lineNumber": 34,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1056,7 +1251,9 @@
         "description": [
           "\nState definition of `mlTimefilterRefresh$` observable."
         ],
-        "path": "x-pack/packages/ml/date_picker/src/services/timefilter_refresh_service.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/services/timefilter_refresh_service.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1069,7 +1266,9 @@
             "description": [
               "\nTimestamp of the last time a refresh got triggered."
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/timefilter_refresh_service.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/timefilter_refresh_service.ts",
+            "lineNumber": 14,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1085,7 +1284,9 @@
             "signature": [
               "{ start: string; end: string; } | undefined"
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/timefilter_refresh_service.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/timefilter_refresh_service.ts",
+            "lineNumber": 18,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1101,7 +1302,9 @@
         "description": [
           "\nReturn type for the `getTimeFilterRange` function."
         ],
-        "path": "x-pack/packages/ml/date_picker/src/services/full_time_range_selector_service.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/services/full_time_range_selector_service.ts",
+        "lineNumber": 98,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1114,7 +1317,9 @@
             "description": [
               "\nFrom timestamp."
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/full_time_range_selector_service.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/full_time_range_selector_service.ts",
+            "lineNumber": 102,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1127,7 +1332,9 @@
             "description": [
               "\nTo timestamp."
             ],
-            "path": "x-pack/packages/ml/date_picker/src/services/full_time_range_selector_service.ts",
+            "path": "x-pack/platform/packages/private/ml/date_picker/src/services/full_time_range_selector_service.ts",
+            "lineNumber": 106,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1149,7 +1356,9 @@
         "signature": [
           "\"exclude-frozen\" | \"include-frozen\""
         ],
-        "path": "x-pack/packages/ml/date_picker/src/storage.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/storage.ts",
+        "lineNumber": 16,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1166,7 +1375,9 @@
         "signature": [
           "\"/internal/file_upload/time_field_range\" | \"/internal/ml/fields_service/time_field_range\""
         ],
-        "path": "x-pack/packages/ml/date_picker/src/services/full_time_range_selector_service.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/services/full_time_range_selector_service.ts",
+        "lineNumber": 20,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1185,7 +1396,9 @@
         "signature": [
           "{ readonly EXCLUDE: \"exclude-frozen\"; readonly INCLUDE: \"include-frozen\"; }"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/storage.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/storage.ts",
+        "lineNumber": 11,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1211,7 +1424,9 @@
           },
           ">"
         ],
-        "path": "x-pack/packages/ml/date_picker/src/services/timefilter_refresh_service.ts",
+        "path": "x-pack/platform/packages/private/ml/date_picker/src/services/timefilter_refresh_service.ts",
+        "lineNumber": 27,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false

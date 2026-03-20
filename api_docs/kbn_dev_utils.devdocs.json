@@ -21,6 +21,138 @@
     "functions": [
       {
         "parentPluginId": "@kbn/dev-utils",
+        "id": "def-common.countCommitsBetweenRefs",
+        "type": "Function",
+        "tags": [],
+        "label": "countCommitsBetweenRefs",
+        "description": [
+          "Counts commits reachable from `head` that are not reachable from `base`."
+        ],
+        "signature": [
+          "({ base, head, }: { base: string; head: string; }) => Promise<number>"
+        ],
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/git/count_commits_between_refs.ts",
+        "lineNumber": 15,
+        "columnNumber": 14,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/dev-utils",
+            "id": "def-common.countCommitsBetweenRefs.$1",
+            "type": "Object",
+            "tags": [],
+            "label": "{\n  base,\n  head,\n}",
+            "description": [],
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/git/count_commits_between_refs.ts",
+            "lineNumber": 18,
+            "columnNumber": 4,
+            "deprecated": false,
+            "trackAdoption": false,
+            "children": [
+              {
+                "parentPluginId": "@kbn/dev-utils",
+                "id": "def-common.countCommitsBetweenRefs.$1.base",
+                "type": "string",
+                "tags": [],
+                "label": "base",
+                "description": [],
+                "path": "src/platform/packages/shared/kbn-dev-utils/src/git/count_commits_between_refs.ts",
+                "lineNumber": 19,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false
+              },
+              {
+                "parentPluginId": "@kbn/dev-utils",
+                "id": "def-common.countCommitsBetweenRefs.$1.head",
+                "type": "string",
+                "tags": [],
+                "label": "head",
+                "description": [],
+                "path": "src/platform/packages/shared/kbn-dev-utils/src/git/count_commits_between_refs.ts",
+                "lineNumber": 20,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false
+              }
+            ]
+          }
+        ],
+        "returnComment": [],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/dev-utils",
+        "id": "def-common.createIndexSnapshotCommit",
+        "type": "Function",
+        "tags": [],
+        "label": "createIndexSnapshotCommit",
+        "description": [
+          "\nCreates an ephemeral commit from the current Git index without updating any refs.\nUsed by staged-scope affected checks where tooling needs a real `head` SHA for\nindex contents (for example Moon comparisons with `base=HEAD` and `head=<index snapshot>`)."
+        ],
+        "signature": [
+          "({ parentRef, message, }?: { parentRef?: string | undefined; message?: string | undefined; }) => Promise<string>"
+        ],
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/git/create_index_snapshot_commit.ts",
+        "lineNumber": 19,
+        "columnNumber": 14,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/dev-utils",
+            "id": "def-common.createIndexSnapshotCommit.$1",
+            "type": "Object",
+            "tags": [],
+            "label": "{\n  parentRef = 'HEAD',\n  message = 'Temporary commit for staged-scope tooling\\n',\n}",
+            "description": [],
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/git/create_index_snapshot_commit.ts",
+            "lineNumber": 22,
+            "columnNumber": 4,
+            "deprecated": false,
+            "trackAdoption": false,
+            "children": [
+              {
+                "parentPluginId": "@kbn/dev-utils",
+                "id": "def-common.createIndexSnapshotCommit.$1.parentRef",
+                "type": "string",
+                "tags": [],
+                "label": "parentRef",
+                "description": [],
+                "signature": [
+                  "string | undefined"
+                ],
+                "path": "src/platform/packages/shared/kbn-dev-utils/src/git/create_index_snapshot_commit.ts",
+                "lineNumber": 23,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false
+              },
+              {
+                "parentPluginId": "@kbn/dev-utils",
+                "id": "def-common.createIndexSnapshotCommit.$1.message",
+                "type": "string",
+                "tags": [],
+                "label": "message",
+                "description": [],
+                "signature": [
+                  "string | undefined"
+                ],
+                "path": "src/platform/packages/shared/kbn-dev-utils/src/git/create_index_snapshot_commit.ts",
+                "lineNumber": 24,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false
+              }
+            ]
+          }
+        ],
+        "returnComment": [],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/dev-utils",
         "id": "def-common.diffStrings",
         "type": "Function",
         "tags": [],
@@ -31,7 +163,9 @@
         "signature": [
           "(expected: string, received: string) => string | undefined"
         ],
-        "path": "packages/kbn-dev-utils/src/diff_strings.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/diff_strings.ts",
+        "lineNumber": 85,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -45,7 +179,9 @@
             "signature": [
               "string"
             ],
-            "path": "packages/kbn-dev-utils/src/diff_strings.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/diff_strings.ts",
+            "lineNumber": 90,
+            "columnNumber": 29,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -60,7 +196,9 @@
             "signature": [
               "string"
             ],
-            "path": "packages/kbn-dev-utils/src/diff_strings.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/diff_strings.ts",
+            "lineNumber": 90,
+            "columnNumber": 47,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -81,7 +219,9 @@
         "signature": [
           "({\n  archivePath,\n  targetDir,\n  stripComponents = 0,\n  setModifiedTimes,\n}: Options) => Promise<void>"
         ],
-        "path": "packages/kbn-dev-utils/src/extract.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/extract.ts",
+        "lineNumber": 52,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -95,12 +235,54 @@
             "signature": [
               "Options"
             ],
-            "path": "packages/kbn-dev-utils/src/extract.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/extract.ts",
+            "lineNumber": 57,
+            "columnNumber": 31,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
           }
         ],
+        "returnComment": [],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/dev-utils",
+        "id": "def-common.getRemoteDefaultBranchRefs",
+        "type": "Function",
+        "tags": [],
+        "label": "getRemoteDefaultBranchRefs",
+        "description": [],
+        "signature": [
+          "() => Promise<string[]>"
+        ],
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/git/get_remote_default_branch_refs.ts",
+        "lineNumber": 20,
+        "columnNumber": 14,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [],
+        "returnComment": [],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/dev-utils",
+        "id": "def-common.hasStagedChanges",
+        "type": "Function",
+        "tags": [],
+        "label": "hasStagedChanges",
+        "description": [
+          "Returns true when the Git index contains staged changes relative to HEAD."
+        ],
+        "signature": [
+          "() => Promise<boolean>"
+        ],
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/git/has_staged_changes.ts",
+        "lineNumber": 16,
+        "columnNumber": 14,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [],
         "returnComment": [],
         "initialIsOpen": false
       },
@@ -121,7 +303,9 @@
             "text": "AxiosRequestError"
           }
         ],
-        "path": "packages/kbn-dev-utils/src/axios/errors.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/axios/errors.ts",
+        "lineNumber": 20,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -135,7 +319,9 @@
             "signature": [
               "any"
             ],
-            "path": "packages/kbn-dev-utils/src/axios/errors.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/axios/errors.ts",
+            "lineNumber": 20,
+            "columnNumber": 37,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -162,7 +348,9 @@
           },
           "<T>"
         ],
-        "path": "packages/kbn-dev-utils/src/axios/errors.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/axios/errors.ts",
+        "lineNumber": 24,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -176,10 +364,89 @@
             "signature": [
               "any"
             ],
-            "path": "packages/kbn-dev-utils/src/axios/errors.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/axios/errors.ts",
+            "lineNumber": 24,
+            "columnNumber": 47,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
+          }
+        ],
+        "returnComment": [],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/dev-utils",
+        "id": "def-common.resolveNearestMergeBase",
+        "type": "Function",
+        "tags": [],
+        "label": "resolveNearestMergeBase",
+        "description": [
+          "\nResolves the closest merge-base candidate between `headRef` and the provided base refs.\n\"Closest\" is the candidate with the smallest ahead count from the merge base to head."
+        ],
+        "signature": [
+          "({ baseRefs, headRef, }: { baseRefs: string[]; headRef?: string | undefined; }) => Promise<",
+          {
+            "pluginId": "@kbn/dev-utils",
+            "scope": "common",
+            "docId": "kibKbnDevUtilsPluginApi",
+            "section": "def-common.NearestMergeBaseCandidate",
+            "text": "NearestMergeBaseCandidate"
+          },
+          " | undefined>"
+        ],
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/git/resolve_nearest_merge_base.ts",
+        "lineNumber": 24,
+        "columnNumber": 14,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/dev-utils",
+            "id": "def-common.resolveNearestMergeBase.$1",
+            "type": "Object",
+            "tags": [],
+            "label": "{\n  baseRefs,\n  headRef = 'HEAD',\n}",
+            "description": [],
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/git/resolve_nearest_merge_base.ts",
+            "lineNumber": 27,
+            "columnNumber": 4,
+            "deprecated": false,
+            "trackAdoption": false,
+            "children": [
+              {
+                "parentPluginId": "@kbn/dev-utils",
+                "id": "def-common.resolveNearestMergeBase.$1.baseRefs",
+                "type": "Array",
+                "tags": [],
+                "label": "baseRefs",
+                "description": [],
+                "signature": [
+                  "string[]"
+                ],
+                "path": "src/platform/packages/shared/kbn-dev-utils/src/git/resolve_nearest_merge_base.ts",
+                "lineNumber": 28,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false
+              },
+              {
+                "parentPluginId": "@kbn/dev-utils",
+                "id": "def-common.resolveNearestMergeBase.$1.headRef",
+                "type": "string",
+                "tags": [],
+                "label": "headRef",
+                "description": [],
+                "signature": [
+                  "string | undefined"
+                ],
+                "path": "src/platform/packages/shared/kbn-dev-utils/src/git/resolve_nearest_merge_base.ts",
+                "lineNumber": 29,
+                "columnNumber": 3,
+                "deprecated": false,
+                "trackAdoption": false
+              }
+            ]
           }
         ],
         "returnComment": [],
@@ -195,7 +462,9 @@
         "signature": [
           "() => void"
         ],
-        "path": "packages/kbn-dev-utils/src/plugin_list/run_plugin_list_cli.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/plugin_list/run_plugin_list_cli.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -218,7 +487,9 @@
           "ChildProcess",
           "; }"
         ],
-        "path": "packages/kbn-dev-utils/src/worker/index.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/worker/index.ts",
+        "lineNumber": 24,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -232,7 +503,9 @@
             "signature": [
               "StartTSWorkerArgs"
             ],
-            "path": "packages/kbn-dev-utils/src/worker/index.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/worker/index.ts",
+            "lineNumber": 28,
+            "columnNumber": 40,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -258,7 +531,9 @@
           " | null> | null) => ",
           "Transform"
         ],
-        "path": "packages/kbn-dev-utils/src/streams.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/streams.ts",
+        "lineNumber": 26,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -276,7 +551,9 @@
               "node_modules/@types/vinyl/index",
               " | null> | null"
             ],
-            "path": "packages/kbn-dev-utils/src/streams.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/streams.ts",
+            "lineNumber": 27,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -306,7 +583,9 @@
           "AxiosError",
           "<unknown, any>"
         ],
-        "path": "packages/kbn-dev-utils/src/axios/errors.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/axios/errors.ts",
+        "lineNumber": 12,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -320,7 +599,9 @@
             "signature": [
               "undefined"
             ],
-            "path": "packages/kbn-dev-utils/src/axios/errors.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/axios/errors.ts",
+            "lineNumber": 13,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -346,7 +627,9 @@
           "AxiosError",
           "<unknown, any>"
         ],
-        "path": "packages/kbn-dev-utils/src/axios/errors.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/axios/errors.ts",
+        "lineNumber": 16,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -359,9 +642,66 @@
             "description": [],
             "signature": [
               "AxiosResponse",
-              "<T, any>"
+              "<T, any, {}>"
             ],
-            "path": "packages/kbn-dev-utils/src/axios/errors.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/axios/errors.ts",
+            "lineNumber": 17,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/dev-utils",
+        "id": "def-common.NearestMergeBaseCandidate",
+        "type": "Interface",
+        "tags": [],
+        "label": "NearestMergeBaseCandidate",
+        "description": [],
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/git/resolve_nearest_merge_base.ts",
+        "lineNumber": 14,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/dev-utils",
+            "id": "def-common.NearestMergeBaseCandidate.baseRef",
+            "type": "string",
+            "tags": [],
+            "label": "baseRef",
+            "description": [],
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/git/resolve_nearest_merge_base.ts",
+            "lineNumber": 15,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/dev-utils",
+            "id": "def-common.NearestMergeBaseCandidate.mergeBase",
+            "type": "string",
+            "tags": [],
+            "label": "mergeBase",
+            "description": [],
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/git/resolve_nearest_merge_base.ts",
+            "lineNumber": 16,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/dev-utils",
+            "id": "def-common.NearestMergeBaseCandidate.aheadCount",
+            "type": "number",
+            "tags": [],
+            "label": "aheadCount",
+            "description": [],
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/git/resolve_nearest_merge_base.ts",
+            "lineNumber": 17,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -378,7 +718,9 @@
         "tags": [],
         "label": "CA_CERT_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 12,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -393,7 +735,9 @@
         "signature": [
           "\"F71F73085975FD977339A1909EBFE2DF40DB255E0D5BB56FC37246BF383FFC84\""
         ],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 13,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -405,7 +749,9 @@
         "tags": [],
         "label": "ES_CERT_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 16,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -417,7 +763,9 @@
         "tags": [],
         "label": "ES_EMPTYPASSWORD_P12_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 19,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -429,7 +777,9 @@
         "tags": [],
         "label": "ES_KEY_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 15,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -441,7 +791,9 @@
         "tags": [],
         "label": "ES_NOPASSWORD_P12_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 23,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -456,7 +808,9 @@
         "signature": [
           "\"storepass\""
         ],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 18,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -468,7 +822,9 @@
         "tags": [],
         "label": "ES_P12_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 17,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -480,7 +836,9 @@
         "tags": [],
         "label": "FLEET_SERVER_CERT_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 29,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -492,7 +850,9 @@
         "tags": [],
         "label": "FLEET_SERVER_KEY_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 28,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -507,7 +867,9 @@
         "signature": [
           "\"storepass\""
         ],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 31,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -519,7 +881,9 @@
         "tags": [],
         "label": "FLEET_SERVER_P12_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 30,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -531,7 +895,9 @@
         "tags": [],
         "label": "KBN_CERT_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 25,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -543,7 +909,9 @@
         "tags": [],
         "label": "KBN_KEY_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 24,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -558,7 +926,9 @@
         "signature": [
           "\"storepass\""
         ],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 27,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -570,7 +940,9 @@
         "tags": [],
         "label": "KBN_P12_PATH",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/certs.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/certs.ts",
+        "lineNumber": 26,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -584,7 +956,9 @@
         "tags": [],
         "label": "fleetServerDevServiceAccount",
         "description": [],
-        "path": "packages/kbn-dev-utils/src/dev_service_account.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/dev_service_account.ts",
+        "lineNumber": 22,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -595,7 +969,9 @@
             "tags": [],
             "label": "token",
             "description": [],
-            "path": "packages/kbn-dev-utils/src/dev_service_account.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/dev_service_account.ts",
+            "lineNumber": 23,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -609,9 +985,11 @@
         "tags": [],
         "label": "kibanaDevServiceAccount",
         "description": [
-          "\n`kibana-dev` service account token for connecting to ESS\nSee packages/kbn-es/src/serverless_resources/README.md"
+          "\n`kibana-dev` service account token for connecting to ESS\nSee src/platform/packages/shared/kbn-es/src/serverless_resources/README.md"
         ],
-        "path": "packages/kbn-dev-utils/src/dev_service_account.ts",
+        "path": "src/platform/packages/shared/kbn-dev-utils/src/dev_service_account.ts",
+        "lineNumber": 16,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -622,7 +1000,9 @@
             "tags": [],
             "label": "token",
             "description": [],
-            "path": "packages/kbn-dev-utils/src/dev_service_account.ts",
+            "path": "src/platform/packages/shared/kbn-dev-utils/src/dev_service_account.ts",
+            "lineNumber": 17,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }

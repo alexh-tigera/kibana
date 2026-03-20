@@ -19,9 +19,7 @@ export const docMissingSuite = (savedObjectsIndex: string) => () => {
     // delete all docs from kibana index to ensure savedConfig is not found
     await esClient.deleteByQuery({
       index: savedObjectsIndex,
-      body: {
-        query: { match_all: {} },
-      },
+      query: { match_all: {} },
     });
   });
 
@@ -29,7 +27,9 @@ export const docMissingSuite = (savedObjectsIndex: string) => () => {
     it('creates doc, returns a 200 with settings', async () => {
       const { supertest } = getServices();
 
-      const { body } = await supertest('get', '/internal/kibana/settings').expect(200);
+      const { body } = await supertest('get', '/internal/kibana/settings')
+        .set('x-elastic-internal-origin', 'kibana')
+        .expect(200);
 
       expect(body).toMatchObject({
         settings: {
@@ -51,6 +51,7 @@ export const docMissingSuite = (savedObjectsIndex: string) => () => {
       const defaultIndex = chance.word();
 
       const { body } = await supertest('post', '/internal/kibana/settings/defaultIndex')
+        .set('x-elastic-internal-origin', 'kibana')
         .send({
           value: defaultIndex,
         })
@@ -80,6 +81,7 @@ export const docMissingSuite = (savedObjectsIndex: string) => () => {
       const defaultIndex = chance.word();
 
       const { body } = await supertest('post', '/internal/kibana/settings')
+        .set('x-elastic-internal-origin', 'kibana')
         .send({
           changes: { defaultIndex },
         })
@@ -106,9 +108,9 @@ export const docMissingSuite = (savedObjectsIndex: string) => () => {
     it('creates doc, returns a 200 with just buildNum', async () => {
       const { supertest } = getServices();
 
-      const { body } = await supertest('delete', '/internal/kibana/settings/defaultIndex').expect(
-        200
-      );
+      const { body } = await supertest('delete', '/internal/kibana/settings/defaultIndex')
+        .set('x-elastic-internal-origin', 'kibana')
+        .expect(200);
 
       expect(body).toMatchObject({
         settings: {

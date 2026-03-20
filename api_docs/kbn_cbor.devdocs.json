@@ -25,7 +25,9 @@
         "tags": [],
         "label": "KbnCbor",
         "description": [],
-        "path": "packages/kbn-cbor/index.ts",
+        "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+        "lineNumber": 15,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -39,7 +41,9 @@
             "signature": [
               "(data: unknown) => any"
             ],
-            "path": "packages/kbn-cbor/index.ts",
+            "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+            "lineNumber": 16,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -53,7 +57,9 @@
                 "signature": [
                   "unknown"
                 ],
-                "path": "packages/kbn-cbor/index.ts",
+                "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+                "lineNumber": 16,
+                "columnNumber": 17,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -71,7 +77,9 @@
             "signature": [
               "(uint8: any) => any"
             ],
-            "path": "packages/kbn-cbor/index.ts",
+            "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+            "lineNumber": 20,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -85,7 +93,9 @@
                 "signature": [
                   "any"
                 ],
-                "path": "packages/kbn-cbor/index.ts",
+                "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+                "lineNumber": 20,
+                "columnNumber": 17,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -108,7 +118,9 @@
         "signature": [
           "(uint8: any) => any"
         ],
-        "path": "packages/kbn-cbor/index.ts",
+        "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+        "lineNumber": 26,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -123,7 +135,9 @@
             "signature": [
               "any"
             ],
-            "path": "packages/kbn-cbor/index.ts",
+            "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+            "lineNumber": 20,
+            "columnNumber": 17,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -140,7 +154,9 @@
         "signature": [
           "(data: unknown) => any"
         ],
-        "path": "packages/kbn-cbor/index.ts",
+        "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+        "lineNumber": 25,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -155,7 +171,9 @@
             "signature": [
               "unknown"
             ],
-            "path": "packages/kbn-cbor/index.ts",
+            "path": "src/platform/packages/shared/kbn-cbor/index.ts",
+            "lineNumber": 16,
+            "columnNumber": 17,
             "deprecated": false,
             "trackAdoption": false
           }

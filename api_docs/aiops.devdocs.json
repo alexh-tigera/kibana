@@ -13,7 +13,7 @@
           "\nLazy-wrapped ChangePointDetectionAppStateProps React component"
         ],
         "signature": [
-          "(props: React.PropsWithChildren<",
+          "(props: ",
           {
             "pluginId": "aiops",
             "scope": "public",
@@ -21,33 +21,35 @@
             "section": "def-public.ChangePointDetectionAppStateProps",
             "text": "ChangePointDetectionAppStateProps"
           },
-          ">) => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "x-pack/plugins/aiops/public/shared_lazy_components.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/shared_lazy_components.tsx",
+        "lineNumber": 86,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
           {
             "parentPluginId": "aiops",
             "id": "def-public.ChangePointDetection.$1",
-            "type": "CompoundType",
+            "type": "Object",
             "tags": [],
             "label": "props",
             "description": [
               "- properties specifying the data on which to run the analysis."
             ],
             "signature": [
-              "React.PropsWithChildren<",
               {
                 "pluginId": "aiops",
                 "scope": "public",
                 "docId": "kibAiopsPluginApi",
                 "section": "def-public.ChangePointDetectionAppStateProps",
                 "text": "ChangePointDetectionAppStateProps"
-              },
-              ">"
+              }
             ],
-            "path": "x-pack/plugins/aiops/public/shared_lazy_components.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/shared_lazy_components.tsx",
+            "lineNumber": 86,
+            "columnNumber": 77,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -66,7 +68,7 @@
           "\nLazy-wrapped LogCategorizationAppStateProps React component"
         ],
         "signature": [
-          "(props: React.PropsWithChildren<",
+          "(props: ",
           {
             "pluginId": "aiops",
             "scope": "public",
@@ -74,33 +76,35 @@
             "section": "def-public.LogCategorizationAppStateProps",
             "text": "LogCategorizationAppStateProps"
           },
-          ">) => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "x-pack/plugins/aiops/public/shared_lazy_components.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/shared_lazy_components.tsx",
+        "lineNumber": 56,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
           {
             "parentPluginId": "aiops",
             "id": "def-public.LogCategorization.$1",
-            "type": "CompoundType",
+            "type": "Object",
             "tags": [],
             "label": "props",
             "description": [
               "- properties specifying the data on which to run the analysis."
             ],
             "signature": [
-              "React.PropsWithChildren<",
               {
                 "pluginId": "aiops",
                 "scope": "public",
                 "docId": "kibAiopsPluginApi",
                 "section": "def-public.LogCategorizationAppStateProps",
                 "text": "LogCategorizationAppStateProps"
-              },
-              ">"
+              }
             ],
-            "path": "x-pack/plugins/aiops/public/shared_lazy_components.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/shared_lazy_components.tsx",
+            "lineNumber": 56,
+            "columnNumber": 71,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -119,7 +123,7 @@
           "\nLazy-wrapped LogRateAnalysisAppState React component"
         ],
         "signature": [
-          "(props: React.PropsWithChildren<",
+          "(props: ",
           {
             "pluginId": "aiops",
             "scope": "public",
@@ -127,33 +131,35 @@
             "section": "def-public.LogRateAnalysisAppStateProps",
             "text": "LogRateAnalysisAppStateProps"
           },
-          ">) => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "x-pack/plugins/aiops/public/shared_lazy_components.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/shared_lazy_components.tsx",
+        "lineNumber": 34,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
           {
             "parentPluginId": "aiops",
             "id": "def-public.LogRateAnalysis.$1",
-            "type": "CompoundType",
+            "type": "Object",
             "tags": [],
             "label": "props",
             "description": [
               "- properties specifying the data on which to run the analysis."
             ],
             "signature": [
-              "React.PropsWithChildren<",
               {
                 "pluginId": "aiops",
                 "scope": "public",
                 "docId": "kibAiopsPluginApi",
                 "section": "def-public.LogRateAnalysisAppStateProps",
                 "text": "LogRateAnalysisAppStateProps"
-              },
-              ">"
+              }
             ],
-            "path": "x-pack/plugins/aiops/public/shared_lazy_components.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/shared_lazy_components.tsx",
+            "lineNumber": 34,
+            "columnNumber": 67,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -172,7 +178,7 @@
           "\nLazy-wrapped LogRateAnalysisContentWrapperReact component"
         ],
         "signature": [
-          "(props: React.PropsWithChildren<",
+          "(props: ",
           {
             "pluginId": "aiops",
             "scope": "public",
@@ -180,33 +186,35 @@
             "section": "def-public.LogRateAnalysisContentWrapperProps",
             "text": "LogRateAnalysisContentWrapperProps"
           },
-          ">) => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "x-pack/plugins/aiops/public/shared_lazy_components.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/shared_lazy_components.tsx",
+        "lineNumber": 44,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
           {
             "parentPluginId": "aiops",
             "id": "def-public.LogRateAnalysisContent.$1",
-            "type": "CompoundType",
+            "type": "Object",
             "tags": [],
             "label": "props",
             "description": [
               "- properties specifying the data on which to run the analysis."
             ],
             "signature": [
-              "React.PropsWithChildren<",
               {
                 "pluginId": "aiops",
                 "scope": "public",
                 "docId": "kibAiopsPluginApi",
                 "section": "def-public.LogRateAnalysisContentWrapperProps",
                 "text": "LogRateAnalysisContentWrapperProps"
-              },
-              ">"
+              }
             ],
-            "path": "x-pack/plugins/aiops/public/shared_lazy_components.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/shared_lazy_components.tsx",
+            "lineNumber": 44,
+            "columnNumber": 80,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -219,20 +227,22 @@
     "interfaces": [
       {
         "parentPluginId": "aiops",
-        "id": "def-public.AiopsAppDependencies",
+        "id": "def-public.AiopsAppContextValue",
         "type": "Interface",
         "tags": [],
-        "label": "AiopsAppDependencies",
+        "label": "AiopsAppContextValue",
         "description": [
-          "\nAIOps App Dependencies to be provided via React context."
+          "\nAIOps app context value to be provided via React context."
         ],
-        "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+        "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+        "lineNumber": 36,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.analytics",
+            "id": "def-public.AiopsAppContextValue.analytics",
             "type": "Object",
             "tags": [],
             "label": "analytics",
@@ -248,13 +258,15 @@
               "TelemetryCounter",
               ">; }"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 40,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.application",
+            "id": "def-public.AiopsAppContextValue.application",
             "type": "Object",
             "tags": [],
             "label": "application",
@@ -262,21 +274,17 @@
               "\nUsed to check capabilities for links to other plugins.\n`application.currentAppId$` is used to close the log pattern analysis flyout\nwhen user navigates out of the current plugin."
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-application-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreApplicationBrowserPluginApi",
-                "section": "def-public.ApplicationStart",
-                "text": "ApplicationStart"
-              }
+              "ApplicationStart"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 44,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.data",
+            "id": "def-public.AiopsAppContextValue.data",
             "type": "Object",
             "tags": [],
             "label": "data",
@@ -292,13 +300,15 @@
                 "text": "DataPublicPluginStart"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 50,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.executionContext",
+            "id": "def-public.AiopsAppContextValue.executionContext",
             "type": "Object",
             "tags": [],
             "label": "executionContext",
@@ -306,21 +316,17 @@
               "\nProvides execution context for data fetching."
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-execution-context-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreExecutionContextBrowserPluginApi",
-                "section": "def-public.ExecutionContextSetup",
-                "text": "ExecutionContextSetup"
-              }
+              "ExecutionContextSetup"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 54,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.charts",
+            "id": "def-public.AiopsAppContextValue.charts",
             "type": "CompoundType",
             "tags": [],
             "label": "charts",
@@ -339,13 +345,15 @@
               "ActiveCursor",
               "; }"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 58,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.fieldFormats",
+            "id": "def-public.AiopsAppContextValue.fieldFormats",
             "type": "CompoundType",
             "tags": [],
             "label": "fieldFormats",
@@ -361,7 +369,7 @@
                 "section": "def-common.FieldFormatsRegistry",
                 "text": "FieldFormatsRegistry"
               },
-              ", \"init\" | \"register\"> & { deserialize: ",
+              ", \"register\" | \"init\"> & { deserialize: ",
               {
                 "pluginId": "fieldFormats",
                 "scope": "common",
@@ -371,13 +379,15 @@
               },
               "; }"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 62,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.http",
+            "id": "def-public.AiopsAppContextValue.http",
             "type": "Object",
             "tags": [],
             "label": "http",
@@ -385,21 +395,17 @@
               "\nUsed for data fetching."
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-http-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreHttpBrowserPluginApi",
-                "section": "def-public.HttpSetup",
-                "text": "HttpSetup"
-              }
+              "HttpSetup"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 67,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.notifications",
+            "id": "def-public.AiopsAppContextValue.notifications",
             "type": "Object",
             "tags": [],
             "label": "notifications",
@@ -407,21 +413,17 @@
               "\nUsed for toast notifications."
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-notifications-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreNotificationsBrowserPluginApi",
-                "section": "def-public.NotificationsSetup",
-                "text": "NotificationsSetup"
-              }
+              "NotificationsStart"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 71,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.storage",
+            "id": "def-public.AiopsAppContextValue.storage",
             "type": "Object",
             "tags": [],
             "label": "storage",
@@ -438,13 +440,15 @@
               },
               "<any, void>"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 75,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.theme",
+            "id": "def-public.AiopsAppContextValue.theme",
             "type": "Object",
             "tags": [],
             "label": "theme",
@@ -452,21 +456,17 @@
               "\nTheme service."
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-theme-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreThemeBrowserPluginApi",
-                "section": "def-public.ThemeServiceSetup",
-                "text": "ThemeServiceSetup"
-              }
+              "ThemeServiceSetup"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 79,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.uiSettings",
+            "id": "def-public.AiopsAppContextValue.uiSettings",
             "type": "Object",
             "tags": [],
             "label": "uiSettings",
@@ -474,21 +474,17 @@
               "\nUI settings."
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-ui-settings-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreUiSettingsBrowserPluginApi",
-                "section": "def-public.IUiSettingsClient",
-                "text": "IUiSettingsClient"
-              }
+              "IUiSettingsClient"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 83,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.unifiedSearch",
+            "id": "def-public.AiopsAppContextValue.unifiedSearch",
             "type": "Object",
             "tags": [],
             "label": "unifiedSearch",
@@ -504,13 +500,15 @@
                 "text": "UnifiedSearchPublicPluginStart"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 87,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.usageCollection",
+            "id": "def-public.AiopsAppContextValue.usageCollection",
             "type": "Object",
             "tags": [],
             "label": "usageCollection",
@@ -527,13 +525,33 @@
               },
               " | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 91,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.share",
+            "id": "def-public.AiopsAppContextValue.userProfile",
+            "type": "Object",
+            "tags": [],
+            "label": "userProfile",
+            "description": [
+              "\nUser profile service."
+            ],
+            "signature": [
+              "UserProfileService"
+            ],
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 95,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "aiops",
+            "id": "def-public.AiopsAppContextValue.share",
             "type": "CompoundType",
             "tags": [],
             "label": "share",
@@ -541,41 +559,24 @@
               "\nUsed to create deep links to other plugins."
             ],
             "signature": [
-              "{ toggleShareContextMenu: (options: ",
               {
                 "pluginId": "share",
                 "scope": "public",
                 "docId": "kibSharePluginApi",
-                "section": "def-public.ShowShareMenuOptions",
-                "text": "ShowShareMenuOptions"
+                "section": "def-public.SharePublicStart",
+                "text": "SharePublicStart"
               },
-              ") => void; } & { url: ",
-              {
-                "pluginId": "share",
-                "scope": "public",
-                "docId": "kibSharePluginApi",
-                "section": "def-public.BrowserUrlService",
-                "text": "BrowserUrlService"
-              },
-              "; navigate(options: ",
-              "RedirectOptions",
-              "<",
-              {
-                "pluginId": "@kbn/utility-types",
-                "scope": "common",
-                "docId": "kibKbnUtilityTypesPluginApi",
-                "section": "def-common.SerializableRecord",
-                "text": "SerializableRecord"
-              },
-              ">): void; }"
+              " | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 99,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.lens",
+            "id": "def-public.AiopsAppContextValue.lens",
             "type": "Object",
             "tags": [],
             "label": "lens",
@@ -591,13 +592,15 @@
                 "text": "LensPublicStart"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 103,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.uiActions",
+            "id": "def-public.AiopsAppContextValue.uiActions",
             "type": "Object",
             "tags": [],
             "label": "uiActions",
@@ -614,13 +617,15 @@
               },
               " | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 107,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.i18n",
+            "id": "def-public.AiopsAppContextValue.i18n",
             "type": "Object",
             "tags": [],
             "label": "i18n",
@@ -628,21 +633,17 @@
               "\nInternationalisation service"
             ],
             "signature": [
-              {
-                "pluginId": "@kbn/core-i18n-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreI18nBrowserPluginApi",
-                "section": "def-public.I18nStart",
-                "text": "I18nStart"
-              }
+              "I18nStart"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 111,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.fieldStats",
+            "id": "def-public.AiopsAppContextValue.fieldStats",
             "type": "Object",
             "tags": [],
             "label": "fieldStats",
@@ -650,62 +651,43 @@
               "\nDeps for unified fields stats."
             ],
             "signature": [
-              "{ useFieldStatsTrigger: () => { renderOption: ((option: ",
-              "EuiComboBoxOptionOption",
-              "<string>, searchValue: string, OPTION_CONTENT_CLASSNAME: string) => React.ReactNode) | undefined; closeFlyout: () => void; }; FieldStatsFlyoutProvider: React.FC<React.PropsWithChildren<{ dataView: ",
+              "{ useFieldStatsTrigger: <T = ",
               {
-                "pluginId": "dataViews",
-                "scope": "common",
-                "docId": "kibDataViewsPluginApi",
-                "section": "def-common.DataView",
-                "text": "DataView"
-              },
-              "; fieldStatsServices: ",
-              {
-                "pluginId": "@kbn/unified-field-list",
+                "pluginId": "@kbn/ml-field-stats-flyout",
                 "scope": "public",
-                "docId": "kibKbnUnifiedFieldListPluginApi",
-                "section": "def-public.FieldStatsServices",
-                "text": "FieldStatsServices"
+                "docId": "kibKbnMlFieldStatsFlyoutPluginApi",
+                "section": "def-public.DropDownLabel",
+                "text": "DropDownLabel"
               },
-              "; timeRangeMs?: ",
+              "<string>>() => { renderOption: (option: T) => React.ReactNode; setIsFlyoutVisible: (v: boolean) => void; setFieldName: (v: string | undefined) => void; handleFieldStatsButtonClick: (field: ",
               {
-                "pluginId": "@kbn/ml-date-picker",
+                "pluginId": "@kbn/ml-field-stats-flyout",
                 "scope": "public",
-                "docId": "kibKbnMlDatePickerPluginApi",
-                "section": "def-public.TimeRange",
-                "text": "TimeRange"
+                "docId": "kibKbnMlFieldStatsFlyoutPluginApi",
+                "section": "def-public.FieldForStats",
+                "text": "FieldForStats"
               },
-              " | undefined; dslQuery?: object | undefined; }>>; } | undefined"
+              ") => void; closeFlyout: () => void; optionCss: ",
+              "SerializedStyles",
+              "; populatedFields: Set<string> | undefined; }; FieldStatsFlyoutProvider: React.FC<",
+              {
+                "pluginId": "@kbn/ml-field-stats-flyout",
+                "scope": "public",
+                "docId": "kibKbnMlFieldStatsFlyoutPluginApi",
+                "section": "def-public.FieldStatsFlyoutProviderProps",
+                "text": "FieldStatsFlyoutProviderProps"
+              },
+              ">; } | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 115,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.presentationUtil",
-            "type": "Object",
-            "tags": [],
-            "label": "presentationUtil",
-            "description": [],
-            "signature": [
-              {
-                "pluginId": "presentationUtil",
-                "scope": "public",
-                "docId": "kibPresentationUtilPluginApi",
-                "section": "def-public.PresentationUtilPluginStart",
-                "text": "PresentationUtilPluginStart"
-              },
-              " | undefined"
-            ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
-            "deprecated": false,
-            "trackAdoption": false
-          },
-          {
-            "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.embeddable",
+            "id": "def-public.AiopsAppContextValue.embeddable",
             "type": "Object",
             "tags": [],
             "label": "embeddable",
@@ -720,13 +702,15 @@
               },
               " | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 122,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.cases",
+            "id": "def-public.AiopsAppContextValue.cases",
             "type": "Object",
             "tags": [],
             "label": "cases",
@@ -741,13 +725,15 @@
               },
               " | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 123,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.isServerless",
+            "id": "def-public.AiopsAppContextValue.isServerless",
             "type": "CompoundType",
             "tags": [],
             "label": "isServerless",
@@ -755,29 +741,30 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 124,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.embeddingOrigin",
+            "id": "def-public.AiopsAppContextValue.embeddingOrigin",
             "type": "string",
             "tags": [],
             "label": "embeddingOrigin",
             "description": [
               "Identifier to indicate the plugin utilizing the component"
             ],
-            "signature": [
-              "string | undefined"
-            ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 125,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.AiopsAppDependencies.observabilityAIAssistant",
+            "id": "def-public.AiopsAppContextValue.observabilityAIAssistant",
             "type": "Object",
             "tags": [],
             "label": "observabilityAIAssistant",
@@ -794,7 +781,34 @@
               },
               " | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/hooks/use_aiops_app_context.ts",
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 127,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "aiops",
+            "id": "def-public.AiopsAppContextValue.cps",
+            "type": "Object",
+            "tags": [],
+            "label": "cps",
+            "description": [
+              "CPS plugin for project routing"
+            ],
+            "signature": [
+              {
+                "pluginId": "cps",
+                "scope": "public",
+                "docId": "kibCpsPluginApi",
+                "section": "def-public.CPSPluginStart",
+                "text": "CPSPluginStart"
+              },
+              " | undefined"
+            ],
+            "path": "x-pack/platform/plugins/shared/aiops/public/hooks/use_aiops_app_context.ts",
+            "lineNumber": 129,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -810,7 +824,9 @@
         "description": [
           "\nProps for the ChangePointDetectionAppState component."
         ],
-        "path": "x-pack/plugins/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+        "lineNumber": 46,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -832,7 +848,9 @@
                 "text": "DataView"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+            "lineNumber": 50,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -855,29 +873,33 @@
               },
               " | null"
             ],
-            "path": "x-pack/plugins/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+            "lineNumber": 52,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.ChangePointDetectionAppStateProps.appDependencies",
+            "id": "def-public.ChangePointDetectionAppStateProps.appContextValue",
             "type": "Object",
             "tags": [],
-            "label": "appDependencies",
+            "label": "appContextValue",
             "description": [
-              "App dependencies"
+              "App context value"
             ],
             "signature": [
               {
                 "pluginId": "aiops",
                 "scope": "public",
                 "docId": "kibAiopsPluginApi",
-                "section": "def-public.AiopsAppDependencies",
-                "text": "AiopsAppDependencies"
+                "section": "def-public.AiopsAppContextValue",
+                "text": "AiopsAppContextValue"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+            "lineNumber": 54,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -893,7 +915,9 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/change_point_detection/change_point_detection_root.tsx",
+            "lineNumber": 56,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -909,7 +933,9 @@
         "description": [
           "\nProps for the LogCategorizationAppState component."
         ],
-        "path": "x-pack/plugins/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+        "lineNumber": 29,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -931,7 +957,9 @@
                 "text": "DataView"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -954,29 +982,33 @@
               },
               " | null"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+            "lineNumber": 35,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.LogCategorizationAppStateProps.appDependencies",
+            "id": "def-public.LogCategorizationAppStateProps.appContextValue",
             "type": "Object",
             "tags": [],
-            "label": "appDependencies",
+            "label": "appContextValue",
             "description": [
-              "App dependencies"
+              "App context value"
             ],
             "signature": [
               {
                 "pluginId": "aiops",
                 "scope": "public",
                 "docId": "kibAiopsPluginApi",
-                "section": "def-public.AiopsAppDependencies",
-                "text": "AiopsAppDependencies"
+                "section": "def-public.AiopsAppContextValue",
+                "text": "AiopsAppContextValue"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+            "lineNumber": 37,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -992,7 +1024,9 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_categorization/log_categorization_app_state.tsx",
+            "lineNumber": 39,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1008,7 +1042,9 @@
         "description": [
           "\nProps for the LogRateAnalysisAppState component."
         ],
-        "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+        "lineNumber": 32,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1030,7 +1066,9 @@
                 "text": "DataView"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "lineNumber": 36,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1053,29 +1091,33 @@
               },
               " | null"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "lineNumber": 38,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.LogRateAnalysisAppStateProps.appDependencies",
+            "id": "def-public.LogRateAnalysisAppStateProps.appContextValue",
             "type": "Object",
             "tags": [],
-            "label": "appDependencies",
+            "label": "appContextValue",
             "description": [
-              "App dependencies"
+              "App context value"
             ],
             "signature": [
               {
                 "pluginId": "aiops",
                 "scope": "public",
                 "docId": "kibAiopsPluginApi",
-                "section": "def-public.AiopsAppDependencies",
-                "text": "AiopsAppDependencies"
+                "section": "def-public.AiopsAppContextValue",
+                "text": "AiopsAppContextValue"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "lineNumber": 40,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1091,7 +1133,9 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "lineNumber": 42,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1107,7 +1151,9 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_app_state.tsx",
+            "lineNumber": 44,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1123,7 +1169,9 @@
         "description": [
           "\nProps for the LogRateAnalysisContentWrapper component."
         ],
-        "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+        "lineNumber": 36,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1145,16 +1193,18 @@
                 "text": "DataView"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 40,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
-            "id": "def-public.LogRateAnalysisContentWrapperProps.appDependencies",
+            "id": "def-public.LogRateAnalysisContentWrapperProps.appContextValue",
             "type": "Object",
             "tags": [],
-            "label": "appDependencies",
+            "label": "appContextValue",
             "description": [
               "App dependencies"
             ],
@@ -1163,11 +1213,13 @@
                 "pluginId": "aiops",
                 "scope": "public",
                 "docId": "kibAiopsPluginApi",
-                "section": "def-public.AiopsAppDependencies",
-                "text": "AiopsAppDependencies"
+                "section": "def-public.AiopsAppContextValue",
+                "text": "AiopsAppContextValue"
               }
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 42,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1191,7 +1243,9 @@
               },
               " | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 44,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1207,24 +1261,155 @@
             "signature": [
               "{ min: moment.Moment; max: moment.Moment; } | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 46,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "aiops",
             "id": "def-public.LogRateAnalysisContentWrapperProps.esSearchQuery",
-            "type": "Object",
+            "type": "CompoundType",
             "tags": [],
             "label": "esSearchQuery",
             "description": [
               "Elasticsearch query to pass to analysis endpoint"
             ],
             "signature": [
-              "QueryDslQueryContainer",
-              " | undefined"
+              "({ prefix?: Partial<Record<string, string | ",
+              "QueryDslPrefixQuery",
+              ">> | undefined; } & { type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ type?: ",
+              "QueryDslTypeQuery",
+              " | undefined; } & { prefix?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ exists?: ",
+              "QueryDslExistsQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ bool?: ",
+              "QueryDslBoolQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ boosting?: ",
+              "QueryDslBoostingQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ common?: Partial<Record<string, string | ",
+              "QueryDslCommonTermsQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ combined_fields?: ",
+              "QueryDslCombinedFieldsQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ constant_score?: ",
+              "QueryDslConstantScoreQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ dis_max?: ",
+              "QueryDslDisMaxQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ distance_feature?: ",
+              "QueryDslDistanceFeatureQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ function_score?: ",
+              "QueryDslFunctionScoreQuery",
+              " | ",
+              "QueryDslFunctionScoreContainer",
+              "[] | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ fuzzy?: Partial<Record<string, string | number | boolean | ",
+              "QueryDslFuzzyQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_bounding_box?: ",
+              "QueryDslGeoBoundingBoxQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_distance?: ",
+              "QueryDslGeoDistanceQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_grid?: Partial<Record<string, ",
+              "QueryDslGeoGridQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_polygon?: ",
+              "QueryDslGeoPolygonQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ geo_shape?: ",
+              "QueryDslGeoShapeQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ has_child?: ",
+              "QueryDslHasChildQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ has_parent?: ",
+              "QueryDslHasParentQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ ids?: ",
+              "QueryDslIdsQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ intervals?: Partial<Record<string, ",
+              "QueryDslIntervalsQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ knn?: ",
+              "KnnQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match?: Partial<Record<string, string | number | boolean | ",
+              "QueryDslMatchQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_all?: ",
+              "QueryDslMatchAllQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_bool_prefix?: Partial<Record<string, string | ",
+              "QueryDslMatchBoolPrefixQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_none?: ",
+              "QueryDslMatchNoneQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_phrase?: Partial<Record<string, string | ",
+              "QueryDslMatchPhraseQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ match_phrase_prefix?: Partial<Record<string, string | ",
+              "QueryDslMatchPhrasePrefixQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ more_like_this?: ",
+              "QueryDslMoreLikeThisQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ multi_match?: ",
+              "QueryDslMultiMatchQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ nested?: ",
+              "QueryDslNestedQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ parent_id?: ",
+              "QueryDslParentIdQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ percolate?: ",
+              "QueryDslPercolateQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ pinned?: ",
+              "QueryDslPinnedQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ query_string?: ",
+              "QueryDslQueryStringQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ range?: Partial<Record<string, ",
+              "QueryDslRangeQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ rank_feature?: ",
+              "QueryDslRankFeatureQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ regexp?: Partial<Record<string, string | ",
+              "QueryDslRegexpQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ rule?: ",
+              "QueryDslRuleQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ script?: ",
+              "QueryDslScriptQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ script_score?: ",
+              "QueryDslScriptScoreQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ semantic?: ",
+              "QueryDslSemanticQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ shape?: ",
+              "QueryDslShapeQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ simple_query_string?: ",
+              "QueryDslSimpleQueryStringQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_containing?: ",
+              "QueryDslSpanContainingQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_field_masking?: ",
+              "QueryDslSpanFieldMaskingQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_first?: ",
+              "QueryDslSpanFirstQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_multi?: ",
+              "QueryDslSpanMultiTermQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_near?: ",
+              "QueryDslSpanNearQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_not?: ",
+              "QueryDslSpanNotQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_or?: ",
+              "QueryDslSpanOrQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_term?: Partial<Record<string, ",
+              "QueryDslSpanTermQuery",
+              " | ",
+              "FieldValue",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ span_within?: ",
+              "QueryDslSpanWithinQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ sparse_vector?: ",
+              "QueryDslSparseVectorQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ term?: Partial<Record<string, ",
+              "FieldValue",
+              " | ",
+              "QueryDslTermQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ terms?: ",
+              "QueryDslTermsQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ terms_set?: Partial<Record<string, ",
+              "QueryDslTermsSetQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ text_expansion?: Partial<Record<string, ",
+              "QueryDslTextExpansionQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; weighted_tokens?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ weighted_tokens?: Partial<Record<string, ",
+              "QueryDslWeightedTokensQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; wildcard?: undefined; wrapper?: undefined; }) | ({ wildcard?: Partial<Record<string, string | ",
+              "QueryDslWildcardQuery",
+              ">> | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wrapper?: undefined; }) | ({ wrapper?: ",
+              "QueryDslWrapperQuery",
+              " | undefined; } & { prefix?: undefined; type?: undefined; exists?: undefined; bool?: undefined; boosting?: undefined; common?: undefined; combined_fields?: undefined; constant_score?: undefined; dis_max?: undefined; distance_feature?: undefined; function_score?: undefined; fuzzy?: undefined; geo_bounding_box?: undefined; geo_distance?: undefined; geo_grid?: undefined; geo_polygon?: undefined; geo_shape?: undefined; has_child?: undefined; has_parent?: undefined; ids?: undefined; intervals?: undefined; knn?: undefined; match?: undefined; match_all?: undefined; match_bool_prefix?: undefined; match_none?: undefined; match_phrase?: undefined; match_phrase_prefix?: undefined; more_like_this?: undefined; multi_match?: undefined; nested?: undefined; parent_id?: undefined; percolate?: undefined; pinned?: undefined; query_string?: undefined; range?: undefined; rank_feature?: undefined; regexp?: undefined; rule?: undefined; script?: undefined; script_score?: undefined; semantic?: undefined; shape?: undefined; simple_query_string?: undefined; span_containing?: undefined; span_field_masking?: undefined; span_first?: undefined; span_multi?: undefined; span_near?: undefined; span_not?: undefined; span_or?: undefined; span_term?: undefined; span_within?: undefined; sparse_vector?: undefined; term?: undefined; terms?: undefined; terms_set?: undefined; text_expansion?: undefined; weighted_tokens?: undefined; wildcard?: undefined; }) | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 48,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1240,7 +1425,9 @@
             "signature": [
               "string | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 50,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1256,7 +1443,9 @@
             "signature": [
               "string | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 52,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1280,7 +1469,9 @@
               },
               ") => void) | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 54,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -1302,7 +1493,9 @@
                     "text": "LogRateAnalysisResultsData"
                   }
                 ],
-                "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+                "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+                "lineNumber": 58,
+                "columnNumber": 26,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -1322,20 +1515,9 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
-            "deprecated": false,
-            "trackAdoption": false
-          },
-          {
-            "parentPluginId": "aiops",
-            "id": "def-public.LogRateAnalysisContentWrapperProps.embeddingOrigin",
-            "type": "string",
-            "tags": [],
-            "label": "embeddingOrigin",
-            "description": [
-              "Identifier to indicate the plugin utilizing the component"
-            ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_content/log_rate_analysis_content_wrapper.tsx",
+            "lineNumber": 59,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1351,7 +1533,9 @@
         "description": [
           "\nInterface for log rate analysis results data."
         ],
-        "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_results.tsx",
+        "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_results.tsx",
+        "lineNumber": 71,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1367,7 +1551,9 @@
             "signature": [
               "\"spike\" | \"dip\""
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_results.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_results.tsx",
+            "lineNumber": 75,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1390,7 +1576,9 @@
               },
               "[]"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_results.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_results.tsx",
+            "lineNumber": 77,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1413,7 +1601,9 @@
               },
               "[]"
             ],
-            "path": "x-pack/plugins/aiops/public/components/log_rate_analysis/log_rate_analysis_results.tsx",
+            "path": "x-pack/platform/plugins/shared/aiops/public/components/log_rate_analysis/log_rate_analysis_results.tsx",
+            "lineNumber": 79,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1431,7 +1621,9 @@
       "tags": [],
       "label": "AiopsPluginStart",
       "description": [],
-      "path": "x-pack/plugins/aiops/public/types/index.ts",
+      "path": "x-pack/platform/plugins/shared/aiops/public/types/index.ts",
+      "lineNumber": 53,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "children": [
@@ -1451,9 +1643,11 @@
               "section": "def-common.DataView",
               "text": "DataView"
             },
-            ") => Promise<boolean>>"
+            ") => boolean>"
           ],
-          "path": "x-pack/plugins/aiops/public/types/index.ts",
+          "path": "x-pack/platform/plugins/shared/aiops/public/types/index.ts",
+          "lineNumber": 54,
+          "columnNumber": 3,
           "deprecated": false,
           "trackAdoption": false,
           "children": [],
@@ -1473,7 +1667,9 @@
             "LogCategorizationEmbeddableWrapperProps",
             ">"
           ],
-          "path": "x-pack/plugins/aiops/public/types/index.ts",
+          "path": "x-pack/platform/plugins/shared/aiops/public/types/index.ts",
+          "lineNumber": 55,
+          "columnNumber": 3,
           "deprecated": false,
           "trackAdoption": false
         },
@@ -1489,7 +1685,9 @@
             "ChangePointDetectionProps",
             ">"
           ],
-          "path": "x-pack/plugins/aiops/public/types/index.ts",
+          "path": "x-pack/platform/plugins/shared/aiops/public/types/index.ts",
+          "lineNumber": 56,
+          "columnNumber": 3,
           "deprecated": false,
           "trackAdoption": false,
           "returnComment": [],
@@ -1497,14 +1695,16 @@
             {
               "parentPluginId": "aiops",
               "id": "def-public.AiopsPluginStart.ChangePointDetectionComponent.$1",
-              "type": "CompoundType",
+              "type": "Uncategorized",
               "tags": [],
               "label": "props",
               "description": [],
               "signature": [
-                "P & { children?: React.ReactNode; }"
+                "P"
               ],
-              "path": "node_modules/@types/react/index.d.ts",
+              "path": "node_modules/@types/react/ts5.0/index.d.ts",
+              "lineNumber": 1109,
+              "columnNumber": 10,
               "deprecated": false,
               "trackAdoption": false
             },
@@ -1518,7 +1718,9 @@
               "signature": [
                 "any"
               ],
-              "path": "node_modules/@types/react/index.d.ts",
+              "path": "node_modules/@types/react/ts5.0/index.d.ts",
+              "lineNumber": 1109,
+              "columnNumber": 20,
               "deprecated": false,
               "trackAdoption": false
             }
@@ -1538,7 +1740,9 @@
       "signature": [
         "void"
       ],
-      "path": "x-pack/plugins/aiops/public/types/index.ts",
+      "path": "x-pack/platform/plugins/shared/aiops/public/types/index.ts",
+      "lineNumber": 52,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "lifecycle": "setup",
@@ -1550,7 +1754,25 @@
     "functions": [],
     "interfaces": [],
     "enums": [],
-    "misc": [],
+    "misc": [
+      {
+        "parentPluginId": "aiops",
+        "id": "def-server.ConfigSchema",
+        "type": "Type",
+        "tags": [],
+        "label": "ConfigSchema",
+        "description": [],
+        "signature": [
+          "{ readonly ui?: Readonly<{ enabled?: boolean | undefined; } & {}> | undefined; }"
+        ],
+        "path": "x-pack/platform/plugins/shared/aiops/server/config_schema.ts",
+        "lineNumber": 19,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "initialIsOpen": false
+      }
+    ],
     "objects": [],
     "setup": {
       "parentPluginId": "aiops",
@@ -1561,7 +1783,9 @@
       "description": [
         "\naiops plugin server setup contract"
       ],
-      "path": "x-pack/plugins/aiops/server/types.ts",
+      "path": "x-pack/platform/plugins/shared/aiops/server/types.ts",
+      "lineNumber": 27,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "children": [],
@@ -1577,7 +1801,9 @@
       "description": [
         "\naiops plugin server start contract"
       ],
-      "path": "x-pack/plugins/aiops/server/types.ts",
+      "path": "x-pack/platform/plugins/shared/aiops/server/types.ts",
+      "lineNumber": 33,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "children": [],

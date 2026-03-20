@@ -1,0 +1,79 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0; you may not use this file except in compliance with the Elastic License
+ * 2.0.
+ */
+
+import type { Logger } from '@kbn/logging';
+import type { KibanaRequest } from '@kbn/core-http-server';
+import type { PluginStartContract as ActionsPluginStart } from '@kbn/actions-plugin/server';
+import type {
+  BoundOptions,
+  BoundInferenceClient,
+  InferenceClient,
+  AnonymizationRule,
+  InferenceCallbacks,
+} from '@kbn/inference-common';
+import type { ElasticsearchClient } from '@kbn/core/server';
+import { createInferenceClient } from './inference_client';
+import { bindClient } from '../../common/inference_client/bind_client';
+import type { RegexWorkerService } from '../chat_complete/anonymization/regex_worker_service';
+import type { InferenceAnonymizationOptions } from './anonymization_options';
+import type { InferenceEndpointIdCache } from '../util/inference_endpoint_id_cache';
+
+interface CreateClientOptions {
+  request: KibanaRequest;
+  namespace?: string;
+  actions: ActionsPluginStart;
+  logger: Logger;
+  anonymizationRulesPromise: Promise<AnonymizationRule[]>;
+  regexWorker: RegexWorkerService;
+  esClient: ElasticsearchClient;
+  replacementsEsClient?: ElasticsearchClient;
+  endpointIdCache: InferenceEndpointIdCache;
+  callbacks?: InferenceCallbacks;
+  anonymization?: InferenceAnonymizationOptions;
+}
+
+interface BoundCreateClientOptions extends CreateClientOptions {
+  bindTo: BoundOptions;
+}
+
+export function createClient(options: CreateClientOptions): InferenceClient;
+export function createClient(options: BoundCreateClientOptions): BoundInferenceClient;
+export function createClient(
+  options: CreateClientOptions | BoundCreateClientOptions
+): BoundInferenceClient | InferenceClient {
+  const {
+    actions,
+    request,
+    namespace,
+    logger,
+    anonymizationRulesPromise,
+    esClient,
+    regexWorker,
+    replacementsEsClient,
+    endpointIdCache,
+    callbacks,
+    anonymization,
+  } = options;
+  const client = createInferenceClient({
+    request,
+    namespace: namespace ?? 'default',
+    actions,
+    logger: logger.get('client'),
+    anonymizationRulesPromise,
+    regexWorker,
+    esClient,
+    replacementsEsClient,
+    endpointIdCache,
+    callbacks,
+    anonymization,
+  });
+  if ('bindTo' in options) {
+    return bindClient(client, options.bindTo);
+  } else {
+    return client;
+  }
+}

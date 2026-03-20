@@ -11,10 +11,31 @@
         "tags": [],
         "label": "EventAnnotationServiceType",
         "description": [],
-        "path": "packages/kbn-event-annotation-components/types.ts",
+        "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+        "lineNumber": 19,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
+          {
+            "parentPluginId": "eventAnnotation",
+            "id": "def-public.EventAnnotationServiceType.annotationGroupUpdated$",
+            "type": "Object",
+            "tags": [],
+            "label": "annotationGroupUpdated$",
+            "description": [
+              "Emits the annotation group ID whenever a library annotation group is updated"
+            ],
+            "signature": [
+              "Observable",
+              "<string>"
+            ],
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 20,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
           {
             "parentPluginId": "eventAnnotation",
             "id": "def-public.EventAnnotationServiceType.loadAnnotationGroup",
@@ -33,7 +54,9 @@
               },
               ">"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 22,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -47,7 +70,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 22,
+                "columnNumber": 25,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -65,7 +90,9 @@
             "signature": [
               "(title: string) => Promise<boolean>"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 23,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -79,7 +106,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 23,
+                "columnNumber": 26,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -105,7 +134,9 @@
               },
               "[]; }>"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 24,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -119,7 +150,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 25,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -134,7 +167,9 @@
                 "signature": [
                   "number"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 26,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -149,7 +184,9 @@
                 "signature": [
                   "string[] | undefined"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 27,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": false
@@ -164,7 +201,9 @@
                 "signature": [
                   "string[] | undefined"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 28,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": false
@@ -182,7 +221,9 @@
             "signature": [
               "(ids: string[]) => Promise<void>"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -196,7 +237,9 @@
                 "signature": [
                   "string[]"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 30,
+                "columnNumber": 28,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -222,7 +265,9 @@
               },
               ") => Promise<{ id: string; }>"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 31,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -242,7 +287,9 @@
                     "text": "EventAnnotationGroupConfig"
                   }
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 31,
+                "columnNumber": 27,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -268,7 +315,9 @@
               },
               ", savedObjectId: string) => Promise<void>"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 32,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -288,7 +337,9 @@
                     "text": "EventAnnotationGroupConfig"
                   }
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 33,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -303,7 +354,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 34,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -337,7 +390,9 @@
               },
               "[]"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 36,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -358,7 +413,9 @@
                   },
                   "[]"
                 ],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 36,
+                "columnNumber": 18,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -382,7 +439,7 @@
                 "section": "def-common.EventAnnotationGroupConfig",
                 "text": "EventAnnotationGroupConfig"
               },
-              ", \"ignoreGlobalFilters\" | \"annotations\" | \"indexPatternId\">[]; }) => ",
+              ", \"annotations\" | \"ignoreGlobalFilters\" | \"indexPatternId\">[]; }) => ",
               {
                 "pluginId": "expressions",
                 "scope": "common",
@@ -392,7 +449,9 @@
               },
               "[]"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 37,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -403,7 +462,9 @@
                 "tags": [],
                 "label": "props",
                 "description": [],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 37,
+                "columnNumber": 30,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -414,7 +475,9 @@
                     "tags": [],
                     "label": "interval",
                     "description": [],
-                    "path": "packages/kbn-event-annotation-components/types.ts",
+                    "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                    "lineNumber": 38,
+                    "columnNumber": 5,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -434,9 +497,11 @@
                         "section": "def-common.EventAnnotationGroupConfig",
                         "text": "EventAnnotationGroupConfig"
                       },
-                      ", \"ignoreGlobalFilters\" | \"annotations\" | \"indexPatternId\">[]"
+                      ", \"annotations\" | \"ignoreGlobalFilters\" | \"indexPatternId\">[]"
                     ],
-                    "path": "packages/kbn-event-annotation-components/types.ts",
+                    "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                    "lineNumber": 39,
+                    "columnNumber": 5,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -471,7 +536,9 @@
               },
               ">; }) => void; onCreateNew: () => void; }) => JSX.Element"
             ],
-            "path": "packages/kbn-event-annotation-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+            "lineNumber": 43,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -482,7 +549,9 @@
                 "tags": [],
                 "label": "props",
                 "description": [],
-                "path": "packages/kbn-event-annotation-components/types.ts",
+                "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                "lineNumber": 43,
+                "columnNumber": 56,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -496,7 +565,9 @@
                     "signature": [
                       "number | undefined"
                     ],
-                    "path": "packages/kbn-event-annotation-components/types.ts",
+                    "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                    "lineNumber": 44,
+                    "columnNumber": 5,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -526,7 +597,9 @@
                       },
                       ">; }) => void"
                     ],
-                    "path": "packages/kbn-event-annotation-components/types.ts",
+                    "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                    "lineNumber": 45,
+                    "columnNumber": 5,
                     "deprecated": false,
                     "trackAdoption": false,
                     "children": [
@@ -537,7 +610,9 @@
                         "tags": [],
                         "label": "value",
                         "description": [],
-                        "path": "packages/kbn-event-annotation-components/types.ts",
+                        "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                        "lineNumber": 45,
+                        "columnNumber": 23,
                         "deprecated": false,
                         "trackAdoption": false,
                         "children": [
@@ -548,7 +623,9 @@
                             "tags": [],
                             "label": "id",
                             "description": [],
-                            "path": "packages/kbn-event-annotation-components/types.ts",
+                            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                            "lineNumber": 46,
+                            "columnNumber": 7,
                             "deprecated": false,
                             "trackAdoption": false
                           },
@@ -559,7 +636,9 @@
                             "tags": [],
                             "label": "type",
                             "description": [],
-                            "path": "packages/kbn-event-annotation-components/types.ts",
+                            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                            "lineNumber": 47,
+                            "columnNumber": 7,
                             "deprecated": false,
                             "trackAdoption": false
                           },
@@ -570,7 +649,9 @@
                             "tags": [],
                             "label": "fullName",
                             "description": [],
-                            "path": "packages/kbn-event-annotation-components/types.ts",
+                            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                            "lineNumber": 48,
+                            "columnNumber": 7,
                             "deprecated": false,
                             "trackAdoption": false
                           },
@@ -599,7 +680,9 @@
                               },
                               ">"
                             ],
-                            "path": "packages/kbn-event-annotation-components/types.ts",
+                            "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                            "lineNumber": 49,
+                            "columnNumber": 7,
                             "deprecated": false,
                             "trackAdoption": false
                           }
@@ -618,7 +701,9 @@
                     "signature": [
                       "() => void"
                     ],
-                    "path": "packages/kbn-event-annotation-components/types.ts",
+                    "path": "src/platform/packages/shared/kbn-event-annotation-components/types.ts",
+                    "lineNumber": 51,
+                    "columnNumber": 5,
                     "deprecated": false,
                     "trackAdoption": false,
                     "children": [],
@@ -646,7 +731,9 @@
       "signature": [
         "void"
       ],
-      "path": "src/plugins/event_annotation/public/plugin.ts",
+      "path": "src/platform/plugins/private/event_annotation/public/plugin.ts",
+      "lineNumber": 48,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "lifecycle": "setup",
@@ -659,7 +746,9 @@
       "tags": [],
       "label": "EventAnnotationService",
       "description": [],
-      "path": "src/plugins/event_annotation/public/event_annotation_service/index.tsx",
+      "path": "src/platform/plugins/private/event_annotation/public/event_annotation_service/index.tsx",
+      "lineNumber": 15,
+      "columnNumber": 1,
       "deprecated": false,
       "trackAdoption": false,
       "children": [
@@ -673,7 +762,9 @@
           "signature": [
             "any"
           ],
-          "path": "src/plugins/event_annotation/public/event_annotation_service/index.tsx",
+          "path": "src/platform/plugins/private/event_annotation/public/event_annotation_service/index.tsx",
+          "lineNumber": 21,
+          "columnNumber": 3,
           "deprecated": false,
           "trackAdoption": false,
           "children": [
@@ -685,15 +776,11 @@
               "label": "core",
               "description": [],
               "signature": [
-                {
-                  "pluginId": "@kbn/core-lifecycle-browser",
-                  "scope": "public",
-                  "docId": "kibKbnCoreLifecycleBrowserPluginApi",
-                  "section": "def-public.CoreStart",
-                  "text": "CoreStart"
-                }
+                "CoreStart"
               ],
-              "path": "src/plugins/event_annotation/public/event_annotation_service/index.tsx",
+              "path": "src/platform/plugins/private/event_annotation/public/event_annotation_service/index.tsx",
+              "lineNumber": 21,
+              "columnNumber": 15,
               "deprecated": false,
               "trackAdoption": false,
               "isRequired": true
@@ -714,7 +801,9 @@
                   "text": "ContentManagementPublicStart"
                 }
               ],
-              "path": "src/plugins/event_annotation/public/event_annotation_service/index.tsx",
+              "path": "src/platform/plugins/private/event_annotation/public/event_annotation_service/index.tsx",
+              "lineNumber": 21,
+              "columnNumber": 32,
               "deprecated": false,
               "trackAdoption": false,
               "isRequired": true
@@ -740,7 +829,9 @@
             },
             ">"
           ],
-          "path": "src/plugins/event_annotation/public/event_annotation_service/index.tsx",
+          "path": "src/platform/plugins/private/event_annotation/public/event_annotation_service/index.tsx",
+          "lineNumber": 26,
+          "columnNumber": 3,
           "deprecated": false,
           "trackAdoption": false,
           "children": [],
@@ -806,7 +897,9 @@
           },
           ">>"
         ],
-        "path": "src/plugins/event_annotation/common/event_annotation_group/index.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/event_annotation_group/index.ts",
+        "lineNumber": 28,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -822,7 +915,9 @@
         "tags": [],
         "label": "EventAnnotationGroupArgs",
         "description": [],
-        "path": "src/plugins/event_annotation/common/event_annotation_group/index.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/event_annotation_group/index.ts",
+        "lineNumber": 22,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -843,7 +938,9 @@
               },
               "[]"
             ],
-            "path": "src/plugins/event_annotation/common/event_annotation_group/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/event_annotation_group/index.ts",
+            "lineNumber": 23,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -863,7 +960,9 @@
                 "text": "IndexPatternExpressionType"
               }
             ],
-            "path": "src/plugins/event_annotation/common/event_annotation_group/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/event_annotation_group/index.ts",
+            "lineNumber": 24,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -874,7 +973,9 @@
             "tags": [],
             "label": "ignoreGlobalFilters",
             "description": [],
-            "path": "src/plugins/event_annotation/common/event_annotation_group/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/event_annotation_group/index.ts",
+            "lineNumber": 25,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -888,7 +989,9 @@
         "tags": [],
         "label": "EventAnnotationGroupSavedObjectAttributes",
         "description": [],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 34,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -899,7 +1002,9 @@
             "tags": [],
             "label": "title",
             "description": [],
-            "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+            "lineNumber": 35,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -910,7 +1015,9 @@
             "tags": [],
             "label": "description",
             "description": [],
-            "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+            "lineNumber": 36,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -921,7 +1028,9 @@
             "tags": [],
             "label": "ignoreGlobalFilters",
             "description": [],
-            "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+            "lineNumber": 37,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -942,7 +1051,9 @@
               },
               "[]"
             ],
-            "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+            "lineNumber": 38,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -963,7 +1074,9 @@
               },
               " | null"
             ],
-            "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+            "lineNumber": 40,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -977,7 +1090,9 @@
         "tags": [],
         "label": "FetchEventAnnotationsArgs",
         "description": [],
-        "path": "src/plugins/event_annotation/common/fetch_event_annotations/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/fetch_event_annotations/types.ts",
+        "lineNumber": 25,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -992,7 +1107,9 @@
               "EventAnnotationGroupOutput",
               "[]"
             ],
-            "path": "src/plugins/event_annotation/common/fetch_event_annotations/types.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/fetch_event_annotations/types.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1003,7 +1120,9 @@
             "tags": [],
             "label": "interval",
             "description": [],
-            "path": "src/plugins/event_annotation/common/fetch_event_annotations/types.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/fetch_event_annotations/types.ts",
+            "lineNumber": 27,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1023,7 +1142,9 @@
         "signature": [
           "\"annotations\""
         ],
-        "path": "src/plugins/event_annotation/common/constants.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/constants.ts",
+        "lineNumber": 11,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1038,7 +1159,9 @@
         "signature": [
           "\"event-annotation-group\""
         ],
-        "path": "src/plugins/event_annotation/common/content_management/constants.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/constants.ts",
+        "lineNumber": 12,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1070,7 +1193,9 @@
           "CreateOptions",
           ">"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 88,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1087,7 +1212,9 @@
           "EventAnnotationGroupSavedObject",
           "; meta?: undefined; }"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 94,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1121,7 +1248,9 @@
           "UpdateOptions",
           ", {}>"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 133,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1143,7 +1272,9 @@
           },
           "<\"event-annotation-group\", object>"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 113,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1164,7 +1295,9 @@
             "text": "DeleteResult"
           }
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 115,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1186,7 +1319,9 @@
           },
           "<\"event-annotation-group\", object>"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 70,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1203,7 +1338,9 @@
           "EventAnnotationGroupSavedObject",
           "; meta: { outcome: \"exactMatch\" | \"aliasMatch\" | \"conflict\"; aliasTargetId?: string | undefined; aliasPurpose?: \"savedObjectConversion\" | \"savedObjectImport\" | undefined; }; }"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 72,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1227,7 +1364,9 @@
           "EventAnnotationGroupSearchQuery",
           ">"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 124,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1244,7 +1383,9 @@
           "EventAnnotationGroupSavedObject",
           "[]; pagination: { total: number; cursor?: string | undefined; }; }"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 129,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1276,7 +1417,9 @@
           "UpdateOptions",
           ">"
         ],
-        "path": "src/plugins/event_annotation/common/content_management/v1/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/content_management/v1/types.ts",
+        "lineNumber": 103,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1299,7 +1442,9 @@
           " | ",
           "ManualEventAnnotationOutput"
         ],
-        "path": "src/plugins/event_annotation/common/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/types.ts",
+        "lineNumber": 31,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1330,7 +1475,9 @@
           },
           " | undefined; textVisibility?: boolean | undefined; }"
         ],
-        "path": "src/plugins/event_annotation/common/manual_event_annotation/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/types.ts",
+        "lineNumber": 12,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1361,7 +1508,9 @@
           },
           " | undefined; textVisibility?: boolean | undefined; } & { type: \"manual_point_event_annotation\"; }"
         ],
-        "path": "src/plugins/event_annotation/common/manual_event_annotation/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/types.ts",
+        "lineNumber": 17,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1376,7 +1525,9 @@
         "signature": [
           "{ id: string; time: string; endTime: string; } & StyleSharedProps & { outside?: boolean | undefined; }"
         ],
-        "path": "src/plugins/event_annotation/common/manual_event_annotation/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/types.ts",
+        "lineNumber": 30,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1391,7 +1542,9 @@
         "signature": [
           "{ id: string; time: string; endTime: string; } & StyleSharedProps & { outside?: boolean | undefined; } & { type: \"manual_range_event_annotation\"; }"
         ],
-        "path": "src/plugins/event_annotation/common/manual_event_annotation/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/types.ts",
+        "lineNumber": 43,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1406,7 +1559,9 @@
         "signature": [
           "{ id: string; time: string; endTime: string; type: \"range\"; } & StyleSharedProps & { outside?: boolean | undefined; }"
         ],
-        "path": "src/plugins/event_annotation/common/manual_event_annotation/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/types.ts",
+        "lineNumber": 36,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1437,7 +1592,9 @@
           },
           " | undefined; textVisibility?: boolean | undefined; } & Record<string, any>"
         ],
-        "path": "src/plugins/event_annotation/common/manual_event_annotation/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/types.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1476,7 +1633,9 @@
           },
           " | undefined; textVisibility?: boolean | undefined; }"
         ],
-        "path": "src/plugins/event_annotation/common/query_point_event_annotation/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/types.ts",
+        "lineNumber": 13,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1515,7 +1674,9 @@
           },
           " | undefined; textVisibility?: boolean | undefined; } & { type: \"query_point_event_annotation\"; }"
         ],
-        "path": "src/plugins/event_annotation/common/query_point_event_annotation/types.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/types.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1529,7 +1690,9 @@
         "tags": [],
         "label": "manualPointEventAnnotation",
         "description": [],
-        "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+        "lineNumber": 21,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1543,7 +1706,9 @@
             "signature": [
               "\"manual_point_event_annotation\""
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 27,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1557,7 +1722,9 @@
             "signature": [
               "never[]"
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1571,7 +1738,9 @@
             "signature": [
               "\"manual_point_event_annotation\""
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1582,7 +1751,9 @@
             "tags": [],
             "label": "help",
             "description": [],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1596,7 +1767,9 @@
             "signature": [
               "\"null\"[]"
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1607,7 +1780,9 @@
             "tags": [],
             "label": "args",
             "description": [],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 34,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -1618,7 +1793,9 @@
                 "tags": [],
                 "label": "id",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 35,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1632,7 +1809,9 @@
                     "signature": [
                       "true"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 36,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1646,7 +1825,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 37,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1657,7 +1838,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 38,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -1670,7 +1853,9 @@
                 "tags": [],
                 "label": "time",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 42,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1684,7 +1869,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 43,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1695,7 +1882,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 44,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -1708,7 +1897,9 @@
                 "tags": [],
                 "label": "label",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 48,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1722,7 +1913,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 49,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1733,7 +1926,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 50,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -1746,7 +1941,9 @@
                 "tags": [],
                 "label": "color",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 54,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1760,7 +1957,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 55,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1771,7 +1970,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 56,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -1784,7 +1985,9 @@
                 "tags": [],
                 "label": "lineStyle",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 60,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1798,7 +2001,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 61,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1812,7 +2017,9 @@
                     "signature": [
                       "(\"dashed\" | \"solid\" | \"dotted\")[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 62,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1823,7 +2030,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 63,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -1836,7 +2045,9 @@
                 "tags": [],
                 "label": "lineWidth",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 67,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1850,7 +2061,9 @@
                     "signature": [
                       "\"number\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 68,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1861,7 +2074,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 69,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -1874,7 +2089,9 @@
                 "tags": [],
                 "label": "icon",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 73,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1888,7 +2105,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 74,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1899,7 +2118,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 75,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1911,9 +2132,11 @@
                     "label": "options",
                     "description": [],
                     "signature": [
-                      "(\"alert\" | \"tag\" | \"asterisk\" | \"bell\" | \"bolt\" | \"bug\" | \"editorComment\" | \"flag\" | \"heart\" | \"mapMarker\" | \"pinFilled\" | \"starEmpty\" | \"starFilled\" | \"circle\" | \"triangle\")[]"
+                      "(\"alert\" | \"circle\" | \"tag\" | \"asterisk\" | \"bell\" | \"bolt\" | \"bug\" | \"editorComment\" | \"flag\" | \"heart\" | \"mapMarker\" | \"pinFilled\" | \"starEmpty\" | \"starFilled\" | \"triangle\")[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 78,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1927,7 +2150,9 @@
                     "signature": [
                       "true"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 79,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -1940,7 +2165,9 @@
                 "tags": [],
                 "label": "textVisibility",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 81,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1954,7 +2181,9 @@
                     "signature": [
                       "\"boolean\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 82,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -1965,7 +2194,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 83,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -1978,7 +2209,9 @@
                 "tags": [],
                 "label": "isHidden",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 87,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1992,7 +2225,9 @@
                     "signature": [
                       "\"boolean\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 88,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2003,7 +2238,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 89,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2045,7 +2282,9 @@
               },
               " | undefined; textVisibility?: boolean | undefined; type: \"manual_point_event_annotation\"; }"
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 94,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -2060,7 +2299,9 @@
                 "signature": [
                   "unknown"
                 ],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 94,
+                "columnNumber": 19,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -2090,7 +2331,9 @@
                   },
                   " | undefined; textVisibility?: boolean | undefined; }"
                 ],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 94,
+                "columnNumber": 35,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -2106,7 +2349,9 @@
         "tags": [],
         "label": "manualRangeEventAnnotation",
         "description": [],
-        "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+        "lineNumber": 102,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2120,7 +2365,9 @@
             "signature": [
               "\"manual_range_event_annotation\""
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 108,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2134,7 +2381,9 @@
             "signature": [
               "never[]"
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 109,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2148,7 +2397,9 @@
             "signature": [
               "\"manual_range_event_annotation\""
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 110,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2159,7 +2410,9 @@
             "tags": [],
             "label": "help",
             "description": [],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 111,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2173,7 +2426,9 @@
             "signature": [
               "\"null\"[]"
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 114,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2184,7 +2439,9 @@
             "tags": [],
             "label": "args",
             "description": [],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 115,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -2195,7 +2452,9 @@
                 "tags": [],
                 "label": "id",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 116,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2209,7 +2468,9 @@
                     "signature": [
                       "true"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 117,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2223,7 +2484,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 118,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2234,7 +2497,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 119,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2247,7 +2512,9 @@
                 "tags": [],
                 "label": "time",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 123,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2261,7 +2528,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 124,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2272,7 +2541,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 125,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2285,7 +2556,9 @@
                 "tags": [],
                 "label": "endTime",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 129,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2299,7 +2572,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 130,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2310,7 +2585,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 131,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2324,7 +2601,9 @@
                     "signature": [
                       "false"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 134,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2337,7 +2616,9 @@
                 "tags": [],
                 "label": "outside",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 136,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2351,7 +2632,9 @@
                     "signature": [
                       "\"boolean\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 137,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2362,7 +2645,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 138,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2376,7 +2661,9 @@
                     "signature": [
                       "false"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 139,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2389,7 +2676,9 @@
                 "tags": [],
                 "label": "label",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 141,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2403,7 +2692,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 142,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2414,7 +2705,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 143,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2427,7 +2720,9 @@
                 "tags": [],
                 "label": "color",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 147,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2441,7 +2736,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 148,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2452,7 +2749,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 149,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2465,7 +2764,9 @@
                 "tags": [],
                 "label": "isHidden",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 153,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2479,7 +2780,9 @@
                     "signature": [
                       "\"boolean\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 154,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2490,7 +2793,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                    "lineNumber": 155,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2516,7 +2821,9 @@
               },
               ") => { id: string; time: string; endTime: string; label: string; color?: string | undefined; isHidden?: boolean | undefined; outside?: boolean | undefined; type: \"manual_range_event_annotation\"; }"
             ],
-            "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+            "lineNumber": 160,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -2531,7 +2838,9 @@
                 "signature": [
                   "unknown"
                 ],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 160,
+                "columnNumber": 19,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -2545,7 +2854,9 @@
                 "signature": [
                   "{ id: string; time: string; endTime: string; } & StyleSharedProps & { outside?: boolean | undefined; }"
                 ],
-                "path": "src/plugins/event_annotation/common/manual_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/manual_event_annotation/index.ts",
+                "lineNumber": 160,
+                "columnNumber": 35,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -2561,7 +2872,9 @@
         "tags": [],
         "label": "queryPointEventAnnotation",
         "description": [],
-        "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+        "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+        "lineNumber": 16,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2575,7 +2888,9 @@
             "signature": [
               "\"query_point_event_annotation\""
             ],
-            "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+            "lineNumber": 22,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2589,7 +2904,9 @@
             "signature": [
               "never[]"
             ],
-            "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+            "lineNumber": 23,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2603,7 +2920,9 @@
             "signature": [
               "\"query_point_event_annotation\""
             ],
-            "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+            "lineNumber": 24,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2614,7 +2933,9 @@
             "tags": [],
             "label": "help",
             "description": [],
-            "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+            "lineNumber": 25,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2628,7 +2949,9 @@
             "signature": [
               "\"null\"[]"
             ],
-            "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2639,7 +2962,9 @@
             "tags": [],
             "label": "args",
             "description": [],
-            "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -2650,7 +2975,9 @@
                 "tags": [],
                 "label": "id",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 30,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2664,7 +2991,9 @@
                     "signature": [
                       "true"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 31,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2678,7 +3007,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 32,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2689,7 +3020,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 33,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2702,7 +3035,9 @@
                 "tags": [],
                 "label": "filter",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 37,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2716,7 +3051,9 @@
                     "signature": [
                       "\"kibana_query\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 38,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2727,7 +3064,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 39,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2740,7 +3079,9 @@
                 "tags": [],
                 "label": "extraFields",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 43,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2754,7 +3095,9 @@
                     "signature": [
                       "true"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 44,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2768,7 +3111,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 45,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2779,7 +3124,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 46,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2792,7 +3139,9 @@
                 "tags": [],
                 "label": "timeField",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 50,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2806,7 +3155,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 51,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2817,7 +3168,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 52,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2830,7 +3183,9 @@
                 "tags": [],
                 "label": "label",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 56,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2844,7 +3199,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 57,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2855,7 +3212,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 58,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2868,7 +3227,9 @@
                 "tags": [],
                 "label": "color",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 62,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2882,7 +3243,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 63,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2893,7 +3256,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 64,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2906,7 +3271,9 @@
                 "tags": [],
                 "label": "lineStyle",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 68,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2920,7 +3287,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 69,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2934,7 +3303,9 @@
                     "signature": [
                       "(\"dashed\" | \"solid\" | \"dotted\")[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 70,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2945,7 +3316,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 71,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2958,7 +3331,9 @@
                 "tags": [],
                 "label": "lineWidth",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 75,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -2972,7 +3347,9 @@
                     "signature": [
                       "\"number\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 76,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -2983,7 +3360,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 77,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2996,7 +3375,9 @@
                 "tags": [],
                 "label": "icon",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 81,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -3010,7 +3391,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 82,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -3021,7 +3404,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 83,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -3033,9 +3418,11 @@
                     "label": "options",
                     "description": [],
                     "signature": [
-                      "(\"alert\" | \"tag\" | \"asterisk\" | \"bell\" | \"bolt\" | \"bug\" | \"editorComment\" | \"flag\" | \"heart\" | \"mapMarker\" | \"pinFilled\" | \"starEmpty\" | \"starFilled\" | \"circle\" | \"triangle\")[]"
+                      "(\"alert\" | \"circle\" | \"tag\" | \"asterisk\" | \"bell\" | \"bolt\" | \"bug\" | \"editorComment\" | \"flag\" | \"heart\" | \"mapMarker\" | \"pinFilled\" | \"starEmpty\" | \"starFilled\" | \"triangle\")[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 86,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -3049,7 +3436,9 @@
                     "signature": [
                       "true"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 87,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -3062,7 +3451,9 @@
                 "tags": [],
                 "label": "textVisibility",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 89,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -3076,7 +3467,9 @@
                     "signature": [
                       "\"boolean\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 90,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -3087,7 +3480,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 91,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -3100,7 +3495,9 @@
                 "tags": [],
                 "label": "textField",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 95,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -3114,7 +3511,9 @@
                     "signature": [
                       "\"string\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 96,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -3125,7 +3524,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 97,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -3138,7 +3539,9 @@
                 "tags": [],
                 "label": "isHidden",
                 "description": [],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 101,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -3152,7 +3555,9 @@
                     "signature": [
                       "\"boolean\"[]"
                     ],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 102,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   },
@@ -3163,7 +3568,9 @@
                     "tags": [],
                     "label": "help",
                     "description": [],
-                    "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                    "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                    "lineNumber": 103,
+                    "columnNumber": 7,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -3213,7 +3620,9 @@
               },
               " | undefined; textVisibility?: boolean | undefined; type: \"query_point_event_annotation\"; }"
             ],
-            "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+            "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+            "lineNumber": 108,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -3228,7 +3637,9 @@
                 "signature": [
                   "unknown"
                 ],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 108,
+                "columnNumber": 19,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -3266,7 +3677,9 @@
                   },
                   " | undefined; textVisibility?: boolean | undefined; }"
                 ],
-                "path": "src/plugins/event_annotation/common/query_point_event_annotation/index.ts",
+                "path": "src/platform/plugins/private/event_annotation/common/query_point_event_annotation/index.ts",
+                "lineNumber": 108,
+                "columnNumber": 35,
                 "deprecated": false,
                 "trackAdoption": false
               }

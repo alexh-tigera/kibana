@@ -28,7 +28,9 @@
             "text": "ContentInsightsClientPublic"
           }
         ],
-        "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+        "lineNumber": 27,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -42,7 +44,9 @@
             "signature": [
               "any"
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+            "lineNumber": 32,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -53,7 +57,9 @@
                 "tags": [],
                 "label": "deps",
                 "description": [],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 33,
+                "columnNumber": 28,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -65,15 +71,33 @@
                     "label": "http",
                     "description": [],
                     "signature": [
+                      "HttpSetup"
+                    ],
+                    "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                    "lineNumber": 33,
+                    "columnNumber": 30,
+                    "deprecated": false,
+                    "trackAdoption": false
+                  },
+                  {
+                    "parentPluginId": "@kbn/content-management-content-insights-public",
+                    "id": "def-public.ContentInsightsClient.Unnamed.$1.logger",
+                    "type": "Object",
+                    "tags": [],
+                    "label": "logger",
+                    "description": [],
+                    "signature": [
                       {
-                        "pluginId": "@kbn/core-http-browser",
-                        "scope": "public",
-                        "docId": "kibKbnCoreHttpBrowserPluginApi",
-                        "section": "def-public.HttpSetup",
-                        "text": "HttpSetup"
+                        "pluginId": "@kbn/logging",
+                        "scope": "common",
+                        "docId": "kibKbnLoggingPluginApi",
+                        "section": "def-common.Logger",
+                        "text": "Logger"
                       }
                     ],
-                    "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                    "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                    "lineNumber": 33,
+                    "columnNumber": 47,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -86,7 +110,9 @@
                 "tags": [],
                 "label": "config",
                 "description": [],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 34,
+                "columnNumber": 30,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -97,7 +123,9 @@
                     "tags": [],
                     "label": "domainId",
                     "description": [],
-                    "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                    "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                    "lineNumber": 34,
+                    "columnNumber": 32,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -116,7 +144,9 @@
             "signature": [
               "(id: string, eventType: \"viewed\") => void"
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+            "lineNumber": 39,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -130,7 +160,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 39,
+                "columnNumber": 9,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -145,7 +177,9 @@
                 "signature": [
                   "\"viewed\""
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 39,
+                "columnNumber": 21,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -171,7 +205,9 @@
               },
               ">"
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+            "lineNumber": 49,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -185,7 +221,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 49,
+                "columnNumber": 18,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -200,7 +238,9 @@
                 "signature": [
                   "\"viewed\""
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 49,
+                "columnNumber": 30,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -221,7 +261,7 @@
         "label": "ActivityView",
         "description": [],
         "signature": [
-          "({ item }: ",
+          "({ item, entityNamePlural }: ",
           {
             "pluginId": "@kbn/content-management-content-insights-public",
             "scope": "public",
@@ -229,9 +269,11 @@
             "section": "def-public.ActivityViewProps",
             "text": "ActivityViewProps"
           },
-          ") => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "packages/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+        "lineNumber": 32,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -240,7 +282,7 @@
             "id": "def-public.ActivityView.$1",
             "type": "Object",
             "tags": [],
-            "label": "{ item }",
+            "label": "{ item, entityNamePlural }",
             "description": [],
             "signature": [
               {
@@ -251,7 +293,9 @@
                 "text": "ActivityViewProps"
               }
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+            "lineNumber": 32,
+            "columnNumber": 30,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -270,7 +314,7 @@
           "\nAbstract external service Provider."
         ],
         "signature": [
-          "({ children, ...services }: React.PropsWithChildren<React.PropsWithChildren<Partial<",
+          "({ children, ...services }: React.PropsWithChildren<Partial<",
           {
             "pluginId": "@kbn/content-management-content-insights-public",
             "scope": "public",
@@ -278,9 +322,11 @@
             "section": "def-public.ContentInsightsServices",
             "text": "ContentInsightsServices"
           },
-          ">>>) => JSX.Element"
+          ">>) => React.JSX.Element"
         ],
-        "path": "packages/content-management/content_insights/content_insights_public/src/services.tsx",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/services.tsx",
+        "lineNumber": 33,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -292,7 +338,7 @@
             "label": "{\n  children,\n  ...services\n}",
             "description": [],
             "signature": [
-              "React.PropsWithChildren<React.PropsWithChildren<Partial<",
+              "React.PropsWithChildren<Partial<",
               {
                 "pluginId": "@kbn/content-management-content-insights-public",
                 "scope": "public",
@@ -300,9 +346,11 @@
                 "section": "def-public.ContentInsightsServices",
                 "text": "ContentInsightsServices"
               },
-              ">>>"
+              ">>"
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/services.tsx",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/services.tsx",
+            "lineNumber": 33,
+            "columnNumber": 98,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -329,7 +377,9 @@
           },
           " | null"
         ],
-        "path": "packages/content-management/content_insights/content_insights_public/src/services.tsx",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/services.tsx",
+        "lineNumber": 56,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -352,9 +402,11 @@
             "section": "def-common.UserContentCommonSchema",
             "text": "UserContentCommonSchema"
           },
-          "; }) => JSX.Element"
+          "; }) => React.JSX.Element"
         ],
-        "path": "packages/content-management/content_insights/content_insights_public/src/components/views_stats/views_stats.tsx",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/components/views_stats/views_stats.tsx",
+        "lineNumber": 23,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -365,7 +417,9 @@
             "tags": [],
             "label": "{ item }",
             "description": [],
-            "path": "packages/content-management/content_insights/content_insights_public/src/components/views_stats/views_stats.tsx",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/components/views_stats/views_stats.tsx",
+            "lineNumber": 23,
+            "columnNumber": 38,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -385,7 +439,9 @@
                     "text": "UserContentCommonSchema"
                   }
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/components/views_stats/views_stats.tsx",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/components/views_stats/views_stats.tsx",
+                "lineNumber": 23,
+                "columnNumber": 40,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -404,7 +460,9 @@
         "tags": [],
         "label": "ActivityViewProps",
         "description": [],
-        "path": "packages/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+        "lineNumber": 27,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -418,7 +476,25 @@
             "signature": [
               "{ createdBy?: string | undefined; updatedBy?: string | undefined; createdAt?: string | undefined; updatedAt?: string | undefined; managed?: boolean | undefined; }"
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+            "lineNumber": 28,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/content-management-content-insights-public",
+            "id": "def-public.ActivityViewProps.entityNamePlural",
+            "type": "string",
+            "tags": [],
+            "label": "entityNamePlural",
+            "description": [],
+            "signature": [
+              "string | undefined"
+            ],
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/components/activity_view.tsx",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -434,7 +510,9 @@
         "description": [
           "\nPublic interface of the Content Management Insights service."
         ],
-        "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+        "lineNumber": 19,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -448,7 +526,9 @@
             "signature": [
               "(id: string, eventType: \"viewed\") => void"
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+            "lineNumber": 23,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -462,7 +542,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 23,
+                "columnNumber": 9,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -477,7 +559,9 @@
                 "signature": [
                   "\"viewed\""
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 23,
+                "columnNumber": 21,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -503,7 +587,9 @@
               },
               ">"
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+            "lineNumber": 24,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -517,7 +603,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 24,
+                "columnNumber": 12,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -532,7 +620,9 @@
                 "signature": [
                   "\"viewed\""
                 ],
-                "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+                "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+                "lineNumber": 24,
+                "columnNumber": 24,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -552,7 +642,9 @@
         "description": [
           "\nAbstract external services for this component."
         ],
-        "path": "packages/content-management/content_insights/content_insights_public/src/services.tsx",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/services.tsx",
+        "lineNumber": 16,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -572,7 +664,24 @@
                 "text": "ContentInsightsClientPublic"
               }
             ],
-            "path": "packages/content-management/content_insights/content_insights_public/src/services.tsx",
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/services.tsx",
+            "lineNumber": 20,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/content-management-content-insights-public",
+            "id": "def-public.ContentInsightsServices.isKibanaVersioningEnabled",
+            "type": "boolean",
+            "tags": [],
+            "label": "isKibanaVersioningEnabled",
+            "description": [
+              "\nWhether versioning is enabled for the current kibana instance. (aka is Serverless)\nThis is used to determine if we should show the version mentions in the help text."
+            ],
+            "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/services.tsx",
+            "lineNumber": 21,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -592,7 +701,9 @@
         "signature": [
           "\"viewed\""
         ],
-        "path": "packages/content-management/content_insights/content_insights_public/src/client.ts",
+        "path": "src/platform/packages/shared/content-management/content_insights/content_insights_public/src/client.ts",
+        "lineNumber": 17,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false

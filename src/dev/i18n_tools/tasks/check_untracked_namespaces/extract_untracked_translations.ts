@@ -10,7 +10,7 @@
 import { readFile as readFileAsync } from 'fs/promises';
 import { globNamespacePaths, makeAbsolutePath } from '../../utils';
 import { extractI18nMessageDescriptors } from '../../extractors/formatjs';
-import { I18nConfig } from '../../types';
+import type { I18nConfig } from '../../types';
 
 export interface Params {
   rootPaths: string[];
@@ -31,8 +31,8 @@ export async function* extractUntrackedMessages(rootPath: string, definedPathsFo
       ...definedPathsForRoot,
       '**/build/**',
       '**/__fixtures__/**',
-      '**/packages/kbn-i18n/**',
-      '**/packages/kbn-i18n-react/**',
+      '**/src/platform/packages/shared/kbn-i18n/**',
+      '**/src/platform/packages/shared/kbn-i18n-react/**',
       '**/packages/kbn-plugin-generator/template/**',
       '**/test/**',
       '**/scripts/**',

@@ -13,9 +13,11 @@
         "signature": [
           "({ label, icon, onClick, dataTestSubj, }: { label: string; icon?: ",
           "IconType",
-          " | undefined; onClick: () => void; dataTestSubj?: string | undefined; }) => JSX.Element"
+          " | undefined; onClick: () => void; dataTestSubj?: string | undefined; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/chart_switch_trigger.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/chart_switch_trigger.tsx",
+        "lineNumber": 17,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -32,7 +34,9 @@
               "IconType",
               " | undefined; onClick: () => void; dataTestSubj?: string | undefined; }"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/chart_switch_trigger.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/chart_switch_trigger.tsx",
+            "lineNumber": 17,
+            "columnNumber": 45,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -47,7 +51,7 @@
         "label": "ColorPicker",
         "description": [],
         "signature": [
-          "({ overwriteColor, defaultColor, isClearable, setConfig, label, disableHelpTooltip, disabledMessage, showAlpha, }: ",
+          "({ overwriteColor, defaultColor, isClearable, setConfig, label, disableHelpTooltip, disabledMessage, showAlpha, swatches, }: ",
           {
             "pluginId": "@kbn/visualization-ui-components",
             "scope": "public",
@@ -55,9 +59,11 @@
             "section": "def-public.ColorPickerProps",
             "text": "ColorPickerProps"
           },
-          ") => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+        "lineNumber": 38,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -66,7 +72,7 @@
             "id": "def-public.ColorPicker.$1",
             "type": "Object",
             "tags": [],
-            "label": "{\n  overwriteColor,\n  defaultColor,\n  isClearable,\n  setConfig,\n  label,\n  disableHelpTooltip,\n  disabledMessage,\n  showAlpha,\n}",
+            "label": "{\n  overwriteColor,\n  defaultColor,\n  isClearable,\n  setConfig,\n  label,\n  disableHelpTooltip,\n  disabledMessage,\n  showAlpha,\n  swatches,\n}",
             "description": [],
             "signature": [
               {
@@ -77,7 +83,9 @@
                 "text": "ColorPickerProps"
               }
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 38,
+            "columnNumber": 29,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -96,9 +104,11 @@
           "\nWhen testing this component, mock the \"debounce\" function in lodash (see this module test for an example)"
         ],
         "signature": [
-          "(props: Props) => JSX.Element"
+          "(props: Props) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/debounced_input.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/debounced_input.tsx",
+        "lineNumber": 53,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -112,7 +122,9 @@
             "signature": [
               "Props"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/debounced_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/debounced_input.tsx",
+            "lineNumber": 53,
+            "columnNumber": 32,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -133,9 +145,11 @@
           "DimensionButtonProps",
           "> & { readonly type: ({ groupLabel, children, onClick, onRemoveClick, accessorConfig, label, message, ...otherProps }: ",
           "DimensionButtonProps",
-          ") => JSX.Element; }"
+          ") => React.JSX.Element; }"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/dimension_button.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/dimension_button.tsx",
+        "lineNumber": 142,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -150,7 +164,9 @@
             "signature": [
               "P"
             ],
-            "path": "node_modules/@types/react/index.d.ts",
+            "path": "node_modules/@types/react/ts5.0/index.d.ts",
+            "lineNumber": 630,
+            "columnNumber": 10,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -165,9 +181,11 @@
         "label": "DimensionEditorSection",
         "description": [],
         "signature": [
-          "({ children, title, }: { title?: string | undefined; children?: React.ReactNode | React.ReactNode[]; }) => JSX.Element"
+          "({ children, title, }: { title?: string | undefined; children?: React.ReactNode | React.ReactNode[]; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/dimension_editor_section.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_editor_section.tsx",
+        "lineNumber": 14,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -178,7 +196,9 @@
             "tags": [],
             "label": "{\n  children,\n  title,\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/dimension_editor_section.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_editor_section.tsx",
+            "lineNumber": 17,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -192,7 +212,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_editor_section.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_editor_section.tsx",
+                "lineNumber": 18,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -206,7 +228,9 @@
                 "signature": [
                   "React.ReactNode | React.ReactNode[]"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_editor_section.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_editor_section.tsx",
+                "lineNumber": 19,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -224,11 +248,13 @@
         "label": "DimensionTrigger",
         "description": [],
         "signature": [
-          "({ id, label, color, dataTestSubj, }: { label: React.ReactNode; id?: string | undefined; color?: \"default\" | \"warning\" | \"success\" | \"subdued\" | \"accent\" | \"danger\" | \"ghost\" | ",
+          "({ id, label, color, dataTestSubj, }: { label: React.ReactNode; id?: string | undefined; color?: \"success\" | \"warning\" | \"default\" | \"subdued\" | \"accent\" | \"accentSecondary\" | \"danger\" | \"ghost\" | ",
           "Property",
-          ".Color | undefined; dataTestSubj?: string | undefined; }) => JSX.Element"
+          ".Color | undefined; dataTestSubj?: string | undefined; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+        "lineNumber": 30,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -239,7 +265,9 @@
             "tags": [],
             "label": "{\n  id,\n  label,\n  color,\n  dataTestSubj,\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+            "lineNumber": 35,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -251,9 +279,11 @@
                 "label": "label",
                 "description": [],
                 "signature": [
-                  "boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined"
+                  "React.ReactNode"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+                "lineNumber": 36,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -267,7 +297,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+                "lineNumber": 37,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -279,11 +311,13 @@
                 "label": "color",
                 "description": [],
                 "signature": [
-                  "\"default\" | \"warning\" | \"success\" | \"subdued\" | \"accent\" | \"danger\" | \"ghost\" | ",
+                  "\"success\" | \"warning\" | \"default\" | \"subdued\" | \"accent\" | \"accentSecondary\" | \"danger\" | \"ghost\" | ",
                   "Property",
                   ".Color | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+                "lineNumber": 38,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -297,7 +331,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/trigger.tsx",
+                "lineNumber": 39,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -315,9 +351,13 @@
         "label": "DragDropBuckets",
         "description": [],
         "signature": [
-          "({\n  items,\n  onDragStart,\n  onDragEnd,\n  droppableId,\n  children,\n  bgColor,\n}: { items: T[]; droppableId: string; children: React.ReactElement<any, string | React.JSXElementConstructor<any>>[]; onDragStart?: (() => void) | undefined; onDragEnd?: ((items: T[]) => void) | undefined; bgColor?: \"warning\" | \"success\" | \"plain\" | \"subdued\" | \"primary\" | \"accent\" | \"danger\" | \"transparent\" | undefined; }) => JSX.Element"
+          "({\n  items,\n  onDragStart,\n  onDragEnd,\n  droppableId,\n  children,\n  bgColor,\n}: { items: T[]; droppableId: string; children: React.ReactElement<any>[]; onDragStart?: (() => void) | undefined; onDragEnd?: ((items: T[]) => void) | undefined; bgColor?: ",
+          "PanelColor",
+          " | undefined; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+        "lineNumber": 65,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -328,7 +368,9 @@
             "tags": [],
             "label": "{\n  items,\n  onDragStart,\n  onDragEnd,\n  droppableId,\n  children,\n  bgColor,\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+            "lineNumber": 72,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -342,7 +384,9 @@
                 "signature": [
                   "T[]"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "lineNumber": 73,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -353,7 +397,9 @@
                 "tags": [],
                 "label": "droppableId",
                 "description": [],
-                "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "lineNumber": 74,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -365,9 +411,11 @@
                 "label": "children",
                 "description": [],
                 "signature": [
-                  "React.ReactElement<any, string | React.JSXElementConstructor<any>>[]"
+                  "React.ReactElement<any>[]"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "lineNumber": 75,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -381,7 +429,9 @@
                 "signature": [
                   "(() => void) | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "lineNumber": 76,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [],
@@ -397,7 +447,9 @@
                 "signature": [
                   "((items: T[]) => void) | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "lineNumber": 77,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -411,7 +463,9 @@
                     "signature": [
                       "T[]"
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                    "lineNumber": 77,
+                    "columnNumber": 16,
                     "deprecated": false,
                     "trackAdoption": false,
                     "isRequired": true
@@ -427,9 +481,12 @@
                 "label": "bgColor",
                 "description": [],
                 "signature": [
-                  "\"warning\" | \"success\" | \"plain\" | \"subdued\" | \"primary\" | \"accent\" | \"danger\" | \"transparent\" | undefined"
+                  "PanelColor",
+                  " | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+                "lineNumber": 78,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -471,9 +528,11 @@
           "BucketContainerProps",
           "> | undefined; }, Omit<",
           "BucketContainerProps",
-          ", \"draggableProvided\">>>) => JSX.Element"
+          ", \"draggableProvided\">>>) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+        "lineNumber": 24,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -510,7 +569,9 @@
               "BucketContainerProps",
               ", \"draggableProvided\">>>"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/buckets.tsx",
+            "lineNumber": 24,
+            "columnNumber": 42,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -527,9 +588,11 @@
         "label": "EmptyDimensionButton",
         "description": [],
         "signature": [
-          "({ label, ariaLabel, onClick, dataTestSubj, iconType, ...otherProps }: { label: React.ReactNode; ariaLabel: string; onClick: () => void; dataTestSubj?: string | undefined; iconType?: string | undefined; }) => JSX.Element"
+          "({ label, ariaLabel, onClick, dataTestSubj, iconType, ...otherProps }: { label: React.ReactNode; ariaLabel: string; onClick: () => void; dataTestSubj?: string | undefined; iconType?: string | undefined; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+        "lineNumber": 16,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -540,7 +603,9 @@
             "tags": [],
             "label": "{\n  label,\n  ariaLabel,\n  onClick,\n  dataTestSubj,\n  iconType,\n  ...otherProps // from Drag&Drop integration\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+            "lineNumber": 23,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -552,9 +617,11 @@
                 "label": "label",
                 "description": [],
                 "signature": [
-                  "boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined"
+                  "React.ReactNode"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "lineNumber": 24,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -565,7 +632,9 @@
                 "tags": [],
                 "label": "ariaLabel",
                 "description": [],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "lineNumber": 25,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -579,7 +648,9 @@
                 "signature": [
                   "() => void"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "lineNumber": 26,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [],
@@ -595,7 +666,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "lineNumber": 27,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -609,7 +682,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/empty_button.tsx",
+                "lineNumber": 28,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -629,9 +704,11 @@
         "signature": [
           "(props: ",
           "FieldPickerProps",
-          "<T>) => JSX.Element"
+          "<T>) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/field_picker/field_picker.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/field_picker/field_picker.tsx",
+        "lineNumber": 32,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -646,7 +723,9 @@
               "FieldPickerProps",
               "<T>"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/field_picker/field_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/field_picker/field_picker.tsx",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -665,9 +744,11 @@
         "signature": [
           "({ idx, onRemoveClick, removeTitle, children, draggableProvided, isNotRemovable, isNotDraggable, isDragging, \"data-test-subj\": dataTestSubj, }: ",
           "BucketContainerProps",
-          ") => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/fields_bucket_container.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/fields_bucket_container.tsx",
+        "lineNumber": 23,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -681,7 +762,9 @@
             "signature": [
               "BucketContainerProps"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/fields_bucket_container.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/fields_bucket_container.tsx",
+            "lineNumber": 23,
+            "columnNumber": 39,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -700,9 +783,11 @@
         "signature": [
           "({\n  inputFilter,\n  onChange,\n  dataView,\n  helpMessage,\n  label = filterByLabel,\n  initiallyOpen,\n  ['data-test-subj']: dataTestSubj,\n  queryInputServices,\n  appName,\n}: ",
           "FilterQueryInputProps",
-          ") => JSX.Element"
+          ") => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/query_input/filter_query_input.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/filter_query_input.tsx",
+        "lineNumber": 58,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -716,7 +801,9 @@
             "signature": [
               "FilterQueryInputProps"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/filter_query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/filter_query_input.tsx",
+            "lineNumber": 58,
+            "columnNumber": 34,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -737,7 +824,9 @@
         "signature": [
           "(icon: string | undefined) => boolean"
         ],
-        "path": "packages/kbn-visualization-ui-components/util.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/util.ts",
+        "lineNumber": 19,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -751,7 +840,9 @@
             "signature": [
               "string | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/util.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/util.ts",
+            "lineNumber": 22,
+            "columnNumber": 25,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": false
@@ -776,9 +867,11 @@
             "section": "def-public.IconSet",
             "text": "IconSet"
           },
-          "<Icon>; defaultIcon?: string | undefined; }) => JSX.Element"
+          "<Icon>; defaultIcon?: string | undefined; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+        "lineNumber": 49,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -789,7 +882,9 @@
             "tags": [],
             "label": "{\n  value,\n  onChange,\n  customIconSet,\n  defaultIcon = 'empty',\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+            "lineNumber": 54,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -803,7 +898,9 @@
                 "signature": [
                   "Icon | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                "lineNumber": 55,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -817,7 +914,9 @@
                 "signature": [
                   "(newIcon: Icon) => void"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                "lineNumber": 56,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -831,7 +930,9 @@
                     "signature": [
                       "Icon"
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                    "lineNumber": 56,
+                    "columnNumber": 14,
                     "deprecated": false,
                     "trackAdoption": false,
                     "isRequired": true
@@ -851,7 +952,9 @@
                   "IconType",
                   " | Icon | undefined; shouldRotate?: boolean | undefined; }[]"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                "lineNumber": 57,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -865,7 +968,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                "lineNumber": 58,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -891,9 +996,11 @@
             "section": "def-public.IconSet",
             "text": "IconSet"
           },
-          "<Icon>; defaultIcon?: string | undefined; }) => JSX.Element"
+          "<Icon>; defaultIcon?: string | undefined; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+        "lineNumber": 92,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -904,7 +1011,9 @@
             "tags": [],
             "label": "{\n  currentIcon,\n  setIcon,\n  customIconSet,\n  defaultIcon = 'empty',\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+            "lineNumber": 97,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -918,7 +1027,9 @@
                 "signature": [
                   "Icon | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                "lineNumber": 98,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -932,7 +1043,9 @@
                 "signature": [
                   "(icon: Icon) => void"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                "lineNumber": 99,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -946,7 +1059,9 @@
                     "signature": [
                       "Icon"
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                    "lineNumber": 99,
+                    "columnNumber": 13,
                     "deprecated": false,
                     "trackAdoption": false,
                     "isRequired": true
@@ -966,7 +1081,9 @@
                   "IconType",
                   " | Icon | undefined; shouldRotate?: boolean | undefined; }[]"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                "lineNumber": 100,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -980,7 +1097,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+                "lineNumber": 101,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -1006,7 +1125,9 @@
           "IconType",
           " | T | undefined; shouldRotate?: boolean | undefined; }) => number"
         ],
-        "path": "packages/kbn-visualization-ui-components/util.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/util.ts",
+        "lineNumber": 26,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1022,7 +1143,9 @@
               "IconType",
               " | T | undefined; shouldRotate?: boolean | undefined; }"
             ],
-            "path": "packages/kbn-visualization-ui-components/util.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/util.ts",
+            "lineNumber": 29,
+            "columnNumber": 52,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1039,7 +1162,9 @@
               "IconType",
               " | T | undefined; shouldRotate?: boolean | undefined; }"
             ],
-            "path": "packages/kbn-visualization-ui-components/util.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/util.ts",
+            "lineNumber": 29,
+            "columnNumber": 75,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1066,7 +1191,9 @@
           },
           ") => boolean"
         ],
-        "path": "packages/kbn-visualization-ui-components/util.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/util.ts",
+        "lineNumber": 16,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1086,7 +1213,9 @@
                 "text": "DataViewField"
               }
             ],
-            "path": "packages/kbn-visualization-ui-components/util.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/util.ts",
+            "lineNumber": 16,
+            "columnNumber": 39,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1121,7 +1250,9 @@
           },
           ") => boolean"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/query_input/helpers.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/helpers.ts",
+        "lineNumber": 33,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1141,7 +1272,9 @@
                 "text": "Query"
               }
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/helpers.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/helpers.ts",
+            "lineNumber": 33,
+            "columnNumber": 30,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1162,7 +1295,9 @@
                 "text": "DataViewBase"
               }
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/helpers.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/helpers.ts",
+            "lineNumber": 33,
+            "columnNumber": 44,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1179,9 +1314,11 @@
         "label": "LineStyleSettings",
         "description": [],
         "signature": [
-          "({ currentConfig, setConfig, idPrefix, }: { currentConfig?: LineStyleConfig | undefined; setConfig: (config: LineStyleConfig) => void; idPrefix: string; }) => JSX.Element"
+          "({ currentConfig, setConfig, idPrefix, }: { currentConfig?: LineStyleConfig | undefined; setConfig: (config: LineStyleConfig) => void; idPrefix: string; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/line_style_settings.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/line_style_settings.tsx",
+        "lineNumber": 26,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1192,7 +1329,9 @@
             "tags": [],
             "label": "{\n  currentConfig,\n  setConfig,\n  idPrefix,\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/line_style_settings.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/line_style_settings.tsx",
+            "lineNumber": 30,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -1206,7 +1345,9 @@
                 "signature": [
                   "LineStyleConfig | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/line_style_settings.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/line_style_settings.tsx",
+                "lineNumber": 31,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1220,7 +1361,9 @@
                 "signature": [
                   "(config: LineStyleConfig) => void"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/line_style_settings.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/line_style_settings.tsx",
+                "lineNumber": 32,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1234,7 +1377,9 @@
                     "signature": [
                       "LineStyleConfig"
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/line_style_settings.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/line_style_settings.tsx",
+                    "lineNumber": 32,
+                    "columnNumber": 15,
                     "deprecated": false,
                     "trackAdoption": false,
                     "isRequired": true
@@ -1249,7 +1394,9 @@
                 "tags": [],
                 "label": "idPrefix",
                 "description": [],
-                "path": "packages/kbn-visualization-ui-components/components/line_style_settings.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/line_style_settings.tsx",
+                "lineNumber": 33,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -1267,9 +1414,11 @@
         "label": "NameInput",
         "description": [],
         "signature": [
-          "({ value, onChange, defaultValue, }: { value: string; onChange: (value: string) => void; defaultValue?: string | undefined; }) => JSX.Element"
+          "({ value, onChange, defaultValue, }: { value: string; onChange: (value: string) => void; defaultValue?: string | undefined; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/name_input.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/name_input.tsx",
+        "lineNumber": 15,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1280,7 +1429,9 @@
             "tags": [],
             "label": "{\n  value,\n  onChange,\n  defaultValue,\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/name_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/name_input.tsx",
+            "lineNumber": 19,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -1291,7 +1442,9 @@
                 "tags": [],
                 "label": "value",
                 "description": [],
-                "path": "packages/kbn-visualization-ui-components/components/name_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/name_input.tsx",
+                "lineNumber": 20,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1305,7 +1458,9 @@
                 "signature": [
                   "(value: string) => void"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/name_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/name_input.tsx",
+                "lineNumber": 21,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1319,7 +1474,9 @@
                     "signature": [
                       "string"
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/name_input.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/name_input.tsx",
+                    "lineNumber": 21,
+                    "columnNumber": 14,
                     "deprecated": false,
                     "trackAdoption": false,
                     "isRequired": true
@@ -1337,7 +1494,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/name_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/name_input.tsx",
+                "lineNumber": 22,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -1355,9 +1514,11 @@
         "label": "NewBucketButton",
         "description": [],
         "signature": [
-          "({ label, onClick, isDisabled, className, \"data-test-subj\": dataTestSubj, }: NewBucketButtonProps) => JSX.Element"
+          "({ label, onClick, isDisabled, \"data-test-subj\": dataTestSubj, }: NewBucketButtonProps) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/new_bucket_button.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/new_bucket_button.tsx",
+        "lineNumber": 20,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1366,12 +1527,14 @@
             "id": "def-public.NewBucketButton.$1",
             "type": "Object",
             "tags": [],
-            "label": "{\n  label,\n  onClick,\n  isDisabled,\n  className,\n  'data-test-subj': dataTestSubj = 'lns-newBucket-add',\n}",
+            "label": "{\n  label,\n  onClick,\n  isDisabled,\n  'data-test-subj': dataTestSubj = 'lns-newBucket-add',\n}",
             "description": [],
             "signature": [
               "NewBucketButtonProps"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/drag_drop_bucket/new_bucket_button.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/drag_drop_bucket/new_bucket_button.tsx",
+            "lineNumber": 20,
+            "columnNumber": 33,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1388,7 +1551,7 @@
         "label": "QueryInput",
         "description": [],
         "signature": [
-          "({ value, onChange, dataView, isInvalid, onSubmit, disableAutoFocus, [\"data-test-subj\"]: dataTestSubj, placeholder, appName, services: { data, uiSettings, http, notifications, docLinks, storage, unifiedSearch, dataViews }, }: { value: ",
+          "({ value, onChange, dataView, isInvalid, onSubmit, disableAutoFocus, [\"data-test-subj\"]: dataTestSubj, placeholder, appName, services: { data, uiSettings, http, notifications, docLinks, storage, kql, dataViews }, }: { value: ",
           {
             "pluginId": "@kbn/es-query",
             "scope": "common",
@@ -1412,9 +1575,11 @@
             "section": "def-public.QueryInputServices",
             "text": "QueryInputServices"
           },
-          "; }) => JSX.Element"
+          "; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+        "lineNumber": 36,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1423,9 +1588,11 @@
             "id": "def-public.QueryInput.$1",
             "type": "Object",
             "tags": [],
-            "label": "{\n  value,\n  onChange,\n  dataView,\n  isInvalid,\n  onSubmit,\n  disableAutoFocus,\n  ['data-test-subj']: dataTestSubj,\n  placeholder,\n  appName,\n  services: { data, uiSettings, http, notifications, docLinks, storage, unifiedSearch, dataViews },\n}",
+            "label": "{\n  value,\n  onChange,\n  dataView,\n  isInvalid,\n  onSubmit,\n  disableAutoFocus,\n  ['data-test-subj']: dataTestSubj,\n  placeholder,\n  appName,\n  services: { data, uiSettings, http, notifications, docLinks, storage, kql, dataViews },\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 47,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -1439,7 +1606,9 @@
                 "signature": [
                   "{ query: string | { [key: string]: any; }; language: string; }"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 48,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1461,7 +1630,9 @@
                   },
                   ") => void"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 49,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1481,7 +1652,9 @@
                         "text": "Query"
                       }
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                    "lineNumber": 49,
+                    "columnNumber": 14,
                     "deprecated": false,
                     "trackAdoption": false,
                     "isRequired": true
@@ -1499,7 +1672,9 @@
                 "signature": [
                   "string | { type: \"id\" | \"title\"; value: string; }"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 50,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1510,7 +1685,9 @@
                 "tags": [],
                 "label": "isInvalid",
                 "description": [],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 51,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1524,7 +1701,9 @@
                 "signature": [
                   "() => void"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 52,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [],
@@ -1540,7 +1719,9 @@
                 "signature": [
                   "boolean | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 53,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1554,7 +1735,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 54,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1568,7 +1751,9 @@
                 "signature": [
                   "string | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 55,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1579,7 +1764,9 @@
                 "tags": [],
                 "label": "appName",
                 "description": [],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 56,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1599,7 +1786,9 @@
                     "text": "QueryInputServices"
                   }
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+                "lineNumber": 57,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -1617,9 +1806,11 @@
         "label": "TextDecorationSetting",
         "description": [],
         "signature": [
-          "({\n  idPrefix,\n  currentConfig,\n  setConfig,\n  isQueryBased,\n  children,\n}: { idPrefix: string; currentConfig?: TextDecorationConfig | undefined; setConfig: (config: TextDecorationConfig) => void; isQueryBased?: boolean | undefined; children?: ((textDecoration: \"none\" | \"name\" | \"field\") => JSX.Element | null) | undefined; }) => JSX.Element"
+          "({\n  idPrefix,\n  currentConfig,\n  setConfig,\n  isQueryBased,\n  children,\n}: { idPrefix: string; currentConfig?: TextDecorationConfig | undefined; setConfig: (config: TextDecorationConfig) => void; isQueryBased?: boolean | undefined; children?: ((textDecoration: \"name\" | \"none\" | \"field\") => JSX.Element | null) | undefined; }) => React.JSX.Element"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+        "lineNumber": 32,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1630,7 +1821,9 @@
             "tags": [],
             "label": "{\n  idPrefix,\n  currentConfig,\n  setConfig,\n  isQueryBased,\n  children,\n}",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+            "lineNumber": 38,
+            "columnNumber": 4,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -1641,7 +1834,9 @@
                 "tags": [],
                 "label": "idPrefix",
                 "description": [],
-                "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "lineNumber": 39,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1655,7 +1850,9 @@
                 "signature": [
                   "TextDecorationConfig | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "lineNumber": 40,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1669,7 +1866,9 @@
                 "signature": [
                   "(config: TextDecorationConfig) => void"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "lineNumber": 41,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1683,7 +1882,9 @@
                     "signature": [
                       "TextDecorationConfig"
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                    "lineNumber": 41,
+                    "columnNumber": 15,
                     "deprecated": false,
                     "trackAdoption": false,
                     "isRequired": true
@@ -1701,7 +1902,9 @@
                 "signature": [
                   "boolean | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "lineNumber": 42,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -1715,9 +1918,11 @@
                   "A children render function for custom sub fields on textDecoration change"
                 ],
                 "signature": [
-                  "((textDecoration: \"none\" | \"name\" | \"field\") => JSX.Element | null) | undefined"
+                  "((textDecoration: \"name\" | \"none\" | \"field\") => JSX.Element | null) | undefined"
                 ],
-                "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                "lineNumber": 43,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1729,9 +1934,11 @@
                     "label": "textDecoration",
                     "description": [],
                     "signature": [
-                      "\"none\" | \"name\" | \"field\""
+                      "\"name\" | \"none\" | \"field\""
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/text_decoration_setting.tsx",
+                    "lineNumber": 44,
+                    "columnNumber": 15,
                     "deprecated": false,
                     "trackAdoption": false,
                     "isRequired": true
@@ -1771,7 +1978,9 @@
           },
           ") => { isValid: boolean; error: string | undefined; }"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/query_input/helpers.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/helpers.ts",
+        "lineNumber": 13,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1792,7 +2001,9 @@
               },
               " | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/helpers.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/helpers.ts",
+            "lineNumber": 13,
+            "columnNumber": 31,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": false
@@ -1813,7 +2024,9 @@
                 "text": "DataViewBase"
               }
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/helpers.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/helpers.ts",
+            "lineNumber": 13,
+            "columnNumber": 57,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1831,7 +2044,9 @@
         "tags": [],
         "label": "AccessorConfig",
         "description": [],
-        "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+        "lineNumber": 12,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1842,7 +2057,9 @@
             "tags": [],
             "label": "columnId",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "lineNumber": 13,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1854,9 +2071,11 @@
             "label": "triggerIconType",
             "description": [],
             "signature": [
-              "\"none\" | \"color\" | \"aggregate\" | \"disabled\" | \"custom\" | \"colorBy\" | \"invisible\" | undefined"
+              "\"none\" | \"disabled\" | \"color\" | \"aggregate\" | \"custom\" | \"colorBy\" | \"invisible\" | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "lineNumber": 14,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1871,7 +2090,9 @@
               "IconType",
               " | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "lineNumber": 22,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1885,7 +2106,9 @@
             "signature": [
               "string | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "lineNumber": 23,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1899,7 +2122,9 @@
             "signature": [
               "string[] | { color: string; stop: number; }[] | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/types.ts",
+            "lineNumber": 24,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1913,7 +2138,9 @@
         "tags": [],
         "label": "ColorPickerProps",
         "description": [],
-        "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+        "lineNumber": 26,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1927,7 +2154,9 @@
             "signature": [
               "string | null | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 27,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1941,7 +2170,9 @@
             "signature": [
               "string | null | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1955,7 +2186,9 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1969,7 +2202,9 @@
             "signature": [
               "(config: { color?: string | undefined; }) => void"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -1980,7 +2215,9 @@
                 "tags": [],
                 "label": "config",
                 "description": [],
-                "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+                "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+                "lineNumber": 30,
+                "columnNumber": 23,
                 "deprecated": false,
                 "trackAdoption": false,
                 "children": [
@@ -1994,7 +2231,9 @@
                     "signature": [
                       "string | undefined"
                     ],
-                    "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+                    "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+                    "lineNumber": 30,
+                    "columnNumber": 25,
                     "deprecated": false,
                     "trackAdoption": false
                   }
@@ -2013,7 +2252,9 @@
             "signature": [
               "string | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 31,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2027,7 +2268,9 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 32,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2041,7 +2284,9 @@
             "signature": [
               "string | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2055,7 +2300,25 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/color_picker.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 34,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/visualization-ui-components",
+            "id": "def-public.ColorPickerProps.swatches",
+            "type": "Array",
+            "tags": [],
+            "label": "swatches",
+            "description": [],
+            "signature": [
+              "string[]"
+            ],
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/color_picker.tsx",
+            "lineNumber": 35,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2069,7 +2332,9 @@
         "tags": [],
         "label": "FieldOptionValue",
         "description": [],
-        "path": "packages/kbn-visualization-ui-components/components/field_picker/types.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/field_picker/types.ts",
+        "lineNumber": 23,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2083,7 +2348,9 @@
             "signature": [
               "\"field\""
             ],
-            "path": "packages/kbn-visualization-ui-components/components/field_picker/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/field_picker/types.ts",
+            "lineNumber": 24,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2094,7 +2361,9 @@
             "tags": [],
             "label": "field",
             "description": [],
-            "path": "packages/kbn-visualization-ui-components/components/field_picker/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/field_picker/types.ts",
+            "lineNumber": 25,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2115,7 +2384,9 @@
               },
               " | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/field_picker/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/field_picker/types.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2129,7 +2400,9 @@
         "tags": [],
         "label": "QueryInputServices",
         "description": [],
-        "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+        "lineNumber": 25,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2141,15 +2414,11 @@
             "label": "http",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-http-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreHttpBrowserPluginApi",
-                "section": "def-public.HttpSetup",
-                "text": "HttpSetup"
-              }
+              "HttpSetup"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2170,7 +2439,9 @@
               },
               "<any, void>"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 27,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2190,7 +2461,9 @@
                 "text": "DataViewsServicePublic"
               }
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2210,7 +2483,9 @@
                 "text": "DataPublicPluginStart"
               }
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2222,15 +2497,11 @@
             "label": "uiSettings",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-ui-settings-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreUiSettingsBrowserPluginApi",
-                "section": "def-public.IUiSettingsClient",
-                "text": "IUiSettingsClient"
-              }
+              "IUiSettingsClient"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2242,35 +2513,33 @@
             "label": "notifications",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-notifications-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreNotificationsBrowserPluginApi",
-                "section": "def-public.NotificationsStart",
-                "text": "NotificationsStart"
-              }
+              "NotificationsStart"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 31,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "@kbn/visualization-ui-components",
-            "id": "def-public.QueryInputServices.unifiedSearch",
+            "id": "def-public.QueryInputServices.kql",
             "type": "Object",
             "tags": [],
-            "label": "unifiedSearch",
+            "label": "kql",
             "description": [],
             "signature": [
               {
-                "pluginId": "unifiedSearch",
+                "pluginId": "kql",
                 "scope": "public",
-                "docId": "kibUnifiedSearchPluginApi",
-                "section": "def-public.UnifiedSearchPublicPluginStart",
-                "text": "UnifiedSearchPublicPluginStart"
+                "docId": "kibKqlPluginApi",
+                "section": "def-public.KqlPluginStart",
+                "text": "KqlPluginStart"
               }
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 32,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2282,15 +2551,11 @@
             "label": "docLinks",
             "description": [],
             "signature": [
-              {
-                "pluginId": "@kbn/core-doc-links-browser",
-                "scope": "public",
-                "docId": "kibKbnCoreDocLinksBrowserPluginApi",
-                "section": "def-public.DocLinksStart",
-                "text": "DocLinksStart"
-              }
+              "DocLinksStart"
             ],
-            "path": "packages/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/query_input/query_input.tsx",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2310,7 +2575,9 @@
         "signature": [
           "\"string\" | \"number\" | \"boolean\" | \"date\" | FieldOnlyDataType"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/field_picker/types.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/field_picker/types.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -2322,7 +2589,9 @@
         "tags": [],
         "label": "emptyTitleText",
         "description": [],
-        "path": "packages/kbn-visualization-ui-components/components/dimension_buttons/constants.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/dimension_buttons/constants.ts",
+        "lineNumber": 12,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -2339,7 +2608,9 @@
           "EuiComboBoxOptionOption",
           "<T>"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/field_picker/types.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/field_picker/types.ts",
+        "lineNumber": 39,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -2377,7 +2648,9 @@
             "text": "FieldFormat"
           }
         ],
-        "path": "packages/kbn-visualization-ui-components/types.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/types.ts",
+        "lineNumber": 12,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -2407,7 +2680,9 @@
               },
               "> | undefined"
             ],
-            "path": "packages/kbn-visualization-ui-components/types.ts",
+            "path": "src/platform/packages/shared/kbn-visualization-ui-components/types.ts",
+            "lineNumber": 12,
+            "columnNumber": 30,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2426,7 +2701,9 @@
           "IconType",
           " | T | undefined; shouldRotate?: boolean | undefined; }[]"
         ],
-        "path": "packages/kbn-visualization-ui-components/components/icon_select.tsx",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/components/icon_select.tsx",
+        "lineNumber": 26,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -2441,7 +2718,9 @@
         "signature": [
           "\"dashed\" | \"solid\" | \"dotted\""
         ],
-        "path": "packages/kbn-visualization-ui-components/types.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/types.ts",
+        "lineNumber": 14,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -2464,9 +2743,11 @@
             "section": "def-public.SharedSetOfIcons",
             "text": "SharedSetOfIcons"
           },
-          "; label: string; icon?: string | React.ComponentClass<{}, any> | React.FunctionComponent<{}> | undefined; shouldRotate?: boolean | undefined; }[]"
+          "; label: string; icon?: string | React.ComponentType | undefined; shouldRotate?: boolean | undefined; }[]"
         ],
-        "path": "packages/kbn-visualization-ui-components/util.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/util.ts",
+        "lineNumber": 45,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -2481,7 +2762,9 @@
         "signature": [
           "\"alert\" | \"tag\" | \"asterisk\" | \"bell\" | \"bolt\" | \"bug\" | \"editorComment\" | \"empty\" | \"flag\" | \"heart\" | \"mapMarker\" | \"starEmpty\""
         ],
-        "path": "packages/kbn-visualization-ui-components/types.ts",
+        "path": "src/platform/packages/shared/kbn-visualization-ui-components/types.ts",
+        "lineNumber": 17,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false

@@ -17,7 +17,9 @@
         "tags": [],
         "label": "Env",
         "description": [],
-        "path": "packages/kbn-config/src/env.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/env.ts",
+        "lineNumber": 55,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -41,7 +43,9 @@
               },
               "; readonly dist: boolean; }"
             ],
-            "path": "packages/kbn-config/src/env.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/env.ts",
+            "lineNumber": 77,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -55,9 +59,11 @@
               "\nMode Kibana currently run in (development or production)."
             ],
             "signature": [
-              "{ readonly name: \"production\" | \"development\"; readonly dev: boolean; readonly prod: boolean; }"
+              "{ readonly name: \"development\" | \"production\"; readonly dev: boolean; readonly prod: boolean; }"
             ],
-            "path": "packages/kbn-config/src/env.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/env.ts",
+            "lineNumber": 82,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -76,7 +82,9 @@
         "signature": [
           "(configFiles: readonly string[]) => Record<string, any>"
         ],
-        "path": "packages/kbn-config/src/raw/read_config.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/raw/read_config.ts",
+        "lineNumber": 74,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -90,7 +98,9 @@
             "signature": [
               "readonly string[]"
             ],
-            "path": "packages/kbn-config/src/raw/read_config.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/raw/read_config.ts",
+            "lineNumber": 74,
+            "columnNumber": 36,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -109,7 +119,9 @@
         "signature": [
           "(leafPath: string, rootPath: string) => boolean"
         ],
-        "path": "packages/kbn-config/src/config.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/config.ts",
+        "lineNumber": 71,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -123,7 +135,9 @@
             "signature": [
               "string"
             ],
-            "path": "packages/kbn-config/src/config.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/config.ts",
+            "lineNumber": 71,
+            "columnNumber": 43,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -138,7 +152,9 @@
             "signature": [
               "string"
             ],
-            "path": "packages/kbn-config/src/config.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/config.ts",
+            "lineNumber": 71,
+            "columnNumber": 61,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -159,7 +175,9 @@
         "signature": [
           "(value: unknown) => boolean"
         ],
-        "path": "packages/kbn-config/src/config.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/config.ts",
+        "lineNumber": 13,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -175,7 +193,9 @@
             "signature": [
               "unknown"
             ],
-            "path": "packages/kbn-config/src/config.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/config.ts",
+            "lineNumber": 18,
+            "columnNumber": 30,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -195,7 +215,9 @@
         "description": [
           "\nList of config paths changed during deprecation.\n"
         ],
-        "path": "packages/kbn-config/src/deprecation/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+        "lineNumber": 87,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -209,7 +231,9 @@
             "signature": [
               "string[]"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 93,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -223,7 +247,9 @@
             "signature": [
               "string[]"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 94,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -239,7 +265,9 @@
         "description": [
           "\nOutcome of deprecation operation. Allows mutating config values in a declarative way.\n"
         ],
-        "path": "packages/kbn-config/src/deprecation/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+        "lineNumber": 97,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -253,7 +281,9 @@
             "signature": [
               "{ path: string; value: any; }[] | undefined"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 103,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -267,7 +297,9 @@
             "signature": [
               "{ path: string; }[] | undefined"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 104,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -283,7 +315,9 @@
         "description": [
           "\nDeprecation context provided to {@link ConfigDeprecation | config deprecations}\n"
         ],
-        "path": "packages/kbn-config/src/deprecation/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+        "lineNumber": 73,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -296,7 +330,9 @@
             "description": [
               "The current Kibana version, e.g `7.16.1`, `8.0.0`"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 79,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -309,7 +345,9 @@
             "description": [
               "The current Kibana branch, e.g `7.x`, `7.16`, `master`"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 81,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -331,7 +369,9 @@
                 "text": "DocLinks"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 83,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -347,7 +387,9 @@
         "description": [
           "\nProvides helpers to generates the most commonly used {@link ConfigDeprecation}\nwhen invoking a {@link ConfigDeprecationProvider}.\n\nSee methods documentation for more detailed examples.\n"
         ],
-        "path": "packages/kbn-config/src/deprecation/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+        "lineNumber": 130,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -372,7 +414,9 @@
                 "text": "ConfigDeprecation"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 148,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -386,7 +430,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 161,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -401,7 +447,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 162,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -416,7 +464,9 @@
                 "signature": [
                   "FactoryConfigDeprecationDetails"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 163,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -445,7 +495,9 @@
                 "text": "ConfigDeprecation"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 166,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -459,7 +511,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 182,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -474,7 +528,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 183,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -489,7 +545,9 @@
                 "signature": [
                   "FactoryConfigDeprecationDetails"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 184,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -518,7 +576,9 @@
                 "text": "ConfigDeprecation"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 187,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -532,7 +592,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 219,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -547,7 +609,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 220,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -562,7 +626,9 @@
                 "signature": [
                   "FactoryConfigDeprecationDetails"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 221,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -591,7 +657,9 @@
                 "text": "ConfigDeprecation"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 224,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -605,7 +673,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 259,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -620,7 +690,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 260,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -635,7 +707,9 @@
                 "signature": [
                   "FactoryConfigDeprecationDetails"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 261,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -664,7 +738,9 @@
                 "text": "ConfigDeprecation"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 264,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -678,7 +754,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 295,
+                "columnNumber": 10,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -693,7 +771,9 @@
                 "signature": [
                   "FactoryConfigDeprecationDetails"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 295,
+                "columnNumber": 29,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -722,7 +802,9 @@
                 "text": "ConfigDeprecation"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 297,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -736,7 +818,9 @@
                 "signature": [
                   "string"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 331,
+                "columnNumber": 18,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -751,7 +835,9 @@
                 "signature": [
                   "FactoryConfigDeprecationDetails"
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 331,
+                "columnNumber": 37,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -771,7 +857,9 @@
         "description": [
           "\nDeprecated Config Details\n"
         ],
-        "path": "packages/kbn-config/src/deprecation/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+        "lineNumber": 20,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -784,7 +872,9 @@
             "description": [
               "The path of the deprecated config setting"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -800,7 +890,9 @@
             "signature": [
               "string | undefined"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -813,7 +905,9 @@
             "description": [
               "The message to be displayed for the deprecation."
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -829,7 +923,9 @@
             "signature": [
               "\"warning\" | \"critical\""
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 32,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -845,7 +941,9 @@
             "signature": [
               "boolean | undefined"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 38,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -861,7 +959,9 @@
             "signature": [
               "string | undefined"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 40,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -877,7 +977,9 @@
             "signature": [
               "{ manualSteps: string[]; }"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 42,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -891,7 +993,9 @@
         "tags": [],
         "label": "EnvironmentMode",
         "description": [],
-        "path": "packages/kbn-config/src/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+        "lineNumber": 24,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -903,9 +1007,11 @@
             "label": "name",
             "description": [],
             "signature": [
-              "\"production\" | \"development\""
+              "\"development\" | \"production\""
             ],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -916,7 +1022,9 @@
             "tags": [],
             "label": "dev",
             "description": [],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -927,7 +1035,9 @@
             "tags": [],
             "label": "prod",
             "description": [],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -941,7 +1051,9 @@
         "tags": [],
         "label": "PackageInfo",
         "description": [],
-        "path": "packages/kbn-config/src/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -952,7 +1064,9 @@
             "tags": [],
             "label": "version",
             "description": [],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 14,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -963,7 +1077,9 @@
             "tags": [],
             "label": "branch",
             "description": [],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 15,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -974,7 +1090,9 @@
             "tags": [],
             "label": "buildNum",
             "description": [],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 16,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -985,7 +1103,9 @@
             "tags": [],
             "label": "buildSha",
             "description": [],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 17,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -996,7 +1116,9 @@
             "tags": [],
             "label": "buildShaShort",
             "description": [],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 18,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1010,7 +1132,9 @@
             "signature": [
               "Date"
             ],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 19,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1024,7 +1148,9 @@
             "signature": [
               "\"serverless\" | \"traditional\""
             ],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 20,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1035,7 +1161,9 @@
             "tags": [],
             "label": "dist",
             "description": [],
-            "path": "packages/kbn-config/src/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+            "lineNumber": 21,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1065,7 +1193,9 @@
           },
           ") => void"
         ],
-        "path": "packages/kbn-config/src/deprecation/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+        "lineNumber": 13,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -1086,7 +1216,9 @@
                 "text": "DeprecatedConfigDetails"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 18,
+            "columnNumber": 37,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1103,7 +1235,9 @@
         "signature": [
           "\"serverless\" | \"traditional\""
         ],
-        "path": "packages/kbn-config/src/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/types.ts",
+        "lineNumber": 33,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1143,7 +1277,9 @@
             "text": "ConfigDeprecationCommand"
           }
         ],
-        "path": "packages/kbn-config/src/deprecation/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+        "lineNumber": 52,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -1160,7 +1296,9 @@
             "signature": [
               "{ readonly [x: string]: any; }"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 67,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1171,7 +1309,9 @@
             "tags": [],
             "label": "fromPath",
             "description": [],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 68,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -1193,7 +1333,9 @@
               },
               ") => void"
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 69,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -1214,7 +1356,9 @@
                     "text": "DeprecatedConfigDetails"
                   }
                 ],
-                "path": "packages/kbn-config/src/deprecation/types.ts",
+                "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+                "lineNumber": 18,
+                "columnNumber": 37,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -1236,7 +1380,9 @@
                 "text": "ConfigDeprecationContext"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 70,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1271,7 +1417,9 @@
           },
           "[]"
         ],
-        "path": "packages/kbn-config/src/deprecation/types.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+        "lineNumber": 107,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -1292,7 +1440,9 @@
                 "text": "ConfigDeprecationFactory"
               }
             ],
-            "path": "packages/kbn-config/src/deprecation/types.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/deprecation/types.ts",
+            "lineNumber": 124,
+            "columnNumber": 42,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1309,7 +1459,9 @@
         "signature": [
           "string | string[]"
         ],
-        "path": "packages/kbn-config/src/config.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/config.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -1324,7 +1476,9 @@
         "signature": [
           "(rawConfig: Record<string, any>) => Record<string, any>"
         ],
-        "path": "packages/kbn-config/src/raw/raw_config_service.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/raw/raw_config_service.ts",
+        "lineNumber": 18,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -1339,7 +1493,9 @@
             "signature": [
               "{ [x: string]: any; }"
             ],
-            "path": "packages/kbn-config/src/raw/raw_config_service.ts",
+            "path": "src/platform/packages/shared/kbn-config/src/raw/raw_config_service.ts",
+            "lineNumber": 18,
+            "columnNumber": 33,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -1358,7 +1514,9 @@
           "Observable",
           "<Record<string, any>>; }"
         ],
-        "path": "packages/kbn-config/src/raw/raw_config_service.ts",
+        "path": "src/platform/packages/shared/kbn-config/src/raw/raw_config_service.ts",
+        "lineNumber": 20,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false

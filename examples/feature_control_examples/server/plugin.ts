@@ -7,8 +7,9 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { CoreSetup, DEFAULT_APP_CATEGORIES, Plugin } from '@kbn/core/server';
-import {
+import type { CoreSetup, Plugin } from '@kbn/core/server';
+import { DEFAULT_APP_CATEGORIES } from '@kbn/core/server';
+import type {
   FeaturesPluginSetup,
   // PluginStartContract as FeaturesPluginStart,
 } from '@kbn/features-plugin/server';
@@ -54,6 +55,7 @@ export class FeatureControlsPluginExample
       {
         path: '/internal/my_plugin/read',
         validate: false,
+        security: { authz: { requiredPrivileges: ['my_closed_example_api'] } },
       },
       async (context, request, response) => {
         return response.ok({
@@ -67,8 +69,10 @@ export class FeatureControlsPluginExample
       {
         path: '/internal/my_plugin/sensitive_action',
         validate: false,
-        options: {
-          tags: ['access:my_closed_example_api'],
+        security: {
+          authz: {
+            requiredPrivileges: ['my_closed_example_api'],
+          },
         },
       },
       async (context, request, response) => {

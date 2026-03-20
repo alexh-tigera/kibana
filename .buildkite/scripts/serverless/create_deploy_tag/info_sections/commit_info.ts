@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
+import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
 import { buildkite, octokit, SELECTED_COMMIT_META_KEY, CURRENT_COMMIT_META_KEY } from '../shared';
 
 export type GithubCommitType = RestEndpointMethodTypes['repos']['getCommit']['response']['data'];
@@ -36,7 +36,7 @@ export async function getCurrentQARelease() {
   // @ts-ignore
   const fileContent = Buffer.from(releasesFile.data.content, 'base64').toString('utf8');
 
-  const sha = fileContent.match(`qa: "([a-z0-9]+)"`)?.[1];
+  const sha = fileContent.match(`qa-ds-1: "([a-z0-9]+)"`)?.[1];
 
   if (!sha) {
     throw new Error('Could not find QA hash in current releases file');
