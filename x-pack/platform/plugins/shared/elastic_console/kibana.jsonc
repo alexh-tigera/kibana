@@ -8,7 +8,7 @@
     "id": "elasticConsole",
     "server": true,
     "browser": true,
-    "configPath": ["xpack", "elasticConsole"],
+    "configPath": ["xpack", "elastic_console"],
     "requiredPlugins": ["inference", "actions", "encryptedSavedObjects"],
     "requiredBundles": ["kibanaReact"],
     "optionalPlugins": ["cloud"]
