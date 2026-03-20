@@ -33,10 +33,15 @@ export const registerSlackEventsRoute = ({
       security: {
         authz: {
           enabled: false,
-          reason: 'Public Slack webhook — no user auth; bot_token provides outbound auth',
+          reason:
+            'Authz handled by the Kibana API key generated during Slack OAuth — ' +
+            'the router forwards events with Authorization: ApiKey <key>.',
         },
       },
-      options: { access: 'public', authRequired: false, xsrfRequired: false },
+      // authRequired: true — only the elastic-console-connect router (which holds
+      // the scoped API key from /slack/connect) can POST here. Direct calls from
+      // the internet without a valid API key are rejected.
+      options: { access: 'public', authRequired: true, xsrfRequired: false },
       validate: {
         body: schema.object({}, { unknowns: 'allow' }),
       },
