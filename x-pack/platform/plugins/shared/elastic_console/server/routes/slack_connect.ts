@@ -73,10 +73,11 @@ export const registerSlackConnectRoute = ({
         const apiKeyResult = await esClient.security.createApiKey({
           name: `elastic-console-slack-${Date.now()}`,
           // No expiration — key lives until manually revoked (re-connect regenerates).
-          // Role descriptors limit the key to Kibana's Slack events application privilege.
           role_descriptors: {
             'elastic-console-slack': {
-              cluster: [],
+              // manage_own_api_key lets /slack/token create a scoped inference key
+              // on behalf of this principal without needing a superuser.
+              cluster: ['manage_own_api_key'],
               indices: [],
               applications: [
                 {

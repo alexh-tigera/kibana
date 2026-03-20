@@ -33,13 +33,13 @@ export const registerSlackTokenRoute = ({
   router.post(
     {
       path: '/internal/elastic_console/slack/token',
-      // Auth: the Kibana API key generated during /slack/connect.
-      // It carries the 'api:elastic_console/slack/events' application privilege.
-      // No further authz check needed — the valid API key IS the authorization.
+      // Only the Kibana API key created during /slack/connect — which carries the
+      // 'api:elastic_console/slack/events' privilege — can call this route.
+      // This prevents any other authenticated session or API key from overwriting
+      // the stored credentials.
       security: {
         authz: {
-          enabled: false,
-          reason: 'Authenticated via the Kibana API key generated during Slack OAuth',
+          requiredPrivileges: ['api:elastic_console/slack/events'],
         },
       },
       options: { access: 'internal' },

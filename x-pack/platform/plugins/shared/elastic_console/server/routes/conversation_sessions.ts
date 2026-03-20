@@ -32,18 +32,18 @@ export const registerConversationSessionRoutes = ({
   coreSetup: CoreSetup<ElasticConsoleStartDependencies, ElasticConsolePluginStart>;
   logger: Logger;
 }) => {
-  // POST /api/elastic_console/conversations/:id/locate
+  // POST /internal/elastic_console/conversations/:id/locate
   // Moves a conversation to a new location (e.g. cli, mcp).
   router.post(
     {
-      path: '/api/elastic_console/conversations/{id}/locate',
+      path: '/internal/elastic_console/conversations/{id}/locate',
       security: {
         authz: {
           enabled: false,
-          reason: 'This route is called by external agents using router secret auth',
+          reason: 'Caller authenticates via Kibana API key; no additional authz needed',
         },
       },
-      options: { access: 'public' },
+      options: { access: 'internal' },
       validate: {
         params: schema.object({ id: schema.string() }),
         body: schema.object({ location: schema.string() }),
@@ -104,18 +104,18 @@ export const registerConversationSessionRoutes = ({
     }
   );
 
-  // POST /api/elastic_console/conversations/:id/handoff
+  // POST /internal/elastic_console/conversations/:id/handoff
   // Returns a conversation to its origin location.
   router.post(
     {
-      path: '/api/elastic_console/conversations/{id}/handoff',
+      path: '/internal/elastic_console/conversations/{id}/handoff',
       security: {
         authz: {
           enabled: false,
-          reason: 'This route is called by external agents using router secret auth',
+          reason: 'Caller authenticates via Kibana API key; no additional authz needed',
         },
       },
-      options: { access: 'public' },
+      options: { access: 'internal' },
       validate: {
         params: schema.object({ id: schema.string() }),
         body: schema.object({
