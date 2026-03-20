@@ -35887,16 +35887,9 @@ paths:
                           type: object
                         verification_failed_at:
                           type: string
-                        verification_id:
-                          type: string
-                        verification_permissions:
-                          additionalProperties: {}
-                          type: object
                         verification_started_at:
                           type: string
                         verification_status:
-                          type: string
-                        verification_timestamp:
                           type: string
                       required:
                         - id
@@ -36053,16 +36046,9 @@ paths:
                         type: object
                       verification_failed_at:
                         type: string
-                      verification_id:
-                        type: string
-                      verification_permissions:
-                        additionalProperties: {}
-                        type: object
                       verification_started_at:
                         type: string
                       verification_status:
-                        type: string
-                      verification_timestamp:
                         type: string
                     required:
                       - id
@@ -36225,16 +36211,9 @@ paths:
                         type: object
                       verification_failed_at:
                         type: string
-                      verification_id:
-                        type: string
-                      verification_permissions:
-                        additionalProperties: {}
-                        type: object
                       verification_started_at:
                         type: string
                       verification_status:
-                        type: string
-                      verification_timestamp:
                         type: string
                     required:
                       - id
@@ -36384,16 +36363,9 @@ paths:
                         type: object
                       verification_failed_at:
                         type: string
-                      verification_id:
-                        type: string
-                      verification_permissions:
-                        additionalProperties: {}
-                        type: object
                       verification_started_at:
                         type: string
                       verification_status:
-                        type: string
-                      verification_timestamp:
                         type: string
                     required:
                       - id
