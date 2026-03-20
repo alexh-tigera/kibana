@@ -209,6 +209,17 @@ export class RequestContextFactory implements IRequestContextFactory {
 
       getDataViewsService: () => dataViewsService,
 
+      getInternalDataViewsService: memoize(async () => {
+        const spaceId = getSpaceId();
+        const internalSoClient = coreStart.savedObjects
+          .getUnsafeInternalClient()
+          .asScopedToNamespace(spaceId);
+        return startPlugins.dataViews.dataViewsServiceFactory(
+          internalSoClient,
+          coreContext.elasticsearch.client.asInternalUser
+        );
+      }),
+
       getEntityStoreApiKeyManager,
 
       getPrivilegedUserMonitoringApiKeyManager,

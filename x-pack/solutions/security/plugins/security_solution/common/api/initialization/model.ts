@@ -7,7 +7,7 @@
 
 import { z } from '@kbn/zod';
 
-export const InitializationFlowId = z.enum(['create-list-indices']);
+export const InitializationFlowId = z.enum(['create-list-indices', 'sourcerer-data-views']);
 
 export type InitializationFlowId = z.infer<typeof InitializationFlowId>;
 

@@ -13,14 +13,13 @@ import type {
 } from '../../../common/api/initialization';
 import type { InitializationFlowContext, InitializationFlowDefinition } from './types';
 import { createListIndicesInitializationFlow } from './flows/create_list_indices';
-import type { CreateListIndicesInitializationFlowContext } from './flows/create_list_indices/types';
+import { initializeSourcecererDataViewsFlow } from './flows/initialize_sourcerer_data_views';
 
-type ProvisionContext = CreateListIndicesInitializationFlowContext;
-
-const flows: ReadonlyMap<
-  InitializationFlowId,
-  InitializationFlowDefinition<ProvisionContext>
-> = new Map([[createListIndicesInitializationFlow.id, createListIndicesInitializationFlow]]);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const flows: ReadonlyMap<InitializationFlowId, InitializationFlowDefinition<any>> = new Map([
+  [createListIndicesInitializationFlow.id, createListIndicesInitializationFlow],
+  [initializeSourcecererDataViewsFlow.id, initializeSourcecererDataViewsFlow],
+]);
 
 export class FlowInitializationError extends Error {}
 
