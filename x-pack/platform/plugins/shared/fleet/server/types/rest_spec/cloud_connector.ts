@@ -57,12 +57,9 @@ export const CreateCloudConnectorRequestSchema = {
 const CloudConnectorResponseVarsSchema = schema.recordOf(schema.string(), schema.any());
 
 const VerificationFieldsSchema = {
-  verification_id: schema.maybe(schema.string()),
   verification_status: schema.maybe(schema.string()),
-  verification_timestamp: schema.maybe(schema.string()),
   verification_started_at: schema.maybe(schema.string()),
   verification_failed_at: schema.maybe(schema.string()),
-  verification_permissions: schema.maybe(schema.recordOf(schema.string(), schema.any())),
 };
 
 export const CreateCloudConnectorResponseSchema = schema.object({
