@@ -70,6 +70,11 @@ export const registerSlackTokenRoute = ({
         const apiKeyResult = await esClient.security.createApiKey({
           name: `elastic-console-slack-inference-${Date.now()}`,
           expiration: '365d',
+          metadata: {
+            managed_by: 'elastic_console',
+            purpose: 'slack_inference_auth',
+            description: 'Authenticates Slack event handler inference and saved-object calls',
+          },
         });
         const kibanaApiKey = Buffer.from(`${apiKeyResult.id}:${apiKeyResult.api_key}`).toString(
           'base64'

@@ -62,6 +62,11 @@ export const registerSlackConnectRoute = ({
       try {
         const apiKeyResult = await esClient.security.createApiKey({
           name: `elastic-console-slack-connect-${Date.now()}`,
+          metadata: {
+            managed_by: 'elastic_console',
+            purpose: 'slack_router_auth',
+            description: 'Authenticates the elastic-console-connect router to forward Slack events',
+          },
           // No expiration — key lives until manually revoked (re-connect regenerates).
           role_descriptors: {
             'elastic-console-slack': {
