@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   EuiBadge,
   EuiButton,
+  EuiButtonEmpty,
   EuiCallOut,
   EuiCodeBlock,
   EuiFieldText,
@@ -167,24 +168,6 @@ export const SetupPage: React.FC = () => {
         rightSideItems={slackStatusBadge ? [slackStatusBadge] : []}
       />
       <EuiPageTemplate.Section>
-        {slackStatus?.status === 'disconnected' && (
-          <>
-            <EuiCallOut
-              title="Slack connection lost — API key revoked or expired"
-              color="danger"
-              iconType="warning"
-            >
-              <p>
-                Slack events can no longer be forwarded to Kibana. To restore the connection,
-                click <strong>Connect Slack</strong> again to generate a new API key.
-                {slackStatus.connected_at && (
-                  <> Last connected: {new Date(slackStatus.connected_at).toLocaleString()}.</>
-                )}
-              </p>
-            </EuiCallOut>
-            <EuiSpacer />
-          </>
-        )}
 
         {/* ── CLI / MCP Setup ── */}
         <EuiTitle size="s">
@@ -298,13 +281,45 @@ export const SetupPage: React.FC = () => {
         </EuiText>
         <EuiSpacer />
 
-        <EuiButton
-          iconType="logoSlack"
-          onClick={handleConnectSlack}
-          color={slackStatus?.status === 'connected' ? 'success' : 'primary'}
-        >
-          {slackStatus?.status === 'connected' ? 'Reconnect Slack' : 'Connect Slack'}
-        </EuiButton>
+        {slackStatusLoading ? (
+          <EuiLoadingSpinner size="m" />
+        ) : slackStatus?.status === 'connected' ? (
+          <>
+            <EuiCallOut title="Slack is connected" color="success" iconType="check">
+              {slackStatus.connected_at && (
+                <p>Connected since {new Date(slackStatus.connected_at).toLocaleString()}.</p>
+              )}
+            </EuiCallOut>
+            <EuiSpacer size="s" />
+            <EuiButtonEmpty iconType="logoSlack" size="s" onClick={handleConnectSlack}>
+              Reconnect
+            </EuiButtonEmpty>
+          </>
+        ) : slackStatus?.status === 'disconnected' ? (
+          <>
+            <EuiCallOut
+              title="Slack connection lost — API key revoked or expired"
+              color="danger"
+              iconType="warning"
+            >
+              <p>
+                Slack events can no longer be forwarded to Kibana. Reconnect to generate a new API
+                key.
+                {slackStatus.connected_at && (
+                  <> Last connected: {new Date(slackStatus.connected_at).toLocaleString()}.</>
+                )}
+              </p>
+            </EuiCallOut>
+            <EuiSpacer />
+            <EuiButton iconType="logoSlack" color="danger" onClick={handleConnectSlack}>
+              Reconnect Slack
+            </EuiButton>
+          </>
+        ) : (
+          <EuiButton iconType="logoSlack" fill onClick={handleConnectSlack}>
+            Connect Slack
+          </EuiButton>
+        )}
 
         <EuiHorizontalRule />
 
