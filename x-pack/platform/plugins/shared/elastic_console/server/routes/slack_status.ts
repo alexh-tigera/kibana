@@ -78,7 +78,10 @@ export const registerSlackStatusRoute = ({
         const keyId = colonIdx !== -1 ? decoded.slice(0, colonIdx) : null;
 
         if (keyId) {
-          const result = await esClient.security.getApiKey({ id: keyId });
+          // owner: true restricts the lookup to keys owned by asInternalUser (kibana_system).
+          // This only requires manage_own_api_key — no need for the broader manage_api_key.
+          // The inference key is created via asInternalUser in /slack/token, so ownership matches.
+          const result = await esClient.security.getApiKey({ id: keyId, owner: true });
           const keyInfo = result.api_keys?.[0];
 
           if (!keyInfo || keyInfo.invalidated) {
