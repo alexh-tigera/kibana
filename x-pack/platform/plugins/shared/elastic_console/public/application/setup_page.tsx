@@ -161,6 +161,15 @@ export const SetupPage: React.FC = () => {
     window.location.href = url;
   }, [services.http]);
 
+  const handleDisconnectSlack = useCallback(async () => {
+    try {
+      await services.http.delete('/internal/elastic_console/slack/disconnect');
+      setSlackStatus({ status: 'not_connected' });
+    } catch (err) {
+      // Best-effort — status will reflect reality on next load
+    }
+  }, [services.http]);
+
   return (
     <EuiPageTemplate>
       <EuiPageTemplate.Header
@@ -291,9 +300,23 @@ export const SetupPage: React.FC = () => {
               )}
             </EuiCallOut>
             <EuiSpacer size="s" />
-            <EuiButtonEmpty iconType="logoSlack" size="s" onClick={handleConnectSlack}>
-              Reconnect
-            </EuiButtonEmpty>
+            <EuiFlexGroup gutterSize="s" responsive={false}>
+              <EuiFlexItem grow={false}>
+                <EuiButtonEmpty iconType="logoSlack" size="s" onClick={handleConnectSlack}>
+                  Reconnect
+                </EuiButtonEmpty>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButtonEmpty
+                  iconType="unlink"
+                  size="s"
+                  color="danger"
+                  onClick={handleDisconnectSlack}
+                >
+                  Disconnect
+                </EuiButtonEmpty>
+              </EuiFlexItem>
+            </EuiFlexGroup>
           </>
         ) : slackStatus?.status === 'disconnected' ? (
           <>

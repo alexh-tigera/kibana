@@ -19,6 +19,7 @@ import { registerSlackConnectRoute } from './slack_connect';
 import { registerSlackTokenRoute } from './slack_token';
 import { registerSlackLinkUserRoutes } from './slack_link_user';
 import { registerSlackStatusRoute } from './slack_status';
+import { registerSlackDisconnectRoute } from './slack_disconnect';
 
 export const registerRoutes = ({
   router,
@@ -43,4 +44,5 @@ export const registerRoutes = ({
   registerSlackTokenRoute({ router, coreSetup, logger });
   registerSlackLinkUserRoutes({ router, coreSetup, logger });
   registerSlackStatusRoute({ router, coreSetup, logger });
+  registerSlackDisconnectRoute({ router, coreSetup, logger });
 };
