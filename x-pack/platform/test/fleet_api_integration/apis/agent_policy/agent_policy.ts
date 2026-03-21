@@ -132,7 +132,13 @@ export default function (providerContext: FtrProviderContext) {
           .set('kbn-xsrf', 'xxxx')
           .expect(200);
         expect(body.items.length).to.eql(1);
-        const { id, updated_at: updatedAt, version, ...rest } = body.items[0];
+        const {
+          id,
+          updated_at: updatedAt,
+          created_at: createdAt,
+          version,
+          ...rest
+        } = body.items[0];
         expectSnapshot(rest).toMatch();
       });
 

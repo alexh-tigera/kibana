@@ -1549,7 +1549,7 @@ class AgentPolicyService {
       });
       try {
         // Deleting agentless deployment
-        // await agentlessAgentService.deleteAgentlessAgent(id);
+        await agentlessAgentService.deleteAgentlessAgent(id);
         logger.debug(
           `[Agentless API] Successfully deleted agentless deployment for single agent policy id ${id}`
         );
@@ -1884,7 +1884,7 @@ class AgentPolicyService {
         continue;
       }
       try {
-        // await agentlessAgentService.createAgentlessAgent(esClient, soClient, agentPolicy);
+        await agentlessAgentService.createAgentlessAgent(esClient, soClient, agentPolicy);
         logger.debug(
           `[Agentless API] Successfully deployed agentless deployment for single agent policy id ${agentPolicy.id}`
         );
