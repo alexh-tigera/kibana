@@ -12,7 +12,7 @@ import type { ElasticConsolePluginStart, ElasticConsoleStartDependencies } from 
 
 const SLACK_OAUTH_URL = 'https://slack.com/oauth/v2/authorize';
 const SLACK_REDIRECT_URI_DEFAULT = 'https://connect.elastic.co/slack/oauth_redirect';
-const SLACK_SCOPES = 'app_mentions:read,chat:write,channels:history,im:write';
+const SLACK_SCOPES = 'app_mentions:read,chat:write,channels:history,commands,im:write';
 const JWT_EXPIRY_SECS = 600; // 10 minutes
 
 const signJwt = (payload: Record<string, unknown>, secret: string): string => {
