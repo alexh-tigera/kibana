@@ -49,10 +49,19 @@ export const registerSlackConnectRoute = ({
       // The router stores this key and sends it as Authorization: ApiKey <key>
       // on every forwarded Slack event — Kibana verifies it natively.
       const esClient = coreStart.elasticsearch.client.asScoped(request).asCurrentUser;
+
+      // Invalidate previous connect keys before creating a new one (re-connect flow).
+      // Use the connect-specific prefix so inference keys are not affected.
+      try {
+        await esClient.security.invalidateApiKey({ name: 'elastic-console-slack-connect-*' });
+      } catch (err) {
+        logger.warn(`Failed to invalidate stale Slack connect keys: ${(err as Error).message}`);
+      }
+
       let kibanaApiKey: string;
       try {
         const apiKeyResult = await esClient.security.createApiKey({
-          name: `elastic-console-slack-${Date.now()}`,
+          name: `elastic-console-slack-connect-${Date.now()}`,
           // No expiration — key lives until manually revoked (re-connect regenerates).
           role_descriptors: {
             'elastic-console-slack': {

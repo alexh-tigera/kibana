@@ -56,12 +56,17 @@ export const registerSlackTokenRoute = ({
       try {
         const [coreStart] = await coreSetup.getStartServices();
 
-        // Auto-generate an API key so the Slack event handler can make
-        // authenticated inference calls even though Slack events are unauthenticated.
-        // Must use asInternalUser — the connect API key is a derived key and ES
-        // requires derived keys to have explicit (empty) role descriptors, which
-        // would create a useless key. Internal user creates an unrestricted key.
         const esClient = coreStart.elasticsearch.client.asInternalUser;
+
+        // Invalidate previous inference keys before creating a new one.
+        try {
+          await esClient.security.invalidateApiKey({ name: 'elastic-console-slack-inference-*' });
+        } catch (err) {
+          logger.warn(`Failed to invalidate stale Slack inference keys: ${(err as Error).message}`);
+        }
+
+        // Must use asInternalUser — the connect API key is a derived key and ES
+        // requires derived keys to have explicit (empty) role descriptors.
         const apiKeyResult = await esClient.security.createApiKey({
           name: `elastic-console-slack-inference-${Date.now()}`,
           expiration: '365d',
