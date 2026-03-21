@@ -177,7 +177,6 @@ export const SetupPage: React.FC = () => {
         rightSideItems={slackStatusBadge ? [slackStatusBadge] : []}
       />
       <EuiPageTemplate.Section>
-
         {/* ── CLI / MCP Setup ── */}
         <EuiTitle size="s">
           <h2>CLI / MCP Setup</h2>

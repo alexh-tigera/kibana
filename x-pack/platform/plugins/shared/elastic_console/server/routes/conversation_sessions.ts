@@ -167,7 +167,7 @@ export const registerConversationSessionRoutes = ({
         const storage = createConversationStorage({ esClient, logger });
         const conv = await storage.get({ id: request.params.id });
         const existingRounds = conv.found
-          ? ((conv._source?.conversation_rounds as ConversationRound[]) ?? [])
+          ? (conv._source?.conversation_rounds as ConversationRound[]) ?? []
           : [];
 
         // The summary is stored in handoff_summary on the SO and injected into

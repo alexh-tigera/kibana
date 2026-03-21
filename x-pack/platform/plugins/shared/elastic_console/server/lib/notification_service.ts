@@ -62,9 +62,7 @@ export const sendHandoffNotification = async (
       // Append the investigation Q&A — only rounds added after the fork.
       const investigationRounds = (rounds ?? []).filter(
         (r) =>
-          r.input?.message &&
-          r.input.message !== '[Investigation complete]' &&
-          r.response?.message
+          r.input?.message && r.input.message !== '[Investigation complete]' && r.response?.message
       );
 
       if (investigationRounds.length > 0) {

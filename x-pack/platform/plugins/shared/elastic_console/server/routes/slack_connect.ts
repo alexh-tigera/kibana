@@ -22,7 +22,6 @@ const signJwt = (payload: Record<string, unknown>, secret: string): string => {
   return `${header}.${body}.${signature}`;
 };
 
-
 export const registerSlackConnectRoute = ({
   router,
   coreSetup,
@@ -42,7 +41,6 @@ export const registerSlackConnectRoute = ({
       validate: false,
     },
     async (ctx, request, response) => {
-
       const [coreStart] = await coreSetup.getStartServices();
 
       // Generate a Kibana API key scoped to the Slack events endpoint.
@@ -114,7 +112,9 @@ export const registerSlackConnectRoute = ({
 
       const clientId = config.slack?.client_id;
       if (!clientId) {
-        return response.badRequest({ body: { message: 'xpack.elastic_console.slack.client_id is not configured' } });
+        return response.badRequest({
+          body: { message: 'xpack.elastic_console.slack.client_id is not configured' },
+        });
       }
 
       const redirectUri = config.slack?.redirect_uri ?? SLACK_REDIRECT_URI_DEFAULT;

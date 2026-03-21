@@ -27,7 +27,10 @@ export const registerSlackLinkUserRoutes = ({
     {
       path: '/internal/elastic_console/slack/link_user',
       security: {
-        authz: { enabled: false, reason: 'Caller must be an authenticated Kibana user; checked via getCurrentUser' },
+        authz: {
+          enabled: false,
+          reason: 'Caller must be an authenticated Kibana user; checked via getCurrentUser',
+        },
       },
       options: { access: 'internal' },
       validate: {
@@ -45,7 +48,9 @@ export const registerSlackLinkUserRoutes = ({
           return response.unauthorized();
         }
 
-        const soClient = coreStart.savedObjects.createInternalRepository([SLACK_USER_MAPPING_SO_TYPE]);
+        const soClient = coreStart.savedObjects.createInternalRepository([
+          SLACK_USER_MAPPING_SO_TYPE,
+        ]);
         const now = new Date().toISOString();
         const { slack_user_id: slackUserId } = request.body;
 
@@ -75,7 +80,10 @@ export const registerSlackLinkUserRoutes = ({
     {
       path: '/internal/elastic_console/slack/link_user',
       security: {
-        authz: { enabled: false, reason: 'Caller must be an authenticated Kibana user; checked via getCurrentUser' },
+        authz: {
+          enabled: false,
+          reason: 'Caller must be an authenticated Kibana user; checked via getCurrentUser',
+        },
       },
       options: { access: 'internal' },
       validate: {},
@@ -89,7 +97,9 @@ export const registerSlackLinkUserRoutes = ({
           return response.unauthorized();
         }
 
-        const soClient = coreStart.savedObjects.createInternalRepository([SLACK_USER_MAPPING_SO_TYPE]);
+        const soClient = coreStart.savedObjects.createInternalRepository([
+          SLACK_USER_MAPPING_SO_TYPE,
+        ]);
 
         // Search for a mapping where kibana_username matches the current user
         const results = await soClient.find<SlackUserMappingAttributes>({

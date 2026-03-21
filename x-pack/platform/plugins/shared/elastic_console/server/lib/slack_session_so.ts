@@ -23,7 +23,9 @@ export const slackSessionSoId = (conversationId: string): string =>
   `${SLACK_SESSION_SO_ID_PREFIX}${conversationId}`;
 
 export const conversationIdFromSoId = (soId: string): string =>
-  soId.startsWith(SLACK_SESSION_SO_ID_PREFIX) ? soId.slice(SLACK_SESSION_SO_ID_PREFIX.length) : soId;
+  soId.startsWith(SLACK_SESSION_SO_ID_PREFIX)
+    ? soId.slice(SLACK_SESSION_SO_ID_PREFIX.length)
+    : soId;
 
 export interface SlackSessionAttributes {
   /** Slack thread identifier, e.g. "slack:C0AMREPCC0J:1773986596.210179" */

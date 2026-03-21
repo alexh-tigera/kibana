@@ -71,9 +71,7 @@ export const registerSlackDisconnectRoute = ({
 
       // Step 2 — delete the credentials SO
       try {
-        const soClient = coreStart.savedObjects.createInternalRepository({
-          hiddenTypes: [SLACK_CREDENTIALS_SO_TYPE],
-        });
+        const soClient = coreStart.savedObjects.createInternalRepository([SLACK_CREDENTIALS_SO_TYPE]);
         await soClient.delete(SLACK_CREDENTIALS_SO_TYPE, SLACK_CREDENTIALS_SO_ID);
         logger.info('Slack credentials saved object deleted');
       } catch (deleteErr) {

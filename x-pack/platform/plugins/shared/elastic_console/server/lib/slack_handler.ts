@@ -286,8 +286,7 @@ export const handleSlackEvent = async ({
         { id: slackSessionSoId(forkId), overwrite: true }
       );
 
-      const kibanaBase =
-        coreStart.http.basePath.publicBaseUrl ?? '';
+      const kibanaBase = coreStart.http.basePath.publicBaseUrl ?? '';
       const kibanaConvUrl = `${kibanaBase}/app/agent-builder/conversations/${forkId}`;
 
       await postMessage(botToken, {
@@ -385,8 +384,12 @@ export const handleSlackEvent = async ({
     // The inference plugin is a raw LLM interface — it doesn't load conversation
     // history itself, so we pass all prior rounds as messages.
     const historyMessages = existingRounds.flatMap((round) => {
-      const input = (round.input as Record<string, unknown> | undefined)?.message as string | undefined;
-      const responseMsg = (round.response as Record<string, unknown> | undefined)?.message as string | undefined;
+      const input = (round.input as Record<string, unknown> | undefined)?.message as
+        | string
+        | undefined;
+      const responseMsg = (round.response as Record<string, unknown> | undefined)?.message as
+        | string
+        | undefined;
       const msgs: Message[] = [];
       if (input) msgs.push({ role: MessageRole.User, content: input });
       if (responseMsg) msgs.push({ role: MessageRole.Assistant, content: responseMsg } as Message);
@@ -460,7 +463,8 @@ export const handleSlackEvent = async ({
     if (existingConvId) {
       const existing = await storage.get({ id: existingConvId });
       if (existing.found) {
-        const rounds = (existing._source?.conversation_rounds as Array<Record<string, unknown>>) ?? [];
+        const rounds =
+          (existing._source?.conversation_rounds as Array<Record<string, unknown>>) ?? [];
         await storage.index({
           id: existingConvId,
           document: {
