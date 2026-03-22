@@ -46,7 +46,7 @@ import { WorkflowPicker } from '../../../tools/form/components/workflow/workflow
 import { isPreExecutionWorkflowEnabled } from '../../../../utils/is_pre_execution_workflow_enabled';
 import { VISIBILITY_LABELS } from '../../../../utils/visibility_i18n';
 import type { AgentFormData } from '../agent_form';
-import { truncateAvatarSymbol } from '../agent_form_validation';
+import { AvatarSymbolPicker } from '../../common/avatar_symbol_picker';
 
 interface AgentSettingsTabProps {
   control: Control<AgentFormData>;
@@ -693,13 +693,10 @@ export const AgentSettingsTab: React.FC<AgentSettingsTabProps> = ({
                 <Controller
                   name="avatar_symbol"
                   control={control}
-                  render={({ field: { ref, ...rest } }) => (
-                    <EuiFieldText
-                      {...rest}
-                      onChange={(event) => {
-                        rest.onChange(truncateAvatarSymbol(event.target.value));
-                      }}
-                      inputRef={ref}
+                  render={({ field }) => (
+                    <AvatarSymbolPicker
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
                       disabled={isFormDisabled}
                       isInvalid={!!formState.errors.avatar_symbol}
                       aria-label={i18n.translate(
@@ -708,6 +705,7 @@ export const AgentSettingsTab: React.FC<AgentSettingsTabProps> = ({
                           defaultMessage: 'Agent avatar symbol input field',
                         }
                       )}
+                      data-test-subj="agentSettingsAvatarSymbolInput"
                     />
                   )}
                 />

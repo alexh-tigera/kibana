@@ -6,7 +6,6 @@
  */
 
 import { EuiBetaBadge, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiSuperSelect } from '@elastic/eui';
-import { css } from '@emotion/react';
 import { ToolType } from '@kbn/agent-builder-common';
 import { i18n } from '@kbn/i18n';
 import React, { useMemo } from 'react';
@@ -78,36 +77,21 @@ export const TypeSection = ({ mode }: TypeProps) => {
         href: docLinksService.tools,
       }}
     >
-      <EuiFormRow label={i18nMessages.configuration.form.type.label} error={errors.type?.message}>
-        <div
-          className="agentBuilderToolTypeSelectWrapper"
-          css={css`
-            /* Ensure the select can grow/shrink without clipping its label text */
-            display: flex;
-            min-width: 0;
-
-            .agentBuilderToolTypeSelect {
-              flex: 1 1 auto;
-              min-width: 0;
-            }
-          `}
-        >
-          <Controller
-            control={control}
-            name="type"
-            render={({ field: { value, onChange } }) => (
-              <EuiSuperSelect
-                className="agentBuilderToolTypeSelect"
-                data-test-subj="agentBuilderToolTypeSelect"
-                options={editableToolTypes}
-                valueOfSelected={value}
-                onChange={onChange}
-                disabled={mode === ToolFormMode.Edit}
-                fullWidth
-              />
-            )}
-          />
-        </div>
+      <EuiFormRow fullWidth label={i18nMessages.configuration.form.type.label} error={errors.type?.message}>
+        <Controller
+          control={control}
+          name="type"
+          render={({ field: { value, onChange } }) => (
+            <EuiSuperSelect
+              data-test-subj="agentBuilderToolTypeSelect"
+              options={editableToolTypes}
+              valueOfSelected={value}
+              onChange={onChange}
+              disabled={mode === ToolFormMode.Edit}
+              fullWidth
+            />
+          )}
+        />
       </EuiFormRow>
       <ConfigurationComponent mode={mode} />
     </ToolFormSection>
