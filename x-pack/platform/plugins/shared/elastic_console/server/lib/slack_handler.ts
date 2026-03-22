@@ -60,7 +60,8 @@ const getSpace = (basePath: string): string => {
  */
 const findSessionByOriginRef = async (
   coreStart: CoreStart,
-  originRef: string
+  originRef: string,
+  logger: Logger
 ): Promise<{ conversationId: string; session: SlackSessionAttributes } | null> => {
   try {
     const soClient = coreStart.savedObjects.createInternalRepository([SLACK_SESSION_SO_TYPE]);
@@ -77,7 +78,11 @@ const findSessionByOriginRef = async (
       conversationId: conversationIdFromSoId(so.id),
       session: so.attributes,
     };
-  } catch {
+  } catch (err) {
+    // A failure here means the thread will be treated as a new conversation — data continuity loss.
+    logger.error(
+      `Session lookup failed for ${originRef} — thread will start a new conversation: ${(err as Error).message}`
+    );
     return null;
   }
 };
@@ -163,7 +168,7 @@ export const handleSlackEvent = async ({
   try {
     // --- Command: status ---
     if (STATUS_RE.test(text)) {
-      const existing = await findSessionByOriginRef(coreStart, originRef);
+      const existing = await findSessionByOriginRef(coreStart, originRef, logger);
       const lines = ['*Elastic Console — session status*'];
       if (existing) {
         const { session } = existing;
@@ -188,7 +193,7 @@ export const handleSlackEvent = async ({
 
     // --- Command: reset ---
     if (RESET_RE.test(text)) {
-      const existing = await findSessionByOriginRef(coreStart, originRef);
+      const existing = await findSessionByOriginRef(coreStart, originRef, logger);
       if (existing) {
         const { conversationId, session } = existing;
         const fullConv = await storage.get({ id: conversationId });
@@ -217,7 +222,7 @@ export const handleSlackEvent = async ({
 
     // --- Command: fork ---
     if (FORK_RE.test(text)) {
-      const existing = await findSessionByOriginRef(coreStart, originRef);
+      const existing = await findSessionByOriginRef(coreStart, originRef, logger);
       if (!existing) {
         await postMessage(botToken, {
           channel,
@@ -307,7 +312,7 @@ export const handleSlackEvent = async ({
 
     // --- Regular question — find or create conversation, call inference ---
 
-    const existingSession = await findSessionByOriginRef(coreStart, originRef);
+    const existingSession = await findSessionByOriginRef(coreStart, originRef, logger);
     let existingConvId: string | null = null;
     let existingRounds: Array<Record<string, unknown>> = [];
 
@@ -344,9 +349,14 @@ export const handleSlackEvent = async ({
       text: `_Thinking…_`,
     });
 
-    const updater = createStreamUpdater(botToken, channel, streamTs, threadTs, (err) => {
-      logger.warn(`Stream update failed: ${err.message}`);
-    });
+    const updater = createStreamUpdater(
+      botToken,
+      channel,
+      streamTs,
+      threadTs,
+      (err) => logger.warn(`Stream update failed: ${err.message}`),
+      (err) => logger.warn(`Stream finalize fell back to new message (original deleted?): ${err.message}`)
+    );
 
     const statusLines: string[] = [];
     const responseChunks: string[] = [];
@@ -458,19 +468,58 @@ export const handleSlackEvent = async ({
       await postMessage(botToken, { channel, thread_ts: threadTs, text: part });
     }
 
-    // Persist the conversation round and update session SO
+    // Persist the conversation round and update session SO.
+    // Failure here means the user received a response but the round was not saved — log as error.
     const now = new Date().toISOString();
-    if (existingConvId) {
-      const existing = await storage.get({ id: existingConvId });
-      if (existing.found) {
-        const rounds =
-          (existing._source?.conversation_rounds as Array<Record<string, unknown>>) ?? [];
+    try {
+      if (existingConvId) {
+        const existing = await storage.get({ id: existingConvId });
+        if (existing.found) {
+          const rounds =
+            (existing._source?.conversation_rounds as Array<Record<string, unknown>>) ?? [];
+          await storage.index({
+            id: existingConvId,
+            document: {
+              ...existing._source,
+              conversation_rounds: [
+                ...rounds,
+                {
+                  id: `round-${uuidv4()}`,
+                  status: 'completed',
+                  input: { message: text },
+                  steps: [],
+                  response: { message: responseText },
+                  started_at: now,
+                  time_to_first_token: 0,
+                  time_to_last_token: 0,
+                  model_usage: {
+                    connector_id: resolvedConnectorId,
+                    llm_calls: 1,
+                    input_tokens: 0,
+                    output_tokens: 0,
+                  },
+                },
+              ],
+              updated_at: now,
+            },
+          });
+          // Update session SO location — stored outside the conversation doc so agentBuilder
+          // full-document replaces can't overwrite it.
+          await soClient.update<SlackSessionAttributes>(
+            SLACK_SESSION_SO_TYPE,
+            slackSessionSoId(existingConvId),
+            { location: originRef, located_at: now, updated_at: now }
+          );
+        }
+      } else {
+        // Create new conversation document and session SO
+        const newConvId = uuidv4();
         await storage.index({
-          id: existingConvId,
+          id: newConvId,
           document: {
-            ...existing._source,
+            agent_id: 'elastic-ai-agent',
+            title: text.slice(0, 100),
             conversation_rounds: [
-              ...rounds,
               {
                 id: `round-${uuidv4()}`,
                 status: 'completed',
@@ -488,63 +537,32 @@ export const handleSlackEvent = async ({
                 },
               },
             ],
+            user_id: kibanaUser?.userId,
+            user_name: kibanaUser?.username,
+            space,
+            created_at: now,
             updated_at: now,
           },
         });
-        // Update session SO location — stored outside the conversation doc so agentBuilder
-        // full-document replaces can't overwrite it.
-        await soClient.update<SlackSessionAttributes>(
+        await soClient.create<SlackSessionAttributes>(
           SLACK_SESSION_SO_TYPE,
-          slackSessionSoId(existingConvId),
-          { location: originRef, located_at: now, updated_at: now }
+          {
+            origin_ref: originRef,
+            origin_location: originRef,
+            location: originRef,
+            connector_id: resolvedConnectorId,
+            fork_context: null,
+            handoff_summary: null,
+            located_at: now,
+            updated_at: now,
+          },
+          { id: slackSessionSoId(newConvId), overwrite: true }
         );
       }
-    } else {
-      // Create new conversation document and session SO
-      const newConvId = uuidv4();
-      await storage.index({
-        id: newConvId,
-        document: {
-          agent_id: 'elastic-ai-agent',
-          title: text.slice(0, 100),
-          conversation_rounds: [
-            {
-              id: `round-${uuidv4()}`,
-              status: 'completed',
-              input: { message: text },
-              steps: [],
-              response: { message: responseText },
-              started_at: now,
-              time_to_first_token: 0,
-              time_to_last_token: 0,
-              model_usage: {
-                connector_id: resolvedConnectorId,
-                llm_calls: 1,
-                input_tokens: 0,
-                output_tokens: 0,
-              },
-            },
-          ],
-          user_id: kibanaUser?.userId,
-          user_name: kibanaUser?.username,
-          space,
-          created_at: now,
-          updated_at: now,
-        },
-      });
-      await soClient.create<SlackSessionAttributes>(
-        SLACK_SESSION_SO_TYPE,
-        {
-          origin_ref: originRef,
-          origin_location: originRef,
-          location: originRef,
-          connector_id: resolvedConnectorId,
-          fork_context: null,
-          handoff_summary: null,
-          located_at: now,
-          updated_at: now,
-        },
-        { id: slackSessionSoId(newConvId), overwrite: true }
+    } catch (persistErr) {
+      // Response was already sent to Slack — this is a data loss scenario.
+      logger.error(
+        `Failed to persist conversation round for thread ${originRef}: ${(persistErr as Error).message}`
       );
     }
   } catch (error) {

@@ -60,7 +60,8 @@ export const createStreamUpdater = (
   channel: string,
   ts: string,
   threadTs: string,
-  onError: (err: Error) => void
+  onError: (err: Error) => void,
+  onFallback?: (err: Error) => void
 ) => {
   let lastUpdateMs = 0;
   let pendingText: string | null = null;
@@ -96,8 +97,9 @@ export const createStreamUpdater = (
       }
       try {
         await updateMessage(botToken, { channel, ts, text });
-      } catch {
+      } catch (updateErr) {
         // Message may have been deleted — fall back to a new reply in the thread
+        onFallback?.(updateErr as Error);
         await postMessage(botToken, { channel, thread_ts: threadTs, text });
       }
     },

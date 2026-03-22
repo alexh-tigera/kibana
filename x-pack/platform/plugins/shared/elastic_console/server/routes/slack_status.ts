@@ -61,8 +61,8 @@ export const registerSlackStatusRoute = ({
 
         kibanaApiKey = creds.attributes.kibana_api_key;
         connectedAt = creds.attributes.updated_at;
-      } catch {
-        // Saved object does not exist — OAuth never completed
+      } catch (credErr) {
+        logger.debug(`Slack credentials not found — reporting not_connected: ${(credErr as Error).message}`);
         return response.ok({
           body: { status: 'not_connected' } satisfies SlackStatusResponse,
         });

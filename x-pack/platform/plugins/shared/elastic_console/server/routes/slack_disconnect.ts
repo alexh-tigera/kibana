@@ -65,8 +65,8 @@ export const registerSlackDisconnectRoute = ({
             );
           }
         }
-      } catch {
-        // Credentials SO not found — nothing to invalidate, proceed to ensure SO is deleted
+      } catch (credErr) {
+        logger.debug(`Slack credentials not found during disconnect — skipping key invalidation: ${(credErr as Error).message}`);
       }
 
       // Step 2 — delete the credentials SO
