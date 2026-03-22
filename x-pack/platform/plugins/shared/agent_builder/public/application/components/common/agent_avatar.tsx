@@ -126,7 +126,11 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = (props) => {
       font-size: 18px;
       font-family: ${EMOJI_FONT_STACK};
       background-color: ${color || euiTheme.colors.backgroundBaseSubdued};
-      ${shape === 'circle' ? css`border-radius: 50%;` : roundedBorderRadiusStyles}
+      ${shape === 'circle'
+        ? css`
+            border-radius: 50%;
+          `
+        : roundedBorderRadiusStyles}
     `;
     return <div css={emojiDisplayStyles}>{symbol}</div>;
   }

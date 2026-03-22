@@ -78,7 +78,11 @@ export const TypeSection = ({ mode }: TypeProps) => {
         href: docLinksService.tools,
       }}
     >
-      <EuiFormRow fullWidth label={i18nMessages.configuration.form.type.label} error={errors.type?.message}>
+      <EuiFormRow
+        fullWidth
+        label={i18nMessages.configuration.form.type.label}
+        error={errors.type?.message}
+      >
         <Controller
           control={control}
           name="type"

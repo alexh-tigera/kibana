@@ -40,9 +40,12 @@ export const AvatarSymbolPicker: React.FC<AvatarSymbolPickerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const { euiTheme } = useEuiTheme();
 
-  const pickerPlaceholder = i18n.translate('xpack.agentBuilder.agents.form.avatarSymbolPlaceholder', {
-    defaultMessage: 'Pick an emoji',
-  });
+  const pickerPlaceholder = i18n.translate(
+    'xpack.agentBuilder.agents.form.avatarSymbolPlaceholder',
+    {
+      defaultMessage: 'Pick an emoji',
+    }
+  );
 
   const emojiGridStyles = css`
     width: 260px;
@@ -123,9 +126,12 @@ export const AvatarSymbolPicker: React.FC<AvatarSymbolPickerProps> = ({
             color="text"
             onClick={() => onChange('')}
             disabled={disabled}
-            aria-label={i18n.translate('xpack.agentBuilder.agents.form.avatarSymbolClearAriaLabel', {
-              defaultMessage: 'Clear avatar symbol',
-            })}
+            aria-label={i18n.translate(
+              'xpack.agentBuilder.agents.form.avatarSymbolClearAriaLabel',
+              {
+                defaultMessage: 'Clear avatar symbol',
+              }
+            )}
             data-test-subj={`${dataTestSubj}Clear`}
           />
         </EuiFlexItem>
