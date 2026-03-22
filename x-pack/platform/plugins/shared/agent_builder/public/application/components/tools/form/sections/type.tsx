@@ -6,6 +6,7 @@
  */
 
 import { EuiBetaBadge, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiSuperSelect } from '@elastic/eui';
+import { css } from '@emotion/react';
 import { ToolType } from '@kbn/agent-builder-common';
 import { i18n } from '@kbn/i18n';
 import React, { useMemo } from 'react';
@@ -83,6 +84,12 @@ export const TypeSection = ({ mode }: TypeProps) => {
           name="type"
           render={({ field: { value, onChange } }) => (
             <EuiSuperSelect
+              css={css`
+                overflow: visible;
+                text-overflow: clip;
+                white-space: nowrap;
+                min-width: fit-content;
+              `}
               data-test-subj="agentBuilderToolTypeSelect"
               options={editableToolTypes}
               valueOfSelected={value}
