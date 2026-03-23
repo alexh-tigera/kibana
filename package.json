@@ -91,7 +91,6 @@
     "**/baseline-browser-mapping": "2.9.14",
     "**/cheerio": "1.0.0-rc.12",
     "**/chokidar": "3.5.3",
-    "cpy/globby": "11.1.0",
     "**/d3-scale/**/d3-color": "3.1.0",
     "**/esbuild": "0.27.2",
     "**/express-rate-limit": "8.3.0",
@@ -125,6 +124,7 @@
     "@types/react": "18.2.79",
     "@types/react-dom": "18.2.25",
     "apache-arrow": "20.x - 21.x",
+    "cpy/globby": "11.1.0",
     "globby/fast-glob": "3.3.3",
     "serialize-javascript": "7.0.3"
   },
