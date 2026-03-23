@@ -47,6 +47,11 @@ Access to connectors is granted based on your privileges to alerting-enabled fea
 :::{include} connectors-kibana/_snippets/alerting-cases-connectors-list.md
 :::
 
+:::{dropdown} Data and Context sources
+
+:::{include} connectors-kibana/_snippets/data-context-sources-list.md
+:::
+
 :::
 
 ::::{note}
