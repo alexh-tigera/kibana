@@ -118,12 +118,14 @@
     "@langchain/langgraph-checkpoint": "1.0.0",
     "@langchain/openai": "1.2.12",
     "@launchdarkly/node-server-sdk": "9.10.8",
+    "@opentelemetry/host-metrics": "0.38.3",
     "@redocly/cli/undici": "6.24.0",
     "@storybook/react-docgen-typescript-plugin": "1.0.6--canary.9.cd77847.0",
     "@types/react": "18.2.79",
     "@types/react-dom": "18.2.25",
     "apache-arrow": "20.x - 21.x",
-    "globby/fast-glob": "3.3.3"
+    "globby/fast-glob": "3.3.3",
+    "serialize-javascript": "7.0.3"
   },
   "dependencies": {
     "@a2a-js/sdk": "0.3.4",
