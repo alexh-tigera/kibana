@@ -388,6 +388,9 @@ function ExportMenuPopover({ intl }: ExportMenuProps) {
     <Fragment>
       <EuiWrappingPopover
         isOpen={!isFlyoutVisible && !canSkipDisplayingPopover}
+        aria-label={i18n.translate('share.export.exportPopoverAriaLabel', {
+          defaultMessage: 'Export options',
+        })}
         button={anchorElement!}
         closePopover={onClose}
         panelPaddingSize="s"
@@ -449,8 +452,8 @@ function ExportMenuPopover({ intl }: ExportMenuProps) {
         >
           {/* TODO: remove this global style once https://github.com/elastic/eui/issues/8801 is resolved  */}
           <Global
-            // @ts-expect-error -- we pass a z-index specifying important so we override the default z-index, so solve a known bug,
-            // where when `headerZindexLocation` is set to `above`, the popover panel z-index is not high enough
+            // We pass a z-index specifying important so we override the default z-index, fixing a known bug
+            // where when `headerZindexLocation` is set to `above`, the popover panel z-index is not high enough.
             styles={{
               '.euiPopover__panel[data-popover-open="true"]': {
                 zIndex: '7000 !important',

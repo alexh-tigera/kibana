@@ -9,7 +9,12 @@
 
 import type { UseEuiTheme } from '@elastic/eui';
 
-export const fontWeightDefinitions = (euiTheme: UseEuiTheme['euiTheme']) => ({
+export const fontWeightDefinitions = (
+  euiTheme: UseEuiTheme['euiTheme']
+): {
+  readonly bold: UseEuiTheme['euiTheme']['font']['weight']['bold'];
+  readonly normal: UseEuiTheme['euiTheme']['font']['weight']['regular'];
+} => ({
   bold: euiTheme.font.weight.bold,
   normal: euiTheme.font.weight.regular,
 });

@@ -11,7 +11,7 @@ import React, { useEffect, useRef, type FC } from 'react';
 import * as d3Brush from 'd3-brush';
 import * as d3Scale from 'd3-scale';
 import * as d3Selection from 'd3-selection';
-import * as d3Transition from 'd3-transition';
+import 'd3-transition';
 import { useEuiTheme } from '@elastic/eui';
 
 // TODO Consolidate with similar component `DualBrush` in
@@ -20,8 +20,6 @@ import { useEuiTheme } from '@elastic/eui';
 const { brush, brushSelection, brushX } = d3Brush;
 const { scaleLinear } = d3Scale;
 const { select: d3Select } = d3Selection;
-// Import fix to apply correct types for the use of d3.select(this).transition()
-d3Select.prototype.transition = d3Transition.transition;
 
 export const getSingleBrushWindowParameters = (
   clickTime: number,
@@ -86,7 +84,6 @@ const d3 = {
   brushX,
   scaleLinear,
   select: d3Select,
-  transition: d3Transition,
 };
 
 const isBrushXSelection = (arg: unknown): arg is [number, number] => {

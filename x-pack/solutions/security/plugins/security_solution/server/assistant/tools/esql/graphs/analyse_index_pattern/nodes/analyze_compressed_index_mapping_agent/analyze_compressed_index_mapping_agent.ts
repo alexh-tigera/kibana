@@ -5,26 +5,36 @@
  * 2.0.
  */
 
-import { z } from '@kbn/zod/v4';
 import { Command } from '@langchain/langgraph';
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { mapFieldDescriptorToNestedObject } from '../../../../tools/inspect_index_mapping_tool/inspect_index_utils';
 import type { CreateLlmInstance } from '../../../../utils/common';
 import type { AnalyzeIndexPatternAnnotation } from '../../state';
 import { compressMapping } from './compress_mapping';
 
-const structuredOutput = z.object({
-  containsRequiredFieldsForQuery: z
-    .boolean()
-    .describe('Whether the index pattern contains the required fields for the query'),
-});
+interface IndexMappingAnalysis {
+  readonly containsRequiredFieldsForQuery: boolean;
+}
+
+const structuredOutputSchema = {
+  type: 'object',
+  properties: {
+    containsRequiredFieldsForQuery: {
+      type: 'boolean',
+      description: 'Whether the index pattern contains the required fields for the query',
+    },
+  },
+  required: ['containsRequiredFieldsForQuery'],
+  additionalProperties: false,
+} as const satisfies Record<string, unknown>;
 
 export const getAnalyzeCompressedIndexMappingAgent = async ({
   createLlmInstance,
 }: {
   createLlmInstance: CreateLlmInstance;
 }) => {
-  const llm = await createLlmInstance();
+  const llm = (await createLlmInstance()) as BaseChatModel;
   return async (state: typeof AnalyzeIndexPatternAnnotation.State) => {
     const { fieldDescriptors, input } = state;
     if (fieldDescriptors === undefined) {
@@ -42,7 +52,9 @@ export const getAnalyzeCompressedIndexMappingAgent = async ({
     const compressedIndexMapping = compressMapping(nestedObject);
 
     const result = await llm
-      .withStructuredOutput(structuredOutput, { name: 'indexMappingAnalysis' })
+      .withStructuredOutput<IndexMappingAnalysis>(structuredOutputSchema, {
+        name: 'indexMappingAnalysis',
+      })
       .invoke([
         new SystemMessage({
           content:

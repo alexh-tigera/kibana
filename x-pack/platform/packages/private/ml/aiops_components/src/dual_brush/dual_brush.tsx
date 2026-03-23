@@ -13,7 +13,7 @@ import { htmlIdGenerator, useEuiTheme } from '@elastic/eui';
 import * as d3Brush from 'd3-brush';
 import * as d3Scale from 'd3-scale';
 import * as d3Selection from 'd3-selection';
-import * as d3Transition from 'd3-transition';
+import 'd3-transition';
 
 import { getSnappedWindowParameters } from '@kbn/aiops-log-rate-analysis';
 import type { WindowParameters } from '@kbn/aiops-log-rate-analysis';
@@ -23,8 +23,6 @@ import { css } from '@emotion/react';
 const { brush, brushSelection, brushX } = d3Brush;
 const { scaleLinear } = d3Scale;
 const { select: d3Select } = d3Selection;
-// Import fix to apply correct types for the use of d3.select(this).transition()
-d3Select.prototype.transition = d3Transition.transition;
 
 const d3 = {
   brush,
@@ -32,7 +30,6 @@ const d3 = {
   brushX,
   scaleLinear,
   select: d3Select,
-  transition: d3Transition,
 };
 
 const isBrushXSelection = (arg: unknown): arg is [number, number] => {

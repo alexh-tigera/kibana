@@ -48,30 +48,33 @@ Observations:
 // margins, this might change in the future:
 // See https://drafts.csswg.org/css-page-3/#margin-boxes
 
-const styles = css({
-  '@page': {
-    size: `${a4PageWidth} ${a4PageHeight}`,
-    orientation: 'portrait',
-    margin: 0,
-    marginTop: a4PageHeaderHeight,
-    marginBottom: a4PageFooterHeight,
-  },
-  '@media print': {
-    html: {
-      backgroundColor: '#FFF !important',
-    },
-    // It is good practice to show the full URL in the final, printed output
-    ['a[href]:after']: {
-      content: '" [" attr(href) "]"',
-    },
-    figure: {
-      pageBreakInside: 'avoid',
-    },
-    '*': {
-      printColorAdjust: 'exact !important',
-    },
-  },
-});
+const styles = css`
+  @page {
+    size: ${a4PageWidth} ${a4PageHeight};
+    margin: 0;
+    margin-top: ${a4PageHeaderHeight};
+    margin-bottom: ${a4PageFooterHeight};
+  }
+
+  @media print {
+    html {
+      background-color: #fff !important;
+    }
+
+    /* It is good practice to show the full URL in the final, printed output */
+    a[href]:after {
+      content: ' [' attr(href) ']';
+    }
+
+    figure {
+      page-break-inside: avoid;
+    }
+
+    * {
+      print-color-adjust: exact !important;
+    }
+  }
+`;
 
 export const GlobalPrintStyles = React.memo(() => <Global styles={styles} />);
 

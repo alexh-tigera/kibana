@@ -6,25 +6,36 @@
  */
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { Command } from '@langchain/langgraph';
-import { z } from '@kbn/zod/v4';
 import type { SelectIndexPatternAnnotation } from '../../state';
 import type { CreateLlmInstance } from '../../../../utils/common';
 
-const ShortlistedIndexPatterns = z
-  .object({
-    shortlistedIndexPatterns: z.array(z.string()).describe('Shortlisted index patterns'),
-  })
-  .describe(
-    'Object containing array of shortlisted index patterns that might be used to generate the query'
-  );
+interface ShortlistedIndexPatterns {
+  readonly shortlistedIndexPatterns: string[];
+}
+
+const structuredOutputSchema = {
+  type: 'object',
+  description:
+    'Object containing array of shortlisted index patterns that might be used to generate the query',
+  properties: {
+    shortlistedIndexPatterns: {
+      type: 'array',
+      description: 'Shortlisted index patterns',
+      items: { type: 'string' },
+    },
+  },
+  required: ['shortlistedIndexPatterns'],
+  additionalProperties: false,
+} as const satisfies Record<string, unknown>;
 
 export const getShortlistIndexPatterns = async ({
   createLlmInstance,
 }: {
   createLlmInstance: CreateLlmInstance;
 }) => {
-  const llm = await createLlmInstance();
+  const llm = (await createLlmInstance()) as BaseChatModel;
 
   return async (state: typeof SelectIndexPatternAnnotation.State) => {
     const systemMessage = new SystemMessage({
@@ -41,7 +52,9 @@ To generate the query you first need to identify which index pattern should be u
 
     try {
       const result = await llm
-        .withStructuredOutput(ShortlistedIndexPatterns, { name: 'shortlistedIndexPatterns' })
+        .withStructuredOutput<ShortlistedIndexPatterns>(structuredOutputSchema, {
+          name: 'shortlistedIndexPatterns',
+        })
         .withRetry({
           stopAfterAttempt: 3,
         })

@@ -1115,12 +1115,12 @@
   dependencies:
     "@babel/types" "^7.24.7"
 
-"@babel/helper-string-parser@^7.19.4", "@babel/helper-string-parser@^7.25.9", "@babel/helper-string-parser@^7.27.1":
+"@babel/helper-string-parser@^7.25.9", "@babel/helper-string-parser@^7.27.1":
   version "7.27.1"
   resolved "https://registry.yarnpkg.com/@babel/helper-string-parser/-/helper-string-parser-7.27.1.tgz#54da796097ab19ce67ed9f88b47bb2ec49367687"
   integrity sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==
 
-"@babel/helper-validator-identifier@^7.19.1", "@babel/helper-validator-identifier@^7.24.7", "@babel/helper-validator-identifier@^7.25.9", "@babel/helper-validator-identifier@^7.28.5":
+"@babel/helper-validator-identifier@^7.24.7", "@babel/helper-validator-identifier@^7.25.9", "@babel/helper-validator-identifier@^7.28.5":
   version "7.28.5"
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.28.5.tgz#010b6938fab7cb7df74aa2bbc06aa503b8fe5fb4"
   integrity sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==
@@ -2002,16 +2002,7 @@
     debug "^4.3.1"
     globals "^11.1.0"
 
-"@babel/types@7.21.2":
-  version "7.21.2"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.21.2.tgz#92246f6e00f91755893c2876ad653db70c8310d1"
-  integrity sha512-3wRZSs7jiFaB8AjxiiD+VqN5DTG2iRvJGQ+qYFrs/654lg6kGTQWIOFjlBo5RaXuAZjBmP3+OQH4dmhqiiyYxw==
-  dependencies:
-    "@babel/helper-string-parser" "^7.19.4"
-    "@babel/helper-validator-identifier" "^7.19.1"
-    to-fast-properties "^2.0.0"
-
-"@babel/types@^7.0.0", "@babel/types@^7.10.3", "@babel/types@^7.18.9", "@babel/types@^7.20.7", "@babel/types@^7.24.7", "@babel/types@^7.25.9", "@babel/types@^7.26.8", "@babel/types@^7.3.3", "@babel/types@^7.4.4":
+"@babel/types@7.26.8", "@babel/types@^7.0.0", "@babel/types@^7.10.3", "@babel/types@^7.18.9", "@babel/types@^7.20.7", "@babel/types@^7.24.7", "@babel/types@^7.25.9", "@babel/types@^7.26.8", "@babel/types@^7.3.3", "@babel/types@^7.4.4":
   version "7.26.8"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.26.8.tgz#97dcdc190fab45be7f3dc073e3c11160d677c127"
   integrity sha512-eUuWapzEGWFEpHFxgEaBG8e3n6S8L3MSu0oda755rOfabWPnh0Our1AozNFVUxGFIhbKgd1ksprsoDGMinTOTA==
@@ -14043,29 +14034,17 @@
   dependencies:
     "@types/d3-time" "^2"
 
-"@types/d3-selection@*", "@types/d3-selection@^3.0.10":
+"@types/d3-selection@*", "@types/d3-selection@3.0.10", "@types/d3-selection@^3.0.10":
   version "3.0.10"
   resolved "https://registry.yarnpkg.com/@types/d3-selection/-/d3-selection-3.0.10.tgz#98cdcf986d0986de6912b5892e7c015a95ca27fe"
   integrity sha512-cuHoUgS/V3hLdjJOLTT691+G2QoqAjCVLmr4kJXR4ha56w1Zdu8UUQ5TxLRqudgNjwXeQxKMq4j+lyf9sWuslg==
-
-"@types/d3-selection@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@types/d3-selection/-/d3-selection-3.0.2.tgz#23e48a285b24063630bbe312cc0cfe2276de4a59"
-  integrity sha512-d29EDd0iUBrRoKhPndhDY6U/PYxOWqgIZwKTooy2UkBfU7TNZNpRho0yLWPxlatQrFWk2mnTu71IZQ4+LRgKlQ==
 
 "@types/d3-time@^2":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@types/d3-time/-/d3-time-2.1.1.tgz#743fdc821c81f86537cbfece07093ac39b4bc342"
   integrity sha512-9MVYlmIgmRR31C5b4FVSWtuMmBHh2mOWQYfl7XAYOa8dsnb7iEmUmRSWSFgXFtkjxO65d7hTUHQC+RhR/9IWFg==
 
-"@types/d3-transition@3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@types/d3-transition/-/d3-transition-3.0.1.tgz#c9a96125567173d6163a6985b874f79154f4cc3d"
-  integrity sha512-Sv4qEI9uq3bnZwlOANvYK853zvpdKEm1yz9rcc8ZTsxvRklcs9Fx4YFuGA3gXoQN/c/1T6QkVNjhaRO/cWj94g==
-  dependencies:
-    "@types/d3-selection" "*"
-
-"@types/d3-transition@^3.0.8":
+"@types/d3-transition@3.0.8", "@types/d3-transition@^3.0.8":
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/@types/d3-transition/-/d3-transition-3.0.8.tgz#677707f5eed5b24c66a1918cde05963021351a8f"
   integrity sha512-ew63aJfQ/ms7QQ4X7pk5NxQ9fZH/z+i24ZfJ6tJSfqxJMrYLiK01EAs2/Rtw/JreGUsS3pLPNV644qXFGnoZNQ==
@@ -18841,11 +18820,6 @@ cssstyle@^2.3.0:
   integrity sha512-AZL67abkUzIuvcHqk7c09cezpGNcxUxU4Ioi/05xHk4DQeTkWmGYftIE6ctU6AEt+Gn4n1lDStOtj7FKycP71A==
   dependencies:
     cssom "~0.3.6"
-
-csstype@3.0.7:
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.7.tgz#2a5fb75e1015e84dd15692f71e89a1450290950b"
-  integrity sha512-KxnUB0ZMlnUWCsx2Z8MUsr6qV6ja1w9ArPErJaJaF8a5SOWoHLIszeCTKGRGRgtLgYrs1E8CHkNSP1VZTTPc9g==
 
 csstype@3.2.3, csstype@^3.0.2, csstype@^3.1.2:
   version "3.2.3"
@@ -33098,11 +33072,6 @@ to-camel-case@^1.0.0:
   integrity sha1-GlYFSy+daWKYzmamCJcyK29CPkY=
   dependencies:
     to-space-case "^1.0.0"
-
-to-fast-properties@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/to-fast-properties/-/to-fast-properties-2.0.0.tgz#dc5e698cbd079265bc73e0377681a4e4e83f616e"
-  integrity sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4=
 
 to-no-case@^1.0.0:
   version "1.0.2"
