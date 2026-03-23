@@ -92,7 +92,7 @@
     "**/baseline-browser-mapping": "2.9.14",
     "**/cheerio": "1.0.0-rc.12",
     "**/chokidar": "3.5.3",
-    "**/d3-scale/**/d3-color": "3.1.0",
+    "**/d3-scale/**/d3-color": "npm:@elastic/kibana-d3-color@2.0.1",
     "**/esbuild": "0.27.2",
     "**/express-rate-limit": "8.3.0",
     "**/fast-xml-parser": "5.5.7",
