@@ -46,6 +46,10 @@ export const CleanExtraFilesFromModules: Task = {
         match: [
           '!@kbn/**',
 
+          // Some upstream packages (notably @langchain/*) ship pnpm build artifacts under dist/node_modules
+          // which can push Kibana's distributable paths over our Windows path length limit.
+          '**/@langchain/*/dist/node_modules',
+
           // tests
           '**/test',
           '**/tests',
