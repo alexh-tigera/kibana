@@ -14,6 +14,10 @@ import { TSESTree } from '@typescript-eslint/typescript-estree';
 import type { Importer } from '../helpers/visit_all_import_statements';
 import { visitAllImportStatements } from '../helpers/visit_all_import_statements';
 
+const isBabelNode = (node: T.Node | TSESTree.Node): node is T.Node => !('range' in node);
+type BabelImporter = Extract<Importer, T.Node>;
+const isBabelImporter = (importer: Importer): importer is BabelImporter => !('range' in importer);
+
 export interface MovedExportsRule {
   from: string;
   to: string;
@@ -48,7 +52,7 @@ function findDeclaration(node: T.Node | TSESTree.Node) {
   let cursor: T.Node | TSESTree.Node | undefined = node;
   while (
     cursor &&
-    !T.isVariableDeclaration(cursor) &&
+    !(isBabelNode(cursor) && T.isVariableDeclaration(cursor)) &&
     cursor.type !== TSESTree.AST_NODE_TYPES.VariableDeclaration
   ) {
     cursor = getParent(cursor);
@@ -84,7 +88,7 @@ function inspectImports(
 ): undefined | { importCount: number; allBadImports: BadImport[] } {
   // get import names from require() and await import() calls
   if (
-    T.isCallExpression(importer) ||
+    (isBabelImporter(importer) && T.isCallExpression(importer)) ||
     importer.type === TSESTree.AST_NODE_TYPES.CallExpression ||
     importer.type === TSESTree.AST_NODE_TYPES.ImportExpression
   ) {
@@ -94,7 +98,7 @@ function inspectImports(
     }
     const declarator = declaration.declarations[0];
     if (
-      !T.isObjectPattern(declarator.id) &&
+      !(isBabelNode(declarator.id) && T.isObjectPattern(declarator.id)) &&
       declarator.id.type !== TSESTree.AST_NODE_TYPES.ObjectPattern
     ) {
       return;
@@ -122,7 +126,9 @@ function inspectImports(
             name,
             type:
               importer.type === TSESTree.AST_NODE_TYPES.ImportExpression ||
-              T.isImport(importer.callee)
+              (isBabelImporter(importer) &&
+                T.isCallExpression(importer) &&
+                T.isImport(importer.callee))
                 ? 'import expression'
                 : 'require',
             id: !local ? undefined : name === local ? name : `${name}: ${local}`,
@@ -135,18 +141,18 @@ function inspectImports(
 
   // get import names from import {} and export {} from
   if (
-    T.isImportDeclaration(importer) ||
+    (isBabelImporter(importer) && T.isImportDeclaration(importer)) ||
     importer.type === TSESTree.AST_NODE_TYPES.ImportDeclaration ||
-    T.isExportNamedDeclaration(importer) ||
+    (isBabelImporter(importer) && T.isExportNamedDeclaration(importer)) ||
     importer.type === TSESTree.AST_NODE_TYPES.ExportNamedDeclaration
   ) {
     const type =
-      T.isExportNamedDeclaration(importer) ||
+      (isBabelImporter(importer) && T.isExportNamedDeclaration(importer)) ||
       importer.type === TSESTree.AST_NODE_TYPES.ExportNamedDeclaration
         ? importer.exportKind === 'type'
           ? 'export type'
           : 'export'
-        : (T.isImportDeclaration(importer) ||
+        : ((isBabelImporter(importer) && T.isImportDeclaration(importer)) ||
             importer.type === TSESTree.AST_NODE_TYPES.ImportDeclaration) &&
           importer.importKind === 'type'
         ? 'import type'
@@ -157,14 +163,15 @@ function inspectImports(
       allBadImports: getBadImports(
         importer.specifiers.flatMap((specifier): Imported | never[] => {
           if (
-            T.isImportSpecifier(specifier) ||
+            (!('range' in specifier) && T.isImportSpecifier(specifier)) ||
             specifier.type === TSESTree.AST_NODE_TYPES.ImportSpecifier
           ) {
-            const name = T.isStringLiteral(specifier.imported)
-              ? specifier.imported.value
-              : specifier.imported?.type === 'Identifier'
-              ? specifier.imported.name
-              : 'name';
+            const name =
+              !('range' in specifier) && T.isStringLiteral(specifier.imported)
+                ? specifier.imported.value
+                : specifier.imported?.type === 'Identifier'
+                ? specifier.imported.name
+                : 'name';
             const local = specifier.local.name;
             return {
               node: specifier,
@@ -175,14 +182,15 @@ function inspectImports(
           }
 
           if (
-            T.isExportSpecifier(specifier) ||
+            (!('range' in specifier) && T.isExportSpecifier(specifier)) ||
             specifier.type === TSESTree.AST_NODE_TYPES.ExportSpecifier
           ) {
-            const name = T.isStringLiteral(specifier.exported)
-              ? specifier.exported.value
-              : specifier.exported?.type === 'Identifier'
-              ? specifier.exported.name
-              : 'name';
+            const name =
+              !('range' in specifier) && T.isStringLiteral(specifier.exported)
+                ? specifier.exported.value
+                : specifier.exported?.type === 'Identifier'
+                ? specifier.exported.name
+                : 'name';
             const local = specifier.local.type === 'Identifier' ? specifier.local.name : '';
             return {
               node: specifier,
@@ -241,7 +249,7 @@ export const ExportsMovedPackagesRule: Rule.RuleModule = {
       importer: Importer | T.VariableDeclaration | TSESTree.VariableDeclaration
     ): AST.Range {
       if (
-        T.isCallExpression(importer) ||
+        (!('range' in importer) && T.isCallExpression(importer)) ||
         importer.type === TSESTree.AST_NODE_TYPES.CallExpression ||
         importer.type === TSESTree.AST_NODE_TYPES.ImportExpression
       ) {

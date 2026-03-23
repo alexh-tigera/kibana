@@ -24,6 +24,9 @@ import { formatSuggestions, toList } from '../helpers/report';
 
 const ANY = Symbol();
 
+type BabelImporter = Extract<Importer, Bt.Node>;
+const isBabelImporter = (importer: Importer): importer is BabelImporter => !('range' in importer);
+
 const IMPORTABLE_FROM: Record<ModuleType, ModuleType[] | typeof ANY> = {
   'non-package': ['non-package', 'server package', 'browser package', 'common package', 'static'],
   'server package': ['common package', 'server package', 'static'],
@@ -37,7 +40,7 @@ const IMPORTABLE_FROM: Record<ModuleType, ModuleType[] | typeof ANY> = {
 
 const isTypeOnlyImport = (importer: Importer) => {
   // handle babel nodes
-  if (Bt.isImportDeclaration(importer)) {
+  if (isBabelImporter(importer) && Bt.isImportDeclaration(importer)) {
     return (
       importer.importKind === 'type' ||
       importer.specifiers.some((s) => ('importKind' in s ? s.importKind === 'type' : false))
@@ -53,7 +56,7 @@ const isTypeOnlyImport = (importer: Importer) => {
     );
   }
 
-  if (Bt.isExportNamedDeclaration(importer)) {
+  if (isBabelImporter(importer) && Bt.isExportNamedDeclaration(importer)) {
     return (
       importer.exportKind === 'type' ||
       importer.specifiers.some((s) => (Bt.isExportSpecifier(s) ? s.exportKind === 'type' : false))

@@ -16,21 +16,27 @@ import { RUNNING_IN_EDITOR } from '../helpers/running_in_editor';
 
 type WithParent<T> = T & { parent?: WithParent<T> };
 type SomeNode = WithParent<T.Node> | TSESTree.Node;
-type SomeImportNode = NonNullable<ReturnType<typeof findImportParent>>;
 
-function findImportParent(def: Scope.Definition) {
+const isBabelNode = (node: SomeNode): node is WithParent<T.Node> => !('range' in node);
+
+function findImportParent(
+  def: Scope.Definition
+): T.ImportDeclaration | TSESTree.ImportDeclaration | undefined {
   let cursor: SomeNode | undefined = def.node;
   while (cursor) {
-    if (
-      T.isImportDeclaration(cursor) ||
-      cursor.type === TSESTree.AST_NODE_TYPES.ImportDeclaration
-    ) {
+    if (isBabelNode(cursor) && T.isImportDeclaration(cursor)) {
+      return cursor as T.ImportDeclaration;
+    }
+
+    if (!isBabelNode(cursor) && cursor.type === TSESTree.AST_NODE_TYPES.ImportDeclaration) {
       return cursor;
     }
     cursor = cursor.parent;
   }
   return;
 }
+
+type SomeImportNode = NonNullable<ReturnType<typeof findImportParent>>;
 
 function isEslintUsed(variable: any) {
   return !!variable.eslintUsed;
