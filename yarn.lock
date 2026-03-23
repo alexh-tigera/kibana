@@ -292,7 +292,7 @@
     "@smithy/util-utf8" "^2.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-bedrock-agent-runtime@^3.907.0", "@aws-sdk/client-bedrock-agent-runtime@^3.991.0":
+"@aws-sdk/client-bedrock-agent-runtime@3.994.0", "@aws-sdk/client-bedrock-agent-runtime@^3.991.0":
   version "3.994.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-bedrock-agent-runtime/-/client-bedrock-agent-runtime-3.994.0.tgz#432f5ff8a615d07f0ff0b0057ac118096b3566fc"
   integrity sha512-XqrErEq7he7ut0IOhvKtkSD2CCW96gYN8TnNjHqz1bYBtXa/QMACJgnBeMXdY8CWlPxiPvowqKABmwGrxNoZ1w==
@@ -340,7 +340,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-bedrock-runtime@^3.907.0", "@aws-sdk/client-bedrock-runtime@^3.989.0":
+"@aws-sdk/client-bedrock-runtime@3.994.0", "@aws-sdk/client-bedrock-runtime@^3.989.0":
   version "3.994.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-bedrock-runtime/-/client-bedrock-runtime-3.994.0.tgz#44d0ef727c2f258d5a5c14db68c2b44c1d73aa8c"
   integrity sha512-ag7Qx78m1K3Dv7xlFgeHS4jBdopGZUISgVBMUy7Cj4fIgVH9EBmsc5K4hWozL8BJQctWke8Wsl96O7Gd+HCGhg==
@@ -393,7 +393,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-kendra@^3.750.0", "@aws-sdk/client-kendra@^3.907.0":
+"@aws-sdk/client-kendra@3.994.0", "@aws-sdk/client-kendra@^3.750.0":
   version "3.994.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-kendra/-/client-kendra-3.994.0.tgz#f23d75be95e4c9d03427e0accf30f43df779bc03"
   integrity sha512-ohOQT3TG/6CEY1uabgLTyw5seMygqqNWh3UUM97ZAKqe+Cn5fH2Pbm4ooIIGwUJMf8nt2AAjb5t6qjYmg7hMDw==
@@ -518,7 +518,7 @@
     "@smithy/types" "^4.13.0"
     tslib "^2.6.2"
 
-"@aws-sdk/credential-provider-node@^3.907.0", "@aws-sdk/credential-provider-node@^3.972.10":
+"@aws-sdk/credential-provider-node@3.972.10", "@aws-sdk/credential-provider-node@^3.972.10":
   version "3.972.10"
   resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-node/-/credential-provider-node-3.972.10.tgz#577df01a8511ef6602b090e96832fc612bc81b03"
   integrity sha512-70nCESlvnzjo4LjJ8By8MYIiBogkYPSXl3WmMZfH9RZcB/Nt9qVWbFpYj6Fk1vLa4Vk8qagFVeXgxdieMxG1QA==
@@ -9820,7 +9820,7 @@
   resolved "https://registry.yarnpkg.com/@kwsites/promise-deferred/-/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
   integrity sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==
 
-"@langchain/aws@1.3.1", "@langchain/aws@^1.1.0":
+"@langchain/aws@1.3.1":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@langchain/aws/-/aws-1.3.1.tgz#1ba67fe14701062cce563e9ed213ccb59af6d4cc"
   integrity sha512-Cuabe3J8QmsUzpC8dswyzfwRHf44GHXKk/d4d9Op1OOJSgJNlq4yiqj3f2t37EgjDRWEnzGkeQ1WROYoOh6R9w==
@@ -9830,7 +9830,7 @@
     "@aws-sdk/client-kendra" "^3.750.0"
     "@aws-sdk/credential-provider-node" "^3.972.10"
 
-"@langchain/classic@1.0.22", "@langchain/classic@^1.0.6":
+"@langchain/classic@1.0.22":
   version "1.0.22"
   resolved "https://registry.yarnpkg.com/@langchain/classic/-/classic-1.0.22.tgz#fa79102549d152c88090f46633db9636874a75cc"
   integrity sha512-XJd5nbxM6UXYkDJc98Zo/9NkPFWy3g/XunBe8hnTOyaazxvA+5+gdJyDKVrcRfaGJskql0V5h/3XQ2f9WFzEuw==
@@ -9847,7 +9847,7 @@
   optionalDependencies:
     langsmith ">=0.4.0 <1.0.0"
 
-"@langchain/community@^1.1.0":
+"@langchain/community@1.1.22":
   version "1.1.22"
   resolved "https://registry.yarnpkg.com/@langchain/community/-/community-1.1.22.tgz#940e125e6a173579b1248cabc76506241cb8d095"
   integrity sha512-scpLZx8zxTpNPHe1zC0lYYoBwF385RUByKqNzgTRKWsqs0ipnF9cjiN0uEnxcZJP5j5OE+uIcwOZe1sDxWGkWw==
@@ -9862,7 +9862,7 @@
     uuid "^10.0.0"
     zod "^3.25.76 || ^4"
 
-"@langchain/core@1.1.31", "@langchain/core@^1.1.5":
+"@langchain/core@1.1.31":
   version "1.1.31"
   resolved "https://registry.yarnpkg.com/@langchain/core/-/core-1.1.31.tgz#81882c7be8dfe138015da67b93aa73c6ab0f6962"
   integrity sha512-FxsgIUONjKaRpjx59sISgmb0OMCbAetPGyhzjGa2kX0y1f8LZ5xm9VB2db7W9HYWyLvzRWcMA51Uu4OSTJmtZQ==
@@ -9879,7 +9879,7 @@
     uuid "^11.1.0"
     zod "^3.25.76 || ^4"
 
-"@langchain/google-common@2.1.24", "@langchain/google-common@^2.1.0":
+"@langchain/google-common@2.1.24":
   version "2.1.24"
   resolved "https://registry.yarnpkg.com/@langchain/google-common/-/google-common-2.1.24.tgz#49beb223d5e194e9411e1f7451d40bebfe69e705"
   integrity sha512-TUHndpIYA2Cy1G6WAz549SGE665rZRQcGZjVFewhWJZL7GidMxYG9CLU4QwBEjJndAtc+LAy7Of3QhooJPpkpg==
@@ -9894,7 +9894,7 @@
     "@langchain/google-common" "2.1.24"
     google-auth-library "^10.1.0"
 
-"@langchain/google-genai@2.1.24", "@langchain/google-genai@^2.1.0":
+"@langchain/google-genai@2.1.24":
   version "2.1.24"
   resolved "https://registry.yarnpkg.com/@langchain/google-genai/-/google-genai-2.1.24.tgz#cc7cc26946faf392f04a8974497840b1ce061280"
   integrity sha512-gBuYWIrTiT4S8U3AxaAMl6SKeGKtB10fXc+m0p2BPSvTfCaTbIlycH7IZjZUTD1L92dQMi/SULwCWffq5OIBgQ==
@@ -9902,7 +9902,7 @@
     "@google/generative-ai" "^0.24.0"
     uuid "^11.1.0"
 
-"@langchain/google-vertexai@2.1.24", "@langchain/google-vertexai@^2.1.0":
+"@langchain/google-vertexai@2.1.24":
   version "2.1.24"
   resolved "https://registry.yarnpkg.com/@langchain/google-vertexai/-/google-vertexai-2.1.24.tgz#d4522c609642be9b094bcf1eea6f8cf4850bf6f2"
   integrity sha512-wZqqKrU9+onrU1FFKFY1prQJzMPxSdOIhFrZo+lIEP+YMH4IAc+JA6z6Ge0BVSE9zbMmzSTGKZxdQG2uF0aLTQ==
@@ -9926,7 +9926,7 @@
     p-retry "^7.1.1"
     uuid "^13.0.0"
 
-"@langchain/langgraph@1.2.0", "@langchain/langgraph@^1.0.4", "@langchain/langgraph@^1.1.2":
+"@langchain/langgraph@1.2.0", "@langchain/langgraph@^1.1.2":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@langchain/langgraph/-/langgraph-1.2.0.tgz#cb09262719eaefff71b4ab83c593d27a200f73cd"
   integrity sha512-wyqKIzXTAfXX3L1d8R7icM+HmRQBTbuNLWtUlpRJ/JP/ux1ei/sOSt6p8f90ARoOP2iJVlM70wOBYWaGErdBlA==
@@ -9936,7 +9936,7 @@
     "@standard-schema/spec" "1.1.0"
     uuid "^10.0.0"
 
-"@langchain/openai@1.2.12", "@langchain/openai@^1.2.0":
+"@langchain/openai@1.2.12":
   version "1.2.12"
   resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-1.2.12.tgz#6147acbc3e92c363e99b7ba3e812bb055aea1d51"
   integrity sha512-Im6PPNujrfkZk4vpc9JAjbeERg+RbNtWRe3KSFOP7aNGa/yZ+XD69lxXwbsZGaZkbiUN/hwe9RYeisUfThb5wg==
@@ -12490,7 +12490,7 @@
     "@smithy/url-parser" "^4.2.11"
     tslib "^2.6.2"
 
-"@smithy/eventstream-codec@^4.2.11", "@smithy/eventstream-codec@^4.2.3":
+"@smithy/eventstream-codec@4.2.11", "@smithy/eventstream-codec@^4.2.11":
   version "4.2.11"
   resolved "https://registry.yarnpkg.com/@smithy/eventstream-codec/-/eventstream-codec-4.2.11.tgz#b26d17be447ddb361d7f90af44ff7fb03d8a3e08"
   integrity sha512-Sf39Ml0iVX+ba/bgMPxaXWAAFmHqYLTmbjAPfLPLY8CrYkRDEqZdUsKC1OwVMCdJXfAt0v4j49GIJ8DoSYAe6w==
@@ -12517,7 +12517,7 @@
     "@smithy/types" "^4.13.0"
     tslib "^2.6.2"
 
-"@smithy/eventstream-serde-node@^4.2.3", "@smithy/eventstream-serde-node@^4.2.8":
+"@smithy/eventstream-serde-node@4.2.11", "@smithy/eventstream-serde-node@^4.2.8":
   version "4.2.11"
   resolved "https://registry.yarnpkg.com/@smithy/eventstream-serde-node/-/eventstream-serde-node-4.2.11.tgz#25a2d6d3d13048be4e62c7211c99d138bddc480e"
   integrity sha512-fzbCh18rscBDTQSCrsp1fGcclLNF//nJyhjldsEl/5wCYmgpHblv5JSppQAyQI24lClsFT0wV06N1Porn0IsEw==
@@ -12625,7 +12625,7 @@
     "@smithy/types" "^4.13.0"
     tslib "^2.6.2"
 
-"@smithy/middleware-stack@^4.2.11", "@smithy/middleware-stack@^4.2.3", "@smithy/middleware-stack@^4.2.8":
+"@smithy/middleware-stack@4.2.11", "@smithy/middleware-stack@^4.2.11", "@smithy/middleware-stack@^4.2.8":
   version "4.2.11"
   resolved "https://registry.yarnpkg.com/@smithy/middleware-stack/-/middleware-stack-4.2.11.tgz#cadd3ada5fa11fe8a192cd18444a77c4510c8bc3"
   integrity sha512-s+eenEPW6RgliDk2IhjD2hWOxIx1NKrOHxEwNUaUXxYBxIyCcDfNULZ2Mu15E3kwcJWBedTET/kEASPV1A1Akg==
@@ -21612,7 +21612,7 @@ fast-xml-builder@^1.1.4:
   dependencies:
     path-expression-matcher "^1.1.3"
 
-fast-xml-parser@5.2.5, fast-xml-parser@5.5.7, fast-xml-parser@^5.5.1:
+fast-xml-parser@5.4.1, fast-xml-parser@5.5.7, fast-xml-parser@^5.5.1:
   version "5.5.7"
   resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-5.5.7.tgz#e1ddc86662d808450a19cf2fb6ccc9c3c9933c5d"
   integrity sha512-LteOsISQ2GEiDHZch6L9hB0+MLoYVLToR7xotrzU0opCICBkxOPgHAy1HxAvtxfJNXDJpgAsQN30mkrfpO2Prg==
@@ -25526,7 +25526,7 @@ kuler@^2.0.0:
   resolved "https://registry.yarnpkg.com/kuler/-/kuler-2.0.0.tgz#e2c570a3800388fb44407e851531c1d670b061b3"
   integrity sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==
 
-langchain@^1.2.0:
+langchain@1.2.30:
   version "1.2.30"
   resolved "https://registry.yarnpkg.com/langchain/-/langchain-1.2.30.tgz#262f57c6101b42f10e7f2fa6b872897f14abd26f"
   integrity sha512-Ofsk7LTGvIkyy3uesv7hpyerpTghdjNpYFJfIxJRGGLjd+4JgTVkT/Ax6Cjg0F6doEuO7VRID0NK2QwmT3A/bg==
@@ -25537,6 +25537,18 @@ langchain@^1.2.0:
     uuid "^11.1.0"
     zod "^3.25.76 || ^4"
 
+langsmith@0.3.87:
+  version "0.3.87"
+  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.3.87.tgz#f1c991c93a5d4d226a31671be7e4443b4b8673b1"
+  integrity sha512-XXR1+9INH8YX96FKWc5tie0QixWz6tOqAsAKfcJyPkE0xPep+NDz0IQLR32q4bn10QK3LqD2HN6T3n6z1YLW7Q==
+  dependencies:
+    "@types/uuid" "^10.0.0"
+    chalk "^4.1.2"
+    console-table-printer "^2.12.1"
+    p-queue "^6.6.2"
+    semver "^7.6.3"
+    uuid "^10.0.0"
+
 "langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.5.7.tgz#7f70d8058b0e9d3cb3e45dc8a1bd188322b5b40c"
@@ -25544,18 +25556,6 @@ langchain@^1.2.0:
   dependencies:
     "@types/uuid" "^10.0.0"
     chalk "^5.6.2"
-    console-table-printer "^2.12.1"
-    p-queue "^6.6.2"
-    semver "^7.6.3"
-    uuid "^10.0.0"
-
-langsmith@^0.3.87:
-  version "0.3.87"
-  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.3.87.tgz#f1c991c93a5d4d226a31671be7e4443b4b8673b1"
-  integrity sha512-XXR1+9INH8YX96FKWc5tie0QixWz6tOqAsAKfcJyPkE0xPep+NDz0IQLR32q4bn10QK3LqD2HN6T3n6z1YLW7Q==
-  dependencies:
-    "@types/uuid" "^10.0.0"
-    chalk "^4.1.2"
     console-table-printer "^2.12.1"
     p-queue "^6.6.2"
     semver "^7.6.3"
