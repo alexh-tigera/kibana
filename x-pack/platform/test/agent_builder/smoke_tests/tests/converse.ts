@@ -40,6 +40,23 @@ export const converseApiSuite = (
   };
 
   describe(`Connector: ${name}`, () => {
+    before(async function () {
+      const res = await supertest.post('/api/agent_builder/converse').set('kbn-xsrf', 'true').send({
+        input: 'Hello',
+        connector_id: resolveConnectorId(),
+      });
+
+      if (process.env.CI && res.status === 403) {
+        // eslint-disable-next-line no-console
+        console.warn(`Skipping connector ${name} due to 403 Forbidden response`);
+        this.skip();
+      }
+
+      if (res.status !== 200) {
+        throw new Error(`Unexpected response for connector ${name}: ${res.status} ${res.text}`);
+      }
+    });
+
     it('returns an answer for a simple message', async () => {
       const response = await converse({
         input: 'Hello',

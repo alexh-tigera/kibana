@@ -133,7 +133,7 @@ describe('getDefaultGraphState', () => {
   it('returns the expected default end', () => {
     const graphAnnotation = getDefaultGraphAnnotation({ prompts });
 
-    expect(graphAnnotation.spec.end.get()).toBeUndefined();
+    expect(graphAnnotation.spec.end.isAvailable()).toBe(false);
   });
 
   it('returns the expected end when it is provided', () => {
@@ -141,13 +141,14 @@ describe('getDefaultGraphState', () => {
 
     const graphAnnotation = getDefaultGraphAnnotation({ prompts, end });
 
+    expect(graphAnnotation.spec.end.isAvailable()).toBe(true);
     expect(graphAnnotation.spec.end.get()).toEqual(end);
   });
 
   it('returns the expected default filter to be undefined', () => {
     const graphAnnotation = getDefaultGraphAnnotation({ prompts });
 
-    expect(graphAnnotation.spec.filter.get()).toBeUndefined();
+    expect(graphAnnotation.spec.filter.isAvailable()).toBe(false);
   });
 
   it('returns the expected filter when it is provided', () => {
@@ -174,13 +175,14 @@ describe('getDefaultGraphState', () => {
 
     const graphAnnotation = getDefaultGraphAnnotation({ prompts, filter });
 
+    expect(graphAnnotation.spec.filter.isAvailable()).toBe(true);
     expect(graphAnnotation.spec.filter.get()).toEqual(filter);
   });
 
   it('returns the expected default start to be undefined', () => {
     const graphAnnotation = getDefaultGraphAnnotation({ prompts });
 
-    expect(graphAnnotation.spec.start.get()).toBeUndefined();
+    expect(graphAnnotation.spec.start.isAvailable()).toBe(false);
   });
 
   it('returns the expected start when it is provided', () => {
@@ -188,6 +190,7 @@ describe('getDefaultGraphState', () => {
 
     const graphAnnotation = getDefaultGraphAnnotation({ prompts, start });
 
+    expect(graphAnnotation.spec.start.isAvailable()).toBe(true);
     expect(graphAnnotation.spec.start.get()).toEqual(start);
   });
 });
