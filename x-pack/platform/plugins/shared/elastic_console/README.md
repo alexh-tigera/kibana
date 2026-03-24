@@ -248,3 +248,4 @@ yarn test:type_check --project x-pack/platform/plugins/shared/elastic_console/ts
 ```
 node scripts/eslint --fix x-pack/platform/plugins/shared/elastic_console/
 ```
+
