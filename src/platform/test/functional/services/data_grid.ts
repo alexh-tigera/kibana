@@ -793,20 +793,30 @@ export class DataGridService extends FtrService {
   }
 
   public async selectRow(rowIndex: number, { pressShiftKey }: { pressShiftKey?: boolean } = {}) {
-    const checkbox = await this.find.byCssSelector(
-      `.euiDataGridRow[data-grid-visible-row-index="${rowIndex}"] [data-gridcell-column-id="select"] .euiCheckbox__input`
-    );
+    await this.retry.try(async () => {
+      const checkbox = await this.find.byCssSelector(
+        `.euiDataGridRow[data-grid-visible-row-index="${rowIndex}"] [data-gridcell-column-id="select"] .euiCheckbox__input`
+      );
 
-    if (pressShiftKey) {
-      await this.browser
-        .getActions()
-        .keyDown(Key.SHIFT)
-        .click(checkbox._webElement)
-        .keyUp(Key.SHIFT)
-        .perform();
-    } else {
-      await checkbox.click();
-    }
+      if (await checkbox.isSelected()) {
+        return;
+      }
+
+      if (pressShiftKey) {
+        await this.browser
+          .getActions()
+          .keyDown(Key.SHIFT)
+          .click(checkbox._webElement)
+          .keyUp(Key.SHIFT)
+          .perform();
+      } else {
+        await checkbox.click();
+      }
+
+      if (!(await checkbox.isSelected())) {
+        throw new Error(`Failed to select data grid row ${rowIndex}`);
+      }
+    });
   }
 
   public async getNumberOfSelectedRows() {
