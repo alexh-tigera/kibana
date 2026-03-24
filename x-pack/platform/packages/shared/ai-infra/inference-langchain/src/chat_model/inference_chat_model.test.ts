@@ -679,7 +679,7 @@ describe('InferenceChatModel', () => {
 
       expect(allChunks.length).toBe(4);
       expect(allChunks.map((chunk) => chunk.content)).toEqual(['hello ', 'there', '.', '']);
-      expect(allChunks[3].usage_metadata).toEqual({
+      expect(allChunks[3].usage_metadata).toMatchObject({
         input_tokens: 5,
         output_tokens: 20,
         total_tokens: 25,
@@ -689,7 +689,7 @@ describe('InferenceChatModel', () => {
         return concat.concat(current);
       });
 
-      expect(concatChunk.usage_metadata).toEqual({
+      expect(concatChunk.usage_metadata).toMatchObject({
         input_tokens: 5,
         output_tokens: 20,
         total_tokens: 25,

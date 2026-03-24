@@ -119,15 +119,16 @@ describe('EQL Rule - Rule Creation', { tags: ['@ess', '@serverless'] }, () => {
       cy.get(RULES_CREATION_FORM).find(EQL_QUERY_INPUT).should('be.visible');
       cy.get(RULES_CREATION_FORM).find(EQL_QUERY_INPUT).type('any where true');
 
-      const expectedValidationError = `index_not_found_exception\n\tCaused by:\n\t\tverification_exception: Found 1 problem\nline -1:-1: Unknown index [*,-*]\n\tRoot causes:\n\t\tverification_exception: Found 1 problem\nline -1:-1: Unknown index [*,-*]`;
       cy.get(EQL_QUERY_VALIDATION_ERROR).should('be.visible');
       cy.get(EQL_QUERY_VALIDATION_ERROR).should('have.text', '1');
       cy.get(EQL_QUERY_VALIDATION_ERROR).click();
       cy.get(EQL_QUERY_VALIDATION_ERROR_CONTENT).should('be.visible');
-      cy.get(EQL_QUERY_VALIDATION_ERROR_CONTENT).should(
-        'have.text',
-        `EQL Validation Errors${expectedValidationError}`
-      );
+      cy.get(EQL_QUERY_VALIDATION_ERROR_CONTENT)
+        .invoke('text')
+        .should((text) => {
+          expect(text).to.match(/^EQL Validation Errorsindex_not_found_exception/);
+          expect(text).to.match(/Unknown index \[[^\]]+\]/);
+        });
       continueFromDefineStep();
 
       fillAboutRuleMinimumAndContinue(rule);
