@@ -50,6 +50,14 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
       borderBottom: euiTheme.border.thin,
       marginBottom: `-${euiTheme.border.width.thin}`,
       height: '100%',
+      '&:hover .appMenuBar__globalActions': {
+        opacity: 1,
+        pointerEvents: 'auto' as const,
+      },
+      '&:focus-within .appMenuBar__globalActions': {
+        opacity: 1,
+        pointerEvents: 'auto' as const,
+      },
     };
 
     const leftCluster = {
@@ -69,12 +77,15 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
       alignItems: 'center',
     };
 
-    const iconGroup = {
+    const globalActions = {
       flexShrink: 0,
       display: 'flex',
       flexDirection: 'row' as const,
       alignItems: 'center',
       gap: euiTheme.size.xs,
+      opacity: 0,
+      pointerEvents: 'none' as const,
+      transition: `opacity ${euiTheme.animation.fast} ease`,
     };
 
     const iconButtonSubdued = {
@@ -104,7 +115,7 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
       root,
       leftCluster,
       titleSection,
-      iconGroup,
+      globalActions,
       iconButtonSubdued,
       titleEuiTitle,
       titleEuiTitleReact,
@@ -152,7 +163,11 @@ export const AppMenuBar = React.memo(() => {
             )
           ) : null}
         </div>
-        <div css={styles.iconGroup}>
+        <div
+          className="appMenuBar__globalActions"
+          css={styles.globalActions}
+          data-test-subj="kibanaProjectHeaderAppMenuGlobalActions"
+        >
           <EuiButtonIcon
             aria-label={i18n.translate('core.ui.chrome.appMenu.editButtonAriaLabel', {
               defaultMessage: 'Edit',
