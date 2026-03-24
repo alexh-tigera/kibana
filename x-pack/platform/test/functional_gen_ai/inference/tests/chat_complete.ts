@@ -123,6 +123,38 @@ export const chatCompleteSuite = (
   };
 
   describe('chatComplete API', () => {
+    before(async function () {
+      // Bedrock access can be intentionally restricted in CI; when that happens we skip the suite for this connector
+      // rather than failing the entire PR pipeline.
+      if (!process.env.CI || connectorType !== '.bedrock') {
+        return;
+      }
+
+      const probe = await supertest
+        .post(`/internal/inference/chat_complete`)
+        .set('kbn-xsrf', 'kibana')
+        .send({
+          connectorId,
+          temperature: 0.1,
+          system: 'Please answer the user question',
+          messages: [{ role: 'user', content: '2+2 ?' }],
+        });
+
+      if (probe.status === 403) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `Skipping bedrock connector ${connectorId} chatComplete tests due to 403 Forbidden response`
+        );
+        this.skip();
+      }
+
+      if (probe.status !== 200) {
+        throw new Error(
+          `Unexpected response from chat_complete probe for connector ${connectorId}: ${probe.status} ${probe.text}`
+        );
+      }
+    });
+
     describe('streaming disabled', () => {
       it('returns a chat completion message for a simple prompt', async () => {
         const response = await supertest

@@ -20,7 +20,8 @@ export default function (providerContext: FtrProviderContext) {
       });
     });
 
-    const firstConnector = connectors[0];
+    const firstConnector =
+      connectors.find((connector) => connector.actionTypeId !== '.bedrock') ?? connectors[0];
     productDocsBaseInstallationSuite(firstConnector, providerContext);
   });
 }
