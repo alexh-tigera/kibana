@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@kbn/react-query';
 import type { FileJSON } from '@kbn/files-plugin/common';
 import type { FilesClientResponses } from '@kbn/files-plugin/public';
+import { i18n } from '@kbn/i18n';
 
 import type { EuiInMemoryTableProps } from '@elastic/eui';
 import {
@@ -138,6 +139,9 @@ export const FilesExampleApp = ({ files, notifications }: FilesExampleAppDeps) =
         <EuiPageTemplate.Header pageTitle="Files example" />
         <EuiPageTemplate.Section>
           <EuiInMemoryTable
+            tableCaption={i18n.translate('examples.filesExample.table.caption', {
+              defaultMessage: 'Files example',
+            })}
             columns={columns}
             items={items}
             itemId="id"
