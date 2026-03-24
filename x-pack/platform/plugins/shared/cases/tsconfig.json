@@ -12,6 +12,8 @@
   ],
   "kbn_references": [
     "@kbn/core",
+    "@kbn/core-chrome-app-menu",
+    "@kbn/core-chrome-app-menu-components",
     // optionalPlugins from ./kibana.json
     "@kbn/lens-plugin",
     "@kbn/security-plugin",

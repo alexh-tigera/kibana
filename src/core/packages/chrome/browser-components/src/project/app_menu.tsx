@@ -96,7 +96,7 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
       margin: 0,
       minWidth: 0,
       maxWidth: '100%',
-      color: euiTheme.colors.textSubdued,
+      // color: euiTheme.colors.textSubdued,
     };
 
     const titleEuiTitleReact = {
@@ -151,13 +151,13 @@ export const AppMenuBar = React.memo(() => {
         <div css={styles.titleSection}>
           {hasTitle ? (
             typeof titleContent === 'string' ? (
-              <EuiTitle size="s" css={styles.titleEuiTitle}>
+              <EuiTitle size="xs" css={styles.titleEuiTitle}>
                 <span className="eui-textTruncate" title={titleContent}>
                   {titleContent}
                 </span>
               </EuiTitle>
             ) : (
-              <EuiTitle size="s" css={styles.titleEuiTitleReact} {...reactNodeAriaLabel}>
+              <EuiTitle size="xs" css={styles.titleEuiTitleReact} {...reactNodeAriaLabel}>
                 <span className="eui-textTruncate">{titleContent}</span>
               </EuiTitle>
             )

@@ -8,7 +8,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { buildCasesPermissions, renderWithTestingProviders } from '../../common/mock';
+import { renderWithTestingProviders } from '../../common/mock';
 import { CasesTableHeader } from './header';
 
 describe('CasesTableHeader', () => {
@@ -16,35 +16,16 @@ describe('CasesTableHeader', () => {
     jest.clearAllMocks();
   });
 
-  it('displays the create new case button when the user has create privileges', () => {
-    renderWithTestingProviders(<CasesTableHeader actionsErrors={[]} />, {
-      wrapperProps: { permissions: buildCasesPermissions({ update: false, create: true }) },
-    });
+  it('displays the all cases page title', () => {
+    renderWithTestingProviders(<CasesTableHeader />);
 
-    expect(screen.getByTestId('createNewCaseBtn')).toBeInTheDocument();
+    expect(screen.getByTestId('cases-all-title')).toBeInTheDocument();
   });
 
-  it('does not display the create new case button when the user does not have create privileges', () => {
-    renderWithTestingProviders(<CasesTableHeader actionsErrors={[]} />, {
-      wrapperProps: { permissions: buildCasesPermissions({ create: false }) },
-    });
+  it('does not render header action buttons (moved to chrome AppMenu)', () => {
+    renderWithTestingProviders(<CasesTableHeader />);
 
     expect(screen.queryByTestId('createNewCaseBtn')).not.toBeInTheDocument();
-  });
-
-  it('displays the configure button when the user has update privileges', () => {
-    renderWithTestingProviders(<CasesTableHeader actionsErrors={[]} />, {
-      wrapperProps: { permissions: buildCasesPermissions({ create: false, update: true }) },
-    });
-
-    expect(screen.getByTestId('configure-case-button')).toBeInTheDocument();
-  });
-
-  it('does not display the configure button when the user does not have settings privileges', () => {
-    renderWithTestingProviders(<CasesTableHeader actionsErrors={[]} />, {
-      wrapperProps: { permissions: buildCasesPermissions({ settings: false }) },
-    });
-
     expect(screen.queryByTestId('configure-case-button')).not.toBeInTheDocument();
   });
 });

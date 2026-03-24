@@ -263,10 +263,20 @@ export function useHasLegacyActionMenu(): boolean {
   return !!useCurrentActionMenu();
 }
 
-/** Whether the current app menu (registered via `chrome.setAppMenu()`) has items configured. */
+/**
+ * Whether the current app menu (registered via `chrome.setAppMenu()`) has any actions.
+ * Matches AppMenuComponent: `items`, `primaryActionItem`, or `secondaryActionItem`.
+ */
 export function useHasAppMenuConfig(): boolean {
   const config = useAppMenu();
-  return !!config?.items?.length;
+  if (!config) {
+    return false;
+  }
+  return Boolean(
+    (config.items && config.items.length > 0) ||
+      config.primaryActionItem ||
+      config.secondaryActionItem
+  );
 }
 
 /**

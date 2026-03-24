@@ -5,6 +5,11 @@
  * 2.0.
  */
 
+/**
+ * Legacy in-page header actions for All Cases. Superseded by `useAllCasesAppMenu` +
+ * chrome `AppMenu` on that route; kept for `nav_buttons.test.tsx` and reference.
+ */
+
 import type { FunctionComponent } from 'react';
 import React, { useCallback } from 'react';
 import { EuiFlexGroup, EuiFlexItem, useEuiTheme } from '@elastic/eui';
