@@ -16,7 +16,7 @@ import {
   type UseEuiTheme,
 } from '@elastic/eui';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ChromeNavControl } from '@kbn/core-chrome-browser';
 import { i18n } from '@kbn/i18n';
 import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
@@ -57,7 +57,7 @@ const noop = () => {};
 /** Matches project `layoutConfigs.project.applicationTopBarHeight` in grid_layout (single title row). */
 const PROJECT_APP_MENU_BAR_HEIGHT_DEFAULT = 48;
 /** Room for title row + tabs row when `headerTabs` are set. */
-const PROJECT_APP_MENU_BAR_HEIGHT_WITH_TABS = 84;
+const PROJECT_APP_MENU_BAR_HEIGHT_WITH_TABS = 80;
 
 const canNavigateToParent = (crumb: ChromeBreadcrumb | undefined): boolean => {
   if (!crumb) {
@@ -66,7 +66,11 @@ const canNavigateToParent = (crumb: ChromeBreadcrumb | undefined): boolean => {
   return Boolean(crumb.onClick || crumb.href);
 };
 
-const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme'], hasHeaderTabs: boolean) =>
+const useAppMenuBarStyles = (
+  euiTheme: UseEuiTheme['euiTheme'],
+  hasHeaderTabs: boolean,
+  showBackToParent: boolean
+) =>
   useMemo(() => {
     const root = {
       display: 'flex',
@@ -74,7 +78,7 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme'], hasHeaderTabs: b
       alignItems: 'stretch',
       justifyContent: 'flex-start',
       gap: 0,
-      padding: `${euiTheme.size.m}`,
+      padding: `${euiTheme.size.s}`,
       background: euiTheme.colors.backgroundBasePlain,
       borderBottom: euiTheme.border.thin,
       marginBottom: `-${euiTheme.border.width.thin}`,
@@ -96,7 +100,7 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme'], hasHeaderTabs: b
       flexDirection: 'row' as const,
       alignItems: 'center',
       justifyContent: 'flex-start',
-      gap: euiTheme.size.m,
+      gap: euiTheme.size.s,
       flex: hasHeaderTabs ? ('0 0 auto' as const) : ('1 1 auto' as const),
       minHeight: hasHeaderTabs ? undefined : 0,
       minWidth: 0,
@@ -138,6 +142,7 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme'], hasHeaderTabs: b
       margin: 0,
       minWidth: 0,
       maxWidth: '100%',
+      ...(showBackToParent ? {} : { paddingLeft: euiTheme.size.xs }),
       // color: euiTheme.colors.textSubdued,
     };
 
@@ -184,19 +189,82 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme'], hasHeaderTabs: b
       menuSection,
       appBarChrome,
     };
-  }, [euiTheme, hasHeaderTabs]);
+  }, [euiTheme, hasHeaderTabs, showBackToParent]);
 
-const AppBarNavControl = ({ control }: { control: ChromeNavControl }) => (
-  <div
-    css={{
-      display: 'flex',
-      alignItems: 'center',
-      '&:empty': { display: 'none' },
-    }}
-  >
-    <HeaderExtension extension={control.content ?? control.mount} />
-  </div>
-);
+/**
+ * Right-side nav controls use mount points; in project mode several plugins (e.g. per-solution AI
+ * assistants) still register `projectChrome: 'appBar'` while their `NavControlInitiator` returns
+ * `null` off-solution. The mount is truthy so we cannot filter at the data layer — collapse the
+ * slot when the subtree has no layout or interactive content after mount.
+ */
+function appBarSlotHasRenderableContent(host: HTMLElement): boolean {
+  const rect = host.getBoundingClientRect();
+  if (rect.width > 0 && rect.height > 0) {
+    return true;
+  }
+  return (
+    host.querySelector(
+      'button, [role="button"], a[href], input, select, textarea, iframe, canvas, svg, img, [tabindex]:not([tabindex="-1"])'
+    ) !== null
+  );
+}
+
+const AppBarNavControlSlot = React.memo(function AppBarNavControlSlot({
+  extension,
+}: {
+  extension: NonNullable<ChromeNavControl['content'] | ChromeNavControl['mount']>;
+}) {
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useLayoutEffect(() => {
+    const host = hostRef.current;
+    if (!host) {
+      return;
+    }
+
+    const schedule = () => {
+      setCollapsed(!appBarSlotHasRenderableContent(host));
+    };
+
+    const ro = new ResizeObserver(schedule);
+    ro.observe(host);
+    const mo = new MutationObserver(schedule);
+    mo.observe(host, { subtree: true, childList: true, attributes: true });
+
+    const rafId = requestAnimationFrame(() => {
+      requestAnimationFrame(schedule);
+    });
+
+    schedule();
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      ro.disconnect();
+      mo.disconnect();
+    };
+  }, [extension]);
+
+  return (
+    <div
+      ref={hostRef}
+      css={{
+        display: collapsed ? 'none' : 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <HeaderExtension extension={extension} />
+    </div>
+  );
+});
+
+const AppBarNavControl = ({ control }: { control: ChromeNavControl }) => {
+  const extension = control.content ?? control.mount;
+  if (extension == null) {
+    return null;
+  }
+  return <AppBarNavControlSlot extension={extension} />;
+};
 
 const AppMenuBarHeaderTabs = ({ tabs }: { tabs: AppMenuHeaderTab[] }) => (
   <EuiTabs
@@ -224,9 +292,22 @@ export const AppMenuBar = React.memo(() => {
   const appMenuConfig = useAppMenu();
   const headerTabs = appMenuConfig?.headerTabs;
   const hasHeaderTabs = Boolean(headerTabs?.length);
-  const styles = useAppMenuBarStyles(euiTheme, hasHeaderTabs);
+  const breadcrumbs = useProjectBreadcrumbs();
+  const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+  const parentBreadcrumb =
+    breadcrumbs.length >= 2 ? breadcrumbs[breadcrumbs.length - 2] : undefined;
+  const showBackToParent = Boolean(parentBreadcrumb) && canNavigateToParent(parentBreadcrumb);
+  const styles = useAppMenuBarStyles(euiTheme, hasHeaderTabs, showBackToParent);
   const hasAppMenuConfig = useHasAppMenuConfig();
   const appBarControls = useProjectChromeRightControls('appBar');
+  const appBarControlsWithExtension = useMemo(
+    () =>
+      appBarControls.filter((control) => {
+        const extension = control.content ?? control.mount;
+        return extension != null;
+      }),
+    [appBarControls]
+  );
 
   useEffect(() => {
     updateLayout({
@@ -240,7 +321,6 @@ export const AppMenuBar = React.memo(() => {
   }, [hasHeaderTabs, updateLayout]);
   const navigateToUrl = useNavigateToUrl();
   const basePath = useBasePath();
-  const breadcrumbs = useProjectBreadcrumbs();
   const navLinks = useNavLinks();
   const currentAppId = useCurrentAppId();
   const currentAppTitleFromNav = useMemo(() => {
@@ -257,10 +337,6 @@ export const AppMenuBar = React.memo(() => {
       }),
     [currentAppTitleFromNav]
   );
-  const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
-  const parentBreadcrumb =
-    breadcrumbs.length >= 2 ? breadcrumbs[breadcrumbs.length - 2] : undefined;
-  const showBackToParent = Boolean(parentBreadcrumb) && canNavigateToParent(parentBreadcrumb);
   const titleContent = lastBreadcrumb?.text;
   const hasTitle = titleContent != null && titleContent !== '' && typeof titleContent !== 'boolean';
 
@@ -294,7 +370,9 @@ export const AppMenuBar = React.memo(() => {
       if (href.startsWith('http://') || href.startsWith('https://')) {
         navigateToUrl(href);
       } else {
-        navigateToUrl(basePath.prepend(href));
+        // Breadcrumb hrefs are often already basePath-prefixed (e.g. /qco/app/...); remove then
+        // prepend so we never double the space/project prefix.
+        navigateToUrl(basePath.prepend(basePath.remove(href)));
       }
     }
   };
@@ -388,11 +466,13 @@ export const AppMenuBar = React.memo(() => {
           <div css={styles.menuSection} data-test-subj="kibanaProjectHeaderActionMenu">
             {hasAppMenuConfig ? <HeaderAppMenu /> : <HeaderActionMenu />}
           </div>
-          <div css={styles.appBarChrome} data-test-subj="kibanaProjectHeaderAppBarChrome">
-            {appBarControls.map((control, index) => (
-              <AppBarNavControl key={index} control={control} />
-            ))}
-          </div>
+          {appBarControlsWithExtension.length > 0 ? (
+            <div css={styles.appBarChrome} data-test-subj="kibanaProjectHeaderAppBarChrome">
+              {appBarControlsWithExtension.map((control, index) => (
+                <AppBarNavControl key={index} control={control} />
+              ))}
+            </div>
+          ) : null}
         </div>
         {headerTabs && headerTabs.length > 0 ? (
           <div css={styles.tabsRow}>
