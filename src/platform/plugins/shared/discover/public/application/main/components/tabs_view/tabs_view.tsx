@@ -9,7 +9,9 @@
 
 import React, { useCallback } from 'react';
 import { EuiResizeObserver } from '@elastic/eui';
+import useObservable from 'react-use/lib/useObservable';
 import { UnifiedTabs, type UnifiedTabsProps } from '@kbn/unified-tabs';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
 import { AppMenuComponent } from '@kbn/core-chrome-app-menu-components';
 import { SingleTabView, type SingleTabViewProps } from '../single_tab_view';
 import {
@@ -30,6 +32,11 @@ const MAX_TABS_COUNT = 25;
 
 export const TabsView = (props: SingleTabViewProps) => {
   const services = useDiscoverServices();
+  const chromeStyle = useObservable(
+    services.core.chrome.getChromeStyle$(),
+    services.core.chrome.getChromeStyle()
+  );
+  const isProjectChrome = chromeStyle === 'project';
   const dispatch = useInternalStateDispatch();
   const items = useInternalStateSelector(selectAllTabs);
   const recentlyClosedItems = useInternalStateSelector(selectRecentlyClosedTabs);
@@ -74,31 +81,41 @@ export const TabsView = (props: SingleTabViewProps) => {
     /**
      * AppMenuComponent handles responsiveness on its own, however, there are some edge cases e.g opening push flyout
      * where this might not be good enough.
+     *
+     * In project chrome, the top nav is registered with `chrome.setAppMenu` so it renders in the chrome AppMenuBar;
+     * the tabs strip does not duplicate it in `appendRight`.
      */
-    <EuiResizeObserver onResize={onResize}>
-      {(resizeRef) => (
-        <div ref={resizeRef} className="eui-fullHeight">
-          <UnifiedTabs
-            services={services}
-            items={items}
-            selectedItemId={currentTabId}
-            recentlyClosedItems={recentlyClosedItems}
-            unsavedItemIds={unsavedTabIds}
-            maxItemsCount={MAX_TABS_COUNT}
-            hideTabsBar={hideTabsBar}
-            createItem={createItem}
-            getPreviewData={getPreviewData}
-            renderContent={renderContent}
-            onChanged={onChanged}
-            onEBTEvent={onEvent}
-            onClearRecentlyClosed={onClearRecentlyClosed}
-            getAdditionalTabMenuItems={getAdditionalTabMenuItems}
-            appendRight={
-              <AppMenuComponent config={topNavMenuItems} isCollapsed={shouldCollapseAppMenu} />
-            }
-          />
-        </div>
-      )}
-    </EuiResizeObserver>
+    <>
+      {isProjectChrome && topNavMenuItems ? (
+        <AppMenu config={topNavMenuItems} setAppMenu={services.core.chrome.setAppMenu} />
+      ) : null}
+      <EuiResizeObserver onResize={onResize}>
+        {(resizeRef) => (
+          <div ref={resizeRef} className="eui-fullHeight">
+            <UnifiedTabs
+              services={services}
+              items={items}
+              selectedItemId={currentTabId}
+              recentlyClosedItems={recentlyClosedItems}
+              unsavedItemIds={unsavedTabIds}
+              maxItemsCount={MAX_TABS_COUNT}
+              hideTabsBar={hideTabsBar}
+              createItem={createItem}
+              getPreviewData={getPreviewData}
+              renderContent={renderContent}
+              onChanged={onChanged}
+              onEBTEvent={onEvent}
+              onClearRecentlyClosed={onClearRecentlyClosed}
+              getAdditionalTabMenuItems={getAdditionalTabMenuItems}
+              appendRight={
+                isProjectChrome ? undefined : (
+                  <AppMenuComponent config={topNavMenuItems} isCollapsed={shouldCollapseAppMenu} />
+                )
+              }
+            />
+          </div>
+        )}
+      </EuiResizeObserver>
+    </>
   );
 };

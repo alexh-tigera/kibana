@@ -9,6 +9,7 @@
 
 import type { FC, ReactNode } from 'react';
 import React, { useEffect } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import { AppMenu } from '@kbn/core-chrome-app-menu';
 import { internalStateActions, useInternalStateDispatch } from '../../state_management/redux';
 import { TabsBarVisibility } from '../../state_management/redux/types';
@@ -22,6 +23,7 @@ export const HideTabsBar: FC<{
 }> = ({ customizationContext, children }) => {
   const dispatch = useInternalStateDispatch();
   const { chrome } = useDiscoverServices();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
   const topNavMenuItems = useTopNavMenuItems();
 
   useEffect(() => {
@@ -36,10 +38,14 @@ export const HideTabsBar: FC<{
       {
         /**
          * The tabs bar renders the app menu, but it still needs to be shown when tabs are hidden
+         * (classic chrome only). In project chrome, `TabsView` / `SingleTabViewWithAppMenu` registers
+         * the same menu with `chrome.setAppMenu`.
          */
-        customizationContext.displayMode === 'standalone' && topNavMenuItems && (
-          <AppMenu config={topNavMenuItems} setAppMenu={chrome.setAppMenu} />
-        )
+        customizationContext.displayMode === 'standalone' &&
+          topNavMenuItems &&
+          chromeStyle === 'classic' && (
+            <AppMenu config={topNavMenuItems} setAppMenu={chrome.setAppMenu} />
+          )
       }
       {children}
     </>

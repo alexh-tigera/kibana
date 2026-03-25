@@ -230,7 +230,7 @@ export const useTopNavLinks = ({
           defaultMessage: 'ES|QL',
         }),
         iconType: 'editorCodeBlock',
-        color: 'success',
+        color: 'text',
         tooltipContent: i18n.translate('discover.localMenu.esqlTooltipLabel', {
           defaultMessage: `ES|QL is Elastic's powerful new piped query language.`,
         }),
