@@ -216,7 +216,18 @@ export function InternalDashboardTopNav({
           ...dashboardTitleBreadcrumbs,
         ]),
         {
-          project: { value: dashboardTitleBreadcrumbs },
+          project: {
+            value: [
+              {
+                text: getDashboardBreadcrumb(),
+                'data-test-subj': 'dashboardListingBreadcrumb',
+                onClick: () => {
+                  redirectTo({ destination: 'listing' });
+                },
+              },
+              ...dashboardTitleBreadcrumbs,
+            ],
+          },
         }
       );
     }

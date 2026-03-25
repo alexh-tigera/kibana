@@ -18,6 +18,8 @@ import {
   useHasLegacyActionMenu,
   useHasAppMenuConfig,
   useProjectBreadcrumbs,
+  useNavigateToUrl,
+  useBasePath,
 } from '../shared/chrome_hooks';
 
 const getAccessibleTitleFromBreadcrumb = (
@@ -36,6 +38,13 @@ const getAccessibleTitleFromBreadcrumb = (
 };
 
 const noop = () => {};
+
+const canNavigateToParent = (crumb: ChromeBreadcrumb | undefined): boolean => {
+  if (!crumb) {
+    return false;
+  }
+  return Boolean(crumb.onClick || crumb.href);
+};
 
 const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
   useMemo(() => {
@@ -66,7 +75,7 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
       display: 'flex',
       flexDirection: 'row' as const,
       alignItems: 'center',
-      gap: '8px',
+      gap: '4px',
     };
 
     const titleSection = {
@@ -128,8 +137,13 @@ export const AppMenuBar = React.memo(() => {
   const { euiTheme } = useEuiTheme();
   const styles = useAppMenuBarStyles(euiTheme);
   const hasAppMenuConfig = useHasAppMenuConfig();
+  const navigateToUrl = useNavigateToUrl();
+  const basePath = useBasePath();
   const breadcrumbs = useProjectBreadcrumbs();
   const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+  const parentBreadcrumb = breadcrumbs.length >= 2 ? breadcrumbs[breadcrumbs.length - 2] : undefined;
+  const showBackToParent =
+    Boolean(parentBreadcrumb) && canNavigateToParent(parentBreadcrumb);
   const titleContent = lastBreadcrumb?.text;
   const hasTitle = titleContent != null && titleContent !== '' && typeof titleContent !== 'boolean';
 
@@ -141,6 +155,35 @@ export const AppMenuBar = React.memo(() => {
       ? { 'aria-label': accessibleTitle }
       : {};
 
+  const parentAccessibleLabel = getAccessibleTitleFromBreadcrumb(parentBreadcrumb);
+  const backAriaLabel = parentAccessibleLabel
+    ? i18n.translate('core.ui.chrome.appMenu.backToPageAriaLabel', {
+        defaultMessage: 'Back to {pageTitle}',
+        values: { pageTitle: parentAccessibleLabel },
+      })
+    : i18n.translate('core.ui.chrome.appMenu.backButtonAriaLabel', {
+        defaultMessage: 'Back',
+      });
+
+  const onBackClick = (event: React.MouseEvent) => {
+    if (!parentBreadcrumb) {
+      return;
+    }
+    if (parentBreadcrumb.onClick) {
+      parentBreadcrumb.onClick(event as React.MouseEvent<HTMLElement>);
+      return;
+    }
+    if (parentBreadcrumb.href) {
+      event.preventDefault();
+      const { href } = parentBreadcrumb;
+      if (href.startsWith('http://') || href.startsWith('https://')) {
+        navigateToUrl(href);
+      } else {
+        navigateToUrl(basePath.prepend(href));
+      }
+    }
+  };
+
   return (
     <div
       className="header__actionMenu"
@@ -148,6 +191,19 @@ export const AppMenuBar = React.memo(() => {
       css={styles.root}
     >
       <div css={styles.leftCluster}>
+        {showBackToParent ? (
+          <EuiButtonIcon
+            aria-label={backAriaLabel}
+            color="text"
+            css={styles.iconButtonSubdued}
+            data-test-subj="kibanaProjectHeaderAppMenuBack"
+            display="empty"
+            iconType="chevronLimitLeft"
+            onClick={onBackClick}
+            size="xs"
+            type="button"
+          />
+        ) : null}
         <div css={styles.titleSection}>
           {hasTitle ? (
             typeof titleContent === 'string' ? (
