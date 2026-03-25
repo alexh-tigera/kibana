@@ -6,7 +6,9 @@
  */
 
 import React from 'react';
+import { BehaviorSubject } from 'rxjs';
 import { screen } from '@testing-library/react';
+import { coreMock } from '@kbn/core/public/mocks';
 
 import { renderWithTestingProviders } from '../../common/mock';
 import { CasesTableHeader } from './header';
@@ -20,6 +22,18 @@ describe('CasesTableHeader', () => {
     renderWithTestingProviders(<CasesTableHeader />);
 
     expect(screen.getByTestId('cases-all-title')).toBeInTheDocument();
+  });
+
+  it('does not render the in-page title when project chrome is active', () => {
+    const coreStart = coreMock.createStart();
+    coreStart.chrome.getChromeStyle$.mockReturnValue(new BehaviorSubject('project'));
+    coreStart.chrome.getChromeStyle.mockReturnValue('project');
+
+    renderWithTestingProviders(<CasesTableHeader />, {
+      wrapperProps: { coreStart },
+    });
+
+    expect(screen.queryByTestId('cases-all-title')).not.toBeInTheDocument();
   });
 
   it('does not render header action buttons (moved to chrome AppMenu)', () => {
