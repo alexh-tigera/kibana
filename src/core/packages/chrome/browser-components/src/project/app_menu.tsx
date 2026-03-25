@@ -75,7 +75,7 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme'], hasHeaderTabs: b
       justifyContent: 'flex-start',
       gap: 0,
       padding: `${euiTheme.size.m}`,
-      paddingBottom: euiTheme.size.s,
+      paddingLeft: 0,
       background: euiTheme.colors.backgroundBasePlain,
       borderBottom: euiTheme.border.thin,
       marginBottom: `-${euiTheme.border.width.thin}`,

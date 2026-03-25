@@ -23,9 +23,8 @@ const root = (chromeStyle: ChromeStyle = 'classic'): EmotionFn => {
       grid-area: application;
 
       height: calc(100% - ${layoutVar('application.marginBottom')} - ${euiTheme.size.s});
-      width: calc(100% - ${layoutVar('application.marginRight')} - ${euiTheme.size.s});
+      width: calc(100% - ${layoutVar('application.marginRight')});
       margin-top: ${euiTheme.size.s};
-      margin-left: ${euiTheme.size.s};
       margin-bottom: ${layoutVar('application.marginBottom')};
       margin-right: ${layoutVar('application.marginRight')};
 
@@ -60,7 +59,7 @@ const root = (chromeStyle: ChromeStyle = 'classic'): EmotionFn => {
       // only restrict overflow scroll on screen (not print) to allow for full page printing
       @media screen {
         ${euiOverflowScroll(useEuiTheme, { direction: 'y' })};
-        // reset the height back to respect the margin bottom and top inset
+        // reset the height back to respect the margin bottom and 8px top margin
         height: calc(100% - ${layoutVar('application.marginBottom')} - ${euiTheme.size.s});
       }
     `;
