@@ -75,7 +75,6 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme'], hasHeaderTabs: b
       justifyContent: 'flex-start',
       gap: 0,
       padding: `${euiTheme.size.m}`,
-      paddingLeft: 0,
       background: euiTheme.colors.backgroundBasePlain,
       borderBottom: euiTheme.border.thin,
       marginBottom: `-${euiTheme.border.width.thin}`,
@@ -313,7 +312,7 @@ export const AppMenuBar = React.memo(() => {
                 css={styles.iconButtonSubdued}
                 data-test-subj="kibanaProjectHeaderAppMenuBack"
                 display="empty"
-                iconType="chevronLimitLeft"
+                iconType="sortLeft"
                 onClick={onBackClick}
                 size="xs"
                 type="button"
