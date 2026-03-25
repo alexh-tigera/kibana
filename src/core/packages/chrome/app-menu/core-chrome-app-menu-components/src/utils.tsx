@@ -386,10 +386,10 @@ export const secondaryActionItemToMenuItem = (
 };
 
 /**
- * Strips `headerTabs` from `AppMenuConfig` so `AppMenuComponent` / chrome bar v2 only receive
- * action-menu fields.
+ * Strips project-only layout fields (`headerTabs`, `headerMetadata`) from `AppMenuConfig` so
+ * `AppMenuComponent` / chrome bar v2 only receive action-menu fields.
  */
 export const getAppMenuConfigWithoutHeaderTabs = (config: AppMenuConfig): AppMenuConfig => {
-  const { headerTabs: _headerTabs, ...rest } = config;
+  const { headerTabs: _headerTabs, headerMetadata: _headerMetadata, ...rest } = config;
   return rest;
 };

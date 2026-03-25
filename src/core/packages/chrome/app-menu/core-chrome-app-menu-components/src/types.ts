@@ -336,4 +336,10 @@ export interface AppMenuConfig {
    * Omitted when rendering {@link AppMenuComponent} so actions strip logic stays unchanged.
    */
   headerTabs?: AppMenuHeaderTab[];
+  /**
+   * Optional metadata row below the page title in project chrome application top bar.
+   * Each entry is typically `EuiText` with `size="xs"` (labels often use `<strong>`).
+   * Omitted when rendering {@link AppMenuComponent} so actions strip logic stays unchanged.
+   */
+  headerMetadata?: ReactNode[];
 }

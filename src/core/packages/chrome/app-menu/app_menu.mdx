@@ -82,3 +82,30 @@ const Example = ({ config }: Props) => {
   return <AppMenuComponent config={config} />;
 };
 ```
+
+## Project chrome: page header metadata
+
+In **project** chrome (`chromeStyle === 'project'`), the application top bar renders optional fields from `AppMenuConfig` that are not part of the action strip:
+
+- **`headerTabs`** — tabs below the page title.
+- **`headerMetadata`** — a secondary row **between** the title row and `headerTabs`, when present.
+
+`headerMetadata` is an array of `ReactNode` values. Each item is typically `EuiText` with `size="xs"`; use `<strong>` (or similar) inside the node for bold labels such as “Last updated”. Omit the field, pass an empty array, or pass only falsy entries to hide the row (it takes no vertical space).
+
+Clear metadata when navigating away by resetting app menu config in the same `useEffect` cleanup you use for `setAppMenu` (for example `chrome.setAppMenu(undefined)` or a config without `headerMetadata`).
+
+```tsx
+import { EuiText } from '@elastic/eui';
+import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
+
+const config: AppMenuConfig = {
+  headerMetadata: [
+    <EuiText size="xs" key="updated">
+      <strong>Last updated</strong> by elastic on Mar 24, 2026
+    </EuiText>,
+    <EuiText size="xs" key="created">
+      <strong>Created</strong> by elastic on Mar 24, 2026
+    </EuiText>,
+  ],
+};
+```

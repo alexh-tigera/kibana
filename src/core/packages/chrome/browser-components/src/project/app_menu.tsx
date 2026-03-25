@@ -16,7 +16,7 @@ import {
   type UseEuiTheme,
 } from '@elastic/eui';
 
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ChromeNavControl } from '@kbn/core-chrome-browser';
 import { i18n } from '@kbn/i18n';
 import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
@@ -54,10 +54,8 @@ const getAccessibleTitleFromBreadcrumb = (
 
 const noop = () => {};
 
-/** Matches project `layoutConfigs.project.applicationTopBarHeight` in grid_layout (single title row). */
+/** Fallback when `AppMenuBar` unmounts; matches `grid_layout` default `applicationTopBarHeight`. */
 const PROJECT_APP_MENU_BAR_HEIGHT_DEFAULT = 48;
-/** Room for title row + tabs row when `headerTabs` are set. */
-const PROJECT_APP_MENU_BAR_HEIGHT_WITH_TABS = 80;
 
 const canNavigateToParent = (crumb: ChromeBreadcrumb | undefined): boolean => {
   if (!crumb) {
@@ -68,7 +66,7 @@ const canNavigateToParent = (crumb: ChromeBreadcrumb | undefined): boolean => {
 
 const useAppMenuBarStyles = (
   euiTheme: UseEuiTheme['euiTheme'],
-  hasHeaderTabs: boolean,
+  hasSecondaryRow: boolean,
   showBackToParent: boolean
 ) =>
   useMemo(() => {
@@ -83,7 +81,6 @@ const useAppMenuBarStyles = (
       borderBottom: euiTheme.border.thin,
       marginBottom: `-${euiTheme.border.width.thin}`,
       minHeight: 0,
-      height: '100%',
       boxSizing: 'border-box' as const,
       '&:hover .appMenuBar__globalActions': {
         opacity: 1,
@@ -101,8 +98,8 @@ const useAppMenuBarStyles = (
       alignItems: 'center',
       justifyContent: 'flex-start',
       gap: euiTheme.size.s,
-      flex: hasHeaderTabs ? ('0 0 auto' as const) : ('1 1 auto' as const),
-      minHeight: hasHeaderTabs ? undefined : 0,
+      flex: hasSecondaryRow ? ('0 0 auto' as const) : ('1 1 auto' as const),
+      minHeight: hasSecondaryRow ? undefined : 0,
       minWidth: 0,
     };
 
@@ -167,6 +164,23 @@ const useAppMenuBarStyles = (
       marginLeft: 'auto',
     };
 
+    const metadataRow = {
+      display: 'flex',
+      flexDirection: 'row' as const,
+      alignItems: 'center',
+      flexWrap: 'wrap' as const,
+      gap: euiTheme.size.xl,
+      width: '100%',
+      flexShrink: 0,
+      minWidth: 0,
+      color: euiTheme.colors.textSubdued,
+    };
+
+    const metadataItem = {
+      minWidth: 0,
+      flexShrink: 1,
+    };
+
     const tabsRow = {
       display: 'flex',
       flexDirection: 'row' as const,
@@ -181,6 +195,8 @@ const useAppMenuBarStyles = (
       topRow,
       leftCluster,
       titleSection,
+      metadataRow,
+      metadataItem,
       tabsRow,
       globalActions,
       iconButtonSubdued,
@@ -189,7 +205,7 @@ const useAppMenuBarStyles = (
       menuSection,
       appBarChrome,
     };
-  }, [euiTheme, hasHeaderTabs, showBackToParent]);
+  }, [euiTheme, hasSecondaryRow, showBackToParent]);
 
 /**
  * Right-side nav controls use mount points; in project mode several plugins (e.g. per-solution AI
@@ -292,12 +308,19 @@ export const AppMenuBar = React.memo(() => {
   const appMenuConfig = useAppMenu();
   const headerTabs = appMenuConfig?.headerTabs;
   const hasHeaderTabs = Boolean(headerTabs?.length);
+  const headerMetadataItems = useMemo(
+    () => appMenuConfig?.headerMetadata?.filter(Boolean) ?? [],
+    [appMenuConfig?.headerMetadata]
+  );
+  const hasHeaderMetadata = headerMetadataItems.length > 0;
+  const hasSecondaryRow = hasHeaderTabs || hasHeaderMetadata;
+  const projectHeaderRef = useRef<HTMLDivElement>(null);
   const breadcrumbs = useProjectBreadcrumbs();
   const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
   const parentBreadcrumb =
     breadcrumbs.length >= 2 ? breadcrumbs[breadcrumbs.length - 2] : undefined;
   const showBackToParent = Boolean(parentBreadcrumb) && canNavigateToParent(parentBreadcrumb);
-  const styles = useAppMenuBarStyles(euiTheme, hasHeaderTabs, showBackToParent);
+  const styles = useAppMenuBarStyles(euiTheme, hasSecondaryRow, showBackToParent);
   const hasAppMenuConfig = useHasAppMenuConfig();
   const appBarControls = useProjectChromeRightControls('appBar');
   const appBarControlsWithExtension = useMemo(
@@ -309,16 +332,29 @@ export const AppMenuBar = React.memo(() => {
     [appBarControls]
   );
 
-  useEffect(() => {
-    updateLayout({
-      applicationTopBarHeight: hasHeaderTabs
-        ? PROJECT_APP_MENU_BAR_HEIGHT_WITH_TABS
-        : PROJECT_APP_MENU_BAR_HEIGHT_DEFAULT,
+  useLayoutEffect(() => {
+    const el = projectHeaderRef.current;
+    if (!el) {
+      return;
+    }
+
+    const syncHeight = () => {
+      const height = Math.ceil(el.getBoundingClientRect().height);
+      updateLayout({ applicationTopBarHeight: height });
+    };
+
+    const ro = new ResizeObserver(() => {
+      requestAnimationFrame(syncHeight);
     });
+
+    ro.observe(el);
+    syncHeight();
+
     return () => {
+      ro.disconnect();
       updateLayout({ applicationTopBarHeight: PROJECT_APP_MENU_BAR_HEIGHT_DEFAULT });
     };
-  }, [hasHeaderTabs, updateLayout]);
+  }, [updateLayout]);
   const navigateToUrl = useNavigateToUrl();
   const basePath = useBasePath();
   const navLinks = useNavLinks();
@@ -380,7 +416,12 @@ export const AppMenuBar = React.memo(() => {
   return (
     <>
       <HeaderPageAnnouncer breadcrumbs={breadcrumbs} />
-      <div className="header__actionMenu" data-test-subj="kibanaProjectHeader" css={styles.root}>
+      <div
+        ref={projectHeaderRef}
+        className="header__actionMenu"
+        data-test-subj="kibanaProjectHeader"
+        css={styles.root}
+      >
         <div css={styles.topRow}>
           <div css={styles.leftCluster}>
             {showBackToParent ? (
@@ -474,6 +515,15 @@ export const AppMenuBar = React.memo(() => {
             </div>
           ) : null}
         </div>
+        {hasHeaderMetadata ? (
+          <div data-test-subj="kibanaProjectHeaderMetadata" css={styles.metadataRow}>
+            {headerMetadataItems.map((node, index) => (
+              <div key={index} css={styles.metadataItem}>
+                {node}
+              </div>
+            ))}
+          </div>
+        ) : null}
         {headerTabs && headerTabs.length > 0 ? (
           <div css={styles.tabsRow}>
             <AppMenuBarHeaderTabs tabs={headerTabs} />
