@@ -61,6 +61,10 @@ export class CloudHandler extends ProjectHandler {
         kibana: {
           docker_image: dockerImageOverride,
         },
+        elasticsearch: {
+          docker_image:
+            'docker.elastic.co/elasticsearch-ci/elasticsearch-serverless:git-9902dc3bc00f',
+        },
       };
     } else if (commitOverride && !qualityGate) {
       const kibanaOverrideImage = `${commitOverride?.substring(0, 12)}`;
@@ -71,6 +75,10 @@ export class CloudHandler extends ProjectHandler {
       body.overrides = {
         kibana: {
           docker_image: `docker.elastic.co/kibana-ci/kibana-serverless:git-${kibanaOverrideImage}`,
+        },
+        elasticsearch: {
+          docker_image:
+            'docker.elastic.co/elasticsearch-ci/elasticsearch-serverless:git-9902dc3bc00f',
         },
       };
     }
