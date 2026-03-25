@@ -16,10 +16,11 @@ import {
   type UseEuiTheme,
 } from '@elastic/eui';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
 import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
 import type { AppMenuHeaderTab } from '@kbn/core-chrome-app-menu-components';
+import { useLayoutUpdate } from '@kbn/core-chrome-layout-components';
 import { HeaderAppMenu } from '../shared/header_app_menu';
 import { HeaderActionMenu } from '../shared/header_action_menu';
 import {
@@ -49,6 +50,11 @@ const getAccessibleTitleFromBreadcrumb = (
 
 const noop = () => {};
 
+/** Matches project `layoutConfigs.project.applicationTopBarHeight` in grid_layout (single title row). */
+const PROJECT_APP_MENU_BAR_HEIGHT_DEFAULT = 48;
+/** Room for title row + tabs row when `headerTabs` are set. */
+const PROJECT_APP_MENU_BAR_HEIGHT_WITH_TABS = 84;
+
 const canNavigateToParent = (crumb: ChromeBreadcrumb | undefined): boolean => {
   if (!crumb) {
     return false;
@@ -56,19 +62,22 @@ const canNavigateToParent = (crumb: ChromeBreadcrumb | undefined): boolean => {
   return Boolean(crumb.onClick || crumb.href);
 };
 
-const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
+const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme'], hasHeaderTabs: boolean) =>
   useMemo(() => {
     const root = {
       display: 'flex',
-      flexDirection: 'row' as const,
-      alignItems: 'center',
+      flexDirection: 'column' as const,
+      alignItems: 'stretch',
       justifyContent: 'flex-start',
-      gap: euiTheme.size.m,
+      gap: 0,
       padding: `${euiTheme.size.m}`,
+      paddingBottom: euiTheme.size.s,
       background: euiTheme.colors.backgroundBasePlain,
       borderBottom: euiTheme.border.thin,
       marginBottom: `-${euiTheme.border.width.thin}`,
+      minHeight: 0,
       height: '100%',
+      boxSizing: 'border-box' as const,
       '&:hover .appMenuBar__globalActions': {
         opacity: 1,
         pointerEvents: 'auto' as const,
@@ -77,6 +86,17 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
         opacity: 1,
         pointerEvents: 'auto' as const,
       },
+    };
+
+    const topRow = {
+      display: 'flex',
+      flexDirection: 'row' as const,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      gap: euiTheme.size.m,
+      flex: hasHeaderTabs ? ('0 0 auto' as const) : ('1 1 auto' as const),
+      minHeight: hasHeaderTabs ? undefined : 0,
+      minWidth: 0,
     };
 
     const leftCluster = {
@@ -130,32 +150,34 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
       alignItems: 'center',
     };
 
-    const tabsSection = {
-      flex: '1 1 auto',
-      minWidth: 0,
+    const tabsRow = {
       display: 'flex',
+      flexDirection: 'row' as const,
       alignItems: 'center',
+      width: '100%',
+      flexShrink: 0,
+      minWidth: 0,
     };
 
     return {
       root,
+      topRow,
       leftCluster,
       titleSection,
-      tabsSection,
+      tabsRow,
       globalActions,
       iconButtonSubdued,
       titleEuiTitle,
       titleEuiTitleReact,
       menuSection,
     };
-  }, [euiTheme]);
+  }, [euiTheme, hasHeaderTabs]);
 
 const AppMenuBarHeaderTabs = ({ tabs }: { tabs: AppMenuHeaderTab[] }) => (
   <EuiTabs
     bottomBorder={false}
-    size="s"
     data-test-subj="kibanaProjectHeaderAppMenuTabs"
-    css={{ marginBottom: 0 }}
+    css={{ marginBottom: 0, width: '100%' }}
   >
     {tabs.map((tab) => (
       <EuiTab
@@ -173,10 +195,23 @@ const AppMenuBarHeaderTabs = ({ tabs }: { tabs: AppMenuHeaderTab[] }) => (
 
 export const AppMenuBar = React.memo(() => {
   const { euiTheme } = useEuiTheme();
-  const styles = useAppMenuBarStyles(euiTheme);
+  const updateLayout = useLayoutUpdate();
   const appMenuConfig = useAppMenu();
   const headerTabs = appMenuConfig?.headerTabs;
+  const hasHeaderTabs = Boolean(headerTabs?.length);
+  const styles = useAppMenuBarStyles(euiTheme, hasHeaderTabs);
   const hasAppMenuConfig = useHasAppMenuConfig();
+
+  useEffect(() => {
+    updateLayout({
+      applicationTopBarHeight: hasHeaderTabs
+        ? PROJECT_APP_MENU_BAR_HEIGHT_WITH_TABS
+        : PROJECT_APP_MENU_BAR_HEIGHT_DEFAULT,
+    });
+    return () => {
+      updateLayout({ applicationTopBarHeight: PROJECT_APP_MENU_BAR_HEIGHT_DEFAULT });
+    };
+  }, [hasHeaderTabs, updateLayout]);
   const navigateToUrl = useNavigateToUrl();
   const basePath = useBasePath();
   const breadcrumbs = useProjectBreadcrumbs();
@@ -244,95 +279,97 @@ export const AppMenuBar = React.memo(() => {
       data-test-subj="kibanaProjectHeaderActionMenu"
       css={styles.root}
     >
-      <div css={styles.leftCluster}>
-        {showBackToParent ? (
-          <EuiButtonIcon
-            aria-label={backAriaLabel}
-            color="text"
-            css={styles.iconButtonSubdued}
-            data-test-subj="kibanaProjectHeaderAppMenuBack"
-            display="empty"
-            iconType="chevronLimitLeft"
-            onClick={onBackClick}
-            size="xs"
-            type="button"
-          />
-        ) : null}
-        <div css={styles.titleSection}>
-          {hasTitle ? (
-            typeof titleContent === 'string' ? (
+      <div css={styles.topRow}>
+        <div css={styles.leftCluster}>
+          {showBackToParent ? (
+            <EuiButtonIcon
+              aria-label={backAriaLabel}
+              color="text"
+              css={styles.iconButtonSubdued}
+              data-test-subj="kibanaProjectHeaderAppMenuBack"
+              display="empty"
+              iconType="chevronLimitLeft"
+              onClick={onBackClick}
+              size="xs"
+              type="button"
+            />
+          ) : null}
+          <div css={styles.titleSection}>
+            {hasTitle ? (
+              typeof titleContent === 'string' ? (
+                <EuiTitle size="xs" css={styles.titleEuiTitle}>
+                  <span className="eui-textTruncate" title={titleContent}>
+                    {titleContent}
+                  </span>
+                </EuiTitle>
+              ) : (
+                <EuiTitle size="xs" css={styles.titleEuiTitleReact} {...reactNodeAriaLabel}>
+                  <span className="eui-textTruncate">{titleContent}</span>
+                </EuiTitle>
+              )
+            ) : (
               <EuiTitle size="xs" css={styles.titleEuiTitle}>
-                <span className="eui-textTruncate" title={titleContent}>
-                  {titleContent}
+                <span className="eui-textTruncate" title={titleWhenNoProjectBreadcrumb}>
+                  {titleWhenNoProjectBreadcrumb}
                 </span>
               </EuiTitle>
-            ) : (
-              <EuiTitle size="xs" css={styles.titleEuiTitleReact} {...reactNodeAriaLabel}>
-                <span className="eui-textTruncate">{titleContent}</span>
-              </EuiTitle>
-            )
-          ) : (
-            <EuiTitle size="xs" css={styles.titleEuiTitle}>
-              <span className="eui-textTruncate" title={titleWhenNoProjectBreadcrumb}>
-                {titleWhenNoProjectBreadcrumb}
-              </span>
-            </EuiTitle>
-          )}
-        </div>
-        {headerTabs && headerTabs.length > 0 ? (
-          <div css={styles.tabsSection}>
-            <AppMenuBarHeaderTabs tabs={headerTabs} />
+            )}
           </div>
-        ) : null}
-        <div
-          className="appMenuBar__globalActions"
-          css={styles.globalActions}
-          data-test-subj="kibanaProjectHeaderAppMenuGlobalActions"
-        >
-          <EuiButtonIcon
-            aria-label={i18n.translate('core.ui.chrome.appMenu.editButtonAriaLabel', {
-              defaultMessage: 'Edit',
-            })}
-            color="text"
-            css={styles.iconButtonSubdued}
-            data-test-subj="kibanaProjectHeaderAppMenuEdit"
-            display="empty"
-            iconType="pencil"
-            onClick={noop}
-            size="xs"
-            type="button"
-          />
-          <EuiButtonIcon
-            aria-label={i18n.translate('core.ui.chrome.appMenu.shareButtonAriaLabel', {
-              defaultMessage: 'Share',
-            })}
-            color="text"
-            css={styles.iconButtonSubdued}
-            data-test-subj="kibanaProjectHeaderAppMenuShare"
-            display="empty"
-            iconType="share"
-            onClick={noop}
-            size="xs"
-            type="button"
-          />
-          <EuiButtonIcon
-            aria-label={i18n.translate('core.ui.chrome.appMenu.starButtonAriaLabel', {
-              defaultMessage: 'Favorite',
-            })}
-            color="text"
-            css={styles.iconButtonSubdued}
-            data-test-subj="kibanaProjectHeaderAppMenuStar"
-            display="empty"
-            iconType="starEmpty"
-            onClick={noop}
-            size="xs"
-            type="button"
-          />
+          <div
+            className="appMenuBar__globalActions"
+            css={styles.globalActions}
+            data-test-subj="kibanaProjectHeaderAppMenuGlobalActions"
+          >
+            <EuiButtonIcon
+              aria-label={i18n.translate('core.ui.chrome.appMenu.editButtonAriaLabel', {
+                defaultMessage: 'Edit',
+              })}
+              color="text"
+              css={styles.iconButtonSubdued}
+              data-test-subj="kibanaProjectHeaderAppMenuEdit"
+              display="empty"
+              iconType="pencil"
+              onClick={noop}
+              size="xs"
+              type="button"
+            />
+            <EuiButtonIcon
+              aria-label={i18n.translate('core.ui.chrome.appMenu.shareButtonAriaLabel', {
+                defaultMessage: 'Share',
+              })}
+              color="text"
+              css={styles.iconButtonSubdued}
+              data-test-subj="kibanaProjectHeaderAppMenuShare"
+              display="empty"
+              iconType="share"
+              onClick={noop}
+              size="xs"
+              type="button"
+            />
+            <EuiButtonIcon
+              aria-label={i18n.translate('core.ui.chrome.appMenu.starButtonAriaLabel', {
+                defaultMessage: 'Favorite',
+              })}
+              color="text"
+              css={styles.iconButtonSubdued}
+              data-test-subj="kibanaProjectHeaderAppMenuStar"
+              display="empty"
+              iconType="starEmpty"
+              onClick={noop}
+              size="xs"
+              type="button"
+            />
+          </div>
+        </div>
+        <div css={styles.menuSection}>
+          {hasAppMenuConfig ? <HeaderAppMenu /> : <HeaderActionMenu />}
         </div>
       </div>
-      <div css={styles.menuSection}>
-        {hasAppMenuConfig ? <HeaderAppMenu /> : <HeaderActionMenu />}
-      </div>
+      {headerTabs && headerTabs.length > 0 ? (
+        <div css={styles.tabsRow}>
+          <AppMenuBarHeaderTabs tabs={headerTabs} />
+        </div>
+      ) : null}
     </div>
   );
 });

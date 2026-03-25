@@ -50,6 +50,7 @@ const layoutConfigs: { classic: ChromeLayoutConfig; project: ChromeLayoutConfig 
 
     /** The application top bar renders the app specific menu */
     /** we use it only in project style, because in classic it is included as part of the global header */
+    /** Default height for the title row; `AppMenuBar` grows this when `headerTabs` are present. */
     applicationTopBarHeight: 48,
     applicationMarginRight: 8,
     applicationMarginBottom: 8,
