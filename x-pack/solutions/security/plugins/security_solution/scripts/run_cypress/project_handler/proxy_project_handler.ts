@@ -55,11 +55,18 @@ export class ProxyHandler extends ProjectHandler {
     const dockerImageOverride = process.env.KIBANA_DOCKER_IMAGE;
     const commitOverride = commit && commit !== '' ? commit : process.env.KIBANA_MKI_IMAGE_COMMIT;
 
+    const esDockerImage =
+      'docker.elastic.co/elasticsearch-ci/elasticsearch-serverless:git-9902dc3bc00f';
+
     if (dockerImageOverride && !qualityGate) {
       this.log.info(`Overriding Kibana image with KIBANA_DOCKER_IMAGE: ${dockerImageOverride}`);
+      this.log.info(`Overriding Elasticsearch image with: ${esDockerImage}`);
       body.overrides = {
         kibana: {
           docker_image: dockerImageOverride,
+        },
+        elasticsearch: {
+          docker_image: esDockerImage,
         },
       };
     } else if (commitOverride && !qualityGate) {
@@ -68,9 +75,13 @@ export class ProxyHandler extends ProjectHandler {
       this.log.info(
         `Overriding Kibana image in the MKI with docker.elastic.co/kibana-ci/kibana-serverless:git-${kibanaOverrideImage}`
       );
+      this.log.info(`Overriding Elasticsearch image with: ${esDockerImage}`);
       body.overrides = {
         kibana: {
           docker_image: `docker.elastic.co/kibana-ci/kibana-serverless:git-${kibanaOverrideImage}`,
+        },
+        elasticsearch: {
+          docker_image: esDockerImage,
         },
       };
     }
