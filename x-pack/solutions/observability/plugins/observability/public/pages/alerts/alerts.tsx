@@ -12,14 +12,22 @@ import type { FilterGroupHandler } from '@kbn/alerts-ui-shared';
 import type { BoolQuery, Filter } from '@kbn/es-query';
 import { usePageReady } from '@kbn/ebt-tools';
 import { i18n } from '@kbn/i18n';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
 import { loadRuleAggregations } from '@kbn/triggers-actions-ui-plugin/public';
 import { useBreadcrumbs } from '@kbn/observability-shared-plugin/public';
 import { OBSERVABILITY_RULE_TYPE_IDS_WITH_SUPPORTED_STACK_RULE_TYPES } from '@kbn/observability-shared-plugin/common';
 import { MaintenanceWindowCallout } from '@kbn/alerts-ui-shared/src/maintenance_window_callout';
 import { DEFAULT_APP_CATEGORIES } from '@kbn/core-application-common';
 import { AlertsGrouping } from '@kbn/alerts-grouping';
+import useObservable from 'react-use/lib/useObservable';
 
-import { rulesLocatorID, type RulesLocatorParams } from '@kbn/deeplinks-observability';
+import {
+  OBSERVABILITY_ONBOARDING_LOCATOR,
+  rulesLocatorID,
+  type ObservabilityOnboardingLocatorParams,
+  type RulesLocatorParams,
+} from '@kbn/deeplinks-observability';
 import { getIsExperimentalFeatureEnabled } from '@kbn/triggers-actions-ui-plugin/public';
 import { createUseRulesLink } from '../../hooks/create_use_rules_link';
 import { renderGroupPanel } from '../../components/alerts_table/grouping/render_group_panel';
@@ -51,7 +59,7 @@ import { getColumns } from '../../components/alerts_table/common/get_columns';
 import { HeaderMenu } from '../overview/components/header_menu/header_menu';
 import { buildEsQuery } from '../../utils/build_es_query';
 import type { RuleStatsState } from './components/rule_stats';
-import { renderRuleStats } from './components/rule_stats';
+import { renderRuleStats, RuleStatsMetricsRow } from './components/rule_stats';
 import { mergeBoolQueries } from './helpers/merge_bool_queries';
 import { GroupingToolbarControls } from '../../components/alerts_table/grouping/grouping_toolbar_controls';
 import { AlertsLoader } from './components/alerts_loader';
@@ -80,6 +88,7 @@ function InternalAlertsPage() {
     charts,
     dataViews,
     observabilityAIAssistant,
+    chrome,
     share: {
       url: { locators },
     },
@@ -97,6 +106,14 @@ function InternalAlertsPage() {
     },
   } = data;
   const { ObservabilityPageTemplate } = usePluginContext();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
+  const onboardingLocator = locators.get<ObservabilityOnboardingLocatorParams>(
+    OBSERVABILITY_ONBOARDING_LOCATOR
+  );
+  const addDataHref = onboardingLocator?.useUrl({});
+
   const [filterControls, setFilterControls] = useState<Filter[]>();
   const [controlApi, setControlApi] = useState<FilterGroupHandler | undefined>();
   const alertSearchBarStateProps = useAlertSearchBarStateContainer(ALERTS_URL_STORAGE_KEY, {
@@ -269,23 +286,70 @@ function InternalAlertsPage() {
 
   const manageRulesHref = useRulesLink().href;
 
+  const alertsAppMenuConfig = useMemo((): AppMenuConfig => {
+    const addDataLabel = i18n.translate('xpack.observability.home.addData', {
+      defaultMessage: 'Add data',
+    });
+    const manageRulesLabel = i18n.translate('xpack.observability.alerts.manageRulesButtonLabel', {
+      defaultMessage: 'Manage Rules',
+    });
+
+    const config: AppMenuConfig = {
+      layout: 'chromeBarV2',
+      primaryActionItem: {
+        id: 'observability-alerts-manage-rules',
+        label: manageRulesLabel,
+        iconType: 'tableOfContents',
+        testId: 'manageRulesPageButton',
+        href: manageRulesHref,
+        run: () => {
+          void application.navigateToUrl(manageRulesHref);
+        },
+      },
+    };
+
+    if (addDataHref) {
+      config.overflowOnlyItems = [
+        {
+          order: 1,
+          id: 'observability-alerts-add-data',
+          label: addDataLabel,
+          iconType: 'indexOpen',
+          href: addDataHref,
+          run: () => {
+            void application.navigateToUrl(addDataHref);
+          },
+        },
+      ];
+    }
+
+    return config;
+  }, [addDataHref, application, manageRulesHref]);
+
   return (
     <Provider value={alertSearchBarStateContainer}>
       <ObservabilityPageTemplate
         data-test-subj="alertsPageWithData"
-        pageHeader={{
-          pageTitle: (
-            <>{i18n.translate('xpack.observability.alertsTitle', { defaultMessage: 'Alerts' })} </>
-          ),
-          rightSideItems: renderRuleStats(
-            ruleStats,
-            manageRulesHref as string,
-            ruleStatsLoading,
-            locators.get<RulesLocatorParams>(rulesLocatorID)
-          ),
-        }}
+        pageHeader={
+          isProjectChrome
+            ? undefined
+            : {
+                pageTitle: (
+                  <>{i18n.translate('xpack.observability.alertsTitle', { defaultMessage: 'Alerts' })} </>
+                ),
+                rightSideItems: renderRuleStats(
+                  ruleStats,
+                  manageRulesHref as string,
+                  ruleStatsLoading,
+                  locators.get<RulesLocatorParams>(rulesLocatorID)
+                ),
+              }
+        }
       >
-        <HeaderMenu />
+        {isProjectChrome ? (
+          <AppMenu config={alertsAppMenuConfig} setAppMenu={chrome.setAppMenu} />
+        ) : null}
+        {!isProjectChrome ? <HeaderMenu /> : null}
         <EuiFlexGroup direction="column" gutterSize="m">
           <EuiFlexItem>
             <MaintenanceWindowCallout
@@ -315,6 +379,16 @@ function InternalAlertsPage() {
               }}
             />
             <EuiSpacer size="s" />
+            {isProjectChrome ? (
+              <>
+                <RuleStatsMetricsRow
+                  ruleStats={ruleStats}
+                  ruleStatsLoading={ruleStatsLoading}
+                  rulesLocator={locators.get<RulesLocatorParams>(rulesLocatorID)}
+                />
+                <EuiSpacer size="s" />
+              </>
+            ) : null}
           </EuiFlexItem>
           <EuiFlexItem>
             {hasInitialControlLoadingFinished ? (

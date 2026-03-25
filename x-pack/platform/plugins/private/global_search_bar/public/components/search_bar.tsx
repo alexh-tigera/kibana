@@ -12,17 +12,25 @@ import {
   EuiFlexItem,
   EuiFormLabel,
   EuiHeaderSectionItemButton,
+  EuiI18n,
   EuiIcon,
+  EuiModal,
+  EuiModalBody,
+  EuiModalFooter,
+  EuiSelectable,
   EuiText,
   EuiLoadingSpinner,
   EuiSelectableTemplateSitewide,
   euiSelectableTemplateSitewideRenderOptions,
+  useEuiMemoizedStyles,
   useEuiTheme,
   useEuiBreakpoint,
   mathWithUnits,
   useEuiMinBreakpoint,
 } from '@elastic/eui';
-import type { EuiSelectableOnChangeEvent } from '@elastic/eui/src/components/selectable/selectable';
+import { euiSelectableTemplateSitewideFormatOptions } from '@elastic/eui/lib/components/selectable/selectable_templates';
+import { euiSelectableTemplateSitewideStyles } from '@elastic/eui/lib/components/selectable/selectable_templates/selectable_template_sitewide.styles';
+import type { EuiSelectableOnChangeEvent } from '@elastic/eui/lib/components/selectable/selectable';
 import { css } from '@emotion/react';
 import { FormattedMessage } from '@kbn/i18n-react';
 import type { GlobalSearchFindParams, GlobalSearchResult } from '@kbn/global-search-plugin/public';
@@ -116,6 +124,13 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
       width: mathWithUnits(euiTheme.size.xxl, (x) => x * 15),
     },
   });
+
+  const sitewideTemplateStyles = useEuiMemoizedStyles(euiSelectableTemplateSitewideStyles);
+  const formattedOptions = useMemo(
+    () => euiSelectableTemplateSitewideFormatOptions(options, sitewideTemplateStyles),
+    [options, sitewideTemplateStyles]
+  );
+
   // Initialize searchableTypes data
   useEffect(() => {
     if (initialLoad) {
@@ -322,6 +337,8 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
         navigateToUrl(url);
       }
 
+      setIsVisible(false);
+
       (document.activeElement as HTMLElement).blur();
       if (searchRef) {
         clearField();
@@ -338,6 +355,11 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
   }`;
 
   useEvent('keydown', onKeyDown);
+
+  const closePalette = useCallback(() => {
+    reportEvent.searchBlur();
+    setIsVisible(false);
+  }, [reportEvent]);
 
   /*
    * Project sidenav: EuiIcon size "s" → euiTheme.size.m (12px). Size "m" → euiTheme.size.base (16px).
@@ -379,10 +401,7 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
           color="text"
           data-test-subj="nav-search-conceal"
           iconType="cross"
-          onClick={() => {
-            reportEvent.searchBlur();
-            setIsVisible(false);
-          }}
+          onClick={closePalette}
         />
       );
     }
@@ -399,6 +418,102 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
     }
   };
 
+  if (chromeStyle === 'project' && isVisible) {
+    return (
+      <>
+        <EuiModal
+          aria-label={i18nStrings.placeholderText}
+          data-test-subj="nav-search-command-palette"
+          initialFocus='[data-test-subj="nav-search-input"]'
+          maxWidth={800}
+          onClose={closePalette}
+          outsideClickCloses
+        >
+          <EuiModalBody>
+            <EuiSelectable
+              css={[
+                sitewideTemplateStyles.euiSelectableTemplateSitewide,
+                css`
+                  width: 100%;
+                `,
+              ]}
+              emptyMessage={<EmptyMessage />}
+              errorMessage={
+                searchCharLimitExceeded ? <SearchCharLimitExceededMessage {...props} /> : null
+              }
+              isLoading={isLoading}
+              isPreFiltered
+              listProps={{
+                className: 'eui-yScroll',
+                css: css`
+                  max-block-size: min(60vh, 480px);
+                `,
+                onFocusBadge: {
+                  iconSide: 'right',
+                  children: (
+                    <EuiI18n
+                      default="Go to"
+                      token="euiSelectableTemplateSitewide.onFocusBadgeGoTo"
+                    />
+                  ),
+                },
+                rowHeight: 68,
+                showIcons: false,
+              }}
+              noMatchesMessage={<PopoverPlaceholder basePath={props.basePathUrl} />}
+              onChange={onChange}
+              options={formattedOptions}
+              renderOption={(option) =>
+                euiSelectableTemplateSitewideRenderOptions(option, searchValue)
+              }
+              searchProps={{
+                append: getAppendForChromeStyle(),
+                autoFocus: true,
+                compressed: true,
+                'aria-label': i18nStrings.placeholderText,
+                'data-test-subj': 'nav-search-input',
+                fullWidth: true,
+                inputRef: setSearchRef,
+                onBlur: () => {
+                  reportEvent.searchBlur();
+                  setShowAppend(!searchValue.length);
+                },
+                onFocus: () => {
+                  reportEvent.searchFocus();
+                  setInitialLoad(true);
+                  setShowAppend(false);
+                },
+                onInput: (e: React.UIEvent<HTMLInputElement>) =>
+                  setSearchValue(e.currentTarget.value),
+                placeholder: i18nStrings.placeholderText,
+                value: searchValue,
+              }}
+              searchable
+              singleSelection
+            >
+              {(list, search) => (
+                <>
+                  {search}
+                  {list}
+                </>
+              )}
+            </EuiSelectable>
+          </EuiModalBody>
+          <EuiModalFooter>
+            <PopoverFooter />
+          </EuiModalFooter>
+        </EuiModal>
+        <EuiHeaderSectionItemButton
+          aria-label={i18nStrings.popoverButton}
+          data-test-subj="nav-search-expand"
+          onClick={closePalette}
+        >
+          <EuiIcon css={projectMagnifyIconCss} size="m" type="magnify" />
+        </EuiHeaderSectionItemButton>
+      </>
+    );
+  }
+
   return (
     <EuiSelectableTemplateSitewide
       isLoading={isLoading}
@@ -409,7 +524,7 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
       popoverButtonBreakpoints={['xs', 's']}
       singleSelection={true}
       renderOption={(option) => euiSelectableTemplateSitewideRenderOptions(option, searchValue)}
-      colorModes={chromeStyle !== 'project' ? { search: 'dark', popover: 'global' } : undefined}
+      colorModes={{ search: 'dark', popover: 'global' }}
       listProps={{
         className: 'eui-yScroll',
         css: css`
@@ -417,7 +532,7 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
         `,
       }}
       searchProps={{
-        autoFocus: chromeStyle === 'project',
+        autoFocus: false,
         value: searchValue,
         onInput: (e: React.UIEvent<HTMLInputElement>) => setSearchValue(e.currentTarget.value),
         'data-test-subj': 'nav-search-input',
@@ -449,15 +564,8 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
         panelStyle: { marginTop: '6px' },
       }}
       popoverButton={
-        <EuiHeaderSectionItemButton
-          aria-label={i18nStrings.popoverButton}
-          data-test-subj={chromeStyle === 'project' ? 'nav-search-expand' : undefined}
-        >
-          <EuiIcon
-            css={chromeStyle === 'project' ? projectMagnifyIconCss : undefined}
-            size="m"
-            type="magnify"
-          />
+        <EuiHeaderSectionItemButton aria-label={i18nStrings.popoverButton}>
+          <EuiIcon size="m" type="magnify" />
         </EuiHeaderSectionItemButton>
       }
       popoverFooter={<PopoverFooter />}

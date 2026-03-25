@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { EuiButtonEmpty, EuiStat } from '@elastic/eui';
+import { EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiStat } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import type { LocatorPublic } from '@kbn/share-plugin/common';
 import { euiThemeVars } from '@kbn/ui-theme';
@@ -58,12 +58,11 @@ const errorsLabel = i18n.translate('xpack.observability.alerts.ruleStats.errors'
   defaultMessage: 'Errors',
 });
 
-export const renderRuleStats = (
+function buildRuleStatElements(
   ruleStats: RuleStatsState,
-  manageRulesHref: string,
   ruleStatsLoading: boolean,
   rulesLocator?: LocatorPublic<RulesLocatorParams>
-) => {
+) {
   const handleNavigateToRules = async (stats: RuleStatsState, status: Status) => {
     const count = getStatCount(stats, status);
     if (count > 0) {
@@ -155,7 +154,8 @@ export const renderRuleStats = (
       />
     </ConditionalWrap>
   );
-  return [
+
+  const ruleCountStat = (
     <StyledStat
       title={ruleStats.total}
       description={i18n.translate('xpack.observability.alerts.ruleStats.ruleCount', {
@@ -165,7 +165,50 @@ export const renderRuleStats = (
       titleSize="xs"
       isLoading={ruleStatsLoading}
       data-test-subj="statRuleCount"
-    />,
+    />
+  );
+
+  return {
+    ruleCountStat,
+    disabledStatsComponent,
+    snoozedStatsComponent,
+    errorStatsComponent,
+  };
+}
+
+export function RuleStatsMetricsRow({
+  ruleStats,
+  ruleStatsLoading,
+  rulesLocator,
+}: {
+  ruleStats: RuleStatsState;
+  ruleStatsLoading: boolean;
+  rulesLocator?: LocatorPublic<RulesLocatorParams>;
+}) {
+  const { ruleCountStat, disabledStatsComponent, snoozedStatsComponent, errorStatsComponent } =
+    buildRuleStatElements(ruleStats, ruleStatsLoading, rulesLocator);
+
+  return (
+    <EuiFlexGroup gutterSize="m" responsive={false} wrap alignItems="center" data-test-subj="o11yAlertsRuleStatsRow">
+      <EuiFlexItem grow={false}>{ruleCountStat}</EuiFlexItem>
+      <EuiFlexItem grow={false}>{disabledStatsComponent}</EuiFlexItem>
+      <EuiFlexItem grow={false}>{snoozedStatsComponent}</EuiFlexItem>
+      <EuiFlexItem grow={false}>{errorStatsComponent}</EuiFlexItem>
+    </EuiFlexGroup>
+  );
+}
+
+export const renderRuleStats = (
+  ruleStats: RuleStatsState,
+  manageRulesHref: string,
+  ruleStatsLoading: boolean,
+  rulesLocator?: LocatorPublic<RulesLocatorParams>
+) => {
+  const { ruleCountStat, disabledStatsComponent, snoozedStatsComponent, errorStatsComponent } =
+    buildRuleStatElements(ruleStats, ruleStatsLoading, rulesLocator);
+
+  return [
+    ruleCountStat,
     disabledStatsComponent,
     snoozedStatsComponent,
     errorStatsComponent,
