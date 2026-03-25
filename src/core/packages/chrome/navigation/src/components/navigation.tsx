@@ -7,11 +7,11 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { useState, type ReactNode } from 'react';
+import React, { useMemo, useState, type ReactNode } from 'react';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { css } from '@emotion/react';
 import { i18n } from '@kbn/i18n';
-import { useIsWithinBreakpoints } from '@elastic/eui';
+import { useEuiTheme, useIsWithinBreakpoints } from '@elastic/eui';
 
 import type { NavigationStructure, SideNavLogo, MenuItem, SecondaryMenuItem } from '../../types';
 import {
@@ -97,6 +97,7 @@ export const Navigation = ({
   projectChromeFooter,
   ...rest
 }: NavigationProps) => {
+  const { euiTheme } = useEuiTheme();
   const forcedCollapsed = useIsWithinBreakpoints(['xs', 's']);
   const isCollapsed = forcedCollapsed || isCollapsedProp;
   const popoverItemPrefix = `${NAVIGATION_SELECTOR_PREFIX}-popoverItem`;
@@ -128,6 +129,16 @@ export const Navigation = ({
 
   useLayoutWidth({ isCollapsed, isSidePanelOpen, setWidth });
 
+  const projectChromeLogoClusterStyles = useMemo(
+    () => css`
+      display: flex;
+      flex-direction: column;
+      gap: ${euiTheme.size.xs};
+      width: 100%;
+    `,
+    [euiTheme]
+  );
+
   // Create the collapse button if a toggle callback is provided or if the navigation is not forced to be collapsed (e.g. on mobile)
   const collapseButton =
     onToggleCollapsed && !forcedCollapsed ? (
@@ -141,14 +152,27 @@ export const Navigation = ({
       id={NAVIGATION_ROOT_SELECTOR}
     >
       <SideNav isCollapsed={isCollapsed}>
-        {projectChromeTop}
-        <SideNav.Logo
-          isCollapsed={isCollapsed}
-          isCurrent={actualActiveItemId === logo.id}
-          isHighlighted={visuallyActivePageId === logo.id}
-          onClick={() => onItemClick?.(logo)}
-          {...logo}
-        />
+        {projectChromeTop ? (
+          <div css={projectChromeLogoClusterStyles}>
+            {projectChromeTop}
+            <SideNav.Logo
+              isCollapsed={isCollapsed}
+              isCurrent={actualActiveItemId === logo.id}
+              isHighlighted={visuallyActivePageId === logo.id}
+              hasProjectChromeAbove
+              onClick={() => onItemClick?.(logo)}
+              {...logo}
+            />
+          </div>
+        ) : (
+          <SideNav.Logo
+            isCollapsed={isCollapsed}
+            isCurrent={actualActiveItemId === logo.id}
+            isHighlighted={visuallyActivePageId === logo.id}
+            onClick={() => onItemClick?.(logo)}
+            {...logo}
+          />
+        )}
 
         <SideNav.PrimaryMenu ref={primaryMenuRef} isCollapsed={isCollapsed}>
           {({ mainNavigationInstructionsId }) => (

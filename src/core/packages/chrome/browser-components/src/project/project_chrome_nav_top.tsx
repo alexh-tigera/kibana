@@ -39,7 +39,7 @@ export const ProjectChromeNavTop = React.memo(() => {
         flex-direction: column;
         align-items: stretch;
         width: 100%;
-        padding-bottom: ${euiTheme.size.s};
+        margin-top: ${euiTheme.size.m};
       `}
       data-test-subj="kibanaProjectChromeNavTop"
     >
