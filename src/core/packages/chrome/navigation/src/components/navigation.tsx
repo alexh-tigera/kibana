@@ -74,6 +74,14 @@ export interface NavigationProps {
    * (optional) data-test-subj attribute for testing purposes.
    */
   'data-test-subj'?: string;
+  /**
+   * Renders above the solution logo (e.g. project chrome: Elastic logo, space, search).
+   */
+  projectChromeTop?: ReactNode;
+  /**
+   * Renders after solution footer items, before the collapse control (e.g. profile + help).
+   */
+  projectChromeFooter?: ReactNode;
 }
 
 export const Navigation = ({
@@ -85,6 +93,8 @@ export const Navigation = ({
   onToggleCollapsed,
   setWidth,
   sidePanelFooter,
+  projectChromeTop,
+  projectChromeFooter,
   ...rest
 }: NavigationProps) => {
   const forcedCollapsed = useIsWithinBreakpoints(['xs', 's']);
@@ -131,6 +141,7 @@ export const Navigation = ({
       id={NAVIGATION_ROOT_SELECTOR}
     >
       <SideNav isCollapsed={isCollapsed}>
+        {projectChromeTop}
         <SideNav.Logo
           isCollapsed={isCollapsed}
           isCurrent={actualActiveItemId === logo.id}
@@ -341,7 +352,11 @@ export const Navigation = ({
           )}
         </SideNav.PrimaryMenu>
 
-        <SideNav.Footer isCollapsed={isCollapsed} collapseButton={collapseButton}>
+        <SideNav.Footer
+          isCollapsed={isCollapsed}
+          collapseButton={collapseButton}
+          chromeFooter={projectChromeFooter}
+        >
           {({ footerNavigationInstructionsId }) => (
             <>
               {items.footerItems.slice(0, MAX_FOOTER_ITEMS).map((item, index) => {

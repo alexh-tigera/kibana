@@ -104,6 +104,7 @@ export class FeedbackPlugin implements Plugin {
 
     core.chrome.navControls.registerRight({
       order: 1001,
+      projectChrome: 'helpMenuExtras',
       content: (
         <Suspense fallback={null}>
           <LazyFeedbackTriggerButton

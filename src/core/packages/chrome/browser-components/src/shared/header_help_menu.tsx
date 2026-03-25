@@ -7,12 +7,13 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { Fragment, useState, useCallback, useMemo } from 'react';
+import React, { Fragment, useState, useCallback, useMemo, type ReactNode } from 'react';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import type { EuiButtonEmptyProps } from '@elastic/eui';
 import {
   EuiButtonEmpty,
+  EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiHeaderSectionItemButton,
@@ -78,7 +79,21 @@ const createCustomLink = (
   );
 };
 
-export const HeaderHelpMenu = () => {
+export interface HeaderHelpMenuProps {
+  /**
+   * Extra content rendered in the menu (e.g. news + feedback in project sidenav).
+   */
+  projectChromeExtras?: ReactNode;
+  /**
+   * `navFooter` uses a compact trigger suited to the project sidenav footer.
+   */
+  displayMode?: 'header' | 'navFooter';
+}
+
+export const HeaderHelpMenu = ({
+  projectChromeExtras,
+  displayMode = 'header',
+}: HeaderHelpMenuProps) => {
   const navigateToUrl = useNavigateToUrl();
   const docLinks = useDocLinks();
   const { euiTheme } = useEuiTheme();
@@ -225,25 +240,40 @@ export const HeaderHelpMenu = () => {
     );
   }
 
-  const button = (
-    <EuiHeaderSectionItemButton
-      aria-expanded={isOpen}
-      aria-haspopup="true"
-      aria-label={i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuButtonAriaLabel', {
-        defaultMessage: 'Help menu',
-      })}
-      onClick={toggleMenu}
-    >
-      <EuiIcon type="question" size="m" aria-hidden={true} />
-    </EuiHeaderSectionItemButton>
-  );
+  const helpAriaLabel = i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuButtonAriaLabel', {
+    defaultMessage: 'Help menu',
+  });
+
+  const button =
+    displayMode === 'navFooter' ? (
+      <EuiButtonIcon
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label={helpAriaLabel}
+        color="text"
+        data-test-subj="helpMenuButton"
+        display="empty"
+        iconType="question"
+        onClick={toggleMenu}
+        size="s"
+      />
+    ) : (
+      <EuiHeaderSectionItemButton
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label={helpAriaLabel}
+        data-test-subj="helpMenuButton"
+        onClick={toggleMenu}
+      >
+        <EuiIcon type="question" size="m" aria-hidden={true} />
+      </EuiHeaderSectionItemButton>
+    );
 
   return (
     <EuiPopover
-      anchorPosition="downRight"
+      anchorPosition={displayMode === 'navFooter' ? 'right' : 'downRight'}
       button={button}
       closePopover={closeMenu}
-      data-test-subj="helpMenuButton"
       id="headerHelpMenu"
       isOpen={isOpen}
       repositionOnScroll
@@ -277,6 +307,12 @@ export const HeaderHelpMenu = () => {
       <div style={{ maxWidth: 240 }}>
         {globalCustomContent}
         {defaultContent}
+        {projectChromeExtras ? (
+          <>
+            <EuiSpacer size="s" />
+            {projectChromeExtras}
+          </>
+        ) : null}
         {customContent && (
           <>
             <EuiPopoverFooter css={euiThemePadding} />

@@ -23,7 +23,12 @@ export type {
   ChromeHelpExtensionMenuDocumentationLink,
   ChromeGlobalHelpExtensionMenuLink,
 } from './help_extension';
-export type { ChromeNavControls, ChromeNavControl, ChromeHelpMenuLink } from './nav_controls';
+export type {
+  ChromeNavControls,
+  ChromeNavControl,
+  ChromeHelpMenuLink,
+  ChromeNavControlProjectChrome,
+} from './nav_controls';
 export type { ChromeNavLinks, ChromeNavLink } from './nav_links';
 export type {
   ChromeRecentlyAccessed,

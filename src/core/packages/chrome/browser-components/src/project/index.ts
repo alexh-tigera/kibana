@@ -8,3 +8,6 @@
  */
 
 export { ProjectHeader } from './header';
+export { ProjectChromeNavTop } from './project_chrome_nav_top';
+export { ProjectChromeNavFooter } from './project_chrome_nav_footer';
+export { ProjectElasticLogo } from './project_elastic_logo';

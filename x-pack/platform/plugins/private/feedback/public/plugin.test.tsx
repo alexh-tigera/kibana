@@ -33,6 +33,7 @@ describe('Feedback Plugin', () => {
       const [[{ content }]] = coreStartMock.chrome.navControls.registerRight.mock.calls;
       expect(coreStartMock.chrome.navControls.registerRight).toHaveBeenCalledWith({
         order: 1001,
+        projectChrome: 'helpMenuExtras',
         content: expect.anything(),
       });
       expect(React.isValidElement(content)).toBe(true);

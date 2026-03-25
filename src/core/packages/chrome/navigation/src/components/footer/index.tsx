@@ -59,6 +59,10 @@ export interface FooterProps {
   children: FooterChildren;
   isCollapsed: boolean;
   collapseButton?: ReactNode;
+  /**
+   * Renders after solution `footerItems` and before the collapse divider + toggle (e.g. project chrome).
+   */
+  chromeFooter?: ReactNode;
 }
 
 interface FooterComponent
@@ -67,7 +71,7 @@ interface FooterComponent
 }
 
 const FooterBase = forwardRef<HTMLElement, FooterProps>(
-  ({ children, isCollapsed, collapseButton }, ref) => {
+  ({ children, isCollapsed, collapseButton, chromeFooter }, ref) => {
     const euiThemeContext = useEuiTheme();
     const footerNavigationInstructionsId = useGeneratedHtmlId({
       prefix: 'footer-navigation-instructions',
@@ -120,6 +124,7 @@ const FooterBase = forwardRef<HTMLElement, FooterProps>(
           data-test-subj={`${NAVIGATION_SELECTOR_PREFIX}-footer`}
         >
           {renderChildren()}
+          {chromeFooter}
           {collapseButton && (
             <>
               <EuiHorizontalRule margin="xs" css={wrapperStyles.collapseDivider} />

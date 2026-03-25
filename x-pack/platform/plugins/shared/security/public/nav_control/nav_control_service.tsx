@@ -107,6 +107,7 @@ export class SecurityNavControlService {
   private registerSecurityNavControl(core: CoreStart, authc: AuthenticationServiceSetup) {
     core.chrome.navControls.registerRight({
       order: 4000,
+      projectChrome: 'navFooterProfile',
       content: (
         <Providers services={core} authc={authc} securityApiClients={this.securityApiClients}>
           <SecurityNavControl

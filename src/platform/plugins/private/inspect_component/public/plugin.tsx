@@ -55,6 +55,7 @@ export class InspectComponentPluginPublic implements Plugin<void, PluginStartDep
     } else {
       core.chrome.navControls.registerRight({
         order: 1002,
+        projectChrome: 'appBar',
         content: inspectButton('header'),
       });
     }

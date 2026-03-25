@@ -50,6 +50,7 @@ export class NewsfeedPublicPlugin
     const api = this.createNewsfeedApi(this.config, NewsfeedApiEndpoint.KIBANA, isScreenshotMode);
     core.chrome.navControls.registerRight({
       order: 1000,
+      projectChrome: 'helpMenuExtras',
       content: (
         <NewsfeedNavButton
           newsfeedApi={api}

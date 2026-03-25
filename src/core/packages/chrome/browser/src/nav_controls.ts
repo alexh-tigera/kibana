@@ -11,6 +11,16 @@ import type { ReactNode } from 'react';
 import type { Observable } from 'rxjs';
 import type { MountPoint } from '@kbn/core-mount-utils-browser';
 
+/**
+ * Where a right-side nav control appears when chrome style is `project`.
+ * Left/center controls always render in the project sidenav top cluster.
+ * @public
+ */
+export type ChromeNavControlProjectChrome =
+  | 'navFooterProfile'
+  | 'helpMenuExtras'
+  | 'appBar';
+
 /** @public */
 export interface ChromeNavControl {
   order?: number;
@@ -22,6 +32,11 @@ export interface ChromeNavControl {
    * @deprecated Use {@link ChromeNavControl.content} instead.
    */
   mount?: MountPoint;
+  /**
+   * Placement for `chromeStyle === 'project'` (right-side controls only).
+   * When omitted, project mode treats the control as `appBar`.
+   */
+  projectChrome?: ChromeNavControlProjectChrome;
 }
 
 /** @public */

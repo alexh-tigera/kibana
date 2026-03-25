@@ -10,12 +10,14 @@
 import { useMemo } from 'react';
 import { combineLatest, debounceTime, map } from 'rxjs';
 import type { Observable } from 'rxjs';
+import { sortBy } from 'lodash';
 import type {
   ChromeBreadcrumb,
   ChromeGlobalHelpExtensionMenuLink,
   ChromeHelpExtension,
   ChromeHelpMenuLink,
   ChromeNavControl,
+  ChromeNavControlProjectChrome,
   ChromeNavLink,
 } from '@kbn/core-chrome-browser';
 import type { ApplicationStart } from '@kbn/core-application-browser';
@@ -39,7 +41,7 @@ export function useClassicBreadcrumbs(): ChromeBreadcrumb[] {
 
 /**
  * Returns the current project-style breadcrumbs derived from the active
- * navigation tree node. Used by `ProjectHeader`.
+ * navigation tree node. Used by the project AppBar title.
  */
 export function useProjectBreadcrumbs(): ChromeBreadcrumb[] {
   const chrome = useChromeService();
@@ -150,6 +152,31 @@ const navControlGetters: Record<
 export function useNavControls(position: NavControlPosition): ChromeNavControl[] {
   const chrome = useChromeService();
   const controls$ = useMemo(() => navControlGetters[position](chrome), [chrome, position]);
+  return useObservable(controls$, []);
+}
+
+const getProjectChromePlacement = (control: ChromeNavControl): ChromeNavControlProjectChrome =>
+  control.projectChrome ?? 'appBar';
+
+/**
+ * Right-side nav controls filtered by {@link ChromeNavControl.projectChrome} for project layout.
+ */
+export function useProjectChromeRightControls(
+  placement: ChromeNavControlProjectChrome
+): ChromeNavControl[] {
+  const chrome = useChromeService();
+  const controls$ = useMemo(
+    () =>
+      chrome.navControls.getRight$().pipe(
+        map((controls) =>
+          sortBy(
+            controls.filter((c) => getProjectChromePlacement(c) === placement),
+            'order'
+          )
+        )
+      ),
+    [chrome, placement]
+  );
   return useObservable(controls$, []);
 }
 

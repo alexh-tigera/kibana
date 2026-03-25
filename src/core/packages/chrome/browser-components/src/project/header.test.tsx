@@ -10,14 +10,15 @@
 import { render, screen, act } from '@testing-library/react';
 import React from 'react';
 import { createMockChromeComponentsDeps, TestChromeProviders } from '../test_helpers';
-import { ProjectHeader } from './header';
+import { ProjectChromeNavTop } from './project_chrome_nav_top';
+import { ProjectElasticLogo } from './project_elastic_logo';
 
-describe('Header', () => {
-  it('renders', async () => {
+describe('Project chrome nav', () => {
+  it('renders Elastic logo in the sidenav top cluster', async () => {
     const deps = createMockChromeComponentsDeps();
     render(
       <TestChromeProviders deps={deps}>
-        <ProjectHeader />
+        <ProjectChromeNavTop />
       </TestChromeProviders>
     );
 
@@ -28,7 +29,7 @@ describe('Header', () => {
     const deps = createMockChromeComponentsDeps();
     const { queryByTestId } = render(
       <TestChromeProviders deps={deps}>
-        <ProjectHeader />
+        <ProjectElasticLogo />
       </TestChromeProviders>
     );
 

@@ -96,7 +96,7 @@ export const SecurityNavControl: FunctionComponent<SecurityNavControlProps> = ({
       })}
       onClick={() => setIsPopoverOpen((value) => (currentUser.value ? !value : false))}
       data-test-subj="userMenuButton"
-      style={{ lineHeight: 'normal' }}
+      style={{ lineHeight: 'normal', paddingInline: 0 }}
     >
       {userProfile.value ? (
         <UserAvatar
