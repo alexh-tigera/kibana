@@ -7,7 +7,11 @@
 
 import { EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiLoadingSpinner } from '@elastic/eui';
 import { AppMenu } from '@kbn/core-chrome-app-menu';
-import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
+import type {
+  AppMenuConfig,
+  AppMenuItemType,
+  AppMenuSecondaryActionItem,
+} from '@kbn/core-chrome-app-menu-components';
 import type { ObservabilityOnboardingLocatorParams } from '@kbn/deeplinks-observability';
 import { OBSERVABILITY_ONBOARDING_LOCATOR } from '@kbn/deeplinks-observability';
 import { RuleTypeModal } from '@kbn/response-ops-rule-form';
@@ -136,46 +140,53 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
       defaultMessage: 'Add data',
     });
 
-    const config: AppMenuConfig = {};
-
-    config.primaryActionItem = {
-      id: 'observability-rules-create-rule',
-      label: createRuleLabel,
-      iconType: 'plusInCircle',
-      testId: 'createRuleButton',
-      disableButton: !authorizedToCreateAnyRules,
-      run: () => {
-        setRuleTypeModalVisibility(true);
+    const config: AppMenuConfig = {
+      layout: 'chromeBarV2',
+      primaryActionItem: {
+        id: 'observability-rules-create-rule',
+        label: createRuleLabel,
+        iconType: 'plusInCircle',
+        testId: 'createRuleButton',
+        disableButton: !authorizedToCreateAnyRules,
+        run: () => {
+          setRuleTypeModalVisibility(true);
+        },
       },
     };
 
+    const overflowOnlyItems: AppMenuItemType[] = [];
+
+    if (addDataHref) {
+      overflowOnlyItems.push({
+        order: 1,
+        id: 'observability-rules-add-data',
+        label: addDataLabel,
+        iconType: 'indexOpen',
+        href: addDataHref,
+        run: () => {
+          void application.navigateToUrl(addDataHref);
+        },
+      });
+    }
+
     if (showRulesSettingsInChrome) {
-      config.secondaryActionItem = {
+      const settingsSecondary: AppMenuSecondaryActionItem = {
         id: 'observability-rules-settings',
         label: i18n.translate('xpack.triggersActionsUI.rulesSettings.link.title', {
           defaultMessage: 'Settings',
         }),
         iconType: 'gear',
         testId: 'rulesSettingsLink',
+        isFilled: false,
         run: () => {
           setIsRulesSettingsFlyoutVisible(true);
         },
       };
+      config.secondaryActionItems = [settingsSecondary];
     }
 
-    if (addDataHref) {
-      config.items = [
-        {
-          order: 1,
-          id: 'observability-rules-add-data',
-          label: addDataLabel,
-          iconType: 'indexOpen',
-          href: addDataHref,
-          run: () => {
-            void application.navigateToUrl(addDataHref);
-          },
-        },
-      ];
+    if (overflowOnlyItems.length > 0) {
+      config.overflowOnlyItems = overflowOnlyItems;
     }
 
     return config;

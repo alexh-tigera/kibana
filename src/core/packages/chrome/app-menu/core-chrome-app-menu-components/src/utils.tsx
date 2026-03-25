@@ -20,6 +20,7 @@ import { AppMenuPopoverActionButtons } from './components/app_menu_popover_actio
 import type {
   AppMenuConfig,
   AppMenuItemCommon,
+  AppMenuItemType,
   AppMenuPopoverItem,
   AppMenuPrimaryActionItem,
   AppMenuSecondaryActionItem,
@@ -344,4 +345,42 @@ export const getIsSelectedColor = ({
   )}Hover` as keyof typeof euiTheme.components.buttons;
 
   return euiTheme.components.buttons[colorKey] || euiTheme.colors.backgroundBaseInteractiveHover;
+};
+
+export const isChromeBarV2Layout = (config: AppMenuConfig): boolean =>
+  config.layout === 'chromeBarV2';
+
+/**
+ * Secondary actions for chromeBarV2: explicit array wins; else legacy single slot.
+ */
+export const getSecondaryActionItemsForChromeBarV2 = (
+  config: AppMenuConfig
+): AppMenuSecondaryActionItem[] => {
+  if (config.secondaryActionItems?.length) {
+    return config.secondaryActionItems;
+  }
+  if (config.secondaryActionItem) {
+    return [config.secondaryActionItem];
+  }
+  return [];
+};
+
+export const getSortedOverflowOnlyItems = (config: AppMenuConfig): AppMenuItemType[] => {
+  if (!config.overflowOnlyItems?.length) {
+    return [];
+  }
+  return [...config.overflowOnlyItems].sort((a, b) => a.order - b.order);
+};
+
+/**
+ * Fold a secondary strip action into a popover row (narrow / collapsed layouts).
+ */
+export const secondaryActionItemToMenuItem = (
+  item: AppMenuSecondaryActionItem,
+  order: number
+): AppMenuItemType => {
+  const { isFilled, minWidth, ...rest } = item;
+  void isFilled;
+  void minWidth;
+  return { ...rest, order };
 };

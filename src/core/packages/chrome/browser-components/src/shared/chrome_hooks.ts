@@ -265,7 +265,8 @@ export function useHasLegacyActionMenu(): boolean {
 
 /**
  * Whether the current app menu (registered via `chrome.setAppMenu()`) has any actions.
- * Matches AppMenuComponent: `items`, `primaryActionItem`, or `secondaryActionItem`.
+ * Matches AppMenuComponent: `items`, `primaryActionItem`, `secondaryActionItem`,
+ * and chromeBarV2 fields (`secondaryActionItems`, `overflowOnlyItems`).
  */
 export function useHasAppMenuConfig(): boolean {
   const config = useAppMenu();
@@ -275,7 +276,9 @@ export function useHasAppMenuConfig(): boolean {
   return Boolean(
     (config.items && config.items.length > 0) ||
       config.primaryActionItem ||
-      config.secondaryActionItem
+      config.secondaryActionItem ||
+      (config.layout === 'chromeBarV2' &&
+        ((config.secondaryActionItems?.length ?? 0) > 0 || (config.overflowOnlyItems?.length ?? 0) > 0))
   );
 }
 

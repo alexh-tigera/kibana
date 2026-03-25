@@ -1,7 +1,7 @@
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the "Elastic License
- * 2.0", the "GNU Affero General Public License v3.0 only", and the "Server Side
+ * 2.0", "GNU Affero General Public License v3.0 only", and the "Server Side
  * Public License v 1"; you may not use this file except in compliance with, at
  * your election, the "Elastic License 2.0", the "GNU Affero General Public
  * License v3.0 only", or the "Server Side Public License, v 1".
@@ -9,7 +9,8 @@
 
 import React, { useState } from 'react';
 import { EuiHeaderLinks, useIsWithinBreakpoints } from '@elastic/eui';
-import { getAppMenuItems } from '../utils';
+import { getAppMenuItems, isChromeBarV2Layout } from '../utils';
+import { AppMenuChromeBarV2Collapsed, AppMenuChromeBarV2Wide } from './app_menu_chrome_bar_v2';
 import { AppMenuActionButton } from './app_menu_action_button';
 import { AppMenuItem } from './app_menu_item';
 import { AppMenuOverflowButton } from './app_menu_overflow_button';
@@ -26,8 +27,16 @@ export interface AppMenuItemsProps {
   isCollapsed?: boolean;
 }
 
-const hasNoItems = (config: AppMenuConfig) =>
-  !config.items?.length && !config?.primaryActionItem && !config?.secondaryActionItem;
+const hasNoItems = (config: AppMenuConfig) => {
+  if (isChromeBarV2Layout(config)) {
+    const hasSecondary =
+      (config.secondaryActionItems?.length ?? 0) > 0 || Boolean(config.secondaryActionItem);
+    const hasOverflow = (config.overflowOnlyItems?.length ?? 0) > 0;
+    const hasPrimary = Boolean(config.primaryActionItem);
+    return !hasSecondary && !hasOverflow && !hasPrimary;
+  }
+  return !config.items?.length && !config?.primaryActionItem && !config?.secondaryActionItem;
+};
 
 export const AppMenuComponent = ({
   config,
@@ -52,6 +61,18 @@ export const AppMenuComponent = ({
     popoverBreakpoints: 'none' as const,
     className: 'kbnTopNavMenu__wrapper',
   };
+
+  if (isChromeBarV2Layout(config)) {
+    if (isCollapsed) {
+      return (
+        <AppMenuChromeBarV2Collapsed config={config} headerLinksProps={headerLinksProps} />
+      );
+    }
+    if (isBetweenMandXlBreakpoint || isAboveXlBreakpoint) {
+      return <AppMenuChromeBarV2Wide config={config} headerLinksProps={headerLinksProps} />;
+    }
+    return <AppMenuChromeBarV2Collapsed config={config} headerLinksProps={headerLinksProps} />;
+  }
 
   const { displayedItems, overflowItems, shouldOverflow } = getAppMenuItems({
     config,
@@ -79,6 +100,7 @@ export const AppMenuComponent = ({
   const secondaryActionComponent = secondaryActionItem ? (
     <AppMenuActionButton
       {...secondaryActionItem}
+      isSecondaryAction
       isPopoverOpen={openPopoverId === secondaryActionItem.id}
       onPopoverToggle={() => {
         handlePopoverToggle(secondaryActionItem.id);

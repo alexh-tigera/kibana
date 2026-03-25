@@ -18,6 +18,7 @@ export type {
   AppMenuRunAction,
   AppMenuRunActionParams,
   AppMenuConfig,
+  AppMenuLayout,
   AppMenuItemType,
   AppMenuSecondaryActionItem,
   AppMenuPrimaryActionItem,
@@ -41,4 +42,8 @@ export {
   getPopoverPanels,
   getPopoverActionItems,
   getIsSelectedColor,
+  isChromeBarV2Layout,
+  getSecondaryActionItemsForChromeBarV2,
+  getSortedOverflowOnlyItems,
+  secondaryActionItemToMenuItem,
 } from './src';

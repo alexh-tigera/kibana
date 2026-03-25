@@ -10,7 +10,7 @@
 import React, { type MouseEvent } from 'react';
 import { SplitButtonWithNotification } from '@kbn/split-button';
 import { upperFirst } from 'lodash';
-import { EuiButton, EuiHideFor, EuiToolTip, useEuiTheme } from '@elastic/eui';
+import { EuiButton, EuiButtonEmpty, EuiHideFor, EuiToolTip, useEuiTheme } from '@elastic/eui';
 import { css } from '@emotion/react';
 import { getRouterLinkProps } from '@kbn/router-utils';
 import {
@@ -30,6 +30,10 @@ type AppMenuActionButtonProps = (AppMenuPrimaryActionItem | AppMenuSecondaryActi
   onPopoverToggle: () => void;
   onPopoverClose: () => void;
   onCloseOverflowButton?: () => void;
+  /**
+   * Renders with {@link EuiButtonEmpty} (no border). Use for app menu secondary actions.
+   */
+  isSecondaryAction?: boolean;
 };
 
 export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
@@ -55,6 +59,7 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
     onPopoverToggle,
     onPopoverClose,
     onCloseOverflowButton,
+    isSecondaryAction = false,
   } = props;
 
   const itemText = upperFirst(label);
@@ -131,7 +136,7 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
       ? getIsSelectedColor({
           color: 'text',
           euiTheme,
-          isFilled: Boolean(isFilledProp),
+          isFilled: isSecondaryAction ? false : Boolean(isFilledProp),
         })
       : undefined};
   `;
@@ -156,6 +161,20 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
       >
         {itemText}
       </SplitButtonWithNotification>
+    </EuiHideFor>
+  ) : isSecondaryAction ? (
+    <EuiHideFor sizes={hidden ?? 'none'}>
+      <EuiButtonEmpty
+        {...commonProps}
+        iconSide="left"
+        aria-haspopup={hasItems ? 'menu' : undefined}
+        isSelected={isPopoverOpen}
+        css={buttonCss}
+        color="text"
+        minWidth={minWidthProp}
+      >
+        {itemText}
+      </EuiButtonEmpty>
     </EuiHideFor>
   ) : (
     <EuiHideFor sizes={hidden ?? 'none'}>

@@ -57,6 +57,7 @@ export const AppMenuPopoverActionButtons = ({
         <EuiFlexItem grow={false}>
           <AppMenuActionButton
             {...secondaryActionItem}
+            isSecondaryAction
             run={(params) => {
               secondaryActionItem?.run?.(params);
               onCloseOverflowButton?.();

@@ -242,7 +242,7 @@ type AppMenuActionButton = Omit<AppMenuItemCommon, 'order'>;
  */
 export type AppMenuSecondaryActionItem = AppMenuActionButton & {
   /**
-   * Whether the button should be filled.
+   * Ignored: secondary header actions render as EuiButtonEmpty (borderless).
    */
   isFilled?: boolean;
   /**
@@ -263,7 +263,16 @@ export type AppMenuPrimaryActionItem =
      * Subset of SplitButtonWithNotificationProps.
      */
     splitButtonProps?: AppMenuSplitButtonProps;
+    /**
+     * Ignored in the chrome app menu: primary actions always use the default (empty) EUI button display.
+     */
+    isFilled?: boolean;
   };
+
+/**
+ * Visual / structural layout for the chrome app menu strip.
+ */
+export type AppMenuLayout = 'default' | 'chromeBarV2';
 
 /**
  * Configuration object for the AppMenu component.
@@ -281,4 +290,19 @@ export interface AppMenuConfig {
    * Secondary action button to display in the app menu.
    */
   secondaryActionItem?: AppMenuSecondaryActionItem;
+  /**
+   * When `chromeBarV2`, the strip follows
+   * `[secondary actions…][overflow ⋯][primary action]` (desktop).
+   * Prefer {@link overflowOnlyItems} and {@link secondaryActionItems} instead of
+   * legacy `items` for overflow vs inline split.
+   */
+  layout?: AppMenuLayout;
+  /**
+   * Multiple secondary actions (empty / text button style), before the overflow control.
+   */
+  secondaryActionItems?: AppMenuSecondaryActionItem[];
+  /**
+   * Entries shown only inside the overflow (⋯) popover, never as inline header links.
+   */
+  overflowOnlyItems?: AppMenuItemType[];
 }
