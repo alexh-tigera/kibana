@@ -7,7 +7,8 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { BrushEndListener, XYBrushEvent } from '@elastic/charts';
-import { EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
+import { EuiFlexGroup, EuiFlexItem, EuiSpacer, useEuiTheme } from '@elastic/eui';
+import { css } from '@emotion/react';
 import type { FilterGroupHandler } from '@kbn/alerts-ui-shared';
 import type { BoolQuery, Filter } from '@kbn/es-query';
 import { usePageReady } from '@kbn/ebt-tools';
@@ -106,6 +107,17 @@ function InternalAlertsPage() {
     },
   } = data;
   const { ObservabilityPageTemplate } = usePluginContext();
+  const { euiTheme } = useEuiTheme();
+  const alertsPageSectionProps = useMemo(
+    () => ({
+      paddingSize: 'none' as const,
+      // Drop EuiPageTemplate.Section default padding-block (~24px); keep horizontal inset.
+      css: css`
+        padding-inline: ${euiTheme.size.l};
+      `,
+    }),
+    [euiTheme]
+  );
   const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
   const isProjectChrome = chromeStyle === 'project';
 
@@ -330,6 +342,7 @@ function InternalAlertsPage() {
     <Provider value={alertSearchBarStateContainer}>
       <ObservabilityPageTemplate
         data-test-subj="alertsPageWithData"
+        pageSectionProps={alertsPageSectionProps}
         pageHeader={
           isProjectChrome
             ? undefined
