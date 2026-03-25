@@ -12,11 +12,56 @@ import type { Rule } from '@kbn/triggers-actions-ui-plugin/public';
 import { useKibana } from '../../../utils/kibana_react';
 import { getHealthColor } from '../helpers/get_health_color';
 
-interface PageTitleContentProps {
-  rule: Rule;
+const BY_WORD = i18n.translate('xpack.observability.ruleDetails.byWord', {
+  defaultMessage: 'by',
+});
+
+const ON_WORD = i18n.translate('xpack.observability.ruleDetails.onWord', {
+  defaultMessage: 'on',
+});
+
+function getRuleDetailMetadataItems(rule: Rule, subdued: boolean): React.ReactNode[] {
+  const color = subdued ? ('subdued' as const) : undefined;
+  return [
+    <EuiText color={color} size="xs" key="rule-detail-last-updated">
+      <strong>
+        {i18n.translate('xpack.observability.ruleDetails.lastUpdatedMessage', {
+          defaultMessage: 'Last updated',
+        })}
+      </strong>
+      &nbsp;
+      {BY_WORD} {rule.updatedBy} {ON_WORD}&nbsp;
+      {moment(rule.updatedAt).format('ll')}
+    </EuiText>,
+    <EuiText color={color} size="xs" key="rule-detail-created">
+      <strong>
+        {i18n.translate('xpack.observability.ruleDetails.createdWord', {
+          defaultMessage: 'Created',
+        })}
+      </strong>
+      &nbsp;
+      {BY_WORD} {rule.createdBy} {ON_WORD}&nbsp;
+      {moment(rule.createdAt).format('ll')}
+    </EuiText>,
+  ];
 }
 
-export function PageTitleContent({ rule }: PageTitleContentProps) {
+/**
+ * Metadata lines for project chrome app menu `headerMetadata` (two items, wide gutter).
+ */
+export function buildRuleDetailHeaderMetadata(rule: Rule): React.ReactNode[] {
+  return getRuleDetailMetadataItems(rule, false);
+}
+
+interface PageTitleContentProps {
+  rule: Rule;
+  /**
+   * When false, "Last updated" / "Created" lines are omitted (e.g. shown in project chrome header metadata).
+   */
+  showInlineMetadata?: boolean;
+}
+
+export function PageTitleContent({ rule, showInlineMetadata = true }: PageTitleContentProps) {
   const {
     triggersActionsUi: { getRuleTagBadge: RuleTagBadge },
   } = useKibana().services;
@@ -30,31 +75,17 @@ export function PageTitleContent({ rule }: PageTitleContentProps) {
               rule.executionStatus.status.slice(1)}
           </EuiBadge>
         </EuiText>
-        <EuiSpacer size="m" />
+        {showInlineMetadata ? <EuiSpacer size="m" /> : <EuiSpacer size="s" />}
       </EuiFlexItem>
-      <EuiFlexGroup direction="column" alignItems="flexStart">
-        <EuiFlexItem component="span" grow={false}>
-          <EuiText color="subdued" size="xs">
-            <strong>
-              {i18n.translate('xpack.observability.ruleDetails.lastUpdatedMessage', {
-                defaultMessage: 'Last updated',
-              })}
-            </strong>
-            &nbsp;
-            {BY_WORD} {rule.updatedBy} {ON_WORD}&nbsp;
-            {moment(rule.updatedAt).format('ll')} &emsp;
-            <strong>
-              {i18n.translate('xpack.observability.ruleDetails.createdWord', {
-                defaultMessage: 'Created',
-              })}
-            </strong>
-            &nbsp;
-            {BY_WORD} {rule.createdBy} {ON_WORD}&nbsp;
-            {moment(rule.createdAt).format('ll')}
-          </EuiText>
-        </EuiFlexItem>
-        <EuiSpacer size="xs" />
-      </EuiFlexGroup>
+      {showInlineMetadata ? (
+        <EuiFlexGroup direction="column" gutterSize="xs" alignItems="flexStart">
+          {getRuleDetailMetadataItems(rule, true).map((metadataItem, index) => (
+            <EuiFlexItem component="span" grow={false} key={index}>
+              {metadataItem}
+            </EuiFlexItem>
+          ))}
+        </EuiFlexGroup>
+      ) : null}
 
       {rule.tags.length > 0 && <RuleTagBadge tagsOutPopover tags={rule.tags} />}
 
@@ -62,11 +93,3 @@ export function PageTitleContent({ rule }: PageTitleContentProps) {
     </>
   );
 }
-
-const BY_WORD = i18n.translate('xpack.observability.ruleDetails.byWord', {
-  defaultMessage: 'by',
-});
-
-const ON_WORD = i18n.translate('xpack.observability.ruleDetails.onWord', {
-  defaultMessage: 'on',
-});

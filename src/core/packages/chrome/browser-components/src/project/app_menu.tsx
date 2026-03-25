@@ -9,6 +9,8 @@
 
 import {
   EuiButtonIcon,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiTab,
   EuiTabs,
   EuiTitle,
@@ -165,15 +167,11 @@ const useAppMenuBarStyles = (
     };
 
     const metadataRow = {
-      display: 'flex',
-      flexDirection: 'row' as const,
-      alignItems: 'center',
-      flexWrap: 'wrap' as const,
-      gap: euiTheme.size.xl,
       width: '100%',
       flexShrink: 0,
       minWidth: 0,
       color: euiTheme.colors.textSubdued,
+      paddingLeft: euiTheme.size.xs,
     };
 
     const metadataItem = {
@@ -516,13 +514,18 @@ export const AppMenuBar = React.memo(() => {
           ) : null}
         </div>
         {hasHeaderMetadata ? (
-          <div data-test-subj="kibanaProjectHeaderMetadata" css={styles.metadataRow}>
+          <EuiFlexGroup
+            alignItems="center"
+            data-test-subj="kibanaProjectHeaderMetadata"
+            wrap
+            css={styles.metadataRow}
+          >
             {headerMetadataItems.map((node, index) => (
-              <div key={index} css={styles.metadataItem}>
+              <EuiFlexItem key={index} grow={false} css={styles.metadataItem}>
                 {node}
-              </div>
+              </EuiFlexItem>
             ))}
-          </div>
+          </EuiFlexGroup>
         ) : null}
         {headerTabs && headerTabs.length > 0 ? (
           <div css={styles.tabsRow}>
