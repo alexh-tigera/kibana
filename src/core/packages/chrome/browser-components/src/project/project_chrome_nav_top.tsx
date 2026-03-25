@@ -22,11 +22,25 @@ export const ProjectChromeNavTop = React.memo(() => {
   const { euiTheme } = useEuiTheme();
   const compactControlStyles = useProjectChromeSidenavCompactControlStyles();
 
-  const clusterStyles = css`
+  /* Vertical stack: Elastic logo, then Space, then Search — aligned with primary nav below. */
+  const stackStyles = css`
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
+    gap: ${euiTheme.size.s};
+    width: 100%;
+  `;
+
+  const logoRowStyles = css`
+    display: flex;
     justify-content: center;
+    width: 100%;
+  `;
+
+  const navControlsColumnStyles = css`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: ${euiTheme.size.xs};
     width: 100%;
     ${compactControlStyles}
@@ -43,10 +57,14 @@ export const ProjectChromeNavTop = React.memo(() => {
       `}
       data-test-subj="kibanaProjectChromeNavTop"
     >
-      <div css={clusterStyles}>
-        <ProjectElasticLogo />
-        <HeaderNavControls position="left" />
-        <HeaderNavControls position="center" />
+      <div css={stackStyles}>
+        <div css={logoRowStyles}>
+          <ProjectElasticLogo />
+        </div>
+        <div css={navControlsColumnStyles}>
+          <HeaderNavControls position="left" />
+          <HeaderNavControls position="center" />
+        </div>
       </div>
     </div>
   );
