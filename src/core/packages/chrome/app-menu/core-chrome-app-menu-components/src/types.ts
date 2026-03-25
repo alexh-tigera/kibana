@@ -8,6 +8,7 @@
  */
 
 import type { EuiButtonProps, EuiHideForProps, IconType } from '@elastic/eui';
+import type { ReactNode } from 'react';
 import type { SplitButtonWithNotificationProps } from '@kbn/split-button';
 
 /**
@@ -275,6 +276,31 @@ export type AppMenuPrimaryActionItem =
 export type AppMenuLayout = 'default' | 'chromeBarV2';
 
 /**
+ * A tab rendered in the project chrome application top bar (between the title and inline actions).
+ * Not used by `AppMenuComponent`; it is consumed only by core chrome layout (`AppMenuBar`).
+ */
+export interface AppMenuHeaderTab {
+  /**
+   * Stable id for React keys and testing.
+   */
+  id: string;
+  /**
+   * Tab label (plain string or translated React node).
+   */
+  label: ReactNode;
+  isSelected: boolean;
+  /**
+   * Invoked when the tab is activated (e.g. in-app routing).
+   */
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  /**
+   * Optional href; prefer the `onClick` handler with the application router when possible.
+   */
+  href?: string;
+  testId?: string;
+}
+
+/**
  * Configuration object for the AppMenu component.
  */
 export interface AppMenuConfig {
@@ -305,4 +331,9 @@ export interface AppMenuConfig {
    * Entries shown only inside the overflow (⋯) popover, never as inline header links.
    */
   overflowOnlyItems?: AppMenuItemType[];
+  /**
+   * Tabs shown in the project chrome application top bar (AppMenuBar), left of the action menu.
+   * Omitted when rendering {@link AppMenuComponent} so actions strip logic stays unchanged.
+   */
+  headerTabs?: AppMenuHeaderTab[];
 }

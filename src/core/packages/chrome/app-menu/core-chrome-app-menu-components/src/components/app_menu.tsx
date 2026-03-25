@@ -9,7 +9,7 @@
 
 import React, { useState } from 'react';
 import { EuiHeaderLinks, useIsWithinBreakpoints } from '@elastic/eui';
-import { getAppMenuItems, isChromeBarV2Layout } from '../utils';
+import { getAppMenuConfigWithoutHeaderTabs, getAppMenuItems, isChromeBarV2Layout } from '../utils';
 import { AppMenuChromeBarV2Collapsed, AppMenuChromeBarV2Wide } from './app_menu_chrome_bar_v2';
 import { AppMenuActionButton } from './app_menu_action_button';
 import { AppMenuItem } from './app_menu_item';
@@ -47,35 +47,51 @@ export const AppMenuComponent = ({
   const isBetweenMandXlBreakpoint = useIsWithinBreakpoints(['m', 'l']);
   const isAboveXlBreakpoint = useIsWithinBreakpoints(['xl']);
 
-  if (!config || hasNoItems(config) || !visible) {
+  if (!config || !visible) {
     return null;
   }
 
-  const primaryActionItem = config?.primaryActionItem;
-  const secondaryActionItem = config?.secondaryActionItem;
+  const configForMenuStrip = getAppMenuConfigWithoutHeaderTabs(config);
+
+  if (hasNoItems(configForMenuStrip)) {
+    return null;
+  }
+
+  const primaryActionItem = configForMenuStrip.primaryActionItem;
+  const secondaryActionItem = configForMenuStrip.secondaryActionItem;
   const showMoreButtonId = 'show-more';
 
   const headerLinksProps = {
     'data-test-subj': 'app-menu',
-    gutterSize: 'xxs' as const,
+    gutterSize: 'xs' as const,
     popoverBreakpoints: 'none' as const,
     className: 'kbnTopNavMenu__wrapper',
   };
 
-  if (isChromeBarV2Layout(config)) {
+  if (isChromeBarV2Layout(configForMenuStrip)) {
     if (isCollapsed) {
       return (
-        <AppMenuChromeBarV2Collapsed config={config} headerLinksProps={headerLinksProps} />
+        <AppMenuChromeBarV2Collapsed
+          config={configForMenuStrip}
+          headerLinksProps={headerLinksProps}
+        />
       );
     }
     if (isBetweenMandXlBreakpoint || isAboveXlBreakpoint) {
-      return <AppMenuChromeBarV2Wide config={config} headerLinksProps={headerLinksProps} />;
+      return (
+        <AppMenuChromeBarV2Wide config={configForMenuStrip} headerLinksProps={headerLinksProps} />
+      );
     }
-    return <AppMenuChromeBarV2Collapsed config={config} headerLinksProps={headerLinksProps} />;
+    return (
+      <AppMenuChromeBarV2Collapsed
+        config={configForMenuStrip}
+        headerLinksProps={headerLinksProps}
+      />
+    );
   }
 
   const { displayedItems, overflowItems, shouldOverflow } = getAppMenuItems({
-    config,
+    config: configForMenuStrip,
   });
 
   const handlePopoverToggle = (id: string) => {

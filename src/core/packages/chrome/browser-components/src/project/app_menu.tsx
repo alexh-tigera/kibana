@@ -7,14 +7,23 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { EuiButtonIcon, EuiTitle, useEuiTheme, type UseEuiTheme } from '@elastic/eui';
+import {
+  EuiButtonIcon,
+  EuiTab,
+  EuiTabs,
+  EuiTitle,
+  useEuiTheme,
+  type UseEuiTheme,
+} from '@elastic/eui';
 
 import React, { useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
 import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
+import type { AppMenuHeaderTab } from '@kbn/core-chrome-app-menu-components';
 import { HeaderAppMenu } from '../shared/header_app_menu';
 import { HeaderActionMenu } from '../shared/header_action_menu';
 import {
+  useAppMenu,
   useHasAppMenuConfig,
   useProjectBreadcrumbs,
   useNavigateToUrl,
@@ -121,10 +130,18 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
       alignItems: 'center',
     };
 
+    const tabsSection = {
+      flex: '1 1 auto',
+      minWidth: 0,
+      display: 'flex',
+      alignItems: 'center',
+    };
+
     return {
       root,
       leftCluster,
       titleSection,
+      tabsSection,
       globalActions,
       iconButtonSubdued,
       titleEuiTitle,
@@ -133,9 +150,32 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
     };
   }, [euiTheme]);
 
+const AppMenuBarHeaderTabs = ({ tabs }: { tabs: AppMenuHeaderTab[] }) => (
+  <EuiTabs
+    bottomBorder={false}
+    size="s"
+    data-test-subj="kibanaProjectHeaderAppMenuTabs"
+    css={{ marginBottom: 0 }}
+  >
+    {tabs.map((tab) => (
+      <EuiTab
+        key={tab.id}
+        href={tab.href}
+        isSelected={tab.isSelected}
+        onClick={tab.onClick}
+        data-test-subj={tab.testId}
+      >
+        {tab.label}
+      </EuiTab>
+    ))}
+  </EuiTabs>
+);
+
 export const AppMenuBar = React.memo(() => {
   const { euiTheme } = useEuiTheme();
   const styles = useAppMenuBarStyles(euiTheme);
+  const appMenuConfig = useAppMenu();
+  const headerTabs = appMenuConfig?.headerTabs;
   const hasAppMenuConfig = useHasAppMenuConfig();
   const navigateToUrl = useNavigateToUrl();
   const basePath = useBasePath();
@@ -239,6 +279,11 @@ export const AppMenuBar = React.memo(() => {
             </EuiTitle>
           )}
         </div>
+        {headerTabs && headerTabs.length > 0 ? (
+          <div css={styles.tabsSection}>
+            <AppMenuBarHeaderTabs tabs={headerTabs} />
+          </div>
+        ) : null}
         <div
           className="appMenuBar__globalActions"
           css={styles.globalActions}

@@ -9,6 +9,7 @@ import { EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiLoadingSpinner } from '@e
 import { AppMenu } from '@kbn/core-chrome-app-menu';
 import type {
   AppMenuConfig,
+  AppMenuHeaderTab,
   AppMenuItemType,
   AppMenuSecondaryActionItem,
 } from '@kbn/core-chrome-app-menu-components';
@@ -20,6 +21,7 @@ import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { useBreadcrumbs } from '@kbn/observability-shared-plugin/public';
 import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import { useHistory } from 'react-router-dom';
 import { useGetRuleTypesPermissions } from '@kbn/alerts-ui-shared/src/common/hooks';
 import { RULES_LOGS_PATH, RULES_PATH, paths } from '../../../common/locators/paths';
@@ -132,6 +134,34 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
     });
   }, [filteredRuleTypes, ruleTypesWithDescriptions, setScreenContext]);
 
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
+  const rulesAppMenuHeaderTabs = useMemo((): AppMenuHeaderTab[] => {
+    return [
+      {
+        id: 'rules',
+        label: (
+          <FormattedMessage
+            id="xpack.observability.rulePage.rulesTabTitle"
+            defaultMessage="Rules"
+          />
+        ),
+        isSelected: activeTab === RULES_TAB_NAME,
+        onClick: () => history.push(RULES_PATH),
+      },
+      {
+        id: 'logs',
+        label: (
+          <FormattedMessage id="xpack.observability.rulePage.logsTabTitle" defaultMessage="Logs" />
+        ),
+        isSelected: activeTab !== RULES_TAB_NAME,
+        onClick: () => history.push(RULES_LOGS_PATH),
+        testId: 'ruleLogsTab',
+      },
+    ];
+  }, [activeTab, history]);
+
   const rulesAppMenuConfig = useMemo((): AppMenuConfig => {
     const createRuleLabel = i18n.translate('xpack.observability.rules.addRuleButtonLabel', {
       defaultMessage: 'Create rule',
@@ -200,6 +230,7 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
     }
 
     config.overflowOnlyItems = overflowOnlyItems;
+    config.headerTabs = rulesAppMenuHeaderTabs;
 
     return config;
   }, [
@@ -207,28 +238,21 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
     application,
     authorizedToCreateAnyRules,
     docLinks.links.observability.createAlerts,
+    rulesAppMenuHeaderTabs,
     showRulesSettingsInChrome,
   ]);
 
-  const tabs = [
-    {
-      name: 'rules',
-      label: (
-        <FormattedMessage id="xpack.observability.rulePage.rulesTabTitle" defaultMessage="Rules" />
-      ),
-      onClick: () => history.push(RULES_PATH),
-      isSelected: activeTab === RULES_TAB_NAME,
-    },
-    {
-      name: 'logs',
-      label: (
-        <FormattedMessage id="xpack.observability.rulePage.logsTabTitle" defaultMessage="Logs" />
-      ),
-      onClick: () => history.push(RULES_LOGS_PATH),
-      ['data-test-subj']: 'ruleLogsTab',
-      isSelected: activeTab !== RULES_TAB_NAME,
-    },
-  ];
+  const tabs = useMemo(
+    () =>
+      rulesAppMenuHeaderTabs.map((tab) => ({
+        name: tab.id,
+        label: tab.label,
+        onClick: tab.onClick,
+        isSelected: tab.isSelected,
+        ...(tab.testId ? { 'data-test-subj': tab.testId } : {}),
+      })),
+    [rulesAppMenuHeaderTabs]
+  );
 
   const rightSideItems = [
     <EuiButtonEmpty
@@ -251,8 +275,12 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
         pageTitle: i18n.translate('xpack.observability.rulesTitle', {
           defaultMessage: 'Rules',
         }),
-        rightSideItems,
-        tabs,
+        ...(isProjectChrome
+          ? {}
+          : {
+              rightSideItems,
+              tabs,
+            }),
       }}
       data-test-subj="rulesPage"
     >

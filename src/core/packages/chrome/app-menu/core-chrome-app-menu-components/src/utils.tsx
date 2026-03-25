@@ -384,3 +384,12 @@ export const secondaryActionItemToMenuItem = (
   void minWidth;
   return { ...rest, order };
 };
+
+/**
+ * Strips `headerTabs` from `AppMenuConfig` so `AppMenuComponent` / chrome bar v2 only receive
+ * action-menu fields.
+ */
+export const getAppMenuConfigWithoutHeaderTabs = (config: AppMenuConfig): AppMenuConfig => {
+  const { headerTabs: _headerTabs, ...rest } = config;
+  return rest;
+};
