@@ -22,24 +22,6 @@ export const ProjectChromeNavTop = React.memo(() => {
   const { euiTheme } = useEuiTheme();
   const compactControlStyles = useProjectChromeSidenavCompactControlStyles();
 
-  const separatorStyles = css`
-    .navcontrols__separator {
-      display: flex;
-      margin-right: ${euiTheme.size.xs};
-      &:after {
-        background: ${euiTheme.colors.lightShade};
-        content: '';
-        flex-shrink: 0;
-        margin-block-start: ${euiTheme.size.xs};
-        margin-block-end: 0;
-        margin-inline: ${euiTheme.size.s};
-        block-size: 16px;
-        inline-size: 1px;
-        transform: translateY(-1px) rotate(15deg);
-      }
-    }
-  `;
-
   const clusterStyles = css`
     display: flex;
     flex-wrap: wrap;
@@ -63,12 +45,7 @@ export const ProjectChromeNavTop = React.memo(() => {
     >
       <div css={clusterStyles}>
         <ProjectElasticLogo />
-        <div css={separatorStyles}>
-          <HeaderNavControls
-            position="left"
-            append={<div className="navcontrols__separator" />}
-          />
-        </div>
+        <HeaderNavControls position="left" />
         <HeaderNavControls position="center" />
       </div>
     </div>
