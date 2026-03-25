@@ -44,6 +44,8 @@
     "@kbn/presentation-util-plugin",
     "@kbn/observability-ai-assistant-plugin",
     "@kbn/core-http-browser",
+    "@kbn/core-chrome-app-menu",
+    "@kbn/core-chrome-app-menu-components",
     "@kbn/core-chrome-browser",
     "@kbn/ingest-pipelines-plugin",
     "@kbn/unified-search-plugin",
