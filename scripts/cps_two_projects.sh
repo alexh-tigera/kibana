@@ -207,7 +207,7 @@ start_linked_node() {
     --env "node.name=$name" \
     --name "$name" \
     "${port_flags[@]}" \
-    "${extra_env[@]}" \
+    ${extra_env[@]+"${extra_env[@]}"} \
     "${LINKED_VOL_FLAGS[@]}" \
     "$ORIGIN_IMAGE" > /dev/null
 }
