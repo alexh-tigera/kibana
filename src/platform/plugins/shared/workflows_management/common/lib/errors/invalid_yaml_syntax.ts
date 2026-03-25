@@ -7,9 +7,5 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-export class InvalidYamlSyntaxError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InvalidYamlSyntaxError';
-  }
-}
+// Re-export from @kbn/workflows — canonical location
+export { InvalidYamlSyntaxError } from '@kbn/workflows';

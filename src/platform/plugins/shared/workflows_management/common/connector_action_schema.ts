@@ -8,10 +8,7 @@
  */
 
 import { connectorsSpecs } from '@kbn/connector-specs';
-import { i18n } from '@kbn/i18n';
-import type { BaseConnectorContract } from '@kbn/workflows';
-import { FetcherConfigSchema, KibanaStepMetaSchema } from '@kbn/workflows';
-import { z } from '@kbn/zod/v4';
+import type { z } from '@kbn/zod/v4';
 
 import {
   BedrockParamsSchema,
@@ -448,59 +445,6 @@ export const ConnectorActionOutputSchemas = new Map<string, Record<string, z.Zod
 ]);
 
 /**
- * Static connectors used for schema generation
+ * Static connectors — re-exported from @kbn/workflows where they are now canonically defined.
  */
-
-export const staticConnectors: BaseConnectorContract[] = [
-  {
-    type: 'console',
-    summary: 'Console',
-    paramsSchema: z
-      .object({
-        message: z.string(),
-      })
-      .required(),
-    outputSchema: z.string(),
-    description: i18n.translate('workflows.connectors.console.description', {
-      defaultMessage: 'Log a message to the workflow logs',
-    }),
-  },
-  // Note: inference sub-actions are now generated dynamically
-  // Generic request types for raw API calls
-  {
-    type: 'elasticsearch.request',
-    summary: 'Elasticsearch Request',
-    paramsSchema: z.object({
-      method: z.string(),
-      path: z.string(),
-      body: z.any().optional(),
-      params: z.any().optional(),
-      headers: z.any().optional(),
-    }),
-    outputSchema: z.any(),
-    description: i18n.translate('workflows.connectors.elasticsearch.request.description', {
-      defaultMessage: 'Make a generic request to an Elasticsearch API',
-    }),
-  },
-  {
-    type: 'kibana.request',
-    summary: 'Kibana Request',
-    paramsSchema: z.object({
-      method: z.string(),
-      path: z.string(),
-      body: z.any().optional(),
-      headers: z.any().optional(),
-      fetcher: FetcherConfigSchema,
-      ...KibanaStepMetaSchema,
-    }),
-    outputSchema: z
-      .any()
-      .describe(
-        'JSON-parsed response body, or an empty object ({}) for 204 No Content / 304 Not Modified responses'
-      ),
-    description: i18n.translate('workflows.connectors.kibana.request.description', {
-      defaultMessage:
-        "Make a generic request to a Kibana API. APIs that return 204 No Content or 304 Not Modified produce an empty output ('{}').",
-    }),
-  },
-];
+export { staticConnectors } from '@kbn/workflows';

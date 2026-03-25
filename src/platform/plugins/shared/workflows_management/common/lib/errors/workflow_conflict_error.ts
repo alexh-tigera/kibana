@@ -7,24 +7,5 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-export class WorkflowConflictError extends Error {
-  public readonly statusCode = 409;
-
-  constructor(message: string, public readonly workflowId: string) {
-    super(message);
-    this.name = 'WorkflowConflictError';
-  }
-
-  public toJSON() {
-    return {
-      error: 'Conflict',
-      message: this.message,
-      statusCode: this.statusCode,
-      workflowId: this.workflowId,
-    };
-  }
-}
-
-export function isWorkflowConflictError(error: Error): error is WorkflowConflictError {
-  return error instanceof WorkflowConflictError;
-}
+// Re-export from @kbn/workflows — canonical location
+export { WorkflowConflictError, isWorkflowConflictError } from '@kbn/workflows';

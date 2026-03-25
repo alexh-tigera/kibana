@@ -7,5 +7,8 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-// Re-export from @kbn/workflows — canonical location
-export { WorkflowValidationError, isWorkflowValidationError } from '@kbn/workflows';
+export { InvalidYamlSchemaError } from './invalid_yaml_schema';
+export type { FormattedZodError, MockZodError, MockZodIssue } from './invalid_yaml_schema';
+export { InvalidYamlSyntaxError } from './invalid_yaml_syntax';
+export { WorkflowValidationError, isWorkflowValidationError } from './workflow_validation_error';
+export { WorkflowConflictError, isWorkflowConflictError } from './workflow_conflict_error';

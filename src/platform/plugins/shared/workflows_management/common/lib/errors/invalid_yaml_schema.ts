@@ -7,31 +7,10 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { z } from '@kbn/zod/v4';
-
-export interface MockZodIssue {
-  code: 'invalid_literal' | 'unknown';
-  message: string;
-  path: string[];
-  received: string;
-}
-
-export interface MockZodError {
-  message: string;
-  issues: MockZodIssue[];
-}
-
-export interface FormattedZodError {
-  message: string;
-  issues: z.core.$ZodIssue[] | MockZodIssue[];
-}
-
-export class InvalidYamlSchemaError extends Error {
-  public formattedZodError?: FormattedZodError;
-
-  constructor(message: string, formattedZodError?: FormattedZodError) {
-    super(message);
-    this.name = 'InvalidYamlSchemaError';
-    this.formattedZodError = formattedZodError;
-  }
-}
+// Re-export from @kbn/workflows — canonical location for these types
+export {
+  InvalidYamlSchemaError,
+  type FormattedZodError,
+  type MockZodError,
+  type MockZodIssue,
+} from '@kbn/workflows';

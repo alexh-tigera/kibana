@@ -195,9 +195,8 @@ function convertDynamicConnectorsToContractsInternal(
 export type WorkflowZodSchemaType = z.infer<ReturnType<typeof getWorkflowZodSchema>>;
 export type WorkflowZodSchemaLooseType = z.infer<ReturnType<typeof getWorkflowZodSchemaLoose>>;
 
-// Legacy exports for backward compatibility - these will be deprecated
-// TODO: Remove these once all consumers are updated to use the lazy-loaded versions
-export const WORKFLOW_ZOD_SCHEMA = generateYamlSchemaFromConnectors(staticConnectors);
+// WORKFLOW_ZOD_SCHEMA now re-exported from @kbn/workflows where it's canonically defined
+export { WORKFLOW_ZOD_SCHEMA } from '@kbn/workflows';
 export const WORKFLOW_ZOD_SCHEMA_LOOSE = generateYamlSchemaFromConnectors(
   staticConnectors,
   [],

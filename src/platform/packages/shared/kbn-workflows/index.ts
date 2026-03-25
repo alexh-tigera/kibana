@@ -61,3 +61,40 @@ export {
 
 // Export specific types that are commonly used
 export type { BuiltInStepType } from './spec/schema';
+
+// Validation utilities (moved from workflows_management)
+export {
+  validateWorkflowYaml,
+  validateLiquidTemplate,
+  validateStepNameUniqueness,
+  parseWorkflowYamlToJSON,
+  parseYamlToJSONWithoutValidation,
+  getYamlDocumentErrors,
+  formatZodError,
+  InvalidYamlSchemaError,
+  InvalidYamlSyntaxError,
+  WorkflowValidationError,
+  isWorkflowValidationError,
+  WorkflowConflictError,
+  isWorkflowConflictError,
+  isDynamicValue,
+  isVariableValue,
+  isLiquidTagValue,
+  staticConnectors,
+  extractLiquidErrorPosition,
+} from './common/lib';
+export type {
+  ValidateWorkflowYamlOptions,
+  LiquidValidationError,
+  StepNameValidationResult,
+  ParseWorkflowYamlToJSONResult,
+  ParseWorkflowYamlToJSONOptions,
+  FormatZodErrorOptions,
+  FormatZodErrorResult,
+  FormattedZodError,
+  MockZodError,
+  MockZodIssue,
+} from './common/lib';
+
+// WORKFLOW_ZOD_SCHEMA: the static schema built from staticConnectors
+export { WORKFLOW_ZOD_SCHEMA } from './common/lib/workflow_zod_schema';

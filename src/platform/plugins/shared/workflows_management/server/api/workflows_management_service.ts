@@ -75,7 +75,7 @@ import { WorkflowConflictError, WorkflowValidationError } from '../../common/lib
 
 import { validateWorkflowYaml } from '../../common/lib/validate_workflow_yaml';
 import { updateWorkflowYamlFields } from '../../common/lib/yaml';
-import { getWorkflowZodSchema } from '../../common/schema';
+import { getAllConnectors, getWorkflowZodSchema } from '../../common/schema';
 import { getAuthenticatedUser } from '../lib/get_user';
 import { hasScheduledTriggers } from '../lib/schedule_utils';
 import type { WorkflowProperties, WorkflowStorage } from '../storage/workflow_storage';
@@ -270,7 +270,10 @@ export class WorkflowsService {
       valid: false,
     };
 
-    const validation = validateWorkflowYaml(workflow.yaml, zodSchema, { triggerDefinitions });
+    const validation = validateWorkflowYaml(workflow.yaml, zodSchema, {
+      triggerDefinitions,
+      getConnectors: getAllConnectors,
+    });
     if (validation.valid && validation.parsedWorkflow) {
       workflowToCreate = transformWorkflowYamlJsontoEsWorkflow(validation.parsedWorkflow);
     } else if (validation.parsedWorkflow) {
@@ -524,7 +527,10 @@ export class WorkflowsService {
   }> {
     const zodSchema = await this.getWorkflowZodSchema({ loose: false }, spaceId, request);
     const triggerDefinitions = this.workflowsExtensions?.getAllTriggerDefinitions() ?? [];
-    const validation = validateWorkflowYaml(workflowYaml, zodSchema, { triggerDefinitions });
+    const validation = validateWorkflowYaml(workflowYaml, zodSchema, {
+      triggerDefinitions,
+      getConnectors: getAllConnectors,
+    });
 
     if (!validation.valid || !validation.parsedWorkflow) {
       return {
@@ -1625,7 +1631,10 @@ export class WorkflowsService {
   ): Promise<ValidateWorkflowResponseDto> {
     const zodSchema = await this.getWorkflowZodSchema({ loose: false }, spaceId, request);
     const triggerDefinitions = this.workflowsExtensions?.getAllTriggerDefinitions() ?? [];
-    return validateWorkflowYaml(yaml, zodSchema, { triggerDefinitions });
+    return validateWorkflowYaml(yaml, zodSchema, {
+      triggerDefinitions,
+      getConnectors: getAllConnectors,
+    });
   }
 
   public async getWorkflowZodSchema(
