@@ -10,7 +10,6 @@
 import React, { type MouseEvent } from 'react';
 import { SplitButtonWithNotification } from '@kbn/split-button';
 import { upperFirst } from 'lodash';
-import type { EuiButtonColor } from '@elastic/eui';
 import { EuiButton, EuiHideFor, EuiToolTip, useEuiTheme } from '@elastic/eui';
 import { css } from '@emotion/react';
 import { getRouterLinkProps } from '@kbn/router-utils';
@@ -63,7 +62,6 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
   const showTooltip = Boolean(content || title);
 
   const splitButtonProps = 'splitButtonProps' in props ? props.splitButtonProps : undefined;
-  const colorProp = 'color' in props ? props.color : undefined;
   const isFilledProp = 'isFilled' in props ? props.isFilled : undefined;
   const minWidthProp = 'minWidth' in props ? props.minWidth : undefined;
   const items = 'items' in props ? props.items : undefined;
@@ -131,7 +129,7 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
   const buttonCss = css`
     background-color: ${isPopoverOpen
       ? getIsSelectedColor({
-          color: colorProp as EuiButtonColor,
+          color: 'text',
           euiTheme,
           isFilled: Boolean(isFilledProp),
         })
@@ -167,7 +165,7 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
         aria-haspopup={hasItems ? 'menu' : undefined}
         isSelected={isPopoverOpen}
         css={buttonCss}
-        color={colorProp}
+        color="text"
         minWidth={minWidthProp}
         fill={isFilledProp}
       >

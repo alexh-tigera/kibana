@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { EuiButtonColor, EuiButtonProps, EuiHideForProps, IconType } from '@elastic/eui';
+import type { EuiButtonProps, EuiHideForProps, IconType } from '@elastic/eui';
 import type { SplitButtonWithNotificationProps } from '@kbn/split-button';
 
 /**
@@ -232,12 +232,10 @@ export type AppMenuPopoverItem = Omit<AppMenuItemType, 'iconType' | 'hidden' | '
   separator?: 'above' | 'below';
 };
 
-type AppMenuActionButton = Omit<AppMenuItemCommon, 'order'> & {
-  /**
-   * The color of the button.
-   */
-  color?: EuiButtonColor;
-};
+/**
+ * Action buttons in the app menu always render with EUI `color="text"` for visual consistency.
+ */
+type AppMenuActionButton = Omit<AppMenuItemCommon, 'order'>;
 
 /**
  * Secondary action button type. Can't be a split button.

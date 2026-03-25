@@ -126,7 +126,6 @@ const dashboardEditModeConfig: AppMenuConfig = {
     label: 'add',
     testId: 'addButton',
     iconType: 'plusCircle',
-    color: 'success',
     minWidth: false,
     popoverWidth: 200,
     items: [

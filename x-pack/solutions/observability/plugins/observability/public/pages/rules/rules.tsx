@@ -142,7 +142,6 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
       id: 'observability-rules-create-rule',
       label: createRuleLabel,
       iconType: 'plusInCircle',
-      color: 'primary',
       testId: 'createRuleButton',
       disableButton: !authorizedToCreateAnyRules,
       run: () => {

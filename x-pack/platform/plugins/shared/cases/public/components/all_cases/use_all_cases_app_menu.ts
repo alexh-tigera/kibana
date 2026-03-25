@@ -18,8 +18,8 @@ import * as i18n from './translations';
 
 /**
  * App menu for All Cases — same patterns as Dashboard top nav: link-style actions use
- * `items` (EuiHeaderLink, e.g. Share); the main action uses `primaryActionItem` with
- * `color: 'text'` only (e.g. Edit).
+ * `items` (EuiHeaderLink, e.g. Share); primary/secondary actions use default app menu
+ * text-style buttons only.
  *
  * API gap: AppMenu tooltips only support string `tooltipContent` for configure when
  * license errors use non-string descriptions.
@@ -65,7 +65,6 @@ export const useAllCasesAppMenu = (actionsErrors: ErrorMessage[]): AppMenuConfig
         id: 'cases-all-create',
         label: i18n.CREATE_CASE_TITLE,
         iconType: 'plusInCircle',
-        color: 'text',
         href: getCreateCaseUrl(),
         run: () => {
           navigateToCreateCase();

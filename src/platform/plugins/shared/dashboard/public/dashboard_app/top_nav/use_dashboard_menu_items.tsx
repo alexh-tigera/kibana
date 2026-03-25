@@ -331,7 +331,6 @@ export const useDashboardMenuItems = ({
         label: topNavStrings.add.label,
         id: 'add',
         iconType: 'plusInCircle',
-        color: 'success',
         testId: 'dashboardAddTopNavButton',
         htmlId: 'dashboardAddTopNavButton',
         disableButton: disableTopNav,
@@ -353,7 +352,6 @@ export const useDashboardMenuItems = ({
         },
         disableButton: isEditButtonDisabled,
         tooltipContent: getEditTooltip(),
-        color: 'text',
       } as AppMenuPrimaryActionItem,
 
       save: {
