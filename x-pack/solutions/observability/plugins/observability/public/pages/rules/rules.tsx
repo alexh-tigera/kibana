@@ -155,10 +155,11 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
     };
 
     const overflowOnlyItems: AppMenuItemType[] = [];
+    let overflowOrder = 1;
 
     if (addDataHref) {
       overflowOnlyItems.push({
-        order: 1,
+        order: overflowOrder++,
         id: 'observability-rules-add-data',
         label: addDataLabel,
         iconType: 'indexOpen',
@@ -168,6 +169,19 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
         },
       });
     }
+
+    const rulesDocumentationHref = docLinks.links.observability.createAlerts;
+    overflowOnlyItems.push({
+      order: overflowOrder,
+      id: 'observability-rules-documentation',
+      label: i18n.translate('xpack.observability.rules.docsLinkText', {
+        defaultMessage: 'Documentation',
+      }),
+      iconType: 'documentation',
+      testId: 'documentationLink',
+      href: rulesDocumentationHref,
+      target: '_blank',
+    });
 
     if (showRulesSettingsInChrome) {
       const settingsSecondary: AppMenuSecondaryActionItem = {
@@ -185,15 +199,14 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
       config.secondaryActionItems = [settingsSecondary];
     }
 
-    if (overflowOnlyItems.length > 0) {
-      config.overflowOnlyItems = overflowOnlyItems;
-    }
+    config.overflowOnlyItems = overflowOnlyItems;
 
     return config;
   }, [
     addDataHref,
     application,
     authorizedToCreateAnyRules,
+    docLinks.links.observability.createAlerts,
     showRulesSettingsInChrome,
   ]);
 
