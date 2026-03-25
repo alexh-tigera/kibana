@@ -287,11 +287,10 @@ export const cli = () => {
       log.info(`USE_CHROME_BETA is defined : ${USE_CHROME_BETA !== undefined}`);
 
       let cloudHandler: ProjectHandler;
-      // if (PROXY_URL && PROXY_CLIENT_ID && PROXY_SECRET && (await proxyHealthcheck(PROXY_URL))) {
-      //   log.info('Proxy service is up and running, so the tests will run using the proxyHandler.');
-      //   cloudHandler = new ProxyHandler(PROXY_URL, PROXY_CLIENT_ID, PROXY_SECRET);
-      // } else
-      if (API_KEY) {
+      if (PROXY_URL && PROXY_CLIENT_ID && PROXY_SECRET && (await proxyHealthcheck(PROXY_URL))) {
+        log.info('Proxy service is up and running, so the tests will run using the proxyHandler.');
+        cloudHandler = new ProxyHandler(PROXY_URL, PROXY_CLIENT_ID, PROXY_SECRET);
+      } else if (API_KEY) {
         log.info('Proxy service is unavailable, so the tests will run using the cloudHandler.');
         cloudHandler = new CloudHandler(API_KEY, BASE_ENV_URL);
       } else {

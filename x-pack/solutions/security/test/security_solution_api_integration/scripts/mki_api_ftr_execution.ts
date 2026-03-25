@@ -17,7 +17,7 @@ import type {
 import { CloudHandler } from '@kbn/security-solution-plugin/scripts/run_cypress/project_handler/cloud_project_handler';
 import { ProxyHandler } from '@kbn/security-solution-plugin/scripts/run_cypress/project_handler/proxy_project_handler';
 import {
-  // proxyHealthcheck,
+  proxyHealthcheck,
   waitForEsStatusGreen,
   waitForKibanaAvailable,
   waitForEsAccess,
@@ -100,11 +100,10 @@ export const cli = () => {
       log.info(`API_KEY is defined : ${API_KEY !== undefined}`);
 
       let cloudHandler: ProjectHandler;
-      // if (PROXY_URL && PROXY_CLIENT_ID && PROXY_SECRET && (await proxyHealthcheck(PROXY_URL))) {
-      //   log.info('Proxy service is up and running, so the tests will run using the proxyHandler.');
-      //   cloudHandler = new ProxyHandler(PROXY_URL, PROXY_CLIENT_ID, PROXY_SECRET);
-      // } else
-      if (API_KEY) {
+      if (PROXY_URL && PROXY_CLIENT_ID && PROXY_SECRET && (await proxyHealthcheck(PROXY_URL))) {
+        log.info('Proxy service is up and running, so the tests will run using the proxyHandler.');
+        cloudHandler = new ProxyHandler(PROXY_URL, PROXY_CLIENT_ID, PROXY_SECRET);
+      } else if (API_KEY) {
         log.info('Proxy service is unavailable, so the tests will run using the cloudHandler.');
         cloudHandler = new CloudHandler(API_KEY, BASE_ENV_URL);
       } else {

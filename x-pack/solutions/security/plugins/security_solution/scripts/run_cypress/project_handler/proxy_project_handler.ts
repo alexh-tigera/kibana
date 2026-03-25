@@ -94,6 +94,29 @@ export class ProxyHandler extends ProjectHandler {
       });
       this.log.info('Create project response:');
       this.log.info(response);
+
+      // override ES image
+      this.log.info('Updating project...');
+      const adminKey = process.env.QA_KEY;
+      const qaAdminBaseUrl = process.env.QA_BASE_URL;
+      const updateResponse = await axios.patch(
+        `${qaAdminBaseUrl}/projects/security/${response.data.project_id}`,
+        {
+          overrides: {
+            elasticsearch: {
+              docker_image: esDockerImage,
+            },
+          },
+        },
+        {
+          headers: {
+            Authorization: `ApiKey ${adminKey}`,
+          },
+        }
+      );
+      this.log.info('Update project response:');
+      this.log.info(updateResponse);
+
       return {
         name: response.data.name,
         id: response.data.project_id,
