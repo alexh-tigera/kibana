@@ -73,6 +73,7 @@ const layoutConfigs: {
     applicationTopBarHeight: 0,
     applicationMarginRight: 8,
     applicationMarginBottom: 8,
+    applicationMarginTop: 8,
     sidebarWidth: 0,
     footerHeight: 0,
     navigationWidth: 0,
