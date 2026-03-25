@@ -8,15 +8,14 @@
  */
 
 import type { AppMenuConfigNext } from '@kbn/core-chrome-app-menu-components';
-import { useAppMenu } from '../../shared/chrome_hooks';
-import { useProjectHeader } from './use_project_header';
+import { useAppMenu, useNextHeader } from '../../shared/chrome_hooks';
 
 /**
  * Returns the app menu config for the Chrome-Next project header.
- * Fallback: `config.appMenu` from `projectHeader.set()` -> global `chrome.getAppMenu$()`.
+ * Fallback: `config.appMenu` from `chrome.next.header.set()` -> global `chrome.getAppMenu$()`.
  */
 export function useProjectNextAppMenu(): AppMenuConfigNext | undefined {
-  const config = useProjectHeader();
+  const config = useNextHeader();
   const globalAppMenu = useAppMenu();
   return config?.appMenu ?? globalAppMenu;
 }

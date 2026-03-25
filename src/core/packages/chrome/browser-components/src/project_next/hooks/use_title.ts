@@ -9,14 +9,14 @@
 
 import { useObservable } from '@kbn/use-observable';
 import { useChromeComponentsDeps } from '../../context';
-import { useProjectHeader } from './use_project_header';
+import { useNextHeader } from '../../shared/chrome_hooks';
 
 /**
  * Returns the display title for the Chrome-Next project header.
  * Fallback chain: explicit `config.title` -> current app title -> 'Unknown'.
  */
 export function useTitle(): string {
-  const config = useProjectHeader();
+  const config = useNextHeader();
   const { application } = useChromeComponentsDeps();
   const appTitle = useObservable(application.currentAppTitle$, undefined);
   return config?.title ?? appTitle ?? 'Unknown';

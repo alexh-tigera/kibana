@@ -8,3 +8,6 @@
  */
 
 export { useAiButton } from './use_ai_button';
+export { useProjectNextAppMenu } from './use_project_next_app_menu';
+export { useReportTopBarHeight } from './use_report_top_bar_height';
+export { useTitle } from './use_title';

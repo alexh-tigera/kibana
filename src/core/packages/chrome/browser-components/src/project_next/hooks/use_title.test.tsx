@@ -10,7 +10,7 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import type { BehaviorSubject } from 'rxjs';
-import type { ChromeProjectHeaderConfig } from '@kbn/core-chrome-browser';
+import type { ChromeNextHeaderConfig } from '@kbn/core-chrome-browser';
 import { createMockChromeComponentsDeps, TestChromeProviders } from '../../test_helpers';
 import { chromeServiceMock } from '@kbn/core-chrome-browser-mocks';
 import { useTitle } from './use_title';
@@ -37,12 +37,12 @@ describe('useTitle', () => {
     expect(result.current).toBe('Unknown');
   });
 
-  it('prefers projectHeader config title over app title', () => {
+  it('prefers chrome.next.header config title over app title', () => {
     const deps = createMockChromeComponentsDeps();
     (deps.application.currentAppTitle$ as BehaviorSubject<string | undefined>).next('Dashboards');
 
     const chrome = chromeServiceMock.createStartContract();
-    (chrome.projectHeader.get$() as BehaviorSubject<ChromeProjectHeaderConfig | undefined>).next({
+    (chrome.next.header.get$() as BehaviorSubject<ChromeNextHeaderConfig | undefined>).next({
       title: 'My Dashboard',
     });
 
