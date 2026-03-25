@@ -1,0 +1,3 @@
+dependsOn:
+  - '@kbn/core-chrome-app-menu'
+  - '@kbn/core-chrome-app-menu-components'

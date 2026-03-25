@@ -5,23 +5,34 @@
  * 2.0.
  */
 
-import { EuiButton, EuiButtonEmpty, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiLoadingSpinner } from '@elastic/eui';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
+import type { ObservabilityOnboardingLocatorParams } from '@kbn/deeplinks-observability';
+import { OBSERVABILITY_ONBOARDING_LOCATOR } from '@kbn/deeplinks-observability';
 import { RuleTypeModal } from '@kbn/response-ops-rule-form';
+import { QueryClient, QueryClientProvider } from '@kbn/react-query';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { useBreadcrumbs } from '@kbn/observability-shared-plugin/public';
-import React, { lazy, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useGetRuleTypesPermissions } from '@kbn/alerts-ui-shared/src/common/hooks';
 import { RULES_LOGS_PATH, RULES_PATH, paths } from '../../../common/locators/paths';
 import { useGetFilteredRuleTypes } from '../../hooks/use_get_filtered_rule_types';
 import { usePluginContext } from '../../hooks/use_plugin_context';
 import { useKibana } from '../../utils/kibana_react';
-import { HeaderMenu } from '../overview/components/header_menu/header_menu';
 import { RulesTab } from './rules_tab';
 import { useGetAvailableRulesWithDescriptions } from '../../hooks/use_get_available_rules_with_descriptions';
 
 const GlobalLogsTab = lazy(() => import('./global_logs_tab'));
+
+const RulesSettingsFlyoutLazy = lazy(async () => {
+  const { RulesSettingsFlyout } = await import('@kbn/triggers-actions-ui-plugin/public');
+  return { default: RulesSettingsFlyout };
+});
+
+const rulesSettingsQueryClient = new QueryClient();
 
 const RULES_TAB_NAME = 'rules';
 
@@ -36,13 +47,32 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
     notifications: { toasts },
     observabilityAIAssistant,
     application,
-    triggersActionsUi: { ruleTypeRegistry, getRulesSettingsLink: RulesSettingsLink },
+    chrome,
+    share,
+    triggersActionsUi: { ruleTypeRegistry },
     serverless,
   } = services;
   const { ObservabilityPageTemplate } = usePluginContext();
   const history = useHistory();
   const [ruleTypeModalVisibility, setRuleTypeModalVisibility] = useState<boolean>(false);
+  const [isRulesSettingsFlyoutVisible, setIsRulesSettingsFlyoutVisible] = useState(false);
   const [stateRefresh, setRefresh] = useState(new Date());
+
+  const onboardingLocator = share?.url.locators.get<ObservabilityOnboardingLocatorParams>(
+    OBSERVABILITY_ONBOARDING_LOCATOR
+  );
+  const addDataHref = onboardingLocator?.useUrl({});
+
+  const {
+    rulesSettings: {
+      show: showRulesSettingsCapability = false,
+      readFlappingSettingsUI = false,
+      readQueryDelaySettingsUI = false,
+    } = {},
+  } = application.capabilities;
+
+  const showRulesSettingsInChrome =
+    showRulesSettingsCapability && (readFlappingSettingsUI || readQueryDelaySettingsUI);
 
   useBreadcrumbs(
     [
@@ -98,6 +128,65 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
     });
   }, [filteredRuleTypes, ruleTypesWithDescriptions, setScreenContext]);
 
+  const rulesAppMenuConfig = useMemo((): AppMenuConfig => {
+    const createRuleLabel = i18n.translate('xpack.observability.rules.addRuleButtonLabel', {
+      defaultMessage: 'Create rule',
+    });
+    const addDataLabel = i18n.translate('xpack.observability.home.addData', {
+      defaultMessage: 'Add data',
+    });
+
+    const config: AppMenuConfig = {};
+
+    config.primaryActionItem = {
+      id: 'observability-rules-create-rule',
+      label: createRuleLabel,
+      iconType: 'plusInCircle',
+      color: 'primary',
+      testId: 'createRuleButton',
+      disableButton: !authorizedToCreateAnyRules,
+      run: () => {
+        setRuleTypeModalVisibility(true);
+      },
+    };
+
+    if (showRulesSettingsInChrome) {
+      config.secondaryActionItem = {
+        id: 'observability-rules-settings',
+        label: i18n.translate('xpack.triggersActionsUI.rulesSettings.link.title', {
+          defaultMessage: 'Settings',
+        }),
+        iconType: 'gear',
+        testId: 'rulesSettingsLink',
+        run: () => {
+          setIsRulesSettingsFlyoutVisible(true);
+        },
+      };
+    }
+
+    if (addDataHref) {
+      config.items = [
+        {
+          order: 1,
+          id: 'observability-rules-add-data',
+          label: addDataLabel,
+          iconType: 'indexOpen',
+          href: addDataHref,
+          run: () => {
+            void application.navigateToUrl(addDataHref);
+          },
+        },
+      ];
+    }
+
+    return config;
+  }, [
+    addDataHref,
+    application,
+    authorizedToCreateAnyRules,
+    showRulesSettingsInChrome,
+  ]);
+
   const tabs = [
     {
       name: 'rules',
@@ -119,24 +208,11 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
   ];
 
   const rightSideItems = [
-    <EuiButton
-      data-test-subj="createRuleButton"
-      disabled={!authorizedToCreateAnyRules}
-      fill
-      iconType="plusInCircle"
-      key="create-alert"
-      onClick={() => setRuleTypeModalVisibility(true)}
-    >
-      <FormattedMessage
-        id="xpack.observability.rules.addRuleButtonLabel"
-        defaultMessage="Create rule"
-      />
-    </EuiButton>,
-    <RulesSettingsLink />,
     <EuiButtonEmpty
       data-test-subj="documentationLink"
       href={docLinks.links.observability.createAlerts}
       iconType="question"
+      key="documentation"
       target="_blank"
     >
       <FormattedMessage
@@ -157,7 +233,17 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
       }}
       data-test-subj="rulesPage"
     >
-      <HeaderMenu />
+      <AppMenu config={rulesAppMenuConfig} setAppMenu={chrome.setAppMenu} />
+      {showRulesSettingsInChrome ? (
+        <QueryClientProvider client={rulesSettingsQueryClient}>
+          <Suspense fallback={<EuiLoadingSpinner />}>
+            <RulesSettingsFlyoutLazy
+              isVisible={isRulesSettingsFlyoutVisible}
+              onClose={() => setIsRulesSettingsFlyoutVisible(false)}
+            />
+          </Suspense>
+        </QueryClientProvider>
+      ) : null}
       <EuiFlexGroup direction="column" gutterSize="s">
         <EuiFlexItem>
           {activeTab === RULES_TAB_NAME ? (

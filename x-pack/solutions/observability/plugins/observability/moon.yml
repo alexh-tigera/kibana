@@ -76,6 +76,8 @@ dependsOn:
   - '@kbn/std'
   - '@kbn/actions-plugin'
   - '@kbn/licensing-plugin'
+  - '@kbn/core-chrome-app-menu'
+  - '@kbn/core-chrome-app-menu-components'
   - '@kbn/core-chrome-browser'
   - '@kbn/navigation-plugin'
   - '@kbn/observability-alert-details'

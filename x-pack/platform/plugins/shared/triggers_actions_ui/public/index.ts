@@ -137,3 +137,6 @@ export { validateActionFilterQuery } from './application/lib/value_validators';
 export { RULE_PREBUILD_DESCRIPTION_FIELDS } from './application/sections/rule_details/components/rule_detail_description_type';
 
 export { getIsExperimentalFeatureEnabled } from './common/get_experimental_features';
+
+export { RulesSettingsFlyout } from './application/components/rules_setting/rules_settings_flyout';
+export type { RulesSettingsFlyoutProps } from './application/components/rules_setting/rules_settings_flyout';

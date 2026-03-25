@@ -5,8 +5,9 @@
  * 2.0.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
+import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
 import { QueryClient, QueryClientProvider } from '@kbn/react-query';
 import { useLocation } from 'react-router-dom';
 import type { AppMountParameters, CoreStart } from '@kbn/core/public';
@@ -28,6 +29,41 @@ const mockApplication = {
 };
 
 const queryClient = new QueryClient();
+
+jest.mock('@kbn/core-chrome-app-menu', () => ({
+  AppMenu: ({
+    config,
+    setAppMenu,
+  }: {
+    config?: AppMenuConfig;
+    setAppMenu: (next?: AppMenuConfig) => void;
+  }) => {
+    useEffect(() => {
+      setAppMenu(config);
+      return () => {
+        setAppMenu();
+      };
+    }, [config, setAppMenu]);
+    const primary = config?.primaryActionItem;
+    if (!primary) {
+      return null;
+    }
+    const isDisabled =
+      typeof primary.disableButton === 'function'
+        ? primary.disableButton()
+        : Boolean(primary.disableButton);
+    return (
+      <button
+        type="button"
+        data-test-subj={primary.testId}
+        disabled={isDisabled}
+        onClick={() => primary.run?.()}
+      >
+        {primary.label}
+      </button>
+    );
+  },
+}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
