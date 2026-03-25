@@ -96,6 +96,8 @@ export class CloudHandler extends ProjectHandler {
           },
         }
       );
+      this.log.info('Create project response:');
+      this.log.info(response);
       return {
         name: response.data.name,
         id: response.data.id,

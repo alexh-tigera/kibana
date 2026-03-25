@@ -92,6 +92,8 @@ export class ProxyHandler extends ProjectHandler {
           Authorization: `Basic ${this.proxyAuth}`,
         },
       });
+      this.log.info('Create project response:');
+      this.log.info(response);
       return {
         name: response.data.name,
         id: response.data.project_id,
