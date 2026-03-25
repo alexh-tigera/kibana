@@ -427,6 +427,20 @@ steps:
             - exit_status: '1'
               limit: 2
 
+      - label: 'API MKI - rule_execution_logic:frozen_indices_handling:qa:serverless'
+        command: .buildkite/scripts/pipelines/security_solution_quality_gate/api_integration/api-integration-tests.sh rule_execution_logic:frozen_indices_handling:qa:serverless
+        key: rule_execution_logic:frozen_indices_handling:qa:serverless
+        agents:
+          image: family/kibana-ubuntu-2404
+          imageProject: elastic-images-prod
+          provider: gcp
+          machineType: n2-standard-4
+        timeout_in_minutes: 120
+        retry:
+          automatic:
+            - exit_status: '1'
+              limit: 2
+
       - label: 'API MKI - rule_execution_logic:general_logic:qa:serverless'
         command: .buildkite/scripts/pipelines/security_solution_quality_gate/api_integration/api-integration-tests.sh rule_execution_logic:general_logic:qa:serverless
         key: rule_execution_logic:general_logic:qa:serverless
@@ -514,6 +528,48 @@ steps:
       - label: 'API MKI - rule_execution_logic:threshold:qa:serverless'
         command: .buildkite/scripts/pipelines/security_solution_quality_gate/api_integration/api-integration-tests.sh rule_execution_logic:threshold:qa:serverless
         key: rule_execution_logic:threshold:qa:serverless
+        agents:
+          image: family/kibana-ubuntu-2404
+          imageProject: elastic-images-prod
+          provider: gcp
+          machineType: n2-standard-4
+        timeout_in_minutes: 120
+        retry:
+          automatic:
+            - exit_status: '1'
+              limit: 2
+
+      - label: 'API MKI - rule_gaps:qa:serverless'
+        command: .buildkite/scripts/pipelines/security_solution_quality_gate/api_integration/api-integration-tests.sh rule_gaps:qa:serverless
+        key: rule_gaps:qa:serverless
+        agents:
+          image: family/kibana-ubuntu-2404
+          imageProject: elastic-images-prod
+          provider: gcp
+          machineType: n2-standard-4
+        timeout_in_minutes: 120
+        retry:
+          automatic:
+            - exit_status: '1'
+              limit: 2
+
+      - label: 'API MKI - rule_preview:qa:serverless'
+        command: .buildkite/scripts/pipelines/security_solution_quality_gate/api_integration/api-integration-tests.sh rule_preview:qa:serverless
+        key: rule_preview:qa:serverless
+        agents:
+          image: family/kibana-ubuntu-2404
+          imageProject: elastic-images-prod
+          provider: gcp
+          machineType: n2-standard-4
+        timeout_in_minutes: 120
+        retry:
+          automatic:
+            - exit_status: '1'
+              limit: 2
+
+      - label: 'API MKI - unified_alerts:essentials:qa:serverless'
+        command: .buildkite/scripts/pipelines/security_solution_quality_gate/api_integration/api-integration-tests.sh unified_alerts:essentials:qa:serverless
+        key: unified_alerts:essentials:qa:serverless
         agents:
           image: family/kibana-ubuntu-2404
           imageProject: elastic-images-prod
