@@ -20,7 +20,6 @@ import {
   ChromelessHeader,
   AppMenuBar,
   Sidebar,
-  useHasAppMenu,
 } from '@kbn/core-chrome-browser-components';
 import type { ChromeComponentsDeps } from '@kbn/core-chrome-browser-components';
 import {
@@ -86,7 +85,6 @@ export class GridLayout implements LayoutService {
       const chromeVisible = useIsChromeVisible();
       const hasHeaderBanner = useHasHeaderBanner();
       const chromeStyle = useChromeStyle();
-      const hasAppMenu = useHasAppMenu();
       const footer = useGlobalFooter();
       const sidebarWidth = useSidebarWidth();
       const navigationWidth = useSideNavWidth();
@@ -108,9 +106,7 @@ export class GridLayout implements LayoutService {
           header = <ClassicHeader />;
         } else {
           header = <ProjectHeader />;
-          if (hasAppMenu) {
-            applicationTopBar = <AppMenuBar />;
-          }
+          applicationTopBar = <AppMenuBar />;
 
           navigation = <GridLayoutProjectSideNav />;
         }

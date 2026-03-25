@@ -15,11 +15,12 @@ import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
 import { HeaderAppMenu } from '../shared/header_app_menu';
 import { HeaderActionMenu } from '../shared/header_action_menu';
 import {
-  useHasLegacyActionMenu,
   useHasAppMenuConfig,
   useProjectBreadcrumbs,
   useNavigateToUrl,
   useBasePath,
+  useNavLinks,
+  useCurrentAppId,
 } from '../shared/chrome_hooks';
 
 const getAccessibleTitleFromBreadcrumb = (
@@ -133,21 +134,34 @@ const useAppMenuBarStyles = (euiTheme: UseEuiTheme['euiTheme']) =>
   }, [euiTheme]);
 
 export const AppMenuBar = React.memo(() => {
-  const hasLegacyActionMenu = useHasLegacyActionMenu();
   const { euiTheme } = useEuiTheme();
   const styles = useAppMenuBarStyles(euiTheme);
   const hasAppMenuConfig = useHasAppMenuConfig();
   const navigateToUrl = useNavigateToUrl();
   const basePath = useBasePath();
   const breadcrumbs = useProjectBreadcrumbs();
+  const navLinks = useNavLinks();
+  const currentAppId = useCurrentAppId();
+  const currentAppTitleFromNav = useMemo(() => {
+    if (!currentAppId) {
+      return undefined;
+    }
+    return navLinks.find((link) => link.id === currentAppId)?.title;
+  }, [navLinks, currentAppId]);
+  const titleWhenNoProjectBreadcrumb = useMemo(
+    () =>
+      currentAppTitleFromNav ??
+      i18n.translate('core.ui.chrome.appMenu.titleFallbackWithoutBreadcrumb', {
+        defaultMessage: 'Page',
+      }),
+    [currentAppTitleFromNav]
+  );
   const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
-  const parentBreadcrumb = breadcrumbs.length >= 2 ? breadcrumbs[breadcrumbs.length - 2] : undefined;
-  const showBackToParent =
-    Boolean(parentBreadcrumb) && canNavigateToParent(parentBreadcrumb);
+  const parentBreadcrumb =
+    breadcrumbs.length >= 2 ? breadcrumbs[breadcrumbs.length - 2] : undefined;
+  const showBackToParent = Boolean(parentBreadcrumb) && canNavigateToParent(parentBreadcrumb);
   const titleContent = lastBreadcrumb?.text;
   const hasTitle = titleContent != null && titleContent !== '' && typeof titleContent !== 'boolean';
-
-  if (!hasLegacyActionMenu && !hasAppMenuConfig) return null;
 
   const accessibleTitle = getAccessibleTitleFromBreadcrumb(lastBreadcrumb);
   const reactNodeAriaLabel =
@@ -217,7 +231,13 @@ export const AppMenuBar = React.memo(() => {
                 <span className="eui-textTruncate">{titleContent}</span>
               </EuiTitle>
             )
-          ) : null}
+          ) : (
+            <EuiTitle size="xs" css={styles.titleEuiTitle}>
+              <span className="eui-textTruncate" title={titleWhenNoProjectBreadcrumb}>
+                {titleWhenNoProjectBreadcrumb}
+              </span>
+            </EuiTitle>
+          )}
         </div>
         <div
           className="appMenuBar__globalActions"
