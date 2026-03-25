@@ -271,17 +271,17 @@ export function RulesPage({ activeTab = RULES_TAB_NAME }: RulesPageProps) {
 
   return (
     <ObservabilityPageTemplate
-      pageHeader={{
-        pageTitle: i18n.translate('xpack.observability.rulesTitle', {
-          defaultMessage: 'Rules',
-        }),
-        ...(isProjectChrome
-          ? {}
+      pageHeader={
+        isProjectChrome
+          ? undefined
           : {
+              pageTitle: i18n.translate('xpack.observability.rulesTitle', {
+                defaultMessage: 'Rules',
+              }),
               rightSideItems,
               tabs,
-            }),
-      }}
+            }
+      }
       data-test-subj="rulesPage"
     >
       <AppMenu config={rulesAppMenuConfig} setAppMenu={chrome.setAppMenu} />
