@@ -59,7 +59,7 @@ export const AppMenuOverflowButton = ({
   const button = (
     <EuiButtonIcon
       iconType="boxesVertical" // TODO: Change to "ellipsis" when it's available in EUI.
-      size="xs"
+      size="s"
       aria-label={i18n.translate('core.chrome.appMenu.showMoreButtonLabel', {
         defaultMessage: 'More',
       })}

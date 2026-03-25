@@ -21,7 +21,7 @@ import { AppMenuOverflowButton } from './app_menu_overflow_button';
 const showMoreButtonId = 'chrome-bar-v2-show-more';
 
 export interface AppMenuChromeLinksProps {
-  gutterSize: 'xs';
+  gutterSize: 'xxs';
   popoverBreakpoints: 'none';
   className: string;
   'data-test-subj': string;
