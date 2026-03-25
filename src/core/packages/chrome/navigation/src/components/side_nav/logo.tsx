@@ -26,8 +26,8 @@ export interface LogoProps extends Omit<HTMLAttributes<HTMLAnchorElement>, 'onCl
   isHighlighted: boolean;
   onClick?: () => void;
   /**
-   * When project chrome (Elastic logo, space, search) renders above this row, use tighter top
-   * padding — spacing is handled by the cluster wrapper gap instead.
+   * When project chrome (Elastic logo, space, search) renders above this row, top padding is 0 —
+   * spacing is handled by the cluster wrapper gap instead.
    */
   hasProjectChromeAbove?: boolean;
 }
@@ -58,7 +58,7 @@ export const Logo = ({
   const wrapperStyles = css`
     position: relative;
     padding-top: ${hasProjectChromeAbove
-      ? euiTheme.size.xs
+      ? 0
       : isCollapsed
         ? euiTheme.size.s
         : euiTheme.size.m};

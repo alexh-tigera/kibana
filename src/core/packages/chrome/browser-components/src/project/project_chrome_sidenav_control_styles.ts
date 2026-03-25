@@ -32,9 +32,10 @@ export const useProjectChromeSidenavCompactControlStyles = () => {
         flex-grow: 0;
         flex-shrink: 0;
       }
+      /* EuiIcon default size maps to size.base (16px); size.m token is 12px in EUI — do not use for icons */
       .euiHeaderSectionItemButton .euiIcon {
-        block-size: ${euiTheme.size.m};
-        inline-size: ${euiTheme.size.m};
+        block-size: ${euiTheme.size.base};
+        inline-size: ${euiTheme.size.base};
       }
       .euiHeaderSectionItemButton .euiSkeletonRectangle {
         block-size: ${euiTheme.size.l};

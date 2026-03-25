@@ -27,7 +27,7 @@ import { css } from '@emotion/react';
 import { FormattedMessage } from '@kbn/i18n-react';
 import type { GlobalSearchFindParams, GlobalSearchResult } from '@kbn/global-search-plugin/public';
 import type { FC } from 'react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { apm } from '@elastic/apm-rum';
 import useDebounce from 'react-use/lib/useDebounce';
 import useEvent from 'react-use/lib/useEvent';
@@ -339,6 +339,22 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
 
   useEvent('keydown', onKeyDown);
 
+  /*
+   * Project sidenav: EuiIcon size "s" → euiTheme.size.m (12px). Size "m" → euiTheme.size.base (16px).
+   * Pin the SVG to base so it matches other header icons; !important beats header `font-size: 0` + EUI.
+   */
+  const projectMagnifyIconCss = useMemo(
+    () =>
+      css`
+        &&& {
+          inline-size: ${euiTheme.size.base} !important;
+          block-size: ${euiTheme.size.base} !important;
+          flex-shrink: 0;
+        }
+      `,
+    [euiTheme]
+  );
+
   if (chromeStyle === 'project' && !isVisible) {
     return (
       <EuiHeaderSectionItemButton
@@ -350,7 +366,7 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
           setIsVisible(true);
         }}
       >
-        <EuiIcon type="magnify" size="m" />
+        <EuiIcon css={projectMagnifyIconCss} size="m" type="magnify" />
       </EuiHeaderSectionItemButton>
     );
   }
@@ -433,8 +449,15 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
         panelStyle: { marginTop: '6px' },
       }}
       popoverButton={
-        <EuiHeaderSectionItemButton aria-label={i18nStrings.popoverButton}>
-          <EuiIcon type="magnify" size="m" />
+        <EuiHeaderSectionItemButton
+          aria-label={i18nStrings.popoverButton}
+          data-test-subj={chromeStyle === 'project' ? 'nav-search-expand' : undefined}
+        >
+          <EuiIcon
+            css={chromeStyle === 'project' ? projectMagnifyIconCss : undefined}
+            size="m"
+            type="magnify"
+          />
         </EuiHeaderSectionItemButton>
       }
       popoverFooter={<PopoverFooter />}
