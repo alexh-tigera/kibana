@@ -199,6 +199,10 @@
     "edr_workflows:package:server:ess": "npm run initialize-server:edr-workflows package ess",
     "edr_workflows:package:runner:ess": "npm run run-tests:edr-workflows package ess essEnv",
 
+    "edr_workflows:policy:server:serverless": "npm run initialize-server:edr-workflows policy serverless",
+    "edr_workflows:policy:runner:serverless": "npm run run-tests:edr-workflows policy serverless serverlessEnv",
+    "edr_workflows:policy:qa:serverless": "npm run run-tests:edr-workflows policy serverless qaPeriodicEnv",
+
     "edr_workflows:policy_response:server:serverless": "npm run initialize-server:edr-workflows policy_response serverless",
     "edr_workflows:policy_response:runner:serverless": "npm run run-tests:edr-workflows policy_response serverless serverlessEnv",
     "edr_workflows:policy_response:qa:serverless": "npm run run-tests:edr-workflows policy_response serverless qaPeriodicEnv",
@@ -219,6 +223,18 @@
     "edr_workflows:response_actions:qa:serverless:release": "npm run run-tests:edr-workflows response_actions serverless qaEnv",
     "edr_workflows:response_actions:server:ess": "npm run initialize-server:edr-workflows response_actions ess",
     "edr_workflows:response_actions:runner:ess": "npm run run-tests:edr-workflows response_actions ess essEnv",
+
+    "edr_workflows:role_migrations:server:serverless": "npm run initialize-server:edr-workflows role_migrations serverless",
+    "edr_workflows:role_migrations:runner:serverless": "npm run run-tests:edr-workflows role_migrations serverless serverlessEnv",
+    "edr_workflows:role_migrations:qa:serverless": "npm run run-tests:edr-workflows role_migrations serverless qaPeriodicEnv",
+
+    "edr_workflows:scripts_library:server:serverless": "npm run initialize-server:edr-workflows scripts_library serverless",
+    "edr_workflows:scripts_library:runner:serverless": "npm run run-tests:edr-workflows scripts_library serverless serverlessEnv",
+    "edr_workflows:scripts_library:qa:serverless": "npm run run-tests:edr-workflows scripts_library serverless qaPeriodicEnv",
+
+    "edr_workflows:spaces:server:serverless": "npm run initialize-server:edr-workflows spaces serverless",
+    "edr_workflows:spaces:runner:serverless": "npm run run-tests:edr-workflows spaces serverless serverlessEnv",
+    "edr_workflows:spaces:qa:serverless": "npm run run-tests:edr-workflows spaces serverless qaPeriodicEnv",
 
     "exception_lists:auth:lists:server:serverless": "npm run initialize-server:lists:essentials_only authorization/exceptions/lists serverless",
     "exception_lists:auth:lists:runner:serverless": "npm run run-tests:lists:essentials_only authorization/exceptions/lists serverless serverlessEnv",
