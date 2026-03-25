@@ -7,4 +7,4 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-export { useAiButton } from './use_ai_button';
+export { NextHeaderService } from './next_header_service';

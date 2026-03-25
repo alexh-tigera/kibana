@@ -17,6 +17,7 @@ import type {
   ChromeHelpMenuLink,
   ChromeNavControl,
   ChromeNavLink,
+  ChromeNextHeaderConfig,
 } from '@kbn/core-chrome-browser';
 import type { ApplicationStart } from '@kbn/core-application-browser';
 import type { MountPoint } from '@kbn/core-mount-utils-browser';
@@ -278,4 +279,15 @@ export function useHasAppMenu(): boolean {
   const hasLegacyActionMenu = useHasLegacyActionMenu();
   const hasAppMenuConfig = useHasAppMenuConfig();
   return hasLegacyActionMenu || hasAppMenuConfig;
+}
+
+/**
+ * Returns the current Chrome-Next header configuration set via
+ * `chrome.next.header.set()`, or `undefined` if not set.
+ * Used by Chrome-Next top bar components.
+ */
+export function useNextHeader(): ChromeNextHeaderConfig | undefined {
+  const chrome = useChromeService();
+  const config$ = useMemo(() => chrome.next.header.get$(), [chrome]);
+  return useObservable(config$, undefined);
 }
