@@ -60,7 +60,16 @@ export function SlosWelcomePage() {
 
   const isFeedbackEnabled = notifications?.feedback?.isEnabled() ?? true;
 
+  const { data: permissions } = usePermissions();
+  const { hasAtLeast } = useLicense();
+  const history = useHistory();
+  const { data: { total } = { total: 0 }, isLoading } = useFetchSloDefinitions({ perPage: 0 });
+
   const slosWelcomeAppMenuConfig = useMemo((): AppMenuConfig => {
+    const createSloHref = basePath.prepend(paths.sloCreate);
+    const createSloLabel = i18n.translate('xpack.slo.sloList.pageHeader.create', {
+      defaultMessage: 'Create SLO',
+    });
     const annotationsHref = basePath.prepend('/app/observability/annotations');
     const settingsHref = basePath.prepend(paths.slosSettings);
     const managementHref = basePath.prepend(paths.slosManagement);
@@ -143,6 +152,17 @@ export function SlosWelcomePage() {
 
     return {
       layout: 'chromeBarV2',
+      primaryActionItem: {
+        id: 'slos-welcome-create-slo',
+        label: createSloLabel,
+        iconType: 'plusInCircle',
+        testId: 'slosPageCreateNewSloButton',
+        href: createSloHref,
+        disableButton: !permissions?.hasAllWriteRequested,
+        run: () => {
+          void navigateToUrl(createSloHref);
+        },
+      },
       overflowOnlyItems,
     };
   }, [
@@ -154,14 +174,10 @@ export function SlosWelcomePage() {
     kibanaVersion,
     navigateToUrl,
     pathname,
+    permissions?.hasAllWriteRequested,
   ]);
 
-  const { data: permissions } = usePermissions();
-  const { hasAtLeast } = useLicense();
   const hasRightLicense = hasAtLeast('platinum');
-  const history = useHistory();
-
-  const { data: { total } = { total: 0 }, isLoading } = useFetchSloDefinitions({ perPage: 0 });
 
   const hasSlosAndPermissions =
     !isLoading && total > 0 && hasRightLicense && permissions?.hasAllReadRequested === true;
