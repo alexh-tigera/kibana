@@ -42,6 +42,7 @@ import { useKibana } from '../../utils/kibana_react';
 import { HeaderMenu } from '../overview/components/header_menu/header_menu';
 import { DeleteConfirmationModal } from './components/delete_confirmation_modal';
 import { HeaderActions } from './components/header_actions';
+import { useRuleDetailsHeaderActions } from './hooks/use_rule_details_header_actions';
 import { NoRuleFoundPanel } from './components/no_rule_found_panel';
 import {
   buildRuleDetailHeaderBadges,
@@ -218,15 +219,34 @@ export function RuleDetailsPage() {
   const ruleType = ruleTypes?.find((type) => type.id === rule?.ruleTypeId);
   const isEditable = isRuleEditable({ capabilities, rule, ruleType, ruleTypeRegistry });
 
+  const ruleDetailsHeaderActions = useRuleDetailsHeaderActions({
+    ruleId: ruleId ?? '',
+    rule,
+    refetch,
+    isLoading: isLoading || isRuleDeleting,
+    isRuleEditable: isEditable,
+    onEditRule: handleEditRule,
+    onDeleteRule: handleDeleteRule,
+  });
+
+  const { getChromeBarV2Fragment } = ruleDetailsHeaderActions;
+
   const ruleDetailAppMenuConfig = useMemo((): AppMenuConfig => {
     if (!rule) {
       return {};
     }
-    return {
+    const base: AppMenuConfig = {
       headerBadges: buildRuleDetailHeaderBadges(rule),
       headerMetadata: buildRuleDetailHeaderMetadata(rule),
     };
-  }, [rule]);
+    if (!isProjectChrome) {
+      return base;
+    }
+    return {
+      ...base,
+      ...getChromeBarV2Fragment(),
+    };
+  }, [rule, isProjectChrome, getChromeBarV2Fragment]);
 
   const ruleStatusMessage =
     rule?.executionStatus.error?.reason === RuleExecutionStatusErrorReasons.License
@@ -260,48 +280,19 @@ export function RuleDetailsPage() {
               },
               children: <PageTitleContent rule={rule} />,
               bottomBorder: false,
-              rightSideItems: ruleId
-                ? [
-                    <HeaderActions
-                      ruleId={ruleId}
-                      isLoading={isLoading || isRuleDeleting}
-                      isRuleEditable={isEditable}
-                      onEditRule={handleEditRule}
-                      onDeleteRule={handleDeleteRule}
-                    />,
-                  ]
-                : [],
+              rightSideItems: ruleId ? [<HeaderActions api={ruleDetailsHeaderActions} />] : [],
             }
       }
     >
       {isProjectChrome ? (
         <>
           <AppMenu config={ruleDetailAppMenuConfig} setAppMenu={chrome.setAppMenu} />
-          <EuiFlexGroup
-            alignItems="flexStart"
-            justifyContent="spaceBetween"
-            responsive={true}
-            wrap
-          >
-            <EuiFlexItem grow={false}>
-              <PageTitleContent
-                rule={rule}
-                showInlineMetadata={false}
-                showInlineStatusBadge={false}
-              />
-            </EuiFlexItem>
-            {ruleId ? (
-              <EuiFlexItem grow={false}>
-                <HeaderActions
-                  ruleId={ruleId}
-                  isLoading={isLoading || isRuleDeleting}
-                  isRuleEditable={isEditable}
-                  onEditRule={handleEditRule}
-                  onDeleteRule={handleDeleteRule}
-                />
-              </EuiFlexItem>
-            ) : null}
-          </EuiFlexGroup>
+          {ruleDetailsHeaderActions.modals}
+          <PageTitleContent
+            rule={rule}
+            showInlineMetadata={false}
+            showInlineStatusBadge={false}
+          />
           <EuiSpacer size="m" />
         </>
       ) : null}
