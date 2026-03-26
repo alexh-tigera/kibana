@@ -12,9 +12,13 @@ import { i18n } from '@kbn/i18n';
 import type { DataView } from '@kbn/data-views-plugin/public';
 import { METRIC_TYPE } from '@kbn/analytics';
 import { ENABLE_ESQL, getInitialESQLQuery } from '@kbn/esql-utils';
-import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
+import type {
+  AppMenuConfig,
+  AppMenuItemType,
+  AppMenuSecondaryActionItem,
+} from '@kbn/core-chrome-app-menu-components';
 import type { DiscoverAppMenuItemType } from '@kbn/discover-utils';
-import { AppMenuRegistry, dismissFlyouts, DiscoverFlyouts } from '@kbn/discover-utils';
+import { AppMenuActionId, AppMenuRegistry, dismissFlyouts, DiscoverFlyouts } from '@kbn/discover-utils';
 import { ESQL_TYPE } from '@kbn/data-view-utils';
 import { DISCOVER_APP_ID } from '@kbn/deeplinks-analytics';
 import type { RuleTypeWithDescription } from '@kbn/alerts-ui-shared';
@@ -51,6 +55,79 @@ import { onSaveDiscoverSession } from './save_discover_session';
 import { useDataState } from '../../hooks/use_data_state';
 import { TransferAction } from '../../../../plugin_imports/embeddable_editor_service';
 
+/** Overflow (⋯) order for Discover project chrome. Other items follow these. */
+const DISCOVER_PROJECT_OVERFLOW_ORDER: string[] = [
+  AppMenuActionId.new,
+  AppMenuActionId.open,
+  AppMenuActionId.alerts,
+  AppMenuActionId.backgroundsearch,
+  AppMenuActionId.inspect,
+  AppMenuActionId.export,
+  'dataset-quality-link',
+];
+
+function orderDiscoverProjectOverflowItems(overflowItems: AppMenuItemType[]): AppMenuItemType[] {
+  const byId = new Map(overflowItems.map((item) => [item.id, item]));
+  const ordered: AppMenuItemType[] = [];
+  const usedIds = new Set<string>();
+
+  for (const id of DISCOVER_PROJECT_OVERFLOW_ORDER) {
+    const item = byId.get(id);
+    if (item) {
+      ordered.push(item);
+      usedIds.add(id);
+    }
+  }
+
+  for (const item of overflowItems) {
+    if (!usedIds.has(item.id)) {
+      ordered.push(item);
+    }
+  }
+
+  return ordered;
+}
+
+/**
+ * Project chrome (chromeBarV2): Share → ES|QL as inline secondaries; Save primary;
+ * overflow order: New → Open → Alerts → Background searches → Inspect → Export → Data sets (then any extras).
+ */
+function toDiscoverProjectChromeAppMenuConfig(baseConfig: AppMenuConfig): AppMenuConfig {
+  const items = baseConfig.items ?? [];
+  const itemById = new Map(items.map((item) => [item.id, item]));
+
+  const overflowCandidates = orderDiscoverProjectOverflowItems(
+    items.filter((item) => item.id !== AppMenuActionId.share)
+  );
+
+  let overflowOrder = 10;
+  const overflowOnlyItems: AppMenuItemType[] = overflowCandidates.map((item) => {
+    const ordered = { ...item, order: overflowOrder };
+    overflowOrder += 10;
+    return ordered;
+  });
+
+  const secondaryActionItems: AppMenuSecondaryActionItem[] = [];
+
+  const shareItem = itemById.get(AppMenuActionId.share);
+  if (shareItem) {
+    const { order: _shareOrder, ...shareSecondary } = shareItem;
+    secondaryActionItems.push(shareSecondary as AppMenuSecondaryActionItem);
+  }
+
+  if (baseConfig.secondaryActionItem) {
+    const { order: _esqlOrder, ...esqlSecondary } = baseConfig.secondaryActionItem as AppMenuItemType;
+    secondaryActionItems.push(esqlSecondary as AppMenuSecondaryActionItem);
+  }
+
+  return {
+    layout: 'chromeBarV2',
+    primaryActionItem: baseConfig.primaryActionItem,
+    secondaryActionItems,
+    overflowOnlyItems,
+  };
+}
+
 /**
  * Helper function to build the top nav links
  */
@@ -74,6 +151,11 @@ export const useTopNavLinks = ({
   persistedDiscoverSession: DiscoverSession | undefined;
 }): AppMenuConfig => {
   const intl = useI18n();
+  const chromeStyle = useObservable(
+    services.core.chrome.getChromeStyle$(),
+    services.core.chrome.getChromeStyle()
+  );
+  const isProjectChrome = chromeStyle === 'project';
   const dispatch = useInternalStateDispatch();
   const getState = useInternalStateGetState();
   const runtimeStateManager = useRuntimeStateManager();
@@ -379,7 +461,7 @@ export const useTopNavLinks = ({
   return useMemo((): AppMenuConfig => {
     const config = appMenuRegistry.getAppMenuConfig();
 
-    return {
+    const baseMenuConfig: AppMenuConfig = {
       items: config.items?.map((item) =>
         enhanceAppMenuItemWithRunAction({
           appMenuItem: item,
@@ -399,5 +481,11 @@ export const useTopNavLinks = ({
           })
         : undefined,
     };
-  }, [appMenuRegistry, services]);
+
+    if (!isProjectChrome) {
+      return baseMenuConfig;
+    }
+
+    return toDiscoverProjectChromeAppMenuConfig(baseMenuConfig);
+  }, [appMenuRegistry, services, isProjectChrome]);
 };
