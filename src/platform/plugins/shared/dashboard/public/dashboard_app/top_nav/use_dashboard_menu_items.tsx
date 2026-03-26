@@ -53,6 +53,12 @@ export const useDashboardMenuItems = ({
 
   const dashboardApi = useDashboardApi();
 
+  const chromeStyle = useObservable(
+    coreServices.chrome.getChromeStyle$(),
+    coreServices.chrome.getChromeStyle()
+  );
+  const isProjectChrome = chromeStyle === 'project';
+
   const [dashboardTitle, hasOverlays, hasUnsavedChanges, lastSavedId, viewMode, accessControl] =
     useBatchedPublishingSubjects(
       dashboardApi.title$,
@@ -430,6 +436,61 @@ export const useDashboardMenuItems = ({
   const viewModeTopNavConfig = useMemo(() => {
     const { showWriteControls, storeSearchSession } = getDashboardCapabilities();
 
+    /**
+     * Project chrome: keep Export and Share inline (secondary actions); Full screen, Duplicate,
+     * and remaining items live only in the overflow (⋯) menu (chromeBarV2).
+     * Classic chrome: preserve legacy `items` strip + automatic overflow split.
+     */
+    if (isProjectChrome) {
+      const secondaryActionItems: AppMenuSecondaryActionItem[] = [];
+
+      if (shareService && hasExportIntegration) {
+        const { order: _exportOrder, ...exportAsSecondary } = menuItems.export;
+        secondaryActionItems.push(exportAsSecondary);
+      }
+
+      if (shareService) {
+        const { order: _shareOrder, ...shareAsSecondary } = menuItems.share;
+        secondaryActionItems.push(shareAsSecondary);
+      }
+
+      const overflowOnlyItems: AppMenuItemType[] = [];
+
+      if (showWriteControls) {
+        overflowOnlyItems.push(menuItems.duplicate);
+      }
+
+      if (showResetChange) {
+        overflowOnlyItems.push(resetChangesMenuItem);
+      }
+
+      if (storeSearchSession && dataService.search.isBackgroundSearchEnabled) {
+        overflowOnlyItems.push(menuItems.backgroundSearch);
+      }
+
+      if (isLabsEnabled) {
+        overflowOnlyItems.push(menuItems.labs);
+      }
+
+      // Sorted last in overflow (highest order); base item uses order 1 for classic chrome strip.
+      overflowOnlyItems.push({
+        ...menuItems.fullScreen,
+        order: 100,
+      });
+
+      const viewModeConfig: AppMenuConfig = {
+        layout: 'chromeBarV2',
+        secondaryActionItems,
+        overflowOnlyItems,
+      };
+
+      if (showWriteControls && !dashboardApi.isManaged) {
+        viewModeConfig.primaryActionItem = menuItems.edit;
+      }
+
+      return viewModeConfig;
+    }
+
     const items: AppMenuItemType[] = [menuItems.fullScreen];
 
     if (showWriteControls) {
@@ -467,6 +528,7 @@ export const useDashboardMenuItems = ({
 
     return viewModeConfig;
   }, [
+    isProjectChrome,
     menuItems.fullScreen,
     menuItems.duplicate,
     menuItems.export,
@@ -483,6 +545,42 @@ export const useDashboardMenuItems = ({
 
   const editModeTopNavConfig = useMemo(() => {
     const { storeSearchSession } = getDashboardCapabilities();
+
+    /**
+     * Project chrome: [Add][Exit edit] inline; overflow ⋯ holds Share → Export → Settings →
+     * Background searches (→ Labs when enabled); Save stays primary.
+     * Classic chrome: legacy items strip + Add secondary + Save primary.
+     */
+    if (isProjectChrome) {
+      const { order: _exitOrder, ...exitEditAsSecondary } = menuItems.switchToViewMode;
+      const secondaryActionItems: AppMenuSecondaryActionItem[] = [
+        menuItems.add,
+        exitEditAsSecondary,
+      ];
+
+      const overflowOnlyItems: AppMenuItemType[] = [];
+
+      if (shareService) {
+        overflowOnlyItems.push({ ...menuItems.share, order: 10 });
+      }
+      if (shareService && hasExportIntegration) {
+        overflowOnlyItems.push({ ...menuItems.export, order: 20 });
+      }
+      overflowOnlyItems.push({ ...menuItems.settings, order: 30 });
+      if (storeSearchSession && dataService.search.isBackgroundSearchEnabled) {
+        overflowOnlyItems.push({ ...menuItems.backgroundSearch, order: 40 });
+      }
+      if (isLabsEnabled) {
+        overflowOnlyItems.push({ ...menuItems.labs, order: 50 });
+      }
+
+      return {
+        layout: 'chromeBarV2' as const,
+        secondaryActionItems,
+        overflowOnlyItems,
+        primaryActionItem: menuItems.save,
+      };
+    }
 
     const items: AppMenuItemType[] = [menuItems.switchToViewMode, menuItems.settings];
 
@@ -511,6 +609,7 @@ export const useDashboardMenuItems = ({
 
     return editModeConfig;
   }, [
+    isProjectChrome,
     menuItems.switchToViewMode,
     menuItems.export,
     menuItems.share,
