@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { i18n } from '@kbn/i18n';
+import useObservable from 'react-use/lib/useObservable';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -39,10 +40,13 @@ export function ExploratoryViewPage({
   useSessionStorage = false,
 }: ExploratoryViewPageProps) {
   const {
-    services: { uiSettings, notifications, observabilityShared },
+    services: { uiSettings, notifications, observabilityShared, chrome },
   } = useKibana();
 
   const history = useHistory();
+
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
 
   const ObservabilityPageTemplate = observabilityShared.navigation.PageTemplate;
 
@@ -77,7 +81,7 @@ export function ExploratoryViewPage({
       <ObservabilityPageTemplate
         pageHeader={{
           pageTitle: PAGE_TITLE,
-          rightSideItems: [<RefreshButton />, <LastUpdated />],
+          rightSideItems: isProjectChrome ? [] : [<RefreshButton />, <LastUpdated />],
         }}
       >
         <DataViewContextProvider>

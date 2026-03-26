@@ -7,6 +7,7 @@
 
 import { i18n } from '@kbn/i18n';
 import React, { useEffect, useRef, useState } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import styled from '@emotion/styled';
 import {
   EuiButtonEmpty,
@@ -26,6 +27,7 @@ import { LensEmbeddable } from './lens_embeddable';
 import { EmptyView } from './components/empty_view';
 import { useExpViewTimeRange } from './hooks/use_time_range';
 import { ExpViewActionMenu } from './components/action_menu';
+import { ExploratoryViewProjectAppMenu } from './header/exploratory_view_project_app_menu';
 import { useExploratoryView } from './contexts/exploratory_view_config';
 
 export type PanelId = 'seriesPanel' | 'chartPanel';
@@ -36,8 +38,10 @@ export function ExploratoryView({
   saveAttributes?: (attr: TypedLensByValueInput['attributes'] | null) => void;
 }) {
   const {
-    services: { lens },
+    services: { lens, chrome },
   } = useKibana();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
   const seriesBuilderRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -102,7 +106,11 @@ export function ExploratoryView({
 
   return lens ? (
     <>
-      <ExpViewActionMenu timeRange={timeRange} lensAttributes={lensAttributes} />
+      {isProjectChrome ? (
+        <ExploratoryViewProjectAppMenu timeRange={timeRange} lensAttributes={lensAttributes} />
+      ) : (
+        <ExpViewActionMenu timeRange={timeRange} lensAttributes={lensAttributes} />
+      )}
       <LensWrapper ref={wrapperRef} height={height}>
         <ResizableContainer direction="vertical" onToggleCollapsed={onCollapse}>
           {(EuiResizablePanel, _EuiResizableButton, { togglePanel }) => {

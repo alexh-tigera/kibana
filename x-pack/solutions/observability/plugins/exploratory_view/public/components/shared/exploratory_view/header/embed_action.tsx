@@ -13,10 +13,21 @@ import { useSeriesStorage } from '../hooks/use_series_storage';
 
 export function EmbedAction({
   lensAttributes,
+  hideTrigger,
+  isPopoverOpen: controlledOpen,
+  onPopoverOpenChange,
 }: {
   lensAttributes: TypedLensByValueInput['attributes'] | null;
+  /** When true, the trigger button is visually hidden (e.g. overflow-only in project chrome). */
+  hideTrigger?: boolean;
+  /** Controlled popover open state (project chrome overflow). */
+  isPopoverOpen?: boolean;
+  onPopoverOpenChange?: (isOpen: boolean) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = onPopoverOpenChange !== undefined;
+  const isOpen = isControlled ? (controlledOpen ?? false) : internalOpen;
+  const setOpen = isControlled ? onPopoverOpenChange : setInternalOpen;
 
   const { reportType, allSeries } = useSeriesStorage();
 
@@ -24,9 +35,24 @@ export function EmbedAction({
     <EuiButtonEmpty
       data-test-subj="o11yEmbedActionButton"
       size="s"
+      style={
+        hideTrigger
+          ? {
+              position: 'absolute',
+              width: 1,
+              height: 1,
+              padding: 0,
+              margin: -1,
+              overflow: 'hidden',
+              clip: 'rect(0,0,0,0)',
+              whiteSpace: 'nowrap',
+              border: 0,
+            }
+          : undefined
+      }
       isDisabled={lensAttributes === null}
       onClick={() => {
-        setIsOpen(!isOpen);
+        setOpen(!isOpen);
       }}
     >
       {EMBED_LABEL}
@@ -34,7 +60,7 @@ export function EmbedAction({
   );
 
   return (
-    <EuiPopover button={button} isOpen={isOpen} closePopover={() => setIsOpen(false)}>
+    <EuiPopover button={button} isOpen={isOpen} closePopover={() => setOpen(false)}>
       <EuiPopoverTitle>{EMBED_TITLE_LABEL}</EuiPopoverTitle>
       <EuiCodeBlock
         language="jsx"
@@ -66,3 +92,6 @@ const EMBED_LABEL = i18n.translate('xpack.exploratoryView.expView.heading.embed'
   defaultMessage: 'Embed <></>',
   ignoreTag: true,
 });
+
+/** Same label as {@link EMBED_LABEL} for app menu overflow items. */
+export const EMBED_OVERFLOW_LABEL = EMBED_LABEL;

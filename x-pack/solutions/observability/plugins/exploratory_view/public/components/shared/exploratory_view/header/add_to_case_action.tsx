@@ -7,7 +7,7 @@
 
 import { EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiLink } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { toMountPoint } from '@kbn/react-kibana-mount';
 import type { GetAllCasesSelectorModalProps } from '@kbn/cases-plugin/public';
@@ -24,6 +24,10 @@ export interface AddToCaseProps {
   owner?: string;
   setAutoOpen?: (val: boolean) => void;
   timeRange: { from: string; to: string };
+  /** When true, the trigger button is hidden (e.g. overflow-only in project chrome). */
+  hideTrigger?: boolean;
+  /** Increment to open the case selector from outside (e.g. app menu overflow). */
+  openSignal?: number;
 }
 
 export function AddToCaseAction({
@@ -32,6 +36,8 @@ export function AddToCaseAction({
   owner = observabilityFeatureId,
   setAutoOpen,
   timeRange,
+  hideTrigger,
+  openSignal,
 }: AddToCaseProps) {
   const kServices = useKibana<ObservabilityAppServices>().services;
   const userCasesPermissions = kServices.cases.helpers.canUseCases([observabilityFeatureId]);
@@ -57,6 +63,8 @@ export function AddToCaseAction({
 
   const absoluteFromDate = parseRelativeDate(timeRange.from);
   const absoluteToDate = parseRelativeDate(timeRange.to, { roundUp: true });
+
+  const lastHandledOpenSignalRef = useRef(0);
 
   const { onCaseClicked, isCasesOpen, setIsCasesOpen, isSaving } = useAddToCase({
     lensAttributes,
@@ -90,9 +98,23 @@ export function AddToCaseAction({
     }
   }, [isCasesOpen, setAutoOpen]);
 
+  useEffect(() => {
+    if (openSignal === undefined) {
+      return;
+    }
+    if (openSignal <= lastHandledOpenSignalRef.current) {
+      return;
+    }
+    if (!lensAttributes) {
+      return;
+    }
+    lastHandledOpenSignalRef.current = openSignal;
+    setIsCasesOpen(true);
+  }, [openSignal, lensAttributes, setIsCasesOpen]);
+
   return (
     <>
-      {typeof autoOpen === 'undefined' && (
+      {typeof autoOpen === 'undefined' && !hideTrigger && (
         <EuiButtonEmpty
           data-test-subj="o11yAddToCaseActionAddToCaseButton"
           size="s"
