@@ -11,6 +11,7 @@ import type {
   IUiSettingsClient,
   ApplicationStart,
   NotificationsStart,
+  ChromeStart,
 } from '@kbn/core/public';
 import type { RenderingService } from '@kbn/core-rendering-browser';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
@@ -23,6 +24,7 @@ interface UxKibanaServices extends ApmPluginStartDeps {
   application: ApplicationStart;
   notifications: NotificationsStart;
   rendering: RenderingService;
+  chrome: ChromeStart;
 }
 
 export function useKibanaServices() {

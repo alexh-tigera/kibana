@@ -10,7 +10,7 @@ import { mockLayerList } from './__mocks__/regions_layer.mock';
 import { useLayerList } from './use_layer_list';
 
 jest.mock('../../../../context/use_ux_plugin_context', () => {
-  return { useUxPluginContext: () => ({ spaceId: 'default' }) };
+  return { useUxPluginContext: () => ({ spaceId: 'default', isDev: false }) };
 });
 
 describe('useLayerList', () => {

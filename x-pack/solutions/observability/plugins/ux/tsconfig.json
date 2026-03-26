@@ -14,6 +14,8 @@
   ],
   "kbn_references": [
     "@kbn/core",
+    "@kbn/core-chrome-app-menu",
+    "@kbn/core-chrome-app-menu-components",
     "@kbn/data-plugin",
     "@kbn/embeddable-plugin",
     "@kbn/home-plugin",
