@@ -433,15 +433,78 @@ export const useDashboardMenuItems = ({
     return shareService.availableIntegrations('dashboard', 'export').length > 0;
   }, []);
 
-  const viewModeTopNavConfig = useMemo(() => {
-    const { showWriteControls, storeSearchSession } = getDashboardCapabilities();
+  const { showWriteControls, storeSearchSession } = getDashboardCapabilities();
 
+  const viewModeTopNavConfig = useMemo(() => {
     /**
-     * Project chrome: keep Export and Share inline (secondary actions); Full screen, Duplicate,
-     * and remaining items live only in the overflow (⋯) menu (chromeBarV2).
+     * Project chrome (chromeBarV2):
+     * - Globally read-only: Share → Full screen; no overflow.
+     * - Write capability but this dashboard not editable: Share → Export; Edit primary (disabled via
+     *   menuItems.edit); overflow Duplicate → Background searches → Full screen.
+     * - Can edit: Export → Share; overflow as before (Duplicate, reset, …, Full screen).
      * Classic chrome: preserve legacy `items` strip + automatic overflow split.
      */
     if (isProjectChrome) {
+      const isGloballyReadOnly = !showWriteControls;
+      const isDashboardReadOnly = showWriteControls && !dashboardApi.isEditableByUser;
+
+      if (isGloballyReadOnly) {
+        const secondaryActionItems: AppMenuSecondaryActionItem[] = [];
+
+        if (shareService) {
+          const { order: _shareOrder, ...shareAsSecondary } = menuItems.share;
+          secondaryActionItems.push(shareAsSecondary);
+        }
+
+        const { order: _fullScreenOrder, ...fullScreenAsSecondary } = menuItems.fullScreen;
+        secondaryActionItems.push(fullScreenAsSecondary);
+
+        return {
+          layout: 'chromeBarV2',
+          secondaryActionItems,
+          overflowOnlyItems: [],
+        };
+      }
+
+      if (isDashboardReadOnly) {
+        const secondaryActionItems: AppMenuSecondaryActionItem[] = [];
+
+        if (shareService) {
+          const { order: _shareOrder, ...shareAsSecondary } = menuItems.share;
+          secondaryActionItems.push(shareAsSecondary);
+        }
+
+        if (shareService && hasExportIntegration) {
+          const { order: _exportOrder, ...exportAsSecondary } = menuItems.export;
+          secondaryActionItems.push(exportAsSecondary);
+        }
+
+        const overflowOnlyItems: AppMenuItemType[] = [
+          { ...menuItems.duplicate, order: 10 },
+        ];
+
+        if (storeSearchSession && dataService.search.isBackgroundSearchEnabled) {
+          overflowOnlyItems.push({ ...menuItems.backgroundSearch, order: 20 });
+        }
+
+        overflowOnlyItems.push({
+          ...menuItems.fullScreen,
+          order: 30,
+        });
+
+        const viewModeConfig: AppMenuConfig = {
+          layout: 'chromeBarV2',
+          secondaryActionItems,
+          overflowOnlyItems,
+        };
+
+        if (showWriteControls && !dashboardApi.isManaged) {
+          viewModeConfig.primaryActionItem = menuItems.edit;
+        }
+
+        return viewModeConfig;
+      }
+
       const secondaryActionItems: AppMenuSecondaryActionItem[] = [];
 
       if (shareService && hasExportIntegration) {
@@ -454,11 +517,7 @@ export const useDashboardMenuItems = ({
         secondaryActionItems.push(shareAsSecondary);
       }
 
-      const overflowOnlyItems: AppMenuItemType[] = [];
-
-      if (showWriteControls) {
-        overflowOnlyItems.push(menuItems.duplicate);
-      }
+      const overflowOnlyItems: AppMenuItemType[] = [menuItems.duplicate];
 
       if (showResetChange) {
         overflowOnlyItems.push(resetChangesMenuItem);
@@ -472,7 +531,6 @@ export const useDashboardMenuItems = ({
         overflowOnlyItems.push(menuItems.labs);
       }
 
-      // Sorted last in overflow (highest order); base item uses order 1 for classic chrome strip.
       overflowOnlyItems.push({
         ...menuItems.fullScreen,
         order: 100,
@@ -529,6 +587,9 @@ export const useDashboardMenuItems = ({
     return viewModeConfig;
   }, [
     isProjectChrome,
+    showWriteControls,
+    storeSearchSession,
+    dashboardApi.isEditableByUser,
     menuItems.fullScreen,
     menuItems.duplicate,
     menuItems.export,
@@ -544,8 +605,6 @@ export const useDashboardMenuItems = ({
   ]);
 
   const editModeTopNavConfig = useMemo(() => {
-    const { storeSearchSession } = getDashboardCapabilities();
-
     /**
      * Project chrome: [Add][Exit edit] inline; overflow ⋯ holds Share → Export → Settings →
      * Background searches (→ Labs when enabled); Save stays primary.
@@ -620,6 +679,7 @@ export const useDashboardMenuItems = ({
     menuItems.labs,
     hasExportIntegration,
     isLabsEnabled,
+    storeSearchSession,
   ]);
 
   return { viewModeTopNavConfig, editModeTopNavConfig };
