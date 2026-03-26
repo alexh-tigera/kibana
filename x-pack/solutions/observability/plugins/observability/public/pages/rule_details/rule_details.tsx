@@ -288,11 +288,6 @@ export function RuleDetailsPage() {
         <>
           <AppMenu config={ruleDetailAppMenuConfig} setAppMenu={chrome.setAppMenu} />
           {ruleDetailsHeaderActions.modals}
-          <PageTitleContent
-            rule={rule}
-            showInlineMetadata={false}
-            showInlineStatusBadge={false}
-          />
         </>
       ) : null}
       {!isProjectChrome ? <HeaderMenu /> : null}

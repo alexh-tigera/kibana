@@ -84,16 +84,20 @@ export function SloEditPage() {
 
   return (
     <ObservabilityPageTemplate
-      pageHeader={{
-        pageTitle: isEditMode
-          ? i18n.translate('xpack.slo.sloEditPageTitle', {
-              defaultMessage: 'Edit SLO',
-            })
-          : i18n.translate('xpack.slo.sloCreatePageTitle', {
-              defaultMessage: 'Create new SLO',
-            }),
-        bottomBorder: false,
-      }}
+      pageHeader={
+        isProjectChrome
+          ? undefined
+          : {
+              pageTitle: isEditMode
+                ? i18n.translate('xpack.slo.sloEditPageTitle', {
+                    defaultMessage: 'Edit SLO',
+                  })
+                : i18n.translate('xpack.slo.sloCreatePageTitle', {
+                    defaultMessage: 'Create new SLO',
+                  }),
+              bottomBorder: false,
+            }
+      }
       data-test-subj="sloEditPage"
     >
       {isProjectChrome ? (

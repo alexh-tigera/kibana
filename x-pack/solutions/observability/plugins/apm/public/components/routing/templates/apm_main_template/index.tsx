@@ -7,7 +7,7 @@
 
 import React from 'react';
 import type { EuiPageHeaderProps } from '@elastic/eui';
-import { EuiFlexGroup } from '@elastic/eui';
+import { EuiFlexGroup, EuiSpacer } from '@elastic/eui';
 import useObservable from 'react-use/lib/useObservable';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import type { ObservabilityPageTemplateProps } from '@kbn/observability-shared-plugin/public';
@@ -145,14 +145,26 @@ export function ApmMainTemplate({
         <ObservabilityPageTemplate
           noDataConfig={shouldBypassNoDataScreen ? undefined : noDataConfig}
           isPageDataLoaded={isLoading === false}
-          pageHeader={{
-            rightSideItems,
-            ...pageHeader,
-            pageTitle: pageHeader?.pageTitle ?? pageTitle,
-            ...(pageHeaderChildren !== undefined ? { children: pageHeaderChildren } : {}),
-          }}
+          pageHeader={
+            isProjectChrome
+              ? undefined
+              : {
+                  rightSideItems,
+                  ...pageHeader,
+                  pageTitle: pageHeader?.pageTitle ?? pageTitle,
+                  ...(pageHeaderChildren !== undefined ? { children: pageHeaderChildren } : {}),
+                }
+          }
           {...pageTemplateProps}
         >
+          {isProjectChrome && showServiceGroupsNav && selectedNavButton === 'serviceGroups' ? (
+            <>
+              <EuiFlexGroup justifyContent="flexStart" responsive={false}>
+                <ServiceGroupsButtonGroup selectedNavButton="serviceGroups" />
+              </EuiFlexGroup>
+              <EuiSpacer size="s" />
+            </>
+          ) : null}
           {children}
         </ObservabilityPageTemplate>
       </ApmProjectChromeLayoutProvider>

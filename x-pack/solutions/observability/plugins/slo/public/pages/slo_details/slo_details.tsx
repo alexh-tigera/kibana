@@ -251,12 +251,6 @@ function SloDetailsPageInner() {
         <>
           <AppMenu config={sloDetailsAppMenuConfig} setAppMenu={chrome.setAppMenu} />
           {modalsAndFlyouts}
-          <HeaderTitle
-            isLoading={isPerformingAction}
-            slo={slo}
-            showInlineValueStatusBadges={false}
-            showInlineLastUpdated={false}
-          />
         </>
       ) : null}
       {!isProjectChrome ? <HeaderMenu /> : null}
