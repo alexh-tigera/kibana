@@ -69,7 +69,8 @@ const canNavigateToParent = (crumb: ChromeBreadcrumb | undefined): boolean => {
 const useAppMenuBarStyles = (
   euiTheme: UseEuiTheme['euiTheme'],
   hasSecondaryRow: boolean,
-  showBackToParent: boolean
+  showBackToParent: boolean,
+  hasHeaderTabs: boolean
 ) =>
   useMemo(() => {
     const root = {
@@ -78,7 +79,9 @@ const useAppMenuBarStyles = (
       alignItems: 'stretch',
       justifyContent: 'flex-start',
       gap: 0,
-      padding: `${euiTheme.size.s}`,
+      paddingTop: euiTheme.size.s,
+      paddingInline: euiTheme.size.s,
+      paddingBottom: hasHeaderTabs ? 0 : euiTheme.size.s,
       background: euiTheme.colors.backgroundBasePlain,
       borderBottom: euiTheme.border.thin,
       marginBottom: `-${euiTheme.border.width.thin}`,
@@ -212,7 +215,7 @@ const useAppMenuBarStyles = (
       menuSection,
       appBarChrome,
     };
-  }, [euiTheme, hasSecondaryRow, showBackToParent]);
+  }, [euiTheme, hasSecondaryRow, showBackToParent, hasHeaderTabs]);
 
 /**
  * Right-side nav controls use mount points; in project mode several plugins (e.g. per-solution AI
@@ -332,7 +335,7 @@ export const AppMenuBar = React.memo(() => {
   const parentBreadcrumb =
     breadcrumbs.length >= 2 ? breadcrumbs[breadcrumbs.length - 2] : undefined;
   const showBackToParent = Boolean(parentBreadcrumb) && canNavigateToParent(parentBreadcrumb);
-  const styles = useAppMenuBarStyles(euiTheme, hasSecondaryRow, showBackToParent);
+  const styles = useAppMenuBarStyles(euiTheme, hasSecondaryRow, showBackToParent, hasHeaderTabs);
   const hasAppMenuConfig = useHasAppMenuConfig();
   const appBarControls = useProjectChromeRightControls('appBar');
   const appBarControlsWithExtension = useMemo(
