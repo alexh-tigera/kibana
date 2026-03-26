@@ -28,7 +28,8 @@ export const registerLensVisualizationsSearchAPIRoute: RegisterAPIRouteFn = (
     path: LENS_VIS_API_PATH,
     access: LENS_API_ACCESS,
     summary: 'Search visualizations',
-    description: 'Get list of visualizations.',
+    description:
+      'Returns a paginated list of visualizations matching the optional `query` text.',
     options: {
       tags: [LENS_API_TAG],
       availability: {
@@ -59,7 +60,8 @@ export const registerLensVisualizationsSearchAPIRoute: RegisterAPIRouteFn = (
             description: 'Malformed request',
           },
           401: {
-            description: 'Unauthorized',
+            description:
+              'Unauthorized',
           },
           403: {
             description: 'Forbidden',

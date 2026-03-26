@@ -37,9 +37,13 @@ export const registerLensVisualizationsUpdateAPIRoute: RegisterAPIRouteFn = (
   const updateRoute = router.put({
     path: `${LENS_VIS_API_PATH}/{id}`,
     access: LENS_API_ACCESS,
-    summary: 'Create or update visualization',
-    description:
-      'Create or update a visualization with the given id. When no visualization exists for the id, one is created.',
+    enableQueryVersion: true,
+    summary: 'Update visualization',
+    description: [
+      'Replaces the full configuration of an existing visualization. Partial updates are not supported.',
+      '',
+      'To make incremental changes, retrieve the visualization first, modify the fields you need, then send the complete object back. Currently only DSL mode is supported; ES|QL visualizations cannot be updated through this endpoint.',
+    ].join('\n'),
     options: {
       tags: [LENS_API_TAG],
       availability: {
@@ -72,13 +76,19 @@ export const registerLensVisualizationsUpdateAPIRoute: RegisterAPIRouteFn = (
             description: 'Created',
           },
           400: {
-            description: 'Malformed request',
+            description:
+              'Malformed request. Verify all required fields for the chosen chart type are present.',
           },
           401: {
-            description: 'Unauthorized',
+            description:
+              'Unauthorized',
           },
           403: {
             description: 'Forbidden',
+          },
+          404: {
+            description:
+              'Not found',
           },
           500: {
             description: 'Internal Server Error',

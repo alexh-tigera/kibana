@@ -1,0 +1,59 @@
+summary: Line chart visualization response
+description: >
+  The response includes the assigned visualization ID, the full XY chart configuration,
+  and creation metadata.
+value:
+  id: 3a7c2e10-b3c5-11ef-bd7a-2b6b1a8c0f3d
+  data:
+    type: xy
+    title: Log entries over time by response code
+    filters: []
+    query:
+      query: ''
+      language: kuery
+    legend:
+      visibility: auto
+      inside: false
+      position: right
+    fitting:
+      type: none
+    axis:
+      x:
+        title:
+          visible: true
+          value: Timestamp
+      left:
+        title:
+          visible: true
+          value: Count
+        scale: linear
+    decorations: {}
+    layers:
+      - type: line
+        dataset:
+          type: index
+          index: kibana_sample_data_logs
+          time_field: timestamp
+        x:
+          operation: date_histogram
+          field: timestamp
+        y:
+          - operation: count
+            format:
+              type: number
+              decimals: 0
+            filter:
+              query: ''
+        breakdown_by:
+          operation: terms
+          fields:
+            - response.keyword
+          size: 5
+          color:
+            mode: categorical
+            palette: default
+            mapping: []
+  meta:
+    type: lens
+    created_at: '2025-03-20T10:35:00.000Z'
+    updated_at: '2025-03-20T10:35:00.000Z'

@@ -12,9 +12,27 @@ import { lensCMCreateOptionsSchema } from '../../../../content_management';
 import { pickFromObjectSchema } from '../../../../utils';
 import { lensResponseItemSchema } from './common';
 
+export const lensCreateRequestParamsSchema = schema.object(
+  {
+    id: schema.maybe(schema.string()),
+  },
+  { unknowns: 'forbid' }
+);
+
+const { overwrite: overwriteSchema } = pickFromObjectSchema(
+  lensCMCreateOptionsSchema.getPropSchemas(),
+  ['overwrite']
+);
+
+
 export const lensCreateRequestQuerySchema = schema.object(
   {
-    ...pickFromObjectSchema(lensCMCreateOptionsSchema.getPropSchemas(), ['overwrite']),
+    overwrite: overwriteSchema.extendsDeep({
+      meta: {
+        description:
+          'When `true` and an `id` is provided, replaces an existing visualization with that ID. Defaults to `false`.',
+      },
+    }),
   },
   { unknowns: 'forbid' }
 );

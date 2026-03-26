@@ -1,0 +1,270 @@
+overlay: 1.0.0
+info:
+  title: Overlays for the Visualizations API
+  version: 0.0.1
+actions:
+  # ──────────────────────────────────────────────
+  # Tag description
+  # ──────────────────────────────────────────────
+  - target: '$.tags[?(@.name=="Visualizations")]'
+    description: Add tag description with getting started content, externalDocs, and displayName
+    update:
+      description: |
+        ## Get started with the Visualizations API
+
+        Create, retrieve, update, and delete individual [Kibana visualizations](https://www.elastic.co/docs/explore-analyze/visualize/lens). Use this API to manage visualizations as code, automate their lifecycle, or build tooling around chart creation.
+
+        Visualizations created through this API can be added to dashboards using the Kibana UI or the Dashboards API.
+
+        > For authentication requirements, refer to the [Kibana API documentation](https://www.elastic.co/docs/api/doc/kibana). Write operations (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header. If you work with non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
+
+        ## Chart types
+
+        The `type` field in the request body determines the chart type:
+
+        | Type | Chart | Documentation | API payload examples |
+        |------|-------|---------------|---------------------|
+        | `xy` | Bar, line, area (and stacked/percentage variants) | [Bar](https://www.elastic.co/docs/explore-analyze/visualize/charts/bar-charts), [Line](https://www.elastic.co/docs/explore-analyze/visualize/charts/line-charts), [Area](https://www.elastic.co/docs/explore-analyze/visualize/charts/area-charts) | [Bar](https://www.elastic.co/docs/explore-analyze/visualize/charts/bar-charts#bar-chart-examples), [Line](https://www.elastic.co/docs/explore-analyze/visualize/charts/line-charts#line-chart-examples), [Area](https://www.elastic.co/docs/explore-analyze/visualize/charts/area-charts#area-chart-examples) |
+        | `metric` | Single value metric | [Metric](https://www.elastic.co/docs/explore-analyze/visualize/charts/metric-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/metric-charts#metric-chart-examples) |
+        | `gauge` | Gauge (bullet, circular) | [Gauge](https://www.elastic.co/docs/explore-analyze/visualize/charts/gauge-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/gauge-charts#gauge-chart-examples) |
+        | `pie` / `donut` | Pie or donut | [Pie](https://www.elastic.co/docs/explore-analyze/visualize/charts/pie-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/pie-charts#pie-chart-examples) |
+        | `data_table` | Data table | [Table](https://www.elastic.co/docs/explore-analyze/visualize/charts/tables) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/tables#table-examples) |
+        | `heatmap` | Heat map | [Heat map](https://www.elastic.co/docs/explore-analyze/visualize/charts/heat-map-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/heat-map-charts#heat-map-chart-examples) |
+        | `tag_cloud` | Tag cloud | [Tag cloud](https://www.elastic.co/docs/explore-analyze/visualize/charts/tag-cloud-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/tag-cloud-charts#tag-cloud-chart-examples) |
+        | `treemap` | Treemap | [Treemap](https://www.elastic.co/docs/explore-analyze/visualize/charts/treemap-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/treemap-charts#treemap-chart-examples) |
+        | `waffle` | Waffle | [Waffle](https://www.elastic.co/docs/explore-analyze/visualize/charts/waffle-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/waffle-charts#waffle-chart-examples) |
+        | `mosaic` | Mosaic | [Mosaic](https://www.elastic.co/docs/explore-analyze/visualize/charts/mosaic-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/mosaic-charts#mosaic-chart-examples) |
+        | `region_map` | Region map (choropleth) | [Region map](https://www.elastic.co/docs/explore-analyze/visualize/charts/region-map-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/region-map-charts#region-map-chart-examples) |
+
+        ## Data source modes
+
+        Each chart type supports two data source modes, selected by setting `dataset.type`.
+
+        **DSL mode** (`dataset.type: "dataView"` or `"index"`) — Kibana runs the aggregations for you. Define metrics with operations like `count`, `average`, `sum` and breakdowns with `terms`, `date_histogram`, etc. Requires a `query` field for KQL or Lucene filtering.
+
+        ```json
+        {
+          "dataset": { "type": "index", "index": "logs-*", "time_field": "@timestamp" },
+          "query": { "query": "status: 200" }
+        }
+        ```
+
+        **ES|QL mode** (`dataset.type: "esql"`) — You write an ES|QL query and reference result columns directly using `operation: "value"` with a `column` name. Best for complex transformations or when you prefer a query-first workflow.
+
+        ```json
+        {
+          "dataset": {
+            "type": "esql",
+            "query": "FROM logs-* | STATS avg_bytes = AVG(bytes) BY host.name | SORT avg_bytes DESC"
+          }
+        }
+        ```
+
+        > **Limitation:** The create and update endpoints currently only support DSL mode. ES|QL visualizations cannot be created or updated through this API yet.
+
+        All request examples on this page and the chart type pages use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`).
+      externalDocs:
+        description: Visualizations documentation
+        url: https://www.elastic.co/docs/explore-analyze/visualize/lens
+      x-displayName: Visualizations
+
+  # ──────────────────────────────────────────────
+  # POST — examples and code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/visualizations']['post']"
+    description: Add examples and code samples to create endpoint
+    update:
+      requestBody:
+        content:
+          application/json:
+            examples:
+              createMetricVisualization:
+                $ref: '../examples/create_metric_visualization_request.yaml'
+              createLineChartVisualization:
+                $ref: '../examples/create_xy_visualization_request.yaml'
+              createDonutVisualization:
+                $ref: '../examples/create_pie_visualization_request.yaml'
+      responses:
+        201:
+          content:
+            application/json:
+              examples:
+                metricVisualizationResponse:
+                  $ref: '../examples/create_metric_visualization_response.yaml'
+                lineChartVisualizationResponse:
+                  $ref: '../examples/create_xy_visualization_response.yaml'
+                donutVisualizationResponse:
+                  $ref: '../examples/create_pie_visualization_response.yaml'
+      x-codeSamples:
+        - lang: cURL
+          label: Create a metric visualization
+          source: |
+            curl -X POST "${KIBANA_URL}/api/visualizations" \
+              -H "Authorization: ApiKey ${API_KEY}" \
+              -H "kbn-xsrf: true" \
+              -H "Content-Type: application/json" \
+              -d '{
+              "type": "metric",
+              "title": "Average response time",
+              "dataset": {
+                "type": "index",
+                "index": "kibana_sample_data_logs",
+                "time_field": "timestamp"
+              },
+              "filters": [],
+              "query": { "query": "" },
+              "metrics": [{
+                "type": "primary",
+                "operation": "average",
+                "field": "bytes",
+                "format": { "type": "number", "decimals": 0, "compact": true },
+                "filter": { "query": "" },
+                "alignments": { "labels": "left", "value": "right" },
+                "icon": { "name": "empty" }
+              }]
+            }'
+        - lang: Console
+          source: |
+            POST kbn:/api/visualizations
+            {
+              "type": "metric",
+              "title": "Average response time",
+              "dataset": {
+                "type": "index",
+                "index": "kibana_sample_data_logs",
+                "time_field": "timestamp"
+              },
+              "filters": [],
+              "query": { "query": "" },
+              "metrics": [{
+                "type": "primary",
+                "operation": "average",
+                "field": "bytes",
+                "format": { "type": "number", "decimals": 0, "compact": true },
+                "filter": { "query": "" },
+                "alignments": { "labels": "left", "value": "right" },
+                "icon": { "name": "empty" }
+              }]
+            }
+
+  # ──────────────────────────────────────────────
+  # GET /api/visualizations — examples and code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/visualizations']['get']"
+    description: Add examples and code samples to search endpoint
+    update:
+      responses:
+        200:
+          content:
+            application/json:
+              examples:
+                searchVisualizationsResponse:
+                  $ref: '../examples/search_visualizations_response.yaml'
+      x-codeSamples:
+        - lang: cURL
+          label: Search visualizations
+          source: |
+            curl -X GET "${KIBANA_URL}/api/visualizations?query=response+time&per_page=10" \
+              -H "Authorization: ApiKey ${API_KEY}"
+        - lang: Console
+          source: |
+            GET kbn:/api/visualizations?query=response+time&per_page=10
+
+  # ──────────────────────────────────────────────
+  # GET /api/visualizations/{id} — examples and code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/visualizations/{id}']['get']"
+    description: Add examples and code samples to get endpoint
+    update:
+      responses:
+        200:
+          content:
+            application/json:
+              examples:
+                getVisualizationResponse:
+                  $ref: '../examples/get_visualization_response.yaml'
+      x-codeSamples:
+        - lang: cURL
+          label: Get a visualization
+          source: |
+            curl -X GET "${KIBANA_URL}/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d" \
+              -H "Authorization: ApiKey ${API_KEY}"
+        - lang: Console
+          source: |
+            GET kbn:/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d
+
+  # ──────────────────────────────────────────────
+  # PUT — code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/visualizations/{id}']['put']"
+    description: Add code samples to update endpoint
+    update:
+      x-codeSamples:
+        - lang: cURL
+          label: Update a visualization
+          source: |
+            curl -X PUT "${KIBANA_URL}/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d" \
+              -H "Authorization: ApiKey ${API_KEY}" \
+              -H "kbn-xsrf: true" \
+              -H "Content-Type: application/json" \
+              -d '{
+              "type": "metric",
+              "title": "Average response time (updated)",
+              "dataset": {
+                "type": "index",
+                "index": "kibana_sample_data_logs",
+                "time_field": "timestamp"
+              },
+              "filters": [],
+              "query": { "query": "" },
+              "metrics": [{
+                "type": "primary",
+                "operation": "average",
+                "field": "bytes",
+                "format": { "type": "number", "decimals": 1 },
+                "filter": { "query": "" },
+                "alignments": { "labels": "left", "value": "right" },
+                "icon": { "name": "empty" }
+              }]
+            }'
+        - lang: Console
+          source: |
+            PUT kbn:/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d
+            {
+              "type": "metric",
+              "title": "Average response time (updated)",
+              "dataset": {
+                "type": "index",
+                "index": "kibana_sample_data_logs",
+                "time_field": "timestamp"
+              },
+              "filters": [],
+              "query": { "query": "" },
+              "metrics": [{
+                "type": "primary",
+                "operation": "average",
+                "field": "bytes",
+                "format": { "type": "number", "decimals": 1 },
+                "filter": { "query": "" },
+                "alignments": { "labels": "left", "value": "right" },
+                "icon": { "name": "empty" }
+                "time_scale": null
+              }]
+            }
+
+  # ──────────────────────────────────────────────
+  # DELETE — code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/visualizations/{id}']['delete']"
+    description: Add code samples to delete endpoint
+    update:
+      x-codeSamples:
+        - lang: cURL
+          label: Delete a visualization
+          source: |
+            curl -X DELETE "${KIBANA_URL}/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d" \
+              -H "Authorization: ApiKey ${API_KEY}" \
+              -H "kbn-xsrf: true"
+        - lang: Console
+          source: |
+            DELETE kbn:/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d

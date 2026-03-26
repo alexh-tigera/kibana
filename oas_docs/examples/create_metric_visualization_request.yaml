@@ -1,0 +1,29 @@
+summary: Create a metric visualization
+description: >
+  Creates a metric chart that displays the average bytes. Uses the Kibana sample web logs dataset (`kibana_sample_data_logs`).
+value:
+  type: metric
+  title: Average response time
+  dataset:
+    type: index
+    index: kibana_sample_data_logs
+    time_field: timestamp
+  filters: []
+  query:
+    query: ''
+    language: kuery
+  metrics:
+    - type: primary
+      operation: average
+      field: bytes
+      format:
+        type: number
+        decimals: 0
+        compact: true
+      filter:
+        query: ''
+      alignments:
+        labels: left
+        value: right
+      icon:
+        name: empty

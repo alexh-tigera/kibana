@@ -91,7 +91,7 @@ export const ignoringGlobalFiltersSchemaRaw = {
     defaultValue: LENS_IGNORE_GLOBAL_FILTERS_DEFAULT_VALUE,
     meta: {
       description:
-        'If true, ignore global filters when fetching data for this layer. Default is false.',
+        'When `true`, ignores filters from the dashboard filter bar and time picker. The visualization uses only its own panel-level filters.',
     },
   }),
 };

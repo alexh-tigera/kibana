@@ -12,25 +12,36 @@ import { lensCMSearchOptionsSchema } from '../../../../content_management';
 import { lensResponseItemSchema } from './common';
 
 export const lensSearchRequestQuerySchema = schema.object({
-  fields: lensCMSearchOptionsSchema.getPropSchemas().fields,
-  search_fields: lensCMSearchOptionsSchema.getPropSchemas().searchFields,
+  fields: lensCMSearchOptionsSchema.getPropSchemas().fields.extendsDeep({
+    meta: {
+      description:
+        'Attributes to include in each result. Defaults to all. Valid values: `title`, `description`, `visualizationType`, `state`, `version`.',
+    },
+  }),
+  search_fields: lensCMSearchOptionsSchema.getPropSchemas().searchFields.extendsDeep({
+    meta: {
+      description:
+        'Attributes to match `query` against. Valid values: `title`, `description`, `visualizationType`. Defaults to `title` and `description`.',
+    },
+  }),
   query: schema.maybe(
     schema.string({
       meta: {
-        description: 'The text to search for Lens visualizations',
+        description:
+          'Text to match against `search_fields`.',
       },
     })
   ),
   page: schema.number({
     meta: {
-      description: 'Specifies the current page number of the paginated result.',
+      description: 'Page number.',
     },
     min: 1,
     defaultValue: 1,
   }),
   per_page: schema.number({
     meta: {
-      description: 'Maximum number of Lens visualizations included in a single response',
+      description: 'Results per page.',
     },
     defaultValue: 20,
     min: 1,

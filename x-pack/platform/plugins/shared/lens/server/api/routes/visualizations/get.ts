@@ -29,7 +29,8 @@ export const registerLensVisualizationsGetAPIRoute: RegisterAPIRouteFn = (
     path: `${LENS_VIS_API_PATH}/{id}`,
     access: LENS_API_ACCESS,
     summary: 'Get visualization',
-    description: 'Get a visualization from id.',
+    description:
+      'Returns a single visualization by its ID.',
     options: {
       tags: [LENS_API_TAG],
       availability: {
@@ -60,13 +61,15 @@ export const registerLensVisualizationsGetAPIRoute: RegisterAPIRouteFn = (
             description: 'Malformed request',
           },
           401: {
-            description: 'Unauthorized',
+            description:
+              'Unauthorized',
           },
           403: {
             description: 'Forbidden',
           },
           404: {
-            description: 'Resource not found',
+            description:
+              'Not found',
           },
           500: {
             description: 'Internal Server Error',

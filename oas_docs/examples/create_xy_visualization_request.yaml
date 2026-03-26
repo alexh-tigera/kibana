@@ -1,0 +1,52 @@
+summary: Create a line chart visualization
+description: >
+  Creates a line chart showing log entry counts over time, broken down by response code. Uses the Kibana sample web logs dataset (`kibana_sample_data_logs`).
+value:
+  type: xy
+  title: Log entries over time by response code
+  filters: []
+  query:
+    query: ''
+    language: kuery
+  legend:
+    visibility: auto
+    inside: false
+    position: right
+  fitting:
+    type: none
+  axis:
+    x:
+      title:
+        visible: true
+        value: Timestamp
+    left:
+      title:
+        visible: true
+        value: Count
+      scale: linear
+  decorations: {}
+  layers:
+    - type: line
+      dataset:
+        type: index
+        index: kibana_sample_data_logs
+        time_field: timestamp
+      x:
+        operation: date_histogram
+        field: timestamp
+      y:
+        - operation: count
+          format:
+            type: number
+            decimals: 0
+          filter:
+            query: ''
+      breakdown_by:
+        operation: terms
+        fields:
+          - response.keyword
+        size: 5
+        color:
+          mode: categorical
+          palette: default
+          mapping: []

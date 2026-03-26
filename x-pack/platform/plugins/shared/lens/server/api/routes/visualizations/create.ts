@@ -34,7 +34,11 @@ export const registerLensVisualizationsCreateAPIRoute: RegisterAPIRouteFn = (
     path: LENS_VIS_API_PATH,
     access: LENS_API_ACCESS,
     summary: 'Create visualization',
-    description: 'Create a new visualization.',
+    description: [
+      'Creates a new visualization. The `type` field determines the chart type.',
+      '',
+      'Currently only DSL mode is supported (`dataset.type: "dataView"` or `"index"`). ES|QL mode is not yet available through this endpoint.',
+    ].join('\n'),
     options: {
       tags: [LENS_API_TAG],
       availability: {
@@ -63,10 +67,12 @@ export const registerLensVisualizationsCreateAPIRoute: RegisterAPIRouteFn = (
             description: 'Created',
           },
           400: {
-            description: 'Malformed request',
+            description:
+              'Malformed request. Verify the type field and required fields for the chosen chart type.',
           },
           401: {
-            description: 'Unauthorized',
+            description:
+              'Unauthorized',
           },
           403: {
             description: 'Forbidden',

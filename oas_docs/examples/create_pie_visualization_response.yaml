@@ -1,0 +1,44 @@
+summary: Donut chart visualization response
+description: >
+  The response includes the assigned visualization ID, the full pie/donut chart configuration,
+  and creation metadata.
+value:
+  id: 5b8d4f20-b3c5-11ef-bd7a-2b6b1a8c0f3d
+  data:
+    type: pie
+    title: Traffic by operating system
+    donut_hole: medium
+    filters: []
+    dataset:
+      type: index
+      index: kibana_sample_data_logs
+      time_field: timestamp
+    query:
+      query: ''
+      language: kuery
+    legend:
+      visible: auto
+      size: auto
+    value_display:
+      mode: percentage
+      percent_decimals: 1
+    metrics:
+      - operation: count
+        format:
+          type: number
+          decimals: 0
+        filter:
+          query: ''
+    group_by:
+      - operation: terms
+        fields:
+          - machine.os.keyword
+        size: 5
+        color:
+          mode: categorical
+          palette: default
+          mapping: []
+  meta:
+    type: lens
+    created_at: '2025-03-20T10:40:00.000Z'
+    updated_at: '2025-03-20T10:40:00.000Z'

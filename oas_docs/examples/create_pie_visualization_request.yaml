@@ -1,0 +1,37 @@
+summary: Create a donut chart visualization
+description: >
+  Creates a donut chart showing web traffic distribution by operating system. Uses the Kibana sample web logs dataset (`kibana_sample_data_logs`).
+value:
+  type: pie
+  title: Traffic by operating system
+  donut_hole: medium
+  filters: []
+  dataset:
+    type: index
+    index: kibana_sample_data_logs
+    time_field: timestamp
+  query:
+    query: ''
+    language: kuery
+  legend:
+    visible: auto
+    size: auto
+  value_display:
+    mode: percentage
+    percent_decimals: 1
+  metrics:
+    - operation: count
+      format:
+        type: number
+        decimals: 0
+      filter:
+        query: ''
+  group_by:
+    - operation: terms
+      fields:
+        - machine.os.keyword
+      size: 5
+      color:
+        mode: categorical
+        palette: default
+        mapping: []

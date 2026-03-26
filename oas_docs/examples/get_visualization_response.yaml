@@ -1,0 +1,36 @@
+summary: Get a metric visualization
+description: >
+  Response from retrieving a single visualization by ID. The response envelope contains
+  the visualization ID, the full chart configuration in the data field, and metadata.
+value:
+  id: 1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d
+  data:
+    type: metric
+    title: Average response time
+    dataset:
+      type: index
+      index: kibana_sample_data_logs
+      time_field: timestamp
+    filters: []
+    query:
+      query: ''
+      language: kuery
+    metrics:
+      - type: primary
+        operation: average
+        field: bytes
+        format:
+          type: number
+          decimals: 0
+          compact: true
+        filter:
+          query: ''
+        alignments:
+          labels: left
+          value: right
+        icon:
+          name: empty
+  meta:
+    type: lens
+    created_at: '2025-03-20T10:30:00.000Z'
+    updated_at: '2025-03-20T11:15:00.000Z'

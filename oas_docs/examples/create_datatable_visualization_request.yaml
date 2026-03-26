@@ -1,0 +1,27 @@
+summary: Create a data table visualization
+description: >
+  Creates a data table showing top client IPs by request count. Uses the Kibana sample web logs dataset (`kibana_sample_data_logs`).
+value:
+  type: data_table
+  title: Top client IPs by request count
+  filters: []
+  query:
+    query: ''
+  dataset:
+    type: index
+    index: kibana_sample_data_logs
+    time_field: timestamp
+  density:
+    mode: default
+  metrics:
+    - operation: count
+      format:
+        type: number
+        decimals: 0
+      filter:
+        query: ''
+  rows:
+    - operation: terms
+      fields:
+        - clientip
+      size: 20

@@ -25,7 +25,8 @@ export const registerLensVisualizationsDeleteAPIRoute: RegisterAPIRouteFn = (
     path: `${LENS_VIS_API_PATH}/{id}`,
     access: LENS_API_ACCESS,
     summary: 'Delete visualization',
-    description: 'Delete a visualization by id.',
+    description:
+      'Permanently deletes a visualization. If the visualization is embedded in a dashboard, the panel shows an error after deletion.',
     options: {
       tags: [LENS_API_TAG],
       availability: {
@@ -55,13 +56,15 @@ export const registerLensVisualizationsDeleteAPIRoute: RegisterAPIRouteFn = (
             description: 'Malformed request',
           },
           401: {
-            description: 'Unauthorized',
+            description:
+              'Unauthorized',
           },
           403: {
             description: 'Forbidden',
           },
           404: {
-            description: 'Resource not found',
+            description:
+              'Not found',
           },
           500: {
             description: 'Internal Server Error',

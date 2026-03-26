@@ -1,0 +1,34 @@
+summary: Data table visualization response
+description: >
+  The response includes the assigned visualization ID, the full data table
+  configuration, and creation metadata.
+value:
+  id: 7c9e6030-b3c5-11ef-bd7a-2b6b1a8c0f3d
+  data:
+    type: data_table
+    title: Top client IPs by request count
+    filters: []
+    query:
+      query: ''
+    dataset:
+      type: index
+      index: kibana_sample_data_logs
+      time_field: timestamp
+    density:
+      mode: default
+    metrics:
+      - operation: count
+        format:
+          type: number
+          decimals: 0
+        filter:
+          query: ''
+    rows:
+      - operation: terms
+        fields:
+          - clientip
+        size: 20
+  meta:
+    type: lens
+    created_at: '2025-03-20T10:45:00.000Z'
+    updated_at: '2025-03-20T10:45:00.000Z'
