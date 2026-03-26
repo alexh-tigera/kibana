@@ -31,11 +31,11 @@ export const staticOperationDefinitionSchema = genericOperationOptionsSchema.ext
   {
     operation: schema.literal('static_value'),
     /**
-     * Static value
+     * A constant numeric value to display or use as a reference line threshold.
      */
     value: schema.number({
       meta: {
-        description: 'Static value',
+        description: 'A constant numeric value to display or use as a reference line threshold.',
       },
       defaultValue: LENS_STATIC_VALUE_DEFAULT,
     }),
@@ -45,26 +45,28 @@ export const staticOperationDefinitionSchema = genericOperationOptionsSchema.ext
 
 const advancedOperationSettings = {
   /**
-   * Reduced time range
+   * Override the time range for this metric. For example, `1h` shows the last hour regardless of the global time picker.
    */
   reduced_time_range: schema.maybe(
     schema.string({
       meta: {
         id: 'operationReducedTimeRangeSetting',
         title: 'Operation Reduced Time Range Setting',
-        description: 'Reduced time range',
+        description:
+          'Override the time range for this metric. For example, `1h` shows the last hour regardless of the global time picker.',
       },
     })
   ),
   /**
-   * Time shift
+   * Shift the time range for this metric relative to the global time picker. For example, `1d` compares against the previous day.
    */
   time_shift: schema.maybe(
     schema.string({
       meta: {
         id: 'operationTimeShiftSetting',
         title: 'Operation Time Shift Setting',
-        description: 'Time shift',
+        description:
+          'Shift the time range for this metric relative to the global time picker. For example, `1d` compares against the previous day.',
       },
     })
   ),
@@ -73,7 +75,7 @@ const advancedOperationSettings = {
    */
   filter: schema.maybe(filterSchema),
   /**
-   * Time scale
+   * Normalize the metric value to a time unit (`s`, `m`, `h`, or `d`). For example, `s` converts a count to a rate per second.
    */
   time_scale: schema.maybe(
     schema.oneOf(
@@ -82,7 +84,8 @@ const advancedOperationSettings = {
         meta: {
           id: 'operationTimeScaleSetting',
           title: 'Operation Time Scale Setting',
-          description: 'Time scale',
+          description:
+            'Normalize the metric value to a time unit (`s`, `m`, `h`, or `d`). For example, `s` converts a count to a rate per second.',
         },
       }
     )
@@ -93,21 +96,26 @@ export const formulaOperationDefinitionSchema = genericOperationOptionsSchema.ex
   {
     operation: schema.literal('formula'),
     /**
-     * Formula
+     * A Lens formula expression. For example, `count() / overall_sum(count())`.
      */
     formula: schema.string({
       meta: {
-        description: 'Formula',
+        description: 'A Lens formula expression. For example, `count() / overall_sum(count())`.',
       },
     }),
     ...omit(advancedOperationSettings, ['time_shift']),
     /**
-     * Custom scaling for the entire formula
+     * Normalize the formula result to a time unit (`s`, `m`, `h`, or `d`). For example, `s` converts a count to a rate per second.
      */
     time_scale: schema.maybe(
       schema.oneOf(
         [schema.literal('s'), schema.literal('m'), schema.literal('h'), schema.literal('d')],
-        { meta: { description: 'Time scale' } }
+        {
+          meta: {
+            description:
+              'Normalize the formula result to a time unit (`s`, `m`, `h`, or `d`). For example, `s` converts a count to a rate per second.',
+          },
+        }
       )
     ),
   },
@@ -117,7 +125,7 @@ export const formulaOperationDefinitionSchema = genericOperationOptionsSchema.ex
 const esqlColumn = {
   column: schema.string({
     meta: {
-      description: 'Column to use',
+      description: 'Name of the ES|QL result column to reference.',
     },
   }),
 };
@@ -134,18 +142,19 @@ export const metricOperationSharedSchema =
 
 export const fieldBasedOperationSharedSchema = metricOperationSharedSchema.extends({
   /**
-   * Field to be used for the metric
+   * Name of the document field to aggregate.
    */
-  field: schema.string({ meta: { description: 'Field to be used for the metric' } }),
+  field: schema.string({ meta: { description: 'Name of the document field to aggregate.' } }),
 });
 
 const emptyAsNullSchemaRawObject = {
   /**
-   * Whether to consider null values as null
+   * When `true`, treats empty string values and missing fields as null, which creates gaps in charts instead of displaying zero.
    */
   empty_as_null: schema.boolean({
     meta: {
-      description: 'Whether to consider null values as null',
+      description:
+        'When `true`, treats empty string values and missing fields as null, which creates gaps in charts instead of displaying zero.',
     },
     defaultValue: LENS_EMPTY_AS_NULL_DEFAULT_VALUE,
   }),
@@ -160,7 +169,11 @@ export const countMetricOperationSchema = fieldBasedOperationSharedSchema
        */
       operation: schema.literal('count'),
       field: schema.maybe(
-        schema.string({ meta: { description: 'Field to be used for the metric' } })
+        schema.string({
+          meta: {
+            description: 'Document field to count. When omitted, counts all documents.',
+          },
+        })
       ),
     },
     { meta: { id: 'countMetricOperation', title: 'Count Metric Operation' } }
@@ -201,7 +214,10 @@ export const lastValueOperationSchema = fieldBasedOperationSharedSchema.extends(
   {
     operation: schema.literal('last_value'),
     time_field: schema.string({
-      meta: { description: 'Time field used to determine document recency' },
+      meta: {
+        description:
+          'Field used to determine document order when selecting the last value. Typically a date field such as `@timestamp`.',
+      },
     }),
     /**
      * Whether to return all values for multi-value fields.
@@ -210,7 +226,7 @@ export const lastValueOperationSchema = fieldBasedOperationSharedSchema.extends(
     multi_value: schema.boolean({
       meta: {
         description:
-          'Whether to return all values for multi-value fields. Only affects data table and metric charts; other charts use the last value from the array.',
+          'When `true`, displays each element of an array field as a separate value instead of using only the last element.',
       },
       defaultValue: LENS_LAST_VALUE_DEFAULT_MULTI_VALUE,
     }),
@@ -222,7 +238,10 @@ export const percentileOperationSchema = fieldBasedOperationSharedSchema.extends
   {
     operation: schema.literal('percentile'),
     percentile: schema.number({
-      meta: { description: 'Percentile' },
+      meta: {
+        description:
+          'Percentile value to calculate, between 0 and 100. For example, `95` returns the 95th percentile.',
+      },
       defaultValue: LENS_PERCENTILE_DEFAULT_VALUE,
     }),
   },
@@ -233,7 +252,10 @@ export const percentileRanksOperationSchema = fieldBasedOperationSharedSchema.ex
   {
     operation: schema.literal('percentile_rank'),
     rank: schema.number({
-      meta: { description: 'Percentile Rank' },
+      meta: {
+        description:
+          'Threshold value for the percentile rank calculation. Returns the percentage of values that fall below this number.',
+      },
       defaultValue: LENS_PERCENTILE_RANK_DEFAULT_VALUE,
     }),
   },
@@ -266,7 +288,10 @@ export const movingAverageOperationSchema = metricOperationSharedSchema.extends(
     operation: schema.literal('moving_average'),
     of: fieldMetricOperationsSchema,
     window: schema.number({
-      meta: { description: 'Window' },
+      meta: {
+        description:
+          'Number of preceding data points to include in the moving average calculation.',
+      },
       defaultValue: LENS_MOVING_AVERAGE_DEFAULT_WINDOW,
     }),
   },

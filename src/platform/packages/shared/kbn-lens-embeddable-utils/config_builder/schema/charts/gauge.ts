@@ -114,10 +114,12 @@ const gaugeStateMetricOptionsSchema = {
     )
   ),
   /**
-   * Subtitle
+   * Secondary text displayed below the gauge title.
    */
   subtitle: schema.maybe(
-    schema.string({ meta: { description: 'Subtitle below the gauge value' } })
+    schema.string({
+      meta: { description: 'Secondary text displayed below the gauge title.' },
+    })
   ),
   /**
    * Color configuration

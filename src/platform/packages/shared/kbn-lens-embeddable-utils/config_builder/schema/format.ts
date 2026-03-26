@@ -14,31 +14,31 @@ const numericFormatSchema = schema.object(
   {
     type: schema.oneOf([schema.literal('number'), schema.literal('percent')]),
     /**
-     * Number of decimals
+     * Number of decimal places to display.
      */
     decimals: schema.number({
       defaultValue: LENS_FORMAT_NUMBER_DECIMALS_DEFAULT,
       meta: {
-        description: 'Number of decimals',
+        description: 'Number of decimal places to display.',
       },
     }),
     /**
-     * Suffix
+     * Text appended after the formatted value. For example, ` req/s`.
      */
     suffix: schema.maybe(
       schema.string({
         meta: {
-          description: 'Suffix',
+          description: 'Text appended after the formatted value. For example, ` req/s`.',
         },
       })
     ),
     /**
-     * Whether to use compact notation
+     * When `true`, abbreviates large numbers (for example, 1,000 becomes 1K).
      */
     compact: schema.boolean({
       defaultValue: LENS_FORMAT_COMPACT_DEFAULT,
       meta: {
-        description: 'Whether to use compact notation',
+        description: 'When `true`, abbreviates large numbers (for example, 1,000 becomes 1K).',
       },
     }),
   },
@@ -49,21 +49,21 @@ const byteFormatSchema = schema.object(
   {
     type: schema.oneOf([schema.literal('bits'), schema.literal('bytes')]),
     /**
-     * Number of decimals
+     * Number of decimal places to display.
      */
     decimals: schema.number({
       defaultValue: LENS_FORMAT_NUMBER_DECIMALS_DEFAULT,
       meta: {
-        description: 'Number of decimals',
+        description: 'Number of decimal places to display.',
       },
     }),
     /**
-     * Suffix
+     * Text appended after the formatted value. For example, `/s`.
      */
     suffix: schema.maybe(
       schema.string({
         meta: {
-          description: 'Suffix',
+          description: 'Text appended after the formatted value. For example, `/s`.',
         },
       })
     ),
@@ -75,28 +75,30 @@ const durationFormatSchema = schema.object(
   {
     type: schema.literal('duration'),
     /**
-     * From
+     * Source time unit for duration conversion (for example, `milliseconds`, `seconds`, `minutes`, `hours`).
      */
     from: schema.string({
       meta: {
-        description: 'From',
+        description:
+          'Source time unit for duration conversion (for example, `milliseconds`, `seconds`, `minutes`, `hours`).',
       },
     }),
     /**
-     * To
+     * Target time unit for duration display (for example, `seconds`, `minutes`, `hours`).
      */
     to: schema.string({
       meta: {
-        description: 'To',
+        description:
+          'Target time unit for duration display (for example, `seconds`, `minutes`, `hours`).',
       },
     }),
     /**
-     * Suffix
+     * Text appended after the formatted duration value.
      */
     suffix: schema.maybe(
       schema.string({
         meta: {
-          description: 'Suffix',
+          description: 'Text appended after the formatted duration value.',
         },
       })
     ),
@@ -108,11 +110,12 @@ const customFormatSchema = schema.object(
   {
     type: schema.literal('custom'),
     /**
-     * Pattern
+     * Custom number format pattern using Numeral.js syntax. For example, `0,0.00` or `0.0%`.
      */
     pattern: schema.string({
       meta: {
-        description: 'Pattern',
+        description:
+          'Custom number format pattern using Numeral.js syntax. For example, `0,0.00` or `0.0%`.',
       },
     }),
   },

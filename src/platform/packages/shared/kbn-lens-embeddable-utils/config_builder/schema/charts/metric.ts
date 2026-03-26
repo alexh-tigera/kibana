@@ -48,10 +48,22 @@ import { objectUnion } from './utils/object_union';
 
 const compareToSchemaShared = schema.object(
   {
-    palette: schema.maybe(schema.string({ meta: { description: 'Palette' } })),
-    icon: schema.maybe(schema.boolean({ meta: { description: 'Show icon' }, defaultValue: true })),
+    palette: schema.maybe(
+      schema.string({
+        meta: { description: 'Color palette name for the comparison indicator.' },
+      })
+    ),
+    icon: schema.maybe(
+      schema.boolean({
+        meta: { description: 'Show a trend arrow icon next to the comparison value.' },
+        defaultValue: true,
+      })
+    ),
     value: schema.maybe(
-      schema.boolean({ meta: { description: 'Show value' }, defaultValue: true })
+      schema.boolean({
+        meta: { description: 'Show the numeric comparison value.' },
+        defaultValue: true,
+      })
     ),
   },
   { meta: { id: 'metricChartCompareToShared', title: 'Compare To Shared' } }
@@ -310,10 +322,90 @@ const metricStatePrimaryMetricOptionsSchema = {
   // to avoid default injection in the wrong type
   type: schema.literal('primary'),
   /**
-   * Subtitle
+   * Secondary text displayed below the primary metric label.
    */
   subtitle: schema.maybe(
-    schema.string({ meta: { description: 'Subtitle below the primary metric value' } })
+    schema.string({
+      meta: { description: 'Secondary text displayed below the primary metric label.' },
+    })
+  ),
+  /**
+   * Alignments of the labels and values for the primary metric.
+   * For example, align the labels to the left and the values to the right.
+   */
+  alignments: schema.object(
+    {
+      /**
+       * Alignments for labels. Possible values:
+       * - 'left': Align label to the left
+       * - 'center': Align label to the center
+       * - 'right': Align label to the right
+       */
+      labels: horizontalAlignmentSchema({
+        meta: { description: 'Alignments for labels' },
+        defaultValue: LENS_METRIC_STATE_DEFAULTS.titlesTextAlign,
+      }),
+      /**
+       * Alignments for value. Possible values:
+       * - 'left': Align value to the left
+       * - 'center': Align value to the center
+       * - 'right': Align value to the right
+       */
+      value: horizontalAlignmentSchema({
+        meta: { description: 'Alignments for value' },
+        defaultValue: LENS_METRIC_STATE_DEFAULTS.primaryAlign,
+      }),
+    },
+    {
+      defaultValue: {
+        labels: LENS_METRIC_STATE_DEFAULTS.titlesTextAlign,
+        value: LENS_METRIC_STATE_DEFAULTS.primaryAlign,
+      },
+      meta: { id: 'metricPrimaryMetricAlignments', title: 'Primary Metric Alignments' },
+    }
+  ),
+  /**
+   * When `true`, automatically sizes the metric text to fill the available space.
+   */
+  fit: schema.boolean({
+    meta: {
+      description: 'When `true`, automatically sizes the metric text to fill the available space.',
+    },
+    defaultValue: false,
+  }),
+  /**
+   * Icon configuration
+   */
+  icon: schema.maybe(
+    schema.object(
+      {
+        /**
+         * Name of the EUI icon to display next to the primary metric (for example, `temperature`, `currency`, `alert`).
+         */
+        name: schema.string({
+          meta: {
+            description:
+              'Name of the EUI icon to display next to the primary metric (for example, `temperature`, `currency`, `alert`).',
+          },
+        }),
+        /**
+         * Icon alignment. Possible values:
+         * - 'right': Icon is aligned to the right
+         * - 'left': Icon is aligned to the left
+         */
+        align: leftRightAlignmentSchema({
+          meta: { description: 'Icon alignment' },
+          defaultValue: LENS_METRIC_STATE_DEFAULTS.iconAlign,
+        }),
+      },
+      {
+        meta: {
+          id: 'metricIconConfig',
+          title: 'Icon Configuration',
+          description: 'Icon configuration for primary metric',
+        },
+      }
+    )
   ),
   /**
    * Color configuration
@@ -330,6 +422,23 @@ const metricStateSecondaryMetricOptionsSchema = {
   // unfortunately given the lack of tuple schema support we need to have some way
   // to avoid default injection in the wrong type
   type: schema.literal('secondary'),
+  /**
+   * Text prepended before the secondary metric value.
+   */
+  prefix: schema.maybe(
+    schema.string({
+      meta: { description: 'Text prepended before the secondary metric value.' },
+    })
+  ),
+  /**
+   * Label position relative to the secondary metric value. Possible values:
+   * - 'before': Label appears before the value
+   * - 'after': Label appears after the value
+   */
+  label_position: beforeAfterAlignmentSchema({
+    meta: { description: 'Label position relative to the secondary metric value' },
+    defaultValue: LENS_METRIC_STATE_DEFAULTS.secondaryLabelPosition,
+  }),
   /**
    * Compare to
    */
@@ -358,11 +467,11 @@ const metricStateSecondaryMetricOptionsSchema = {
 
 const metricStateBreakdownByOptionsSchema = {
   /**
-   * Number of columns
+   * Maximum number of tile columns when the metric is broken down.
    */
   columns: schema.number({
     defaultValue: LENS_METRIC_BREAKDOWN_DEFAULT_MAX_COLUMNS,
-    meta: { description: 'Number of columns' },
+    meta: { description: 'Maximum number of tile columns when the metric is broken down.' },
   }),
   /**
    * Collapse by function. This parameter is used to collapse the

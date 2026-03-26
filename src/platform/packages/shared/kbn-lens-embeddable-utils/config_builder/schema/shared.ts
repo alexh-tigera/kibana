@@ -20,12 +20,12 @@ import { filterSchema } from './filter';
 
 export const labelSharedProp = {
   /**
-   * Label for the operation
+   * Display name shown in the chart legend and tooltips.
    */
   label: schema.maybe(
     schema.string({
       meta: {
-        description: 'Label for the operation',
+        description: 'Display name shown in the chart legend and tooltips.',
       },
     })
   ),
@@ -33,31 +33,23 @@ export const labelSharedProp = {
 
 export const sharedPanelInfoSchema = {
   /**
-   * The title of the chart displayed in the panel.
-   *
-   * Optional. If not provided, the chart will not have a title.
-   *
-   * Possible values: Any string value, or undefined if omitted.
+   * Title displayed in the panel header.
    */
   title: schema.maybe(
     schema.string({
       meta: {
-        description:
-          'The title of the chart displayed in the panel. Optional. Any string value or undefined.',
+        description: 'Title displayed in the panel header.',
       },
     })
   ),
   /**
-   * The description of the chart, providing additional context or information.
-   *
-   * Optional. If not provided, the chart will not have a description.
-   *
-   * Possible values: Any string value, or undefined if omitted.
+   * Description displayed in the panel header, providing additional context about the visualization.
    */
   description: schema.maybe(
     schema.string({
       meta: {
-        description: 'The description of the chart. Optional. Any string value or undefined.',
+        description:
+          'Description displayed in the panel header, providing additional context about the visualization.',
       },
     })
   ),
@@ -141,7 +133,8 @@ export const collapseBySchema = schema.oneOf(
   {
     meta: {
       id: 'collapseBy',
-      description: 'Collapse by function description',
+      description:
+        'Aggregation function used to collapse a breakdown dimension into a single value. Choose `avg`, `sum`, `max`, or `min`.',
     },
   }
 );

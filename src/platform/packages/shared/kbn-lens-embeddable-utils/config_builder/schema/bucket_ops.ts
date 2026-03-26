@@ -34,45 +34,47 @@ export const bucketDateHistogramOperationSchema = schema.object(
     operation: schema.literal('date_histogram'),
     ...labelSharedProp,
     /**
-     * Field to be used for the date histogram
+     * Date field to aggregate into time buckets.
      */
     field: schema.string({
       meta: {
-        description: 'Field to be used for the date histogram',
+        description: 'Date field to aggregate into time buckets.',
       },
     }),
     /**
-     * Suggested interval
+     * Preferred time bucket size, such as `30s`, `1h`, or `1d`. Kibana may adjust this based on the time range.
      */
     suggested_interval: schema.string({
       defaultValue: LENS_DATE_HISTOGRAM_INTERVAL_DEFAULT,
       meta: {
-        description: 'Suggested interval',
+        description:
+          'Preferred time bucket size, such as `30s`, `1h`, or `1d`. Kibana may adjust this based on the time range.',
       },
     }),
     /**
-     * Whether to use original time range
+     * When `true`, ignores time shifts and always uses the dashboard's original time range.
      */
     use_original_time_range: schema.boolean({
       defaultValue: LENS_DATE_HISTOGRAM_IGNORE_TIME_RANGE_DEFAULT,
       meta: {
-        description: 'Whether to use original time range',
+        description:
+          "When `true`, ignores time shifts and always uses the dashboard's original time range.",
       },
     }),
     /**
-     * Whether to include empty rows
+     * Include time intervals that have no matching documents.
      */
     include_empty_rows: schema.boolean({
       defaultValue: LENS_DATE_HISTOGRAM_EMPTY_ROWS_DEFAULT,
       meta: {
-        description: 'Whether to include empty rows',
+        description: 'Include time intervals that have no matching documents.',
       },
     }),
     drop_partial_intervals: schema.maybe(
       schema.boolean({
         defaultValue: false,
         meta: {
-          description: 'Whether to drop partial intervals',
+          description: 'Exclude incomplete time intervals from the edges of the time range.',
         },
       })
     ),
@@ -161,42 +163,43 @@ export const bucketTermsOperationSchema = schema.object(
     ...formatSchema,
     ...labelSharedProp,
     /**
-     * Fields to be used for the terms
+     * Document fields to group by. Supports up to 4 fields for multi-field term grouping.
      */
     fields: schema.arrayOf(
       schema.string({
         meta: {
-          description: 'Fields to be used for the terms',
+          description: 'Document field name to group by.',
         },
       }),
       { minSize: 1, maxSize: 4 }
     ),
     /**
-     * Maximum number of terms.
+     * Maximum number of term buckets to return.
      */
     limit: schema.number({
       defaultValue: LENS_TERMS_LIMIT_DEFAULT,
-      meta: { description: 'Maximum number of terms' },
+      meta: { description: 'Maximum number of term buckets to return.' },
     }),
     /**
-     * Whether to increase accuracy
+     * When `true`, uses a more accurate but slower algorithm for counting terms. Useful when the number of unique values is very high.
      */
     increase_accuracy: schema.maybe(
       schema.boolean({
         meta: {
-          description: 'Whether to increase accuracy',
+          description:
+            'When `true`, uses a more accurate but slower algorithm for counting terms. Useful when the number of unique values is very high.',
         },
       })
     ),
     /**
-     * Includes
+     * Filter to include only specific term values in the results.
      */
     includes: schema.maybe(
       schema.object({
         values: schema.arrayOf(
           schema.string({
             meta: {
-              description: 'Values to include',
+              description: 'Term values to include in results.',
             },
           }),
           { maxSize: 100 }
@@ -204,21 +207,21 @@ export const bucketTermsOperationSchema = schema.object(
         as_regex: schema.maybe(
           schema.boolean({
             meta: {
-              description: 'Whether to use regex',
+              description: 'When `true`, interprets the include values as regular expressions.',
             },
           })
         ),
       })
     ),
     /**
-     * Excludes
+     * Filter to exclude specific term values from the results.
      */
     excludes: schema.maybe(
       schema.object({
         values: schema.arrayOf(
           schema.string({
             meta: {
-              description: 'Values to exclude',
+              description: 'Term values to exclude from results.',
             },
           }),
           { maxSize: 100 }
@@ -226,20 +229,21 @@ export const bucketTermsOperationSchema = schema.object(
         as_regex: schema.maybe(
           schema.boolean({
             meta: {
-              description: 'Whether to use regex',
+              description: 'When `true`, interprets the exclude values as regular expressions.',
             },
           })
         ),
       })
     ),
     /**
-     * Other bucket
+     * Group documents that don't match the top terms into an "Other" bucket.
      */
     other_bucket: schema.maybe(
       schema.object({
         include_documents_without_field: schema.boolean({
           meta: {
-            description: 'Whether to include documents without field',
+            description:
+              'When `true`, groups documents that lack the grouped field into the "Other" bucket.',
           },
         }),
       })
@@ -320,31 +324,31 @@ export const bucketHistogramOperationSchema = schema.object(
     ...formatSchema,
     ...labelSharedProp,
     /**
-     * Label for the operation
+     * Display name shown in the chart legend and tooltips.
      */
     label: schema.maybe(
       schema.string({
         meta: {
-          description: 'Label for the operation',
+          description: 'Display name shown in the chart legend and tooltips.',
         },
       })
     ),
     /**
-     * Field to be used for the histogram
+     * Numeric field to aggregate into buckets.
      */
     field: schema.string({
       meta: {
-        description: 'Field to be used for the histogram',
+        description: 'Numeric field to aggregate into buckets.',
       },
     }),
     /**
-     * Granularity of the histogram
+     * Bucket size for the histogram. Use a number for fixed-width buckets, or `auto` to let Kibana choose.
      */
     granularity: schema.oneOf(
       [
         schema.number({
           meta: {
-            description: 'Granularity of the histogram',
+            description: 'Fixed numeric bucket width.',
           },
           min: LENS_HISTOGRAM_GRANULARITY_MIN,
           max: LENS_HISTOGRAM_GRANULARITY_MAX,
@@ -356,11 +360,11 @@ export const bucketHistogramOperationSchema = schema.object(
       }
     ),
     /**
-     * Whether to include empty rows
+     * Include numeric intervals that have no matching documents.
      */
     include_empty_rows: schema.boolean({
       meta: {
-        description: 'Whether to include empty rows',
+        description: 'Include numeric intervals that have no matching documents.',
       },
       defaultValue: LENS_HISTOGRAM_EMPTY_ROWS_DEFAULT,
     }),
@@ -374,55 +378,55 @@ export const bucketRangesOperationSchema = schema.object(
     ...formatSchema,
     ...labelSharedProp,
     /**
-     * Label for the operation
+     * Display name shown in the chart legend and tooltips.
      */
     label: schema.maybe(
       schema.string({
         meta: {
-          description: 'Label for the operation',
+          description: 'Display name shown in the chart legend and tooltips.',
         },
       })
     ),
     /**
-     * Field to be used for the range
+     * Numeric field to split into custom ranges.
      */
     field: schema.string({
       meta: {
-        description: 'Field to be used for the range',
+        description: 'Numeric field to split into custom ranges.',
       },
     }),
     /**
-     * Ranges
+     * Array of custom range buckets defined by upper and lower bounds.
      */
     ranges: schema.arrayOf(
       schema.object({
         /**
-         * Less than or equal to
+         * Upper bound of the range (inclusive).
          */
         lte: schema.maybe(
           schema.number({
             meta: {
-              description: 'Less than or equal to',
+              description: 'Upper bound of the range (inclusive).',
             },
           })
         ),
         /**
-         * Greater than
+         * Lower bound of the range (exclusive).
          */
         gt: schema.maybe(
           schema.number({
             meta: {
-              description: 'Greater than',
+              description: 'Lower bound of the range (exclusive).',
             },
           })
         ),
         /**
-         * Label
+         * Custom display label for this range bucket.
          */
         label: schema.maybe(
           schema.string({
             meta: {
-              description: 'Label',
+              description: 'Custom display label for this range bucket.',
             },
           })
         ),

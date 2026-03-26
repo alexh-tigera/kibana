@@ -14,9 +14,13 @@ export const filterSchema = schema.object(
     language: schema.oneOf([schema.literal('kql'), schema.literal('lucene')], {
       defaultValue: 'kql',
     }),
+    /**
+     * Filter query string in KQL or Lucene syntax. For example, `response.status_code >= 400`.
+     */
     expression: schema.string({
       meta: {
-        description: 'A query expression in KQL or Lucene syntax',
+        description:
+          'Filter query string in KQL or Lucene syntax. For example, `response.status_code >= 400`.',
       },
     }),
   },
@@ -26,16 +30,16 @@ export const filterSchema = schema.object(
 export const filterWithLabelSchema = schema.object(
   {
     /**
-     * Filter query
+     * Filter definition with language and query string.
      */
     filter: filterSchema,
     /**
-     * Label for the filter
+     * Display label for this filter in the chart legend.
      */
     label: schema.maybe(
       schema.string({
         meta: {
-          description: 'Label for the filter',
+          description: 'Display label for this filter in the chart legend.',
         },
       })
     ),

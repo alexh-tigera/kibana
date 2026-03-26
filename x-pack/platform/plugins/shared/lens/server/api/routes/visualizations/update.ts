@@ -48,6 +48,7 @@ export const registerLensVisualizationsUpdateAPIRoute: RegisterAPIRouteFn = (
       tags: [LENS_API_TAG],
       availability: {
         stability: 'experimental',
+        since: '9.4.0',
       },
     },
     security: {
