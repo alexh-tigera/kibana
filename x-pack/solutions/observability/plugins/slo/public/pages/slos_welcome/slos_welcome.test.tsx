@@ -10,6 +10,7 @@ import { HeaderMenuPortal } from '@kbn/observability-shared-plugin/public';
 import { paths } from '@kbn/slo-shared-plugin/common/locators/paths';
 import { act, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+import { of } from 'rxjs';
 import Router from 'react-router-dom';
 import { emptySloDefinitionList, sloDefinitionList } from '../../data/slo/slo';
 import { useFetchSloDefinitions } from '../../hooks/use_fetch_slo_definitions';
@@ -66,6 +67,20 @@ const mockKibana = () => {
         },
       },
       observabilityAIAssistant: mockObservabilityAIAssistant,
+      chrome: {
+        getChromeStyle$: () => of('classic'),
+        getChromeStyle: () => 'classic',
+        setAppMenu: jest.fn(),
+      },
+      notifications: {
+        feedback: {
+          isEnabled: () => true,
+        },
+      },
+      cloud: {
+        isCloudEnabled: false,
+      },
+      kibanaVersion: '8.0.0',
     },
   });
 };
