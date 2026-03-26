@@ -14,23 +14,42 @@ import { QueryStreamFlyout } from './query_stream_flyout';
 
 interface CreateQueryStreamFlyoutProps {
   onQueryStreamCreated: () => void;
+  /**
+   * When set, the trigger button is omitted and the flyout is opened/closed by the parent
+   * (e.g. project chrome app menu).
+   */
+  controlledFlyout?: {
+    isOpen: boolean;
+    onOpenChange: (open: boolean) => void;
+  };
 }
 
-export function CreateQueryStreamFlyout({ onQueryStreamCreated }: CreateQueryStreamFlyoutProps) {
-  const [isFlyoutOpen, { toggle: toggleFlyout, off: closeFlyout }] = useBoolean(false);
+export function CreateQueryStreamFlyout({
+  onQueryStreamCreated,
+  controlledFlyout,
+}: CreateQueryStreamFlyoutProps) {
+  const [isFlyoutOpenInternal, { toggle: toggleFlyout, off: closeFlyoutInternal }] =
+    useBoolean(false);
+  const isControlled = controlledFlyout !== undefined;
+  const isFlyoutOpen = isControlled ? controlledFlyout.isOpen : isFlyoutOpenInternal;
+  const closeFlyout = isControlled
+    ? () => controlledFlyout.onOpenChange(false)
+    : closeFlyoutInternal;
 
   return (
     <>
-      <EuiButton
-        onClick={toggleFlyout}
-        size="s"
-        fill
-        data-test-subj="streamsAppCreateQueryStreamButton"
-      >
-        {i18n.translate('xpack.streams.streamsListView.createQueryStreamButtonLabel', {
-          defaultMessage: 'Create Query stream',
-        })}
-      </EuiButton>
+      {!isControlled && (
+        <EuiButton
+          onClick={toggleFlyout}
+          size="s"
+          fill
+          data-test-subj="streamsAppCreateQueryStreamButton"
+        >
+          {i18n.translate('xpack.streams.streamsListView.createQueryStreamButtonLabel', {
+            defaultMessage: 'Create Query stream',
+          })}
+        </EuiButton>
+      )}
       {isFlyoutOpen && (
         <CreateQueryStreamFlyoutContent
           onClose={closeFlyout}

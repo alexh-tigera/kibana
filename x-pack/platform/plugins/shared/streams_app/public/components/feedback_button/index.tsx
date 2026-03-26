@@ -8,32 +8,12 @@
 import { EuiButtonEmpty } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import React from 'react';
-import { useKibana } from '../../hooks/use_kibana';
-
-const STREAMS_FEEDBACK_URL = 'https://ela.st/feedback-streams-ui';
+import { useStreamsFeedbackUrl } from '../../hooks/use_streams_feedback_url';
 
 export function FeedbackButton() {
-  const {
-    isServerless,
-    dependencies: {
-      start: { cloud },
-    },
-    services: { version },
-    core: { notifications },
-  } = useKibana();
-  const isFeedbackEnabled = notifications?.feedback?.isEnabled() ?? true;
-  const deploymentType = isServerless
-    ? 'Serverless'
-    : cloud?.isCloudEnabled
-    ? 'Cloud'
-    : 'Self-Managed';
+  const feedbackUrl = useStreamsFeedbackUrl();
 
-  const path = window.location.pathname;
-
-  const queryParams = new URLSearchParams({ environment: deploymentType, version, path });
-  const feedbackUrl = `${STREAMS_FEEDBACK_URL}?${queryParams.toString()}`;
-
-  if (!isFeedbackEnabled) return null;
+  if (!feedbackUrl) return null;
 
   return (
     <EuiButtonEmpty

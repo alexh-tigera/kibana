@@ -19,8 +19,10 @@ import { usePerformanceContext } from '@kbn/ebt-tools';
 import { i18n } from '@kbn/i18n';
 import { Streams } from '@kbn/streams-schema';
 import type { WiredStreamsStatus } from '@kbn/streams-plugin/public';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
 import { isEmpty } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import { useKibana } from '../../hooks/use_kibana';
 import { useStreamsAppFetch } from '../../hooks/use_streams_app_fetch';
 import { useStreamsAppRouter } from '../../hooks/use_streams_app_router';
@@ -36,6 +38,7 @@ import { StreamsTreeTable } from './tree_table';
 import { LegacyLogsDeprecationCallout } from './legacy_logs_deprecation_callout';
 import { CreateQueryStreamFlyout } from '../query_streams/create_query_stream_flyout';
 import { getFormattedError } from '../../util/errors';
+import { useStreamsListAppMenu } from './use_streams_list_app_menu';
 
 export function StreamListView() {
   const { euiTheme } = useEuiTheme();
@@ -48,6 +51,8 @@ export function StreamListView() {
     },
     core,
   } = context;
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
   const { onPageReady } = usePerformanceContext();
   const router = useStreamsAppRouter();
 
@@ -146,75 +151,117 @@ export function StreamListView() {
   const [isSettingsFlyoutOpen, setIsSettingsFlyoutOpen] = React.useState(false);
   const [isClassicStreamCreationFlyoutOpen, setIsClassicStreamCreationFlyoutOpen] =
     React.useState(false);
+  const [isCreateQueryStreamFlyoutOpen, setIsCreateQueryStreamFlyoutOpen] = useState(false);
+
+  const openSettingsFlyout = useCallback(() => {
+    setIsSettingsFlyoutOpen(true);
+  }, []);
+
+  const openClassicStreamCreationFlyout = useCallback(() => {
+    setIsClassicStreamCreationFlyoutOpen(true);
+  }, []);
+
+  const openCreateQueryStreamFromMenu = useCallback(() => {
+    setIsCreateQueryStreamFlyoutOpen(true);
+  }, []);
+
+  const streamsListAppMenuConfig = useStreamsListAppMenu({
+    canCreateClassicStream: canManageStreamsKibana && canManageClassicElasticsearch,
+    onOpenSettings: openSettingsFlyout,
+    onOpenClassicStreamCreation: openClassicStreamCreationFlyout,
+    sigEventsDiscovery:
+      significantEventsDiscovery?.available && significantEventsDiscovery.enabled
+        ? {
+            href: router.link('/_discovery'),
+            onNavigate: () => {
+              router.push('/_discovery');
+            },
+          }
+        : undefined,
+    showCreateQueryStream: queryStreams?.enabled,
+    onOpenCreateQueryStream: openCreateQueryStreamFromMenu,
+  });
 
   return (
     <>
-      <StreamsAppPageTemplate.Header
-        bottomBorder="extended"
-        css={css`
-          background: ${euiTheme.colors.backgroundBasePlain};
-        `}
-        pageTitle={
-          <EuiFlexGroup
-            justifyContent="spaceBetween"
-            gutterSize="s"
-            responsive={false}
-            alignItems="center"
-          >
-            <EuiFlexItem>
-              <EuiFlexGroup alignItems="center" gutterSize="m">
-                {i18n.translate('xpack.streams.streamsListView.pageHeaderTitle', {
-                  defaultMessage: 'Streams',
-                })}
-              </EuiFlexGroup>
-            </EuiFlexItem>
-            {significantEventsDiscovery?.available && significantEventsDiscovery.enabled && (
+      <AppMenu config={streamsListAppMenuConfig} setAppMenu={core.chrome.setAppMenu} />
+      {!isProjectChrome && (
+        <StreamsAppPageTemplate.Header
+          bottomBorder="extended"
+          css={css`
+            background: ${euiTheme.colors.backgroundBasePlain};
+          `}
+          pageTitle={
+            <EuiFlexGroup
+              justifyContent="spaceBetween"
+              gutterSize="s"
+              responsive={false}
+              alignItems="center"
+            >
+              <EuiFlexItem>
+                <EuiFlexGroup alignItems="center" gutterSize="m">
+                  {i18n.translate('xpack.streams.streamsListView.pageHeaderTitle', {
+                    defaultMessage: 'Streams',
+                  })}
+                </EuiFlexGroup>
+              </EuiFlexItem>
+              {significantEventsDiscovery?.available && significantEventsDiscovery.enabled && (
+                <EuiFlexItem grow={false}>
+                  <EuiButton
+                    href={router.link('/_discovery')}
+                    iconType="crosshairs"
+                    data-test-subj="streamsSignificantEventsDiscoveryButton"
+                  >
+                    {i18n.translate('xpack.streams.streamsListView.sigEventsDiscoveryButtonLabel', {
+                      defaultMessage: 'SigEvents Discovery',
+                    })}
+                  </EuiButton>
+                </EuiFlexItem>
+              )}
+              <FeedbackButton />
+              <EuiFlexItem grow={false}>
+                <EuiButtonEmpty
+                  iconType="gear"
+                  size="s"
+                  onClick={() => setIsSettingsFlyoutOpen(true)}
+                  aria-label={i18n.translate('xpack.streams.streamsListView.settingsButtonLabel', {
+                    defaultMessage: 'Settings',
+                  })}
+                >
+                  {i18n.translate('xpack.streams.streamsListView.settingsButtonLabel', {
+                    defaultMessage: 'Settings',
+                  })}
+                </EuiButtonEmpty>
+              </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiButton
-                  href={router.link('/_discovery')}
-                  iconType="crosshairs"
-                  data-test-subj="streamsSignificantEventsDiscoveryButton"
+                  onClick={() => setIsClassicStreamCreationFlyoutOpen(true)}
+                  size="s"
+                  disabled={!(canManageStreamsKibana && canManageClassicElasticsearch)}
                 >
-                  {i18n.translate('xpack.streams.streamsListView.sigEventsDiscoveryButtonLabel', {
-                    defaultMessage: 'SigEvents Discovery',
+                  {i18n.translate('xpack.streams.streamsListView.createClassicStreamButtonLabel', {
+                    defaultMessage: 'Create classic stream',
                   })}
                 </EuiButton>
               </EuiFlexItem>
-            )}
-            <FeedbackButton />
-            <EuiFlexItem grow={false}>
-              <EuiButtonEmpty
-                iconType="gear"
-                size="s"
-                onClick={() => setIsSettingsFlyoutOpen(true)}
-                aria-label={i18n.translate('xpack.streams.streamsListView.settingsButtonLabel', {
-                  defaultMessage: 'Settings',
-                })}
-              >
-                {i18n.translate('xpack.streams.streamsListView.settingsButtonLabel', {
-                  defaultMessage: 'Settings',
-                })}
-              </EuiButtonEmpty>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiButton
-                onClick={() => setIsClassicStreamCreationFlyoutOpen(true)}
-                size="s"
-                disabled={!(canManageStreamsKibana && canManageClassicElasticsearch)}
-              >
-                {i18n.translate('xpack.streams.streamsListView.createClassicStreamButtonLabel', {
-                  defaultMessage: 'Create classic stream',
-                })}
-              </EuiButton>
-            </EuiFlexItem>
-            {queryStreams?.enabled && (
-              <EuiFlexItem grow={false}>
-                <CreateQueryStreamFlyout onQueryStreamCreated={streamsListFetch.refresh} />
-              </EuiFlexItem>
-            )}
-          </EuiFlexGroup>
-        }
-      />
+              {queryStreams?.enabled && (
+                <EuiFlexItem grow={false}>
+                  <CreateQueryStreamFlyout onQueryStreamCreated={streamsListFetch.refresh} />
+                </EuiFlexItem>
+              )}
+            </EuiFlexGroup>
+          }
+        />
+      )}
+      {isProjectChrome && queryStreams?.enabled && (
+        <CreateQueryStreamFlyout
+          onQueryStreamCreated={streamsListFetch.refresh}
+          controlledFlyout={{
+            isOpen: isCreateQueryStreamFlyoutOpen,
+            onOpenChange: setIsCreateQueryStreamFlyoutOpen,
+          }}
+        />
+      )}
       <StreamsAppPageTemplate.Body grow>
         {streamsListFetch.loading && streamsListFetch.value === undefined ? (
           <EuiEmptyPrompt
