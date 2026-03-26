@@ -45,9 +45,20 @@ actions:
 
         **Index/data view mode** (`dataset.type: "dataView"` or `"index"`) — Kibana runs the aggregations for you. Define metrics with operations like `count`, `average`, `sum` and breakdowns with `terms`, `date_histogram`, etc. Requires a `query` field for KQL or Lucene filtering.
 
+        Use `"type": "index"` with an index pattern and time field for ad-hoc access:
+
         ```json
         {
           "dataset": { "type": "index", "index": "logs-*", "time_field": "@timestamp" },
+          "query": { "query": "status: 200" }
+        }
+        ```
+
+        Or use `"type": "dataView"` with the ID of an existing Kibana data view:
+
+        ```json
+        {
+          "dataset": { "type": "dataView", "id": "90943e30-9a47-11e8-b64d-95841ca0b247" },
           "query": { "query": "status: 200" }
         }
         ```

@@ -6,6 +6,7 @@
  */
 
 import { schema } from '@kbn/config-schema';
+import { searchOptionsSchemas } from '@kbn/content-management-utils';
 
 import { lensCMSearchOptionsSchema } from '../../../../content_management';
 import { lensResponseItemSchema } from './common';
@@ -49,15 +50,15 @@ export const lensSearchRequestQuerySchema = schema.object({
 
 const lensSearchResponseMetaSchema = schema.object(
   {
-    page: schema.number({
+    page: searchOptionsSchemas.page.extendsDeep({
       meta: { description: 'Current page number.' },
     }),
-    per_page: schema.number({
+    per_page: searchOptionsSchemas.perPage.extendsDeep({
       meta: { description: 'Number of results per page.' },
     }),
     total: schema.number({
       meta: { description: 'Total number of matching visualizations.' },
-    }),
+    }), // TODO use shared definition
   },
   { unknowns: 'forbid' }
 );
