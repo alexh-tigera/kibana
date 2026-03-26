@@ -405,10 +405,15 @@ describe('utils', () => {
       ];
 
       const panels = getPopoverPanels({ items });
-      const panelItems = panels[0].items as Array<{ isSeparator?: boolean; key?: string }>;
+      const panelItems = panels[0].items as Array<{
+        isSeparator?: boolean;
+        key?: string;
+        margin?: string;
+      }>;
 
       expect(panelItems[0].isSeparator).toBe(true);
       expect(panelItems[0].key).toBe('separator-1');
+      expect(panelItems[0].margin).toBe('xs');
     });
 
     it('should add separator below item when separator is "below"', () => {
@@ -417,10 +422,15 @@ describe('utils', () => {
       ];
 
       const panels = getPopoverPanels({ items });
-      const panelItems = panels[0].items as Array<{ isSeparator?: boolean; key?: string }>;
+      const panelItems = panels[0].items as Array<{
+        isSeparator?: boolean;
+        key?: string;
+        margin?: string;
+      }>;
 
       expect(panelItems[1].isSeparator).toBe(true);
       expect(panelItems[1].key).toBe('separator-1');
+      expect(panelItems[1].margin).toBe('xs');
     });
 
     it('should append action items to main panel when provided', () => {

@@ -305,6 +305,8 @@ const AppMenuBarHeaderTabs = ({ tabs }: { tabs: AppMenuHeaderTab[] }) => (
         isSelected={tab.isSelected}
         onClick={tab.onClick}
         data-test-subj={tab.testId}
+        disabled={tab.disabled}
+        append={tab.append}
       >
         {tab.label}
       </EuiTab>

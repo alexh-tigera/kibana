@@ -24,9 +24,22 @@ import { SloInstance } from './instance_selector/slo_instance';
 export interface Props {
   slo?: SLOWithSummaryResponse;
   isLoading: boolean;
+  /**
+   * When false, value and objective / status badges are omitted (e.g. shown in project chrome `headerBadges`).
+   */
+  showInlineValueStatusBadges?: boolean;
+  /**
+   * When false, the last-updated line is omitted (e.g. shown in project chrome `headerMetadata`).
+   */
+  showInlineLastUpdated?: boolean;
 }
 
-export function HeaderTitle({ isLoading, slo }: Props) {
+export function HeaderTitle({
+  isLoading,
+  slo,
+  showInlineValueStatusBadges = true,
+  showInlineLastUpdated = true,
+}: Props) {
   if (isLoading || !slo) {
     return <EuiSkeletonText lines={2} data-test-subj="loadingTitle" />;
   }
@@ -41,8 +54,12 @@ export function HeaderTitle({ isLoading, slo }: Props) {
         responsive={false}
         wrap={true}
       >
-        <SloValueBadge slo={slo} isLoading={isLoading} />
-        <SloStatusBadge slo={slo} isLoading={isLoading} />
+        {showInlineValueStatusBadges ? (
+          <>
+            <SloValueBadge slo={slo} isLoading={isLoading} />
+            <SloStatusBadge slo={slo} isLoading={isLoading} />
+          </>
+        ) : null}
         <SloStateBadge slo={slo} />
         <SloRemoteBadge slo={slo} />
         <SloTagsBadge slo={slo} />
@@ -56,17 +73,19 @@ export function HeaderTitle({ isLoading, slo }: Props) {
           </EuiText>
         </EuiFlexItem>
       )}
-      <EuiFlexItem grow={false}>
-        <EuiMarkdownFormat textSize="xs" color="subdued">
-          {i18n.translate('xpack.slo.sloDetails.headerTitle.lastUpdatedLabel', {
-            defaultMessage: '**Last updated by** {updatedBy} **on** {updatedAt}',
-            values: {
-              updatedBy: slo.updatedBy ?? NOT_AVAILABLE_LABEL,
-              updatedAt: moment(slo.updatedAt).format('ll'),
-            },
-          })}
-        </EuiMarkdownFormat>
-      </EuiFlexItem>
+      {showInlineLastUpdated ? (
+        <EuiFlexItem grow={false}>
+          <EuiMarkdownFormat textSize="xs" color="subdued">
+            {i18n.translate('xpack.slo.sloDetails.headerTitle.lastUpdatedLabel', {
+              defaultMessage: '**Last updated by** {updatedBy} **on** {updatedAt}',
+              values: {
+                updatedBy: slo.updatedBy ?? NOT_AVAILABLE_LABEL,
+                updatedAt: moment(slo.updatedAt).format('ll'),
+              },
+            })}
+          </EuiMarkdownFormat>
+        </EuiFlexItem>
+      ) : null}
       <SloInstance slo={slo} />
     </EuiFlexGroup>
   );
@@ -75,3 +94,38 @@ export function HeaderTitle({ isLoading, slo }: Props) {
 const NOT_AVAILABLE_LABEL = i18n.translate('xpack.slo.sloDetails.headerTitle.notAvailableLabel', {
   defaultMessage: 'n/a',
 });
+
+/**
+ * Badges for project chrome `AppMenuConfig.headerBadges` (value + objective, SLO status).
+ */
+export function buildSloDetailsHeaderBadges(
+  slo: SLOWithSummaryResponse,
+  isLoading: boolean
+): React.ReactNode[] {
+  return [
+    <SloValueBadge key="slo-header-value" slo={slo} isLoading={isLoading} />,
+    <SloStatusBadge key="slo-header-status" slo={slo} isLoading={isLoading} />,
+  ];
+}
+
+/**
+ * Metadata row for project chrome `AppMenuConfig.headerMetadata`.
+ */
+export function buildSloDetailsHeaderMetadata(slo: SLOWithSummaryResponse): React.ReactNode[] {
+  return [
+    <EuiText size="xs" key="slo-details-last-updated">
+      <strong>
+        {i18n.translate('xpack.slo.sloDetails.headerTitle.lastUpdatedByStrong', {
+          defaultMessage: 'Last updated by',
+        })}
+      </strong>{' '}
+      {slo.updatedBy ?? NOT_AVAILABLE_LABEL}{' '}
+      <strong>
+        {i18n.translate('xpack.slo.sloDetails.headerTitle.onStrong', {
+          defaultMessage: 'on',
+        })}
+      </strong>{' '}
+      {moment(slo.updatedAt).format('ll')}
+    </EuiText>,
+  ];
+}

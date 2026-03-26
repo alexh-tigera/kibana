@@ -18,10 +18,18 @@ export interface SloStatusProps {
   isLoading?: boolean;
 }
 
+const DEFAULT_PERCENT_FORMAT = '0.0%';
+
 export function SloValueBadge({ slo, isLoading }: SloStatusProps) {
-  const hasNoData = slo?.summary.status === 'NO_DATA';
   const { uiSettings } = useKibana().services;
-  const percentFormat = uiSettings.get('format:percent:defaultPattern');
+  const percentFormat =
+    uiSettings?.get('format:percent:defaultPattern') ?? DEFAULT_PERCENT_FORMAT;
+
+  if (isLoading || !slo) {
+    return <EuiSkeletonText lines={2} data-test-subj="loadingTitle" />;
+  }
+
+  const hasNoData = slo.summary.status === 'NO_DATA';
 
   const badgeDisplayText = i18n.translate('xpack.slo.sloStatusBadge.sloObjectiveValue', {
     defaultMessage: '{value} ({objective} objective)',
@@ -30,10 +38,6 @@ export function SloValueBadge({ slo, isLoading }: SloStatusProps) {
       objective: numeral(slo.objective.target).format(percentFormat),
     },
   });
-
-  if (isLoading || !slo) {
-    return <EuiSkeletonText lines={2} data-test-subj="loadingTitle" />;
-  }
   return (
     <>
       <EuiFlexItem grow={false}>

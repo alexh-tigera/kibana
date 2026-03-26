@@ -6,7 +6,9 @@
  */
 
 import { EuiSkeletonText } from '@elastic/eui';
-import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
+import type { ChromeBreadcrumb, ChromeStyle } from '@kbn/core-chrome-browser';
 import type { IBasePath } from '@kbn/core-http-browser';
 import { usePageReady } from '@kbn/ebt-tools';
 import { i18n } from '@kbn/i18n';
@@ -15,8 +17,10 @@ import { useIsMutating } from '@kbn/react-query';
 import type { SLOWithSummaryResponse } from '@kbn/slo-schema';
 import { paths } from '@kbn/slo-shared-plugin/common/locators/paths';
 import dedent from 'dedent';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { of } from 'rxjs';
+import useObservable from 'react-use/lib/useObservable';
 import {
   OBSERVABILITY_AGENT_ID,
   OBSERVABILITY_SLO_ATTACHMENT_TYPE_ID,
@@ -32,22 +36,47 @@ import { usePluginContext } from '../../hooks/use_plugin_context';
 import PageNotFound from '../404';
 import { AutoRefreshButton } from './components/auto_refresh_button';
 import { HeaderControl } from './components/header_control';
-import { HeaderTitle } from './components/header_title';
+import {
+  buildSloDetailsHeaderBadges,
+  buildSloDetailsHeaderMetadata,
+  HeaderTitle,
+} from './components/header_title';
 import { SloDetails } from './components/slo_details';
 import { useAutoRefreshState } from './hooks/use_auto_refresh_state';
 import { useGetQueryParams } from './hooks/use_get_query_params';
 import { useSelectedTab } from './hooks/use_selected_tab';
-import { useSloDetailsTabs } from './hooks/use_slo_details_tabs';
+import { useSloDetailsHeaderActions } from './hooks/use_slo_details_header_actions';
+import { sloDetailsTabsToAppMenuHeaderTabs, useSloDetailsTabs } from './hooks/use_slo_details_tabs';
 import type { SloDetailsPathParams } from './types';
 
+/**
+ * `useSloDetailsHeaderActions` (and thus `useActionModal`) must run under `ActionModalProvider`.
+ * The provider cannot wrap only JSX returned from this module — it must be an ancestor of the
+ * component that calls those hooks, so we split the page into an outer shell and inner body.
+ */
 export function SloDetailsPage() {
+  return (
+    <ActionModalProvider>
+      <SloDetailsPageInner />
+    </ActionModalProvider>
+  );
+}
+
+function SloDetailsPageInner() {
   const {
     application: { navigateToUrl },
     http: { basePath },
+    chrome,
     observabilityAIAssistant,
     serverless,
     agentBuilder,
   } = useKibana().services;
+
+  const chromeStyle = useObservable(
+    chrome?.getChromeStyle$() ?? of<ChromeStyle>('classic'),
+    chrome?.getChromeStyle() ?? 'classic'
+  );
+  const isProjectChrome = chromeStyle === 'project';
   const { ObservabilityPageTemplate } = usePluginContext();
   const { hasAtLeast } = useLicense();
   const hasRightLicense = hasAtLeast('platinum');
@@ -76,6 +105,34 @@ export function SloDetailsPage() {
     isAutoRefreshing,
     selectedTabId,
   });
+
+  const { getChromeBarV2Fragment, classicActionsPopover, modalsAndFlyouts } =
+    useSloDetailsHeaderActions({ slo });
+
+  const sloDetailsAppMenuConfig = useMemo((): AppMenuConfig => {
+    if (!isProjectChrome || !slo) {
+      return {};
+    }
+    const isPerformingActionForBadges = isLoading || isDeleting;
+    return {
+      headerBadges: buildSloDetailsHeaderBadges(slo, isPerformingActionForBadges),
+      headerMetadata: buildSloDetailsHeaderMetadata(slo),
+      headerTabs: sloDetailsTabsToAppMenuHeaderTabs(tabs),
+      ...getChromeBarV2Fragment({
+        isAutoRefreshing,
+        onToggleAutoRefresh: () => setAutoRefresh((prev) => !prev),
+      }),
+    };
+  }, [
+    isProjectChrome,
+    slo,
+    isLoading,
+    isDeleting,
+    tabs,
+    isAutoRefreshing,
+    getChromeBarV2Fragment,
+    setAutoRefresh,
+  ]);
 
   useEffect(() => {
     if (!slo || !observabilityAIAssistant) {
@@ -158,25 +215,51 @@ export function SloDetailsPage() {
 
   return (
     <ObservabilityPageTemplate
-      pageHeader={{
-        pageTitle: slo?.name ?? <EuiSkeletonText lines={1} />,
-        children: <HeaderTitle isLoading={isPerformingAction} slo={slo} />,
-        rightSideItems: !isLoading
-          ? [
-              <ActionModalProvider>
-                <HeaderControl slo={slo!} />
-              </ActionModalProvider>,
-              <AutoRefreshButton
-                isAutoRefreshing={isAutoRefreshing}
-                onClick={() => setAutoRefresh((prev) => !prev)}
-              />,
-            ]
-          : undefined,
-        tabs,
-      }}
+      pageHeader={
+        isProjectChrome
+          ? undefined
+          : {
+              pageTitle: slo?.name ?? <EuiSkeletonText lines={1} />,
+              children: (
+                <HeaderTitle
+                  isLoading={isPerformingAction}
+                  slo={slo}
+                  showInlineValueStatusBadges
+                  showInlineLastUpdated
+                />
+              ),
+              rightSideItems: !isLoading
+                ? [
+                    <HeaderControl
+                      key="slo-details-header-control"
+                      classicActionsPopover={classicActionsPopover}
+                      modalsAndFlyouts={modalsAndFlyouts}
+                    />,
+                    <AutoRefreshButton
+                      key="slo-details-auto-refresh"
+                      isAutoRefreshing={isAutoRefreshing}
+                      onClick={() => setAutoRefresh((prev) => !prev)}
+                    />,
+                  ]
+                : undefined,
+              tabs,
+            }
+      }
       data-test-subj="sloDetailsPage"
     >
-      <HeaderMenu />
+      {isProjectChrome && slo && chrome ? (
+        <>
+          <AppMenu config={sloDetailsAppMenuConfig} setAppMenu={chrome.setAppMenu} />
+          {modalsAndFlyouts}
+          <HeaderTitle
+            isLoading={isPerformingAction}
+            slo={slo}
+            showInlineValueStatusBadges={false}
+            showInlineLastUpdated={false}
+          />
+        </>
+      ) : null}
+      {!isProjectChrome ? <HeaderMenu /> : null}
       {isLoading ? (
         <LoadingState dataTestSubj="sloDetailsLoading" />
       ) : (

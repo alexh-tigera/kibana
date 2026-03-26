@@ -6,6 +6,7 @@
  */
 
 import { EuiNotificationBadge, EuiToolTip } from '@elastic/eui';
+import type { AppMenuHeaderTab } from '@kbn/core-chrome-app-menu-components';
 import type { SloTabId } from '@kbn/deeplinks-observability';
 import {
   ALERTS_TAB_ID,
@@ -155,3 +156,30 @@ export const useSloDetailsTabs = ({
 const ALERTS_LABEL = i18n.translate('xpack.slo.sloDetails.tab.alertsLabel', {
   defaultMessage: 'Alerts',
 });
+
+/**
+ * Maps page template tabs from {@link useSloDetailsTabs} to project chrome `headerTabs`.
+ */
+export function sloDetailsTabsToAppMenuHeaderTabs(
+  tabs: Array<{
+    id: string;
+    label: React.ReactNode;
+    isSelected: boolean;
+    href?: string;
+    onClick?: React.MouseEventHandler<HTMLElement>;
+    'data-test-subj'?: string;
+    disabled?: boolean;
+    append?: React.ReactNode;
+  }>
+): AppMenuHeaderTab[] {
+  return tabs.map((tab) => ({
+    id: tab.id,
+    label: tab.label,
+    append: tab.append,
+    isSelected: tab.isSelected,
+    href: tab.href,
+    onClick: tab.onClick,
+    testId: tab['data-test-subj'],
+    disabled: tab.disabled,
+  }));
+}

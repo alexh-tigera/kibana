@@ -160,6 +160,8 @@ export const mapAppMenuItemToPanelItem = (
 const createSeparatorItem = (key: string): EuiContextMenuPanelItemDescriptor => ({
   isSeparator: true,
   key,
+  /** Matches {@link EuiHorizontalRule} spacing for overflow / popover dividers. */
+  margin: 'none',
 });
 
 /**

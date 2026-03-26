@@ -5,9 +5,10 @@
  * 2.0.
  */
 
+import React from 'react';
 import { buildSlo } from '../../../data/slo/slo';
 import { KibanaReactStorybookDecorator } from '../../../utils/kibana_react.storybook_decorator';
-import type { Props } from './header_control';
+import { useSloDetailsHeaderActions } from '../hooks/use_slo_details_header_actions';
 import { HeaderControl as Component } from './header_control';
 
 export default {
@@ -16,14 +17,12 @@ export default {
   decorators: [KibanaReactStorybookDecorator],
 };
 
-const defaultProps: Props = {
-  slo: buildSlo(),
-};
+function HeaderControlStory() {
+  const slo = buildSlo();
+  const { classicActionsPopover, modalsAndFlyouts } = useSloDetailsHeaderActions({ slo });
+  return <Component classicActionsPopover={classicActionsPopover} modalsAndFlyouts={modalsAndFlyouts} />;
+}
 
 export const Default = {
-  args: defaultProps,
-};
-
-export const WithLoading = {
-  args: { slo: undefined, isLoading: true },
+  render: () => <HeaderControlStory />,
 };

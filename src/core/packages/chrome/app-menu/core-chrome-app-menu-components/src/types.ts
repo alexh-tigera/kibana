@@ -217,6 +217,10 @@ export type AppMenuItemType = AppMenuItemCommon & {
    * Order of the item in the menu. Lower numbers appear first.
    */
   order: number;
+  /**
+   * In overflow / popover menus, draws a horizontal rule above or below this item.
+   */
+  separator?: 'above' | 'below';
 };
 
 /**
@@ -227,10 +231,6 @@ export type AppMenuPopoverItem = Omit<AppMenuItemType, 'iconType' | 'hidden' | '
    * The icon type for the item.
    */
   iconType?: IconType;
-  /**
-   * Adds a separator line above or below the item in the popover menu.
-   */
-  separator?: 'above' | 'below';
 };
 
 /**
@@ -288,6 +288,10 @@ export interface AppMenuHeaderTab {
    * Tab label (plain string or translated React node).
    */
   label: ReactNode;
+  /**
+   * Optional content after the label (EuiTab `append` prop) for correct alignment with the tab title.
+   */
+  append?: ReactNode;
   isSelected: boolean;
   /**
    * Invoked when the tab is activated (e.g. in-app routing).
@@ -298,6 +302,10 @@ export interface AppMenuHeaderTab {
    */
   href?: string;
   testId?: string;
+  /**
+   * When true, the tab is not interactive (e.g. disabled Alerts for remote SLOs).
+   */
+  disabled?: boolean;
 }
 
 /**

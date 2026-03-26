@@ -16,6 +16,7 @@ import { paths } from '@kbn/slo-shared-plugin/common/locators/paths';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import Router from 'react-router-dom';
+import { of } from 'rxjs';
 import {
   HEALTHY_STEP_DOWN_ROLLING_SLO,
   historicalSummaryData,
@@ -134,6 +135,11 @@ const mockKibana = () => {
         get: () => ({
           name: 'slo',
         }),
+      },
+      chrome: {
+        getChromeStyle$: () => of('classic'),
+        getChromeStyle: () => 'classic',
+        setAppMenu: jest.fn(),
       },
     },
   });
