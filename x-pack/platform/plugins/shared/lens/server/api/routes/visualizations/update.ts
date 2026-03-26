@@ -42,7 +42,7 @@ export const registerLensVisualizationsUpdateAPIRoute: RegisterAPIRouteFn = (
     description: [
       'Replaces the full configuration of an existing visualization. Partial updates are not supported.',
       '',
-      'To make incremental changes, retrieve the visualization first, modify the fields you need, then send the complete object back. Currently only DSL mode is supported; ES|QL visualizations cannot be updated through this endpoint.',
+      'To make incremental changes, retrieve the visualization first, modify the fields you need, then send the complete object back. Currently only index/data view mode is supported; ES|QL visualizations cannot be updated through this endpoint.',
     ].join('\n'),
     options: {
       tags: [LENS_API_TAG],

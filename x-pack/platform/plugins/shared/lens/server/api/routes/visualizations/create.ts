@@ -37,7 +37,7 @@ export const registerLensVisualizationsCreateAPIRoute: RegisterAPIRouteFn = (
     description: [
       'Creates a new visualization. The `type` field determines the chart type.',
       '',
-      'Currently only DSL mode is supported (`dataset.type: "dataView"` or `"index"`). ES|QL mode is not yet available through this endpoint.',
+      'Currently only index/data view mode is supported (`dataset.type: "dataView"` or `"index"`). ES|QL mode is not yet available through this endpoint.',
     ].join('\n'),
     options: {
       tags: [LENS_API_TAG],
