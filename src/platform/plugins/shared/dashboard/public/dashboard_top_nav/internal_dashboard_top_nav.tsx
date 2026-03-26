@@ -9,6 +9,7 @@
 
 import deepEqual from 'fast-deep-equal';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import UseUnmount from 'react-use/lib/useUnmount';
 
 import type { EuiBreadcrumb, UseEuiTheme } from '@elastic/eui';
@@ -31,6 +32,7 @@ import { useBatchedPublishingSubjects } from '@kbn/presentation-publishing';
 import { LazyLabsFlyout, withSuspense } from '@kbn/presentation-util-plugin/public';
 
 import { AppMenu } from '@kbn/core-chrome-app-menu';
+import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
 import { UI_SETTINGS } from '../../common/constants';
 import { DASHBOARD_APP_ID } from '../../common/page_bundle_constants';
 import type { SaveDashboardReturn } from '../dashboard_api/save_modal/types';
@@ -293,6 +295,12 @@ export function InternalDashboardTopNav({
     };
   }, [embedSettings, forceHideUnifiedSearch, fullScreenMode, isChromeVisible, viewMode]);
 
+  const chromeStyle = useObservable(
+    coreServices.chrome.getChromeStyle$(),
+    coreServices.chrome.getChromeStyle()
+  );
+  const isProjectChrome = chromeStyle === 'project';
+
   const maybeRedirect = useCallback(
     (result?: SaveDashboardReturn) => {
       if (!result) return;
@@ -320,11 +328,61 @@ export function InternalDashboardTopNav({
     dashboardApi.clearOverlays();
   });
 
+  const managedHeaderBadge = useMemo(() => {
+    const { showWriteControls } = getDashboardCapabilities();
+    if (!isProjectChrome || !showWriteControls || !dashboardApi.isManaged) {
+      return undefined;
+    }
+
+    const badgeProps = {
+      ...getManagedContentBadge(dashboardManagedBadge.getBadgeAriaLabel()),
+      onClick: () => setIsPopoverOpen(!isPopoverOpen),
+      onClickAriaLabel: dashboardManagedBadge.getBadgeAriaLabel(),
+    } as TopNavMenuBadgeProps;
+
+    const badgeButton = <EuiBadge {...badgeProps}>{badgeProps.badgeText}</EuiBadge>;
+
+    return (
+      <EuiPopover
+        button={badgeButton}
+        closePopover={() => setIsPopoverOpen(false)}
+        data-test-subj="dashboardManagedHeaderBadge"
+        isOpen={isPopoverOpen}
+        panelStyle={{ maxWidth: 250 }}
+      >
+        <FormattedMessage
+          id="dashboard.managedContentPopoverButton"
+          defaultMessage="Elastic manages this dashboard. {Duplicate} it to make changes."
+          values={{
+            Duplicate: (
+              <EuiLink
+                id="dashboardManagedContentPopoverButton"
+                onClick={() => {
+                  dashboardApi.runInteractiveSave().then((result) => maybeRedirect(result));
+                }}
+                aria-label={dashboardManagedBadge.getDuplicateButtonAriaLabel()}
+              >
+                <FormattedMessage
+                  id="dashboard.managedContentPopoverButtonText"
+                  defaultMessage="Duplicate"
+                />
+              </EuiLink>
+            ),
+          }}
+        />
+      </EuiPopover>
+    );
+  }, [isProjectChrome, isPopoverOpen, dashboardApi, maybeRedirect]);
+
   const badges = useMemo(() => {
     const allBadges: TopNavMenuProps['badges'] = [];
 
     const { showWriteControls } = getDashboardCapabilities();
     if (showWriteControls && dashboardApi.isManaged) {
+      if (isProjectChrome && visibilityProps.showTopNavMenu) {
+        return allBadges;
+      }
+
       const badgeProps = {
         ...getManagedContentBadge(dashboardManagedBadge.getBadgeAriaLabel()),
         onClick: () => setIsPopoverOpen(!isPopoverOpen),
@@ -368,7 +426,28 @@ export function InternalDashboardTopNav({
       });
     }
     return allBadges;
-  }, [isPopoverOpen, dashboardApi, maybeRedirect]);
+  }, [isPopoverOpen, dashboardApi, maybeRedirect, isProjectChrome, visibilityProps.showTopNavMenu]);
+
+  const appMenuConfigWithHeaderBadges: AppMenuConfig | undefined = useMemo(() => {
+    if (!visibilityProps.showTopNavMenu) {
+      return undefined;
+    }
+    const base =
+      viewMode === 'edit' ? editModeTopNavConfig : viewModeTopNavConfig;
+    if (!managedHeaderBadge) {
+      return base;
+    }
+    return {
+      ...base,
+      headerBadges: [managedHeaderBadge],
+    };
+  }, [
+    visibilityProps.showTopNavMenu,
+    viewMode,
+    viewModeTopNavConfig,
+    editModeTopNavConfig,
+    managedHeaderBadge,
+  ]);
 
   useEffect(() => {
     coreServices.chrome.setBreadcrumbsBadges(badges);
@@ -394,13 +473,7 @@ export function InternalDashboardTopNav({
       </EuiScreenReaderOnly>
       <AppMenu
         setAppMenu={coreServices.chrome.setAppMenu}
-        config={
-          visibilityProps.showTopNavMenu
-            ? viewMode === 'edit'
-              ? editModeTopNavConfig
-              : viewModeTopNavConfig
-            : undefined
-        }
+        config={appMenuConfigWithHeaderBadges}
       />
       {viewMode !== 'print' && visibilityProps.showSearchBar && (
         <unifiedSearchService.ui.SearchBar
