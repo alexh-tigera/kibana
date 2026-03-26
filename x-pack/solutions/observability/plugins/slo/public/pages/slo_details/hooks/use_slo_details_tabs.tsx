@@ -43,6 +43,9 @@ export const useSloDetailsTabs = ({
 
   const isRemote = !!slo?.remote;
 
+  const activeAlertsCount =
+    slo && !isRemote ? (activeAlerts && activeAlerts.get(slo)) ?? 0 : null;
+
   const tabs = [
     {
       id: OVERVIEW_TAB_ID,
@@ -129,8 +132,12 @@ export const useSloDetailsTabs = ({
       isSelected: selectedTabId === ALERTS_TAB_ID,
       append:
         slo && !isRemote ? (
-          <EuiNotificationBadge className="eui-alignCenter" size="m">
-            {(activeAlerts && activeAlerts.get(slo)) ?? 0}
+          <EuiNotificationBadge
+            className="eui-alignCenter"
+            color={activeAlertsCount === 0 ? 'subdued' : 'accent'}
+            size="s"
+          >
+            {activeAlertsCount}
           </EuiNotificationBadge>
         ) : null,
       ...(setSelectedTabId
