@@ -66,7 +66,15 @@ actions:
         > warn
         > The create and update endpoints currently only support index/data view mode. ES|QL visualizations cannot be created or updated through this API yet.
 
-        All request examples on this page and the chart type pages use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`).
+        All request examples on this page and the chart type pages use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `dataset.index` (or `dataset.id` for data views) and update `field` names in metrics and breakdowns to match your index mapping.
+
+        ## Error handling
+
+        If a request returns a `400 Bad Request`, the response body contains a validation error message. Because the request body uses a `oneOf` discriminator on the `type` field, the error may list every chart type that didn't match. Look for the branch that matches your intended `type` — the relevant error message will describe the missing or invalid field. Common causes include:
+
+        - **Missing required fields** for the chart type (for example, `metrics[0].type: "primary"` and `alignments` for metric charts)
+        - **Setting optional fields to `null`** instead of omitting them entirely — the API rejects `null` values; omit the field instead
+        - **Unrecognized `type` value** — check the chart types table above for valid values
       externalDocs:
         description: Visualizations documentation
         url: https://www.elastic.co/docs/explore-analyze/visualize/lens

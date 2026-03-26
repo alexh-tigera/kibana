@@ -6,7 +6,6 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import { searchOptionsSchemas } from '@kbn/content-management-utils';
 
 import { lensCMSearchOptionsSchema } from '../../../../content_management';
 import { lensResponseItemSchema } from './common';
@@ -27,8 +26,7 @@ export const lensSearchRequestQuerySchema = schema.object({
   query: schema.maybe(
     schema.string({
       meta: {
-        description:
-          'Text to match against `search_fields`.',
+        description: 'Text to match against `search_fields`.',
       },
     })
   ),
@@ -51,9 +49,15 @@ export const lensSearchRequestQuerySchema = schema.object({
 
 const lensSearchResponseMetaSchema = schema.object(
   {
-    page: searchOptionsSchemas.page,
-    per_page: searchOptionsSchemas.perPage,
-    total: schema.number(), // TODO use shared definition
+    page: schema.number({
+      meta: { description: 'Current page number.' },
+    }),
+    per_page: schema.number({
+      meta: { description: 'Number of results per page.' },
+    }),
+    total: schema.number({
+      meta: { description: 'Total number of matching visualizations.' },
+    }),
   },
   { unknowns: 'forbid' }
 );

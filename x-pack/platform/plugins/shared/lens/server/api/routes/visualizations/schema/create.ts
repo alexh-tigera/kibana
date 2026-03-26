@@ -14,7 +14,14 @@ import { lensResponseItemSchema } from './common';
 
 export const lensCreateRequestParamsSchema = schema.object(
   {
-    id: schema.maybe(schema.string()),
+    id: schema.maybe(
+      schema.string({
+        meta: {
+          description:
+            'Custom identifier for the visualization. When omitted, Kibana generates a random ID. Use with `overwrite=true` to replace an existing visualization.',
+        },
+      })
+    ),
   },
   { unknowns: 'forbid' }
 );
