@@ -63,6 +63,10 @@ function ErrorWithTemplate({ error }: { error: Error }) {
     );
   }
 
+  // DummyComponent rethrows for KibanaErrorBoundary; log the original error here so DevTools shows the root cause.
+  // eslint-disable-next-line no-console
+  console.error('[APM] Unhandled error (see message below)', error);
+
   return (
     <ObservabilityPageTemplate pageHeader={pageHeader}>
       <KibanaErrorBoundary>

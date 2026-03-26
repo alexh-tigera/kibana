@@ -144,6 +144,8 @@
     "@kbn/esql-composer",
     "@kbn/discover-shared-plugin",
     "@kbn/core-chrome-browser",
+    "@kbn/core-chrome-app-menu",
+    "@kbn/core-chrome-app-menu-components",
     "@kbn/react-query",
     "@kbn/core-chrome-layout-constants",
     "@kbn/controls-constants",

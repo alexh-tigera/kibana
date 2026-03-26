@@ -9,13 +9,17 @@ import type { EuiPageHeaderProps } from '@elastic/eui';
 import { EuiFlexGroup, EuiFlexItem, EuiSkeletonTitle, EuiIcon } from '@elastic/eui';
 import React from 'react';
 import { i18n } from '@kbn/i18n';
+import useObservable from 'react-use/lib/useObservable';
 import type { KibanaPageTemplateProps } from '@kbn/shared-ux-page-kibana-template';
+import { ApmServiceGroupNavProvider } from '../../../context/apm_service_group_nav/apm_service_group_nav_context';
 import { useFetcher } from '../../../hooks/use_fetcher';
 import { useApmRouter } from '../../../hooks/use_apm_router';
 import { useAnyOfApmParams } from '../../../hooks/use_apm_params';
+import { useServiceGroupTabs, type ServiceGroupTabKey } from '../../../hooks/use_service_group_tabs';
 import { ApmMainTemplate } from './apm_main_template';
 import { useBreadcrumb } from '../../../context/breadcrumbs/use_breadcrumb';
 import { ApmIndexSettingsContextProvider } from '../../../context/apm_index_settings/apm_index_settings_context';
+import { useApmPluginContext } from '../../../context/apm_plugin/use_apm_plugin_context';
 
 export function ServiceGroupTemplate({
   pageTitle,
@@ -31,7 +35,7 @@ export function ServiceGroupTemplate({
   pagePath: string;
   children: React.ReactNode;
   environmentFilter?: boolean;
-  serviceGroupContextTab: ServiceGroupContextTab['key'];
+  serviceGroupContextTab: ServiceGroupTabKey;
 } & KibanaPageTemplateProps) {
   const router = useApmRouter();
   const {
@@ -75,8 +79,15 @@ export function ServiceGroupTemplate({
     </EuiFlexGroup>
   );
 
-  const tabs = useTabs(serviceGroupContextTab);
-  const selectedTab = tabs?.find(({ isSelected }) => isSelected);
+  const { core } = useApmPluginContext();
+  const chromeStyle = useObservable(
+    core.chrome.getChromeStyle$(),
+    core.chrome.getChromeStyle()
+  );
+  const isProjectChrome = chromeStyle === 'project';
+
+  const { pageHeaderTabs } = useServiceGroupTabs(serviceGroupContextTab);
+  const selectedTab = pageHeaderTabs?.find(({ isSelected }) => isSelected);
 
   // this is only used for building the breadcrumbs for the service group page
   useBreadcrumb(
@@ -129,84 +140,46 @@ export function ServiceGroupTemplate({
 
   return (
     <ApmIndexSettingsContextProvider>
-      <ApmMainTemplate
-        pageTitle={serviceGroupsPageTitle}
-        pageHeader={{
-          tabs,
-          breadcrumbs: !isAllServices
-            ? [
-                {
-                  text: (
-                    <>
-                      <EuiIcon
-                        aria-label={returnToServiceGroupsBreadcrumbLabel}
-                        size="s"
-                        type="arrowLeft"
-                      />{' '}
-                      {returnToServiceGroupsBreadcrumbLabel}
-                    </>
-                  ),
-                  color: 'primary',
-                  'aria-current': false,
-                  href: serviceGroupsLink,
-                },
-              ]
-            : undefined,
-          ...pageHeader,
+      <ApmServiceGroupNavProvider
+        value={{
+          showServiceGroupsButtonRow: isProjectChrome && isAllServices,
+          selectedNavButton: isAllServices ? 'allServices' : undefined,
         }}
-        environmentFilter={environmentFilter}
-        showServiceGroupSaveButton={!isAllServices}
-        showServiceGroupsNav={isAllServices}
-        selectedNavButton={isAllServices ? 'allServices' : 'serviceGroups'}
-        {...pageTemplateProps}
       >
-        {children}
-      </ApmMainTemplate>
+        <ApmMainTemplate
+          pageTitle={serviceGroupsPageTitle}
+          pageHeader={{
+            ...(isProjectChrome ? {} : { tabs: pageHeaderTabs }),
+            breadcrumbs: !isAllServices
+              ? [
+                  {
+                    text: (
+                      <>
+                        <EuiIcon
+                          aria-label={returnToServiceGroupsBreadcrumbLabel}
+                          size="s"
+                          type="arrowLeft"
+                        />{' '}
+                        {returnToServiceGroupsBreadcrumbLabel}
+                      </>
+                    ),
+                    color: 'primary',
+                    'aria-current': false,
+                    href: serviceGroupsLink,
+                  },
+                ]
+              : undefined,
+            ...pageHeader,
+          }}
+          environmentFilter={environmentFilter}
+          showServiceGroupSaveButton={!isAllServices}
+          showServiceGroupsNav={isAllServices}
+          selectedNavButton={isAllServices ? 'allServices' : 'serviceGroups'}
+          {...pageTemplateProps}
+        >
+          {children}
+        </ApmMainTemplate>
+      </ApmServiceGroupNavProvider>
     </ApmIndexSettingsContextProvider>
   );
-}
-
-type ServiceGroupContextTab = NonNullable<EuiPageHeaderProps['tabs']>[0] & {
-  key: 'service-inventory' | 'service-map';
-  breadcrumbLabel?: string;
-};
-
-function useTabs(selectedTab: ServiceGroupContextTab['key']) {
-  const router = useApmRouter();
-  const { query } = useAnyOfApmParams('/services', '/service-map');
-
-  const tabs: ServiceGroupContextTab[] = [
-    {
-      key: 'service-inventory',
-      breadcrumbLabel: i18n.translate('xpack.apm.serviceGroup.serviceInventory', {
-        defaultMessage: 'Inventory',
-      }),
-      label: (
-        <EuiFlexGroup justifyContent="flexStart" alignItems="baseline" gutterSize="s">
-          <EuiFlexItem grow={false}>
-            {i18n.translate('xpack.apm.serviceGroup.serviceInventory', {
-              defaultMessage: 'Inventory',
-            })}
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      ),
-      href: router.link('/services', { query }),
-    },
-    {
-      key: 'service-map',
-      label: i18n.translate('xpack.apm.serviceGroup.serviceMap', {
-        defaultMessage: 'Service map',
-      }),
-      href: router.link('/service-map', { query }),
-    },
-  ];
-
-  return tabs
-    .filter((t) => !t.hidden)
-    .map(({ href, key, label, breadcrumbLabel }) => ({
-      href,
-      label,
-      isSelected: key === selectedTab,
-      breadcrumbLabel,
-    }));
 }

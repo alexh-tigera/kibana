@@ -7,6 +7,7 @@
 
 import { PerformanceContextProvider } from '@kbn/ebt-tools';
 import { APP_WRAPPER_CLASS } from '@kbn/core/public';
+import useObservable from 'react-use/lib/useObservable';
 import { KibanaContextProvider } from '@kbn/kibana-react-plugin/public';
 import { RedirectAppLinks } from '@kbn/shared-ux-link-redirect-app';
 import { Storage } from '@kbn/kibana-utils-plugin/public';
@@ -31,7 +32,9 @@ import type { ApmPluginStartDeps, ApmServices } from '../../../plugin';
 import { ApmErrorBoundary } from '../apm_error_boundary';
 import { apmRouter } from '../apm_route_config';
 import { TrackPageview } from '../track_pageview';
+import { ApmHeaderFlyoutsProvider } from '../../../context/apm_header_flyouts/apm_header_flyouts_context';
 import { ApmHeaderActionMenu } from './apm_header_action_menu';
+import { ApmProjectAppMenu } from './apm_project_app_menu';
 import { RedirectDependenciesToDependenciesInventory } from './redirect_dependencies_to_dependencies_inventory';
 import { RedirectWithDefaultDateRange } from './redirect_with_default_date_range';
 import { RedirectWithDefaultEnvironment } from './redirect_with_default_environment';
@@ -80,9 +83,11 @@ export function ApmAppRoot({
                                         <LicenseProvider>
                                           <AnomalyDetectionJobsContextProvider>
                                             <InspectorContextProvider>
-                                              <MountApmHeaderActionMenu />
-                                              <Route component={ScrollToTopOnPathChange} />
-                                              <RouteRenderer />
+                                              <ApmHeaderFlyoutsProvider>
+                                                <ApmHeaderMenus />
+                                                <Route component={ScrollToTopOnPathChange} />
+                                                <RouteRenderer />
+                                              </ApmHeaderFlyoutsProvider>
                                             </InspectorContextProvider>
                                           </AnomalyDetectionJobsContextProvider>
                                         </LicenseProvider>
@@ -107,13 +112,20 @@ export function ApmAppRoot({
   );
 }
 
-function MountApmHeaderActionMenu() {
-  const {
-    appMountParameters: { setHeaderActionMenu, theme$ },
-  } = useApmPluginContext();
+function ApmHeaderMenus() {
+  const { core, appMountParameters } = useApmPluginContext();
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
+  if (isProjectChrome) {
+    return <ApmProjectAppMenu />;
+  }
 
   return (
-    <HeaderMenuPortal setHeaderActionMenu={setHeaderActionMenu} theme$={theme$}>
+    <HeaderMenuPortal
+      setHeaderActionMenu={appMountParameters.setHeaderActionMenu}
+      theme$={appMountParameters.theme$}
+    >
       <EuiFlexGroup responsive={false} gutterSize="s">
         <EuiFlexItem>
           <ApmHeaderActionMenu />

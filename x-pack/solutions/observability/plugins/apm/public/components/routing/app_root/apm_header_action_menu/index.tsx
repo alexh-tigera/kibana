@@ -8,6 +8,7 @@
 import { EuiHeaderLink, EuiHeaderLinks, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import React from 'react';
+import { useLocatorUrl } from '@kbn/share-plugin/public';
 import type { ObservabilityOnboardingLocatorParams } from '@kbn/deeplinks-observability';
 import { OBSERVABILITY_ONBOARDING_LOCATOR } from '@kbn/deeplinks-observability';
 import { getAlertingCapabilities } from '../../../alerting/utils/get_alerting_capabilities';
@@ -37,7 +38,7 @@ export function ApmHeaderActionMenu() {
   const onboardingLocator = share?.url.locators.get<ObservabilityOnboardingLocatorParams>(
     OBSERVABILITY_ONBOARDING_LOCATOR
   );
-  const addDataUrl = onboardingLocator?.useUrl({ category: 'application' }) ?? '';
+  const addDataUrl = useLocatorUrl(onboardingLocator, { category: 'application' });
 
   function apmHref(path: string) {
     return getLegacyApmHref({ basePath, path, search });

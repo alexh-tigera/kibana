@@ -8,6 +8,10 @@ import type { EuiFlexGroupProps } from '@elastic/eui';
 import { EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import React from 'react';
 import type { QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
+import { useApmProjectChromeLayout } from '../../../context/apm_project_chrome_layout/apm_project_chrome_layout_context';
+import { useApmServiceGroupNav } from '../../../context/apm_service_group_nav/apm_service_group_nav_context';
+import { ServiceGroupsButtonGroup } from '../../app/service_groups/service_groups_button_group';
+import { ApmEnvironmentFilter } from '../environment_filter';
 import { useBreakpoints } from '../../../hooks/use_breakpoints';
 import { TimeComparison } from '../time_comparison';
 import { TransactionTypeSelect } from '../transaction_type_select';
@@ -33,6 +37,8 @@ export function SearchBar({
   searchBarBoolFilter,
 }: Props) {
   const { isSmall, isMedium, isLarge, isXl, isXXL, isXXXL } = useBreakpoints();
+  const { environmentInSearchRow } = useApmProjectChromeLayout();
+  const { showServiceGroupsButtonRow, selectedNavButton } = useApmServiceGroupNav();
 
   if (hidden) {
     return null;
@@ -41,31 +47,54 @@ export function SearchBar({
   const searchBarDirection: EuiFlexGroupProps['direction'] =
     isXXXL || (!isXl && !showTimeComparison) ? 'row' : 'column';
 
+  const queryAndTypeRow = (
+    <EuiFlexGroup
+      direction={isLarge ? 'columnReverse' : 'row'}
+      gutterSize="s"
+      responsive={false}
+    >
+      {showTransactionTypeSelector && (
+        <EuiFlexItem grow={false}>
+          <TransactionTypeSelect />
+        </EuiFlexItem>
+      )}
+
+      {showUnifiedSearchBar && (
+        <EuiFlexItem>
+          <UnifiedSearchBar
+            placeholder={searchBarPlaceholder}
+            boolFilter={searchBarBoolFilter}
+            showQueryInput={showQueryInput}
+          />
+        </EuiFlexItem>
+      )}
+    </EuiFlexGroup>
+  );
+
+  const firstColumnContent = environmentInSearchRow ? (
+    <EuiFlexGroup alignItems="center" gutterSize="s" responsive={false}>
+      <EuiFlexItem grow={false}>
+        <ApmEnvironmentFilter />
+      </EuiFlexItem>
+      <EuiFlexItem>{queryAndTypeRow}</EuiFlexItem>
+    </EuiFlexGroup>
+  ) : (
+    queryAndTypeRow
+  );
+
   return (
     <EuiFlexItem grow={false}>
+      {showServiceGroupsButtonRow && selectedNavButton ? (
+        <>
+          <EuiFlexGroup justifyContent="flexStart" responsive={false}>
+            <ServiceGroupsButtonGroup selectedNavButton={selectedNavButton} />
+          </EuiFlexGroup>
+          <EuiSpacer size="s" />
+        </>
+      ) : null}
       <EuiFlexGroup gutterSize="s" responsive={false} direction={searchBarDirection}>
         <EuiFlexItem>
-          <EuiFlexGroup
-            direction={isLarge ? 'columnReverse' : 'row'}
-            gutterSize="s"
-            responsive={false}
-          >
-            {showTransactionTypeSelector && (
-              <EuiFlexItem grow={false}>
-                <TransactionTypeSelect />
-              </EuiFlexItem>
-            )}
-
-            {showUnifiedSearchBar && (
-              <EuiFlexItem>
-                <UnifiedSearchBar
-                  placeholder={searchBarPlaceholder}
-                  boolFilter={searchBarBoolFilter}
-                  showQueryInput={showQueryInput}
-                />
-              </EuiFlexItem>
-            )}
-          </EuiFlexGroup>
+          {firstColumnContent}
         </EuiFlexItem>
         <EuiFlexItem grow={showTimeComparison && !isXXXL}>
           <EuiFlexGroup

@@ -10,7 +10,7 @@ import { EuiContextMenu, EuiHeaderLink, EuiPopover } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import React, { useState } from 'react';
 import { ApmRuleType } from '@kbn/rule-data-utils';
-import { AlertingFlyout } from '../../../alerting/ui_components/alerting_flyout';
+import { useApmHeaderFlyouts } from '../../../../context/apm_header_flyouts/apm_header_flyouts_context';
 import { useApmPluginContext } from '../../../../context/apm_plugin/use_apm_plugin_context';
 
 const alertLabel = i18n.translate('xpack.apm.home.alertsMenu.alerts', {
@@ -43,7 +43,7 @@ interface Props {
 
 export function AlertingPopoverAndFlyout({ canSaveAlerts, canReadAlerts, canReadMlJobs }: Props) {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [ruleType, setRuleType] = useState<ApmRuleType | null>(null);
+  const { openAlertRuleType } = useApmHeaderFlyouts();
   const {
     plugins: { observability },
   } = useApmPluginContext();
@@ -76,7 +76,7 @@ export function AlertingPopoverAndFlyout({ canSaveAlerts, canReadAlerts, canRead
                     {
                       name: createAnomalyAlertAlertLabel,
                       onClick: () => {
-                        setRuleType(ApmRuleType.Anomaly);
+                        openAlertRuleType(ApmRuleType.Anomaly);
                         setPopoverOpen(false);
                       },
                       'data-test-subj': 'apmAlertsMenuItemCreateAnomaly',
@@ -86,7 +86,7 @@ export function AlertingPopoverAndFlyout({ canSaveAlerts, canReadAlerts, canRead
               {
                 name: errorCountLabel,
                 onClick: () => {
-                  setRuleType(ApmRuleType.ErrorCount);
+                  openAlertRuleType(ApmRuleType.ErrorCount);
                   setPopoverOpen(false);
                 },
                 'data-test-subj': 'apmAlertsMenuItemErrorCount',
@@ -117,7 +117,7 @@ export function AlertingPopoverAndFlyout({ canSaveAlerts, canReadAlerts, canRead
         {
           name: transactionDurationLabel,
           onClick: () => {
-            setRuleType(ApmRuleType.TransactionDuration);
+            openAlertRuleType(ApmRuleType.TransactionDuration);
             setPopoverOpen(false);
           },
         },
@@ -126,7 +126,7 @@ export function AlertingPopoverAndFlyout({ canSaveAlerts, canReadAlerts, canRead
         {
           name: transactionErrorRateLabel,
           onClick: () => {
-            setRuleType(ApmRuleType.TransactionErrorRate);
+            openAlertRuleType(ApmRuleType.TransactionErrorRate);
             setPopoverOpen(false);
           },
         },
@@ -146,15 +146,6 @@ export function AlertingPopoverAndFlyout({ canSaveAlerts, canReadAlerts, canRead
       >
         <EuiContextMenu initialPanelId={0} panels={panels} />
       </EuiPopover>
-      <AlertingFlyout
-        ruleType={ruleType}
-        addFlyoutVisible={!!ruleType}
-        setAddFlyoutVisibility={(visible) => {
-          if (!visible) {
-            setRuleType(null);
-          }
-        }}
-      />
     </>
   );
 }

@@ -8,18 +8,22 @@
 import React from 'react';
 import type { EuiPageHeaderProps } from '@elastic/eui';
 import { EuiFlexGroup } from '@elastic/eui';
+import useObservable from 'react-use/lib/useObservable';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import type { ObservabilityPageTemplateProps } from '@kbn/observability-shared-plugin/public';
 import type { KibanaPageTemplateProps } from '@kbn/shared-ux-page-kibana-template';
 import { useLocation } from 'react-router-dom';
+import { useLocatorUrl } from '@kbn/share-plugin/public';
 import type { ObservabilityOnboardingLocatorParams } from '@kbn/deeplinks-observability';
 import { OBSERVABILITY_ONBOARDING_LOCATOR } from '@kbn/deeplinks-observability';
 import { useDefaultAiAssistantStarterPromptsForAPM } from '../../../../hooks/use_default_ai_assistant_starter_prompts_for_apm';
+import { useApmPluginContext } from '../../../../context/apm_plugin/use_apm_plugin_context';
 import { EnvironmentsContextProvider } from '../../../../context/environments_context/environments_context';
 import { FETCH_STATUS, useFetcher } from '../../../../hooks/use_fetcher';
 import type { ApmPluginStartDeps } from '../../../../plugin';
 import { ServiceGroupSaveButton } from '../../../app/service_groups';
 import { ServiceGroupsButtonGroup } from '../../../app/service_groups/service_groups_button_group';
+import { ApmProjectChromeLayoutProvider } from '../../../../context/apm_project_chrome_layout/apm_project_chrome_layout_context';
 import { ApmEnvironmentFilter } from '../../../shared/environment_filter';
 import { ActionsMenu } from './actions_menu';
 import { getNoDataConfig } from '../no_data_config';
@@ -60,12 +64,15 @@ export function ApmMainTemplate({
   Pick<ObservabilityPageTemplateProps, 'pageSectionProps'>) {
   const location = useLocation();
 
+  const { core } = useApmPluginContext();
   const { services } = useKibana<ApmPluginStartDeps>();
   const { docLinks, observabilityShared, application, share } = services;
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
   const onboardingLocator = share?.url.locators.get<ObservabilityOnboardingLocatorParams>(
     OBSERVABILITY_ONBOARDING_LOCATOR
   );
-  const addDataUrl = onboardingLocator?.useUrl({ category: 'application' }) ?? '';
+  const addDataUrl = useLocatorUrl(onboardingLocator, { category: 'application' });
   const ObservabilityPageTemplate = observabilityShared.navigation.PageTemplate;
 
   const { data, status } = useFetcher((callApmApi) => {
@@ -120,32 +127,35 @@ export function ApmMainTemplate({
   const rightSideItems = [
     ...(showServiceGroupSaveButton ? [<ServiceGroupSaveButton />] : []),
     ...(showActionsMenu ? [<ActionsMenu />] : []),
-    ...(environmentFilter ? [<ApmEnvironmentFilter />] : []),
+    ...(environmentFilter && !isProjectChrome ? [<ApmEnvironmentFilter />] : []),
   ];
+
+  const pageHeaderChildren =
+    showServiceGroupsNav && selectedNavButton && !isProjectChrome ? (
+      <EuiFlexGroup direction="column">
+        <ServiceGroupsButtonGroup selectedNavButton={selectedNavButton} />
+      </EuiFlexGroup>
+    ) : undefined;
 
   return (
     <EnvironmentsContextProvider>
-      <ObservabilityPageTemplate
-        noDataConfig={shouldBypassNoDataScreen ? undefined : noDataConfig}
-        isPageDataLoaded={isLoading === false}
-        pageHeader={{
-          rightSideItems,
-          ...pageHeader,
-          pageTitle: pageHeader?.pageTitle ?? pageTitle,
-          children: (
-            <>
-              {showServiceGroupsNav && selectedNavButton && (
-                <EuiFlexGroup direction="column">
-                  <ServiceGroupsButtonGroup selectedNavButton={selectedNavButton} />
-                </EuiFlexGroup>
-              )}
-            </>
-          ),
-        }}
-        {...pageTemplateProps}
+      <ApmProjectChromeLayoutProvider
+        value={{ environmentInSearchRow: isProjectChrome && environmentFilter }}
       >
-        {children}
-      </ObservabilityPageTemplate>
+        <ObservabilityPageTemplate
+          noDataConfig={shouldBypassNoDataScreen ? undefined : noDataConfig}
+          isPageDataLoaded={isLoading === false}
+          pageHeader={{
+            rightSideItems,
+            ...pageHeader,
+            pageTitle: pageHeader?.pageTitle ?? pageTitle,
+            ...(pageHeaderChildren !== undefined ? { children: pageHeaderChildren } : {}),
+          }}
+          {...pageTemplateProps}
+        >
+          {children}
+        </ObservabilityPageTemplate>
+      </ApmProjectChromeLayoutProvider>
     </EnvironmentsContextProvider>
   );
 }
