@@ -324,16 +324,6 @@ export const bucketHistogramOperationSchema = schema.object(
     ...formatSchema,
     ...labelSharedProp,
     /**
-     * Display name shown in the chart legend and tooltips.
-     */
-    label: schema.maybe(
-      schema.string({
-        meta: {
-          description: 'Display name shown in the chart legend and tooltips.',
-        },
-      })
-    ),
-    /**
      * Numeric field to aggregate into buckets.
      */
     field: schema.string({
@@ -377,16 +367,6 @@ export const bucketRangesOperationSchema = schema.object(
     operation: schema.literal('range'),
     ...formatSchema,
     ...labelSharedProp,
-    /**
-     * Display name shown in the chart legend and tooltips.
-     */
-    label: schema.maybe(
-      schema.string({
-        meta: {
-          description: 'Display name shown in the chart legend and tooltips.',
-        },
-      })
-    ),
     /**
      * Numeric field to split into custom ranges.
      */
