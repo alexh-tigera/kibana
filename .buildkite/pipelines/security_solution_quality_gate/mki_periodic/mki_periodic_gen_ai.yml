@@ -116,7 +116,7 @@ steps:
 
       - label: 'API MKI - genai_startup:qa:serverless'
         command: .buildkite/scripts/pipelines/security_solution_quality_gate/api_integration/api-integration-tests.sh genai_startup:qa:serverless
-        key: genai_evals:qa:serverless
+        key: genai_startup:qa:serverless
         agents:
           image: family/kibana-ubuntu-2404
           imageProject: elastic-images-prod
