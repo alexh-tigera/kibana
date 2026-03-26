@@ -4,10 +4,13 @@
  * 2.0; you may not use this file except in compliance with the Elastic License
  * 2.0.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
 import type { Streams } from '@kbn/streams-schema';
 import { EuiBadgeGroup, EuiFlexGroup, EuiToolTip } from '@elastic/eui';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import useObservable from 'react-use/lib/useObservable';
+import { useKibana } from '../../../hooks/use_kibana';
 import { useStreamsAppParams } from '../../../hooks/use_streams_app_params';
 import { useStreamsPrivileges } from '../../../hooks/use_streams_privileges';
 import { RedirectTo } from '../../redirect_to';
@@ -22,6 +25,7 @@ import { StreamDetailDataQuality } from '../../stream_data_quality';
 import { StreamDetailSchemaEditor } from '../stream_detail_schema_editor';
 import { StreamDetailAttachments } from '../../stream_detail_attachments';
 import { ClassicAdvancedView } from './advanced_view/classic_advanced_view';
+import { useStreamDetailManagementAppMenu } from './use_stream_detail_management_app_menu';
 
 const classicStreamManagementSubTabs = [
   'processing',
@@ -61,26 +65,54 @@ export function ClassicStreamDetailManagement({
     features: { attachments },
   } = useStreamsPrivileges();
 
+  const {
+    core,
+  } = useKibana();
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
   const { processing, isLoading, ...otherTabs } = useStreamsDetailManagementTabs({
     definition,
     refreshDefinition,
   });
 
+  const missingDataStreamHeaderBadges = useMemo(
+    () => [
+      <ClassicStreamBadge key="classicStreamBadge" />,
+      <LifecycleBadge
+        key="lifecycleBadge"
+        lifecycle={definition.effective_lifecycle}
+      />,
+    ],
+    [definition.effective_lifecycle]
+  );
+
+  const missingDataStreamAppMenuConfig = useStreamDetailManagementAppMenu({
+    headerBadges: missingDataStreamHeaderBadges,
+    headerTabs: [],
+    discoverHref: undefined,
+    streamName: key,
+    enabled: !definition.data_stream_exists,
+  });
+
   if (!definition.data_stream_exists) {
     return (
       <>
-        <StreamsAppPageTemplate.Header
-          bottomBorder="extended"
-          pageTitle={
-            <EuiFlexGroup gutterSize="s" alignItems="center">
-              {key}
-              <EuiBadgeGroup gutterSize="s">
-                <ClassicStreamBadge />
-                <LifecycleBadge lifecycle={definition.effective_lifecycle} />
-              </EuiBadgeGroup>
-            </EuiFlexGroup>
-          }
-        />
+        <AppMenu config={missingDataStreamAppMenuConfig} setAppMenu={core.chrome.setAppMenu} />
+        {!isProjectChrome && (
+          <StreamsAppPageTemplate.Header
+            bottomBorder="extended"
+            pageTitle={
+              <EuiFlexGroup gutterSize="s" alignItems="center">
+                {key}
+                <EuiBadgeGroup gutterSize="s">
+                  <ClassicStreamBadge />
+                  <LifecycleBadge lifecycle={definition.effective_lifecycle} />
+                </EuiBadgeGroup>
+              </EuiFlexGroup>
+            }
+          />
+        )}
         <StreamsAppPageTemplate.Body>
           <MissingDataStreamCallout
             streamName={definition.stream.name}

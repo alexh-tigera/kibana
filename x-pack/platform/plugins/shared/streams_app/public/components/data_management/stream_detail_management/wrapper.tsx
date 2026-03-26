@@ -6,12 +6,15 @@
  */
 
 import { EuiFlexGroup, EuiFlexItem, EuiPageHeader, EuiTourStep, useEuiTheme } from '@elastic/eui';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
 import { css } from '@emotion/react';
 import { DatasetQualityIndicator } from '@kbn/dataset-quality-plugin/public';
 import { Streams } from '@kbn/streams-schema';
 import type { ReactNode } from 'react';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import useAsync from 'react-use/lib/useAsync';
+import useObservable from 'react-use/lib/useObservable';
+import { useDiscoverStreamHref } from '../../../hooks/use_discover_stream_href';
 import { useKibana } from '../../../hooks/use_kibana';
 import { useStreamDetail } from '../../../hooks/use_stream_detail';
 import { useStreamsAppRouter } from '../../../hooks/use_streams_app_router';
@@ -28,6 +31,7 @@ import {
 } from '../../stream_badges';
 import { StreamsAppPageTemplate } from '../../streams_app_page_template';
 import { TAB_TO_TOUR_STEP_ID, useStreamsTour } from '../../streams_tour';
+import { useStreamDetailManagementAppMenu } from './use_stream_detail_management_app_menu';
 
 export type ManagementTabs = Record<
   string,
@@ -48,7 +52,12 @@ export function Wrapper({
 }) {
   const router = useStreamsAppRouter();
   const { definition } = useStreamDetail();
-  const { services } = useKibana();
+  const {
+    services,
+    core,
+  } = useKibana();
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
   const { getStepPropsByStepId } = useStreamsTour();
   const { rangeFrom, rangeTo } = useTimeRange();
 
@@ -78,20 +87,24 @@ export function Wrapper({
     });
   }, [definition, tab, services.telemetryClient]);
 
-  const tabMap = Object.fromEntries(
-    Object.entries(tabs).map(([tabName, currentTab]) => {
-      return [
-        tabName,
-        {
-          href: router.link('/{key}/management/{tab}', {
-            path: { key: streamId, tab: tabName },
-            query: { rangeFrom, rangeTo },
-          }),
-          label: currentTab.label,
-          content: currentTab.content,
-        },
-      ];
-    })
+  const tabMap = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(tabs).map(([tabName, currentTab]) => {
+          return [
+            tabName,
+            {
+              href: router.link('/{key}/management/{tab}', {
+                path: { key: streamId, tab: tabName },
+                query: { rangeFrom, rangeTo },
+              }),
+              label: currentTab.label,
+              content: currentTab.content,
+            },
+          ];
+        })
+      ),
+    [tabs, router, streamId, rangeFrom, rangeTo]
   );
 
   const { getStreamDocCounts } = useStreamDocCountsFetch({
@@ -121,98 +134,166 @@ export function Wrapper({
   const isQualityLoading =
     countResult?.loading || failedDocsResult?.loading || degradedDocsResult.loading;
 
+  const discoverHref = useDiscoverStreamHref({
+    stream: definition.stream,
+    hasDataStream: Streams.ingest.all.GetResponse.is(definition)
+      ? definition.data_stream_exists
+      : false,
+    indexMode: Streams.ingest.all.GetResponse.is(definition)
+      ? definition.index_mode ?? 'standard'
+      : undefined,
+  });
+
+  const headerBadges = useMemo(
+    () =>
+      [
+        Streams.ClassicStream.GetResponse.is(definition) ? (
+          <ClassicStreamBadge key="classicStreamBadge" />
+        ) : null,
+        Streams.WiredStream.GetResponse.is(definition) ? (
+          <WiredStreamBadge key="wiredStreamBadge" />
+        ) : null,
+        Streams.ingest.all.GetResponse.is(definition) && definition.index_mode === 'time_series' ? (
+          <TimeSeriesBadge key="timeSeriesBadge" />
+        ) : null,
+        Streams.ingest.all.GetResponse.is(definition) ? (
+          <LifecycleBadge
+            key="lifecycleBadge"
+            lifecycle={definition.effective_lifecycle}
+            dataTestSubj={`lifecycleBadge-${streamId}`}
+          />
+        ) : null,
+        <DatasetQualityIndicator
+          key="datasetQuality"
+          quality={quality}
+          isLoading={isQualityLoading}
+          verbose={true}
+          showTooltip={true}
+        />,
+      ].filter(Boolean),
+    [definition, quality, isQualityLoading, streamId]
+  );
+
+  const headerTabs = useMemo(
+    () =>
+      Object.entries(tabMap).map(([tabKey, { label, href }]) => {
+        const tourStepId = TAB_TO_TOUR_STEP_ID[tabKey];
+        const stepProps = tourStepId ? getStepPropsByStepId(tourStepId) : undefined;
+
+        const wrappedLabel = stepProps ? (
+          <EuiTourStep
+            step={stepProps.step}
+            stepsTotal={stepProps.stepsTotal}
+            title={stepProps.title}
+            subtitle={stepProps.subtitle}
+            content={stepProps.content}
+            anchorPosition={stepProps.anchorPosition}
+            offset={stepProps.offset}
+            maxWidth={stepProps.maxWidth}
+            isStepOpen={stepProps.isStepOpen}
+            footerAction={stepProps.footerAction}
+            onFinish={stepProps.onFinish}
+          >
+            <span>{label}</span>
+          </EuiTourStep>
+        ) : (
+          label
+        );
+
+        return {
+          id: tabKey,
+          label: wrappedLabel,
+          href,
+          isSelected: tab === tabKey,
+          testId: `streamDetailManagementTab-${tabKey}`,
+        };
+      }),
+    [tabMap, tab, getStepPropsByStepId]
+  );
+
+  const streamDetailAppMenuConfig = useStreamDetailManagementAppMenu({
+    headerBadges,
+    headerTabs,
+    discoverHref,
+    streamName: streamId,
+  });
+
+  const classicPageHeaderTabs = useMemo(
+    () =>
+      headerTabs.map(({ label, href, isSelected }) => ({
+        label,
+        href,
+        isSelected,
+      })),
+    [headerTabs]
+  );
+
   const { euiTheme } = useEuiTheme();
   return (
     <>
-      <EuiPageHeader
-        paddingSize="l"
-        bottomBorder="extended"
-        css={css`
-          background: ${euiTheme.colors.backgroundBasePlain};
-        `}
-        pageTitle={
-          <EuiFlexGroup
-            direction="row"
-            gutterSize="s"
-            alignItems="baseline"
-            justifyContent="spaceBetween"
-            wrap
-          >
-            <EuiFlexGroup gutterSize="s" alignItems="baseline" wrap direction="column">
-              {streamId}
-              <EuiFlexGroup alignItems="center" justifyContent="spaceBetween" wrap gutterSize="m">
-                <EuiFlexItem grow={true}>
-                  <EuiFlexGroup alignItems="center" gutterSize="s">
-                    {Streams.ClassicStream.GetResponse.is(definition) && <ClassicStreamBadge />}
-                    {Streams.WiredStream.GetResponse.is(definition) && <WiredStreamBadge />}
-                    {Streams.ingest.all.GetResponse.is(definition) &&
-                      definition.index_mode === 'time_series' && <TimeSeriesBadge />}
+      <AppMenu config={streamDetailAppMenuConfig} setAppMenu={core.chrome.setAppMenu} />
+      {!isProjectChrome && (
+        <EuiPageHeader
+          paddingSize="l"
+          bottomBorder="extended"
+          css={css`
+            background: ${euiTheme.colors.backgroundBasePlain};
+          `}
+          pageTitle={
+            <EuiFlexGroup
+              direction="row"
+              gutterSize="s"
+              alignItems="baseline"
+              justifyContent="spaceBetween"
+              wrap
+            >
+              <EuiFlexGroup gutterSize="s" alignItems="baseline" wrap direction="column">
+                {streamId}
+                <EuiFlexGroup alignItems="center" justifyContent="spaceBetween" wrap gutterSize="m">
+                  <EuiFlexItem grow={true}>
+                    <EuiFlexGroup alignItems="center" gutterSize="s">
+                      {Streams.ClassicStream.GetResponse.is(definition) && <ClassicStreamBadge />}
+                      {Streams.WiredStream.GetResponse.is(definition) && <WiredStreamBadge />}
+                      {Streams.ingest.all.GetResponse.is(definition) &&
+                        definition.index_mode === 'time_series' && <TimeSeriesBadge />}
+                      {Streams.ingest.all.GetResponse.is(definition) && (
+                        <LifecycleBadge
+                          lifecycle={definition.effective_lifecycle}
+                          dataTestSubj={`lifecycleBadge-${streamId}`}
+                        />
+                      )}
+                      <DatasetQualityIndicator
+                        quality={quality}
+                        isLoading={isQualityLoading}
+                        verbose={true}
+                        showTooltip={true}
+                      />
+                    </EuiFlexGroup>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiFlexGroup>
+              <EuiFlexItem>
+                <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
+                  <EuiFlexItem grow={false}>
                     {Streams.ingest.all.GetResponse.is(definition) && (
-                      <LifecycleBadge
-                        lifecycle={definition.effective_lifecycle}
-                        dataTestSubj={`lifecycleBadge-${streamId}`}
+                      <DiscoverBadgeButton
+                        stream={definition.stream}
+                        hasDataStream={definition.data_stream_exists}
+                        indexMode={definition.index_mode ?? 'standard'}
+                        spellOut
                       />
                     )}
-                    <DatasetQualityIndicator
-                      quality={quality}
-                      isLoading={isQualityLoading}
-                      verbose={true}
-                      showTooltip={true}
-                    />
-                  </EuiFlexGroup>
-                </EuiFlexItem>
-              </EuiFlexGroup>
+                  </EuiFlexItem>
+                  <EuiFlexItem grow={false}>
+                    <FeedbackButton />
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiFlexItem>
             </EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
-                <EuiFlexItem grow={false}>
-                  {Streams.ingest.all.GetResponse.is(definition) && (
-                    <DiscoverBadgeButton
-                      stream={definition.stream}
-                      hasDataStream={definition.data_stream_exists}
-                      indexMode={definition.index_mode ?? 'standard'}
-                      spellOut
-                    />
-                  )}
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <FeedbackButton />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        }
-        tabs={Object.entries(tabMap).map(([tabKey, { label, href }]) => {
-          const tourStepId = TAB_TO_TOUR_STEP_ID[tabKey];
-          const stepProps = tourStepId ? getStepPropsByStepId(tourStepId) : undefined;
-
-          const wrappedLabel = stepProps ? (
-            <EuiTourStep
-              step={stepProps.step}
-              stepsTotal={stepProps.stepsTotal}
-              title={stepProps.title}
-              subtitle={stepProps.subtitle}
-              content={stepProps.content}
-              anchorPosition={stepProps.anchorPosition}
-              offset={stepProps.offset}
-              maxWidth={stepProps.maxWidth}
-              isStepOpen={stepProps.isStepOpen}
-              footerAction={stepProps.footerAction}
-              onFinish={stepProps.onFinish}
-            >
-              <span>{label}</span>
-            </EuiTourStep>
-          ) : (
-            label
-          );
-
-          return {
-            label: wrappedLabel,
-            href,
-            isSelected: tab === tabKey,
-          };
-        })}
-      />
+          }
+          tabs={classicPageHeaderTabs}
+        />
+      )}
       <StreamsAppPageTemplate.Body noPadding={tab === 'partitioning' || tab === 'processing'}>
         {tabs[tab]?.content}
       </StreamsAppPageTemplate.Body>

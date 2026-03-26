@@ -4,10 +4,13 @@
  * 2.0; you may not use this file except in compliance with the Elastic License
  * 2.0.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
 import { type Streams, isRoot, LOGS_ROOT_STREAM_NAME } from '@kbn/streams-schema';
 import { EuiBadgeGroup, EuiCallOut, EuiFlexGroup, EuiToolTip } from '@elastic/eui';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import useObservable from 'react-use/lib/useObservable';
+import { useKibana } from '../../../hooks/use_kibana';
 import { useStreamsAppParams } from '../../../hooks/use_streams_app_params';
 import { useStreamsPrivileges } from '../../../hooks/use_streams_privileges';
 import { RedirectTo } from '../../redirect_to';
@@ -22,6 +25,7 @@ import { StreamDetailDataQuality } from '../../stream_data_quality';
 import { StreamsAppPageTemplate } from '../../streams_app_page_template';
 import { WiredStreamBadge } from '../../stream_badges';
 import { StreamDetailAttachments } from '../../stream_detail_attachments';
+import { useStreamDetailManagementAppMenu } from './use_stream_detail_management_app_menu';
 
 const wiredStreamManagementSubTabs = [
   'partitioning',
@@ -61,6 +65,26 @@ export function WiredStreamDetailManagement({
     features: { attachments },
   } = useStreamsPrivileges();
 
+  const {
+    core,
+  } = useKibana();
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
+  const wiredEdgeHeaderBadges = useMemo(
+    () => [<WiredStreamBadge key="wiredStreamBadge" />],
+    []
+  );
+
+  const wiredEdgeAppMenuConfig = useStreamDetailManagementAppMenu({
+    headerBadges: wiredEdgeHeaderBadges,
+    headerTabs: [],
+    discoverHref: undefined,
+    streamName: key,
+    enabled:
+      !definition.privileges.view_index_metadata || !definition.data_stream_exists,
+  });
+
   const { processing, isLoading, ...otherTabs } = useStreamsDetailManagementTabs({
     definition,
     refreshDefinition,
@@ -69,17 +93,20 @@ export function WiredStreamDetailManagement({
   if (!definition.privileges.view_index_metadata) {
     return (
       <>
-        <StreamsAppPageTemplate.Header
-          bottomBorder="extended"
-          pageTitle={
-            <EuiFlexGroup gutterSize="s" alignItems="center">
-              {key}
-              <EuiBadgeGroup gutterSize="s">
-                <WiredStreamBadge />
-              </EuiBadgeGroup>
-            </EuiFlexGroup>
-          }
-        />
+        <AppMenu config={wiredEdgeAppMenuConfig} setAppMenu={core.chrome.setAppMenu} />
+        {!isProjectChrome && (
+          <StreamsAppPageTemplate.Header
+            bottomBorder="extended"
+            pageTitle={
+              <EuiFlexGroup gutterSize="s" alignItems="center">
+                {key}
+                <EuiBadgeGroup gutterSize="s">
+                  <WiredStreamBadge />
+                </EuiBadgeGroup>
+              </EuiFlexGroup>
+            }
+          />
+        )}
         <StreamsAppPageTemplate.Body>
           <EuiCallOut
             announceOnMount
@@ -104,17 +131,20 @@ export function WiredStreamDetailManagement({
   if (!definition.data_stream_exists) {
     return (
       <>
-        <StreamsAppPageTemplate.Header
-          bottomBorder="extended"
-          pageTitle={
-            <EuiFlexGroup gutterSize="s" alignItems="center">
-              {key}
-              <EuiBadgeGroup gutterSize="s">
-                <WiredStreamBadge />
-              </EuiBadgeGroup>
-            </EuiFlexGroup>
-          }
-        />
+        <AppMenu config={wiredEdgeAppMenuConfig} setAppMenu={core.chrome.setAppMenu} />
+        {!isProjectChrome && (
+          <StreamsAppPageTemplate.Header
+            bottomBorder="extended"
+            pageTitle={
+              <EuiFlexGroup gutterSize="s" alignItems="center">
+                {key}
+                <EuiBadgeGroup gutterSize="s">
+                  <WiredStreamBadge />
+                </EuiBadgeGroup>
+              </EuiFlexGroup>
+            }
+          />
+        )}
         <StreamsAppPageTemplate.Body>
           <MissingDataStreamCallout
             streamName={definition.stream.name}

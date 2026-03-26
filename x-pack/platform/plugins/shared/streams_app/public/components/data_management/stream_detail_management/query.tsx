@@ -4,10 +4,14 @@
  * 2.0; you may not use this file except in compliance with the Elastic License
  * 2.0.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
 import type { Streams } from '@kbn/streams-schema';
 import { EuiFlexGroup, EuiFlexItem, EuiToolTip } from '@elastic/eui';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import useObservable from 'react-use/lib/useObservable';
+import { useDiscoverStreamHref } from '../../../hooks/use_discover_stream_href';
+import { useKibana } from '../../../hooks/use_kibana';
 import { useStreamsAppRouter } from '../../../hooks/use_streams_app_router';
 import { useStreamsAppParams } from '../../../hooks/use_streams_app_params';
 import { useStreamsPrivileges } from '../../../hooks/use_streams_privileges';
@@ -20,6 +24,7 @@ import { RedirectTo } from '../../redirect_to';
 import { QueryStreamSchemaEditor } from '../../query_streams/query_stream_schema_editor';
 import { QueryStreamsAdvancedView } from '../../query_streams/query_streams_advanced_view';
 import { FeedbackButton } from '../../feedback_button';
+import { useStreamDetailManagementAppMenu } from './use_stream_detail_management_app_menu';
 
 const queryStreamManagementSubTabs = [
   'overview',
@@ -117,30 +122,92 @@ export function QueryStreamDetailManagement({
   }
 
   return (
+    <QueryStreamDetailManagementChrome
+      definition={definition}
+      tabs={tabs}
+      tab={tab}
+      streamKey={key}
+    />
+  );
+}
+
+function QueryStreamDetailManagementChrome({
+  definition,
+  tabs,
+  tab,
+  streamKey,
+}: {
+  definition: Streams.QueryStream.GetResponse;
+  tabs: ManagementTabs;
+  tab: string;
+  streamKey: string;
+}) {
+  const router = useStreamsAppRouter();
+  const {
+    core,
+  } = useKibana();
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
+  const discoverHref = useDiscoverStreamHref({
+    stream: definition.stream,
+    hasDataStream: true,
+  });
+
+  const headerBadges = useMemo(
+    () => [<QueryStreamBadge key="queryStreamBadge" />],
+    []
+  );
+
+  const headerTabs = useMemo(
+    () =>
+      Object.entries(tabs).map(([tabKey, { label }]) => ({
+        id: tabKey,
+        label,
+        href: router.link('/{key}/management/{tab}', {
+          path: { key: streamKey, tab: tabKey },
+        }),
+        isSelected: tab === tabKey,
+        testId: `queryStreamDetails-${tabKey}-tab`,
+      })),
+    [tabs, router, streamKey, tab]
+  );
+
+  const queryStreamAppMenuConfig = useStreamDetailManagementAppMenu({
+    headerBadges,
+    headerTabs,
+    discoverHref,
+    streamName: streamKey,
+  });
+
+  return (
     <>
-      <StreamsAppPageTemplate.Header
-        paddingSize="l"
-        bottomBorder="extended"
-        pageTitle={
-          <EuiFlexGroup gutterSize="s" alignItems="center">
-            {key}
+      <AppMenu config={queryStreamAppMenuConfig} setAppMenu={core.chrome.setAppMenu} />
+      {!isProjectChrome && (
+        <StreamsAppPageTemplate.Header
+          paddingSize="l"
+          bottomBorder="extended"
+          pageTitle={
             <EuiFlexGroup gutterSize="s" alignItems="center">
-              <QueryStreamBadge />
-              <EuiFlexItem grow />
-              <DiscoverBadgeButton stream={definition.stream} hasDataStream spellOut />
-              <FeedbackButton />
+              {streamKey}
+              <EuiFlexGroup gutterSize="s" alignItems="center">
+                <QueryStreamBadge />
+                <EuiFlexItem grow />
+                <DiscoverBadgeButton stream={definition.stream} hasDataStream spellOut />
+                <FeedbackButton />
+              </EuiFlexGroup>
             </EuiFlexGroup>
-          </EuiFlexGroup>
-        }
-        tabs={Object.entries(tabs).map(([tabKey, { label }]) => ({
-          label,
-          href: router.link('/{key}/management/{tab}', {
-            path: { key, tab: tabKey },
-          }),
-          isSelected: tab === tabKey,
-          'data-test-subj': `queryStreamDetails-${tabKey}-tab`,
-        }))}
-      />
+          }
+          tabs={Object.entries(tabs).map(([tabKey, { label }]) => ({
+            label,
+            href: router.link('/{key}/management/{tab}', {
+              path: { key: streamKey, tab: tabKey },
+            }),
+            isSelected: tab === tabKey,
+            'data-test-subj': `queryStreamDetails-${tabKey}-tab`,
+          }))}
+        />
+      )}
       <StreamsAppPageTemplate.Body>{tabs[tab].content}</StreamsAppPageTemplate.Body>
     </>
   );

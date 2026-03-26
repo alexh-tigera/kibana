@@ -11,21 +11,14 @@ import type { IlmLocatorParams } from '@kbn/index-lifecycle-management-common-sh
 import { ILM_LOCATOR_ID } from '@kbn/index-lifecycle-management-common-shared';
 import type { IngestStreamEffectiveLifecycle } from '@kbn/streams-schema';
 import { Streams } from '@kbn/streams-schema';
-import {
-  isIlmLifecycle,
-  isErrorLifecycle,
-  isDslLifecycle,
-  getDiscoverEsqlQuery,
-} from '@kbn/streams-schema';
+import { isIlmLifecycle, isErrorLifecycle, isDslLifecycle } from '@kbn/streams-schema';
 import React from 'react';
-import type { DiscoverAppLocatorParams } from '@kbn/discover-plugin/common';
-import { DISCOVER_APP_LOCATOR } from '@kbn/discover-plugin/common';
 import { css } from '@emotion/react';
 import type { IndicesIndexMode } from '@elastic/elasticsearch/lib/api/types';
 import { useKibana } from '../../hooks/use_kibana';
-import { useStreamsPrivileges } from '../../hooks/use_streams_privileges';
 
 import { truncateText } from '../../util/truncate_text';
+import { useDiscoverStreamHref } from '../../hooks/use_discover_stream_href';
 
 const DataRetentionTooltip: React.FC<{ children: React.ReactElement }> = ({ children }) => (
   <EuiToolTip
@@ -150,33 +143,38 @@ export function LifecycleBadge({
   lifecycle: IngestStreamEffectiveLifecycle;
   dataTestSubj?: string;
 }) {
-  const {
-    dependencies: {
-      start: { share },
-    },
-  } = useKibana();
-  const ilmLocator = share.url.locators.get<IlmLocatorParams>(ILM_LOCATOR_ID);
+  const { dependencies } = useKibana();
+  const share = dependencies?.start?.share;
+  const ilmLocator = share?.url?.locators?.get<IlmLocatorParams>(ILM_LOCATOR_ID);
 
   let badge: React.ReactElement;
 
   if (isIlmLifecycle(lifecycle)) {
+    const ilmPolicyLabel = i18n.translate('xpack.streams.entityDetailViewWithoutParams.ilmBadgeLabel', {
+      defaultMessage: 'ILM Policy: {name}',
+      values: { name: truncateText(lifecycle.ilm.policy, 25) },
+    });
+    const ilmHref = ilmLocator?.getRedirectUrl({
+      page: 'policy_edit',
+      policyName: lifecycle.ilm.policy,
+    });
     badge = (
       <EuiBadge color="hollow" iconType="clockCounter" iconSide="left" tabIndex={0}>
-        <EuiLink
-          data-test-subj={dataTestSubj}
-          color="text"
-          target="_blank"
-          href={ilmLocator?.getRedirectUrl({
-            page: 'policy_edit',
-            policyName: lifecycle.ilm.policy,
-          })}
-          title={lifecycle.ilm.policy}
-        >
-          {i18n.translate('xpack.streams.entityDetailViewWithoutParams.ilmBadgeLabel', {
-            defaultMessage: 'ILM Policy: {name}',
-            values: { name: truncateText(lifecycle.ilm.policy, 25) },
-          })}
-        </EuiLink>
+        {ilmHref ? (
+          <EuiLink
+            data-test-subj={dataTestSubj}
+            color="text"
+            target="_blank"
+            href={ilmHref}
+            title={lifecycle.ilm.policy}
+          >
+            {ilmPolicyLabel}
+          </EuiLink>
+        ) : (
+          <span data-test-subj={dataTestSubj} title={lifecycle.ilm.policy}>
+            {ilmPolicyLabel}
+          </span>
+        )}
       </EuiBadge>
     );
   } else if (isErrorLifecycle(lifecycle)) {
@@ -239,32 +237,9 @@ export function DiscoverBadgeButton({
   spellOut = false,
   indexMode,
 }: DiscoverBadgeButtonProps) {
-  const {
-    dependencies: {
-      start: { share },
-    },
-  } = useKibana();
-  const isIngestStream = !Streams.QueryStream.Definition.is(stream);
-  const { features } = useStreamsPrivileges();
-  const esqlQuery = getDiscoverEsqlQuery({
-    definition: stream,
-    indexMode: isIngestStream ? indexMode : undefined,
-    includeMetadata: Streams.WiredStream.Definition.is(stream),
-    useViews: features.wiredStreamViews.enabled,
-  });
-  const useUrl = share.url.locators.useUrl;
+  const discoverLink = useDiscoverStreamHref({ stream, hasDataStream, indexMode });
 
-  const discoverLink = useUrl<DiscoverAppLocatorParams>(
-    () => ({
-      id: DISCOVER_APP_LOCATOR,
-      params: {
-        query: { esql: esqlQuery || '' },
-      },
-    }),
-    [esqlQuery]
-  );
-
-  if (!discoverLink || !hasDataStream || !esqlQuery) {
+  if (!discoverLink) {
     return null;
   }
 
