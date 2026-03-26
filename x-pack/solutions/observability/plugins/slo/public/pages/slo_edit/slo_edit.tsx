@@ -6,13 +6,16 @@
  */
 
 import { EuiLoadingSpinner } from '@elastic/eui';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
 import { i18n } from '@kbn/i18n';
 import { useBreadcrumbs } from '@kbn/observability-shared-plugin/public';
 import { paths } from '@kbn/slo-shared-plugin/common/locators/paths';
 import React, { useEffect } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import { useParams } from 'react-router-dom';
 import { HeaderMenu } from '../../components/header_menu/header_menu';
 import { useKibana } from '../../hooks/use_kibana';
+import { useSlosOverflowAppMenuConfig } from '../../hooks/use_slos_overflow_app_menu_config';
 import { useLicense } from '../../hooks/use_license';
 import { usePermissions } from '../../hooks/use_permissions';
 import { usePluginContext } from '../../hooks/use_plugin_context';
@@ -24,6 +27,7 @@ export function SloEditPage() {
     application: { navigateToUrl },
     http: { basePath },
     serverless,
+    chrome,
   } = useKibana().services;
   const { sloId } = useParams<{ sloId: string | undefined }>();
   const { initialValues, isLoading, isEditMode, slo } = useSloFormValues(sloId);
@@ -32,6 +36,11 @@ export function SloEditPage() {
   const { ObservabilityPageTemplate } = usePluginContext();
   const { hasAtLeast } = useLicense();
   const hasRightLicense = hasAtLeast('platinum');
+
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
+  const sloEditAppMenuConfig = useSlosOverflowAppMenuConfig('slos-slo-edit');
 
   useBreadcrumbs(
     [
@@ -87,7 +96,10 @@ export function SloEditPage() {
       }}
       data-test-subj="sloEditPage"
     >
-      <HeaderMenu />
+      {isProjectChrome ? (
+        <AppMenu config={sloEditAppMenuConfig} setAppMenu={chrome.setAppMenu} />
+      ) : null}
+      {!isProjectChrome ? <HeaderMenu /> : null}
       {isLoading ? (
         <EuiLoadingSpinner size="xl" data-test-subj="sloEditLoadingSpinner" />
       ) : (

@@ -16,20 +16,17 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { AppMenu } from '@kbn/core-chrome-app-menu';
-import type { AppMenuConfig, AppMenuItemType } from '@kbn/core-chrome-app-menu-components';
 import { i18n } from '@kbn/i18n';
-import {
-  getSurveyFeedbackURL,
-  useBreadcrumbs,
-} from '@kbn/observability-shared-plugin/public';
+import { useBreadcrumbs } from '@kbn/observability-shared-plugin/public';
 import { paths, SLOS_PATH } from '@kbn/slo-shared-plugin/common/locators/paths';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import useObservable from 'react-use/lib/useObservable';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { HeaderMenu } from '../../components/header_menu/header_menu';
 import { SloOutdatedCallout } from '../../components/slo/slo_outdated_callout';
 import { SloPermissionsCallout } from '../../components/slo/slo_permissions_callout';
 import { useFetchSloDefinitions } from '../../hooks/use_fetch_slo_definitions';
+import { useSlosOverflowAppMenuConfig } from '../../hooks/use_slos_overflow_app_menu_config';
 import { useKibana } from '../../hooks/use_kibana';
 import { useLicense } from '../../hooks/use_license';
 import { usePermissions } from '../../hooks/use_permissions';
@@ -37,145 +34,28 @@ import { usePluginContext } from '../../hooks/use_plugin_context';
 import { LoadingPage } from '../loading_page';
 import illustration from './assets/illustration.svg';
 
-/** Matches {@link FeedbackButton} survey URL. */
-const SLO_FEEDBACK_FORM_URL = 'https://ela.st/slo-feedback';
-
 export function SlosWelcomePage() {
-  const { pathname } = useLocation();
   const {
     application: { navigateToUrl },
     http: { basePath },
     docLinks,
     serverless,
     chrome,
-    notifications,
-    cloud,
-    kibanaVersion,
   } = useKibana().services;
 
-  const { ObservabilityPageTemplate, isServerless } = usePluginContext();
+  const { ObservabilityPageTemplate } = usePluginContext();
 
   const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
   const isProjectChrome = chromeStyle === 'project';
-
-  const isFeedbackEnabled = notifications?.feedback?.isEnabled() ?? true;
 
   const { data: permissions } = usePermissions();
   const { hasAtLeast } = useLicense();
   const history = useHistory();
   const { data: { total } = { total: 0 }, isLoading } = useFetchSloDefinitions({ perPage: 0 });
 
-  const slosWelcomeAppMenuConfig = useMemo((): AppMenuConfig => {
-    const createSloHref = basePath.prepend(paths.sloCreate);
-    const createSloLabel = i18n.translate('xpack.slo.sloList.pageHeader.create', {
-      defaultMessage: 'Create SLO',
-    });
-    const annotationsHref = basePath.prepend('/app/observability/annotations');
-    const settingsHref = basePath.prepend(paths.slosSettings);
-    const managementHref = basePath.prepend(paths.slosManagement);
-    const sloDocsHref = docLinks.links.observability.slo;
-
-    const overflowOnlyItems: AppMenuItemType[] = [];
-    let order = 1;
-
-    overflowOnlyItems.push(
-      {
-        order: order++,
-        id: 'slos-welcome-overflow-annotations',
-        label: i18n.translate('xpack.slo.home.annotations', {
-          defaultMessage: 'Annotations',
-        }),
-        iconType: 'editorComment',
-        href: annotationsHref,
-        run: () => {
-          void navigateToUrl(annotationsHref);
-        },
-      },
-      {
-        order: order++,
-        id: 'slos-welcome-overflow-manage-slos',
-        label: i18n.translate('xpack.slo.home.manage', {
-          defaultMessage: 'Manage SLOs',
-        }),
-        iconType: 'tableOfContents',
-        href: managementHref,
-        run: () => {
-          void navigateToUrl(managementHref);
-        },
-      },
-      {
-        order: order++,
-        id: 'slos-welcome-overflow-settings',
-        label: i18n.translate('xpack.slo.headerMenu.settings', {
-          defaultMessage: 'Settings',
-        }),
-        iconType: 'gear',
-        href: settingsHref,
-        separator: 'above',
-        run: () => {
-          void navigateToUrl(settingsHref);
-        },
-      }
-    );
-
-    if (isFeedbackEnabled) {
-      const feedbackHref = getSurveyFeedbackURL({
-        formUrl: SLO_FEEDBACK_FORM_URL,
-        kibanaVersion,
-        isCloudEnv: cloud?.isCloudEnabled,
-        isServerlessEnv: isServerless,
-        sanitizedPath: pathname,
-      });
-      overflowOnlyItems.push({
-        order: order++,
-        id: 'slos-welcome-overflow-feedback',
-        label: i18n.translate('xpack.slo.appMenu.feedback', {
-          defaultMessage: 'Feedback',
-        }),
-        iconType: 'popout',
-        testId: 'sloFeedbackButton',
-        href: feedbackHref,
-        target: '_blank',
-      });
-    }
-
-    overflowOnlyItems.push({
-      order: order++,
-      id: 'slos-welcome-overflow-documentation',
-      label: i18n.translate('xpack.slo.appMenu.documentation', {
-        defaultMessage: 'Documentation',
-      }),
-      iconType: 'documentation',
-      href: sloDocsHref,
-      target: '_blank',
-    });
-
-    return {
-      layout: 'chromeBarV2',
-      primaryActionItem: {
-        id: 'slos-welcome-create-slo',
-        label: createSloLabel,
-        iconType: 'plusInCircle',
-        testId: 'slosPageCreateNewSloButton',
-        href: createSloHref,
-        disableButton: !permissions?.hasAllWriteRequested,
-        run: () => {
-          void navigateToUrl(createSloHref);
-        },
-      },
-      overflowOnlyItems,
-    };
-  }, [
-    basePath,
-    cloud?.isCloudEnabled,
-    docLinks.links.observability.slo,
-    isFeedbackEnabled,
-    isServerless,
-    kibanaVersion,
-    navigateToUrl,
-    pathname,
-    permissions?.hasAllWriteRequested,
-  ]);
+  const slosWelcomeAppMenuConfig = useSlosOverflowAppMenuConfig('slos-welcome', {
+    hasWritePermission: permissions?.hasAllWriteRequested === true,
+  });
 
   const hasRightLicense = hasAtLeast('platinum');
 

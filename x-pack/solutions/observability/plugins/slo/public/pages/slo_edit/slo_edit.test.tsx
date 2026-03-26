@@ -17,7 +17,7 @@ import { cleanup, fireEvent, waitFor } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import Router from 'react-router-dom';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { buildSlo } from '../../data/slo/slo';
 import { useCreateRule } from '../../hooks/use_create_burn_rate_rule';
 import { useCreateDataView } from '../../hooks/use_create_data_view';
@@ -119,7 +119,19 @@ const mockKibana = (license: ILicense | null = licenseMock) => {
           addError: jest.fn(),
           addSuccess: jest.fn(),
         },
+        feedback: {
+          isEnabled: () => true,
+        },
       },
+      chrome: {
+        getChromeStyle$: () => of('classic'),
+        getChromeStyle: () => 'classic',
+        setAppMenu: jest.fn(),
+      },
+      cloud: {
+        isCloudEnabled: false,
+      },
+      kibanaVersion: '8.0.0',
       observabilityAIAssistant: observabilityAIAssistantPluginMock.createStartContract(),
       storage: {
         get: () => {},
