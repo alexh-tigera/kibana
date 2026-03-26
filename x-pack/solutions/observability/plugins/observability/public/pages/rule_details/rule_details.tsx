@@ -293,7 +293,6 @@ export function RuleDetailsPage() {
             showInlineMetadata={false}
             showInlineStatusBadge={false}
           />
-          <EuiSpacer size="m" />
         </>
       ) : null}
       {!isProjectChrome ? <HeaderMenu /> : null}

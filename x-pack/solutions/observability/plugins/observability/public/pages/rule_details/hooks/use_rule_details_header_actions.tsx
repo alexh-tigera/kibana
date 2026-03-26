@@ -156,7 +156,7 @@ export function useRuleDetailsHeaderActions({
             label: i18n.translate('xpack.observability.ruleDetails.disableRule', {
               defaultMessage: 'Disable',
             }),
-            iconType: 'stopFilled',
+            iconType: 'stopSlash',
             testId: 'disableRuleButton',
             run: onDisableModalOpen,
           }

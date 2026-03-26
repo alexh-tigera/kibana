@@ -117,7 +117,9 @@ export function PageTitleContent({
 
       {rule.tags.length > 0 && <RuleTagBadge tagsOutPopover tags={rule.tags} />}
 
-      <EuiSpacer size="xs" />
+      {showInlineMetadata || showInlineStatusBadge || rule.tags.length > 0 ? (
+        <EuiSpacer size="xs" />
+      ) : null}
     </>
   );
 }

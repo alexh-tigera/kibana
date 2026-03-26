@@ -7,7 +7,6 @@
 
 import type { EuiSelectableTemplateSitewideOption } from '@elastic/eui';
 import {
-  EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
@@ -395,15 +394,8 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
 
   const getAppendForChromeStyle = () => {
     if (chromeStyle === 'project') {
-      return (
-        <EuiButtonIcon
-          aria-label={i18nStrings.closeSearchAriaText}
-          color="text"
-          data-test-subj="nav-search-conceal"
-          iconType="cross"
-          onClick={closePalette}
-        />
-      );
+      // Project search is a modal; EuiModal provides the close control—no in-field duplicate.
+      return undefined;
     }
 
     if (showAppend) {
@@ -425,11 +417,15 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
           aria-label={i18nStrings.placeholderText}
           data-test-subj="nav-search-command-palette"
           initialFocus='[data-test-subj="nav-search-input"]'
-          maxWidth={800}
+          style={{ width: 800, height: '50vh' }}
           onClose={closePalette}
           outsideClickCloses
         >
-          <EuiModalBody>
+          <EuiModalBody
+            css={css`
+              padding-top: 24px;
+            `}
+          >
             <EuiSelectable
               css={[
                 sitewideTemplateStyles.euiSelectableTemplateSitewide,
@@ -445,9 +441,6 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
               isPreFiltered
               listProps={{
                 className: 'eui-yScroll',
-                css: css`
-                  max-block-size: min(60vh, 480px);
-                `,
                 onFocusBadge: {
                   iconSide: 'right',
                   children: (
