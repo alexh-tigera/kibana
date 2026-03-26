@@ -53,30 +53,58 @@ export function buildRuleDetailHeaderMetadata(rule: Rule): React.ReactNode[] {
   return getRuleDetailMetadataItems(rule, false);
 }
 
+/**
+ * Rule execution status badge for project chrome `headerBadges`.
+ */
+export function buildRuleDetailHeaderBadges(rule: Rule): React.ReactNode[] {
+  return [
+    <EuiBadge
+      key="rule-execution-status"
+      color={getHealthColor(rule.executionStatus.status)}
+      data-test-subj="ruleDetailsHeaderStatusBadge"
+    >
+      {rule.executionStatus.status.charAt(0).toUpperCase() + rule.executionStatus.status.slice(1)}
+    </EuiBadge>,
+  ];
+}
+
 interface PageTitleContentProps {
   rule: Rule;
   /**
    * When false, "Last updated" / "Created" lines are omitted (e.g. shown in project chrome header metadata).
    */
   showInlineMetadata?: boolean;
+  /**
+   * When false, the execution status badge is omitted (e.g. shown in project chrome `headerBadges`).
+   */
+  showInlineStatusBadge?: boolean;
 }
 
-export function PageTitleContent({ rule, showInlineMetadata = true }: PageTitleContentProps) {
+export function PageTitleContent({
+  rule,
+  showInlineMetadata = true,
+  showInlineStatusBadge = true,
+}: PageTitleContentProps) {
   const {
     triggersActionsUi: { getRuleTagBadge: RuleTagBadge },
   } = useKibana().services;
 
   return (
     <>
-      <EuiFlexItem grow={false}>
-        <EuiText size="xs">
-          <EuiBadge color={getHealthColor(rule.executionStatus.status)}>
-            {rule.executionStatus.status.charAt(0).toUpperCase() +
-              rule.executionStatus.status.slice(1)}
-          </EuiBadge>
-        </EuiText>
-        {showInlineMetadata ? <EuiSpacer size="m" /> : <EuiSpacer size="s" />}
-      </EuiFlexItem>
+      {showInlineStatusBadge ? (
+        <EuiFlexItem grow={false}>
+          <EuiText size="xs">
+            <EuiBadge
+              color={getHealthColor(rule.executionStatus.status)}
+              data-test-subj="ruleDetailsStatusBadge"
+            >
+              {rule.executionStatus.status.charAt(0).toUpperCase() +
+                rule.executionStatus.status.slice(1)}
+            </EuiBadge>
+          </EuiText>
+          {showInlineMetadata ? <EuiSpacer size="m" /> : <EuiSpacer size="s" />}
+        </EuiFlexItem>
+      ) : null}
       {showInlineMetadata ? (
         <EuiFlexGroup direction="column" gutterSize="xs" alignItems="flexStart">
           {getRuleDetailMetadataItems(rule, true).map((metadataItem, index) => (

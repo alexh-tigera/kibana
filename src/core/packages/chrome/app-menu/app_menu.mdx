@@ -89,6 +89,7 @@ In **project** chrome (`chromeStyle === 'project'`), the application top bar ren
 
 - **`headerTabs`** — tabs below the page title.
 - **`headerMetadata`** — a secondary row **between** the title row and `headerTabs`, when present.
+- **`headerBadges`** — optional badges in the **title row**, after the title and before the global action icons (`gutterSize` `xs`).
 
 `headerMetadata` is an array of `ReactNode` values. Each item is typically `EuiText` with `size="xs"`; use `<strong>` (or similar) inside the node for bold labels such as “Last updated”. Omit the field, pass an empty array, or pass only falsy entries to hide the row (it takes no vertical space).
 

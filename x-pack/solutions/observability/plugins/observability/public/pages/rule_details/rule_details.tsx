@@ -43,7 +43,11 @@ import { HeaderMenu } from '../overview/components/header_menu/header_menu';
 import { DeleteConfirmationModal } from './components/delete_confirmation_modal';
 import { HeaderActions } from './components/header_actions';
 import { NoRuleFoundPanel } from './components/no_rule_found_panel';
-import { buildRuleDetailHeaderMetadata, PageTitleContent } from './components/page_title_content';
+import {
+  buildRuleDetailHeaderBadges,
+  buildRuleDetailHeaderMetadata,
+  PageTitleContent,
+} from './components/page_title_content';
 import { RuleDetailsTabs } from './components/rule_details_tabs';
 import {
   RULE_DETAILS_ALERTS_TAB,
@@ -219,6 +223,7 @@ export function RuleDetailsPage() {
       return {};
     }
     return {
+      headerBadges: buildRuleDetailHeaderBadges(rule),
       headerMetadata: buildRuleDetailHeaderMetadata(rule),
     };
   }, [rule]);
@@ -279,7 +284,11 @@ export function RuleDetailsPage() {
             wrap
           >
             <EuiFlexItem grow={false}>
-              <PageTitleContent rule={rule} showInlineMetadata={false} />
+              <PageTitleContent
+                rule={rule}
+                showInlineMetadata={false}
+                showInlineStatusBadge={false}
+              />
             </EuiFlexItem>
             {ruleId ? (
               <EuiFlexItem grow={false}>

@@ -111,7 +111,7 @@ const useAppMenuBarStyles = (
       display: 'flex',
       flexDirection: 'row' as const,
       alignItems: 'center',
-      gap: '4px',
+      gap: '8px',
     };
 
     const titleSection = {
@@ -179,6 +179,14 @@ const useAppMenuBarStyles = (
       flexShrink: 1,
     };
 
+    const badgeGroup = {
+      flex: '0 0 auto' as const,
+      flexShrink: 0,
+      minWidth: 0,
+      width: 'fit-content',
+      maxWidth: '100%',
+    };
+
     const tabsRow = {
       display: 'flex',
       flexDirection: 'row' as const,
@@ -195,6 +203,7 @@ const useAppMenuBarStyles = (
       titleSection,
       metadataRow,
       metadataItem,
+      badgeGroup,
       tabsRow,
       globalActions,
       iconButtonSubdued,
@@ -311,6 +320,11 @@ export const AppMenuBar = React.memo(() => {
     [appMenuConfig?.headerMetadata]
   );
   const hasHeaderMetadata = headerMetadataItems.length > 0;
+  const headerBadgeItems = useMemo(
+    () => appMenuConfig?.headerBadges?.filter(Boolean) ?? [],
+    [appMenuConfig?.headerBadges]
+  );
+  const hasHeaderBadges = headerBadgeItems.length > 0;
   const hasSecondaryRow = hasHeaderTabs || hasHeaderMetadata;
   const projectHeaderRef = useRef<HTMLDivElement>(null);
   const breadcrumbs = useProjectBreadcrumbs();
@@ -456,6 +470,23 @@ export const AppMenuBar = React.memo(() => {
                 </EuiTitle>
               )}
             </div>
+            {hasHeaderBadges ? (
+              <EuiFlexGroup
+                alignItems="center"
+                data-test-subj="kibanaProjectHeaderBadgeGroup"
+                gutterSize="xs"
+                justifyContent="flexStart"
+                responsive={false}
+                wrap
+                css={styles.badgeGroup}
+              >
+                {headerBadgeItems.map((badge, index) => (
+                  <EuiFlexItem key={index} grow={false}>
+                    {badge}
+                  </EuiFlexItem>
+                ))}
+              </EuiFlexGroup>
+            ) : null}
             <div
               className="appMenuBar__globalActions"
               css={styles.globalActions}

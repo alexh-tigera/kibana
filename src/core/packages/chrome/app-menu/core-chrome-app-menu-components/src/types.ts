@@ -342,4 +342,10 @@ export interface AppMenuConfig {
    * Omitted when rendering {@link AppMenuComponent} so actions strip logic stays unchanged.
    */
   headerMetadata?: ReactNode[];
+  /**
+   * Optional badge group inline in the title row (project chrome `AppMenuBar`), after the title
+   * and before the global action icons. Each entry is typically an `EuiBadge`.
+   * Omitted when rendering {@link AppMenuComponent} so actions strip logic stays unchanged.
+   */
+  headerBadges?: ReactNode[];
 }
