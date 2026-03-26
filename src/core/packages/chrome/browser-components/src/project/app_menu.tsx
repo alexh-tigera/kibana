@@ -111,7 +111,7 @@ const useAppMenuBarStyles = (
       display: 'flex',
       flexDirection: 'row' as const,
       alignItems: 'center',
-      gap: '8px',
+      gap: euiTheme.size.s,
     };
 
     const titleSection = {
