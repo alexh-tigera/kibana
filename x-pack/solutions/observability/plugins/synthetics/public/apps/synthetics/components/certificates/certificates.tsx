@@ -15,6 +15,7 @@ import { useCertSearch } from './use_cert_search';
 import type { CertSort } from './certificates_list';
 import { CertificateList } from './certificates_list';
 import { useBreadcrumbs } from '../../hooks';
+import { MonitorsProjectAppMenu } from '../monitors_page/management/monitors_project_app_menu';
 
 const DEFAULT_PAGE_SIZE = 10;
 const LOCAL_STORAGE_KEY = 'xpack.uptime.certList.pageSize';
@@ -55,6 +56,7 @@ export const CertificatesPage: React.FC = () => {
 
   return (
     <>
+      <MonitorsProjectAppMenu />
       <EuiSpacer size="m" />
       <CertificateSearch setSearch={setSearch} />
       <EuiSpacer size="m" />

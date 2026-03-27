@@ -6,6 +6,7 @@
  */
 
 import React, { useContext } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import {
   EuiButton,
   EuiButtonEmpty,
@@ -14,11 +15,22 @@ import {
   EuiHideFor,
   EuiShowFor,
 } from '@elastic/eui';
+import { useKibana } from '@kbn/kibana-react-plugin/public';
 import * as labels from './translations';
 import { SyntheticsRefreshContext } from '../../contexts';
+import type { ClientPluginsStart } from '../../../../plugin';
 
 export const CertRefreshBtn = () => {
   const { refreshApp } = useContext(SyntheticsRefreshContext);
+  const {
+    services: { chrome },
+  } = useKibana<ClientPluginsStart>();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
+  if (isProjectChrome) {
+    return null;
+  }
 
   return (
     <EuiFlexItem

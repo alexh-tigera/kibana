@@ -18,6 +18,7 @@ import type {
   AppMenuItemType,
   AppMenuPopoverItem,
   AppMenuRunActionParams,
+  AppMenuSecondaryActionItem,
 } from '@kbn/core-chrome-app-menu-components';
 import { createExploratoryViewUrl } from '@kbn/exploratory-view-plugin/public';
 import { enableInspectEsQueries } from '@kbn/observability-plugin/public';
@@ -42,7 +43,12 @@ import {
   TLS_RULE_NAME,
   ToggleFlyoutTranslations,
 } from '../../alerts/hooks/translations';
-import { GETTING_STARTED_ROUTE, MONITORS_ROUTE, SETTINGS_ROUTE } from '../../../../../../common/constants';
+import {
+  CERTIFICATES_ROUTE,
+  GETTING_STARTED_ROUTE,
+  MONITORS_ROUTE,
+  SETTINGS_ROUTE,
+} from '../../../../../../common/constants';
 import { stringifyUrlParams } from '../../../utils/url_params';
 import { SYNTHETICS_STATUS_RULE, SYNTHETICS_TLS_RULE } from '../../../../../../common/constants/synthetics_alerts';
 import type { ClientPluginsStart } from '../../../../../plugin';
@@ -55,6 +61,7 @@ import { setIsPrivateLocationFlyoutVisible } from '../../../state/private_locati
 import { selectPrivateLocationFlyoutVisible } from '../../../state/private_locations/selectors';
 import { selectAgentPolicies } from '../../../state/agent_policies';
 import { CLIENT_DEFAULTS_SYNTHETICS } from '../../../../../../common/constants/synthetics/client_defaults';
+import { REFRESH_CERT } from '../../certificates/translations';
 
 const CREATE_LOCATION_LABEL = i18n.translate('xpack.synthetics.gettingStarted.createLocationLabel', {
   defaultMessage: 'Create location',
@@ -126,7 +133,11 @@ export function MonitorsProjectAppMenu() {
   const isGettingStartedRoute = Boolean(
     useRouteMatch({ path: GETTING_STARTED_ROUTE, exact: true })?.isExact
   );
-  const isMonitorsProjectAppMenuRoute = isMonitorsListRoute || isGettingStartedRoute;
+  const isCertificatesRoute = Boolean(
+    useRouteMatch({ path: CERTIFICATES_ROUTE, exact: true })?.isExact
+  );
+  const isMonitorsProjectAppMenuRoute =
+    isMonitorsListRoute || isGettingStartedRoute || isCertificatesRoute;
 
   const projectMenuActive = isProjectChrome && isMonitorsProjectAppMenuRoute;
   const { EditAlertFlyout, NewRuleFlyout, loading, defaultRules } =
@@ -138,6 +149,7 @@ export function MonitorsProjectAppMenu() {
   const { inspectorAdapters } = useInspectorContext();
 
   const {
+    refreshApp,
     refreshInterval,
     refreshPaused,
     setRefreshInterval,
@@ -440,6 +452,46 @@ export function MonitorsProjectAppMenu() {
       },
     });
 
+    const secondaryActionItems: AppMenuSecondaryActionItem[] = [
+      {
+        id: 'synthetics-auto-refresh',
+        label: formatAutoRefreshButtonLabel(refreshPaused, refreshInterval),
+        iconType: 'refreshTime',
+        testId: 'syntheticsAutoRefreshAppMenu',
+        run: openAutoRefreshPopover,
+      },
+      {
+        id: 'synthetics-explore-data',
+        label: ANALYZE_DATA,
+        iconType: 'inspect',
+        testId: 'syntheticsExploreDataButton',
+        tooltipContent: ANALYZE_MESSAGE,
+        href: syntheticExploratoryViewLink,
+        target: '_self',
+        run: () => {
+          void application.navigateToUrl(syntheticExploratoryViewLink);
+        },
+      },
+    ];
+
+    if (isCertificatesRoute) {
+      return {
+        layout: 'chromeBarV2',
+        headerMetadata: [<LastRefreshed key="synthetics-certificates-last-refreshed" />],
+        primaryActionItem: {
+          id: 'synthetics-certificates-refresh',
+          label: REFRESH_CERT,
+          iconType: 'refresh',
+          testId: 'certificatesRefreshButton',
+          run: () => {
+            refreshApp();
+          },
+        },
+        secondaryActionItems,
+        overflowOnlyItems,
+      };
+    }
+
     return {
       layout: 'chromeBarV2',
       headerMetadata: [<LastRefreshed key="synthetics-monitors-last-refreshed" />],
@@ -452,27 +504,7 @@ export function MonitorsProjectAppMenu() {
           openLocationFlyout();
         },
       },
-      secondaryActionItems: [
-        {
-          id: 'synthetics-auto-refresh',
-          label: formatAutoRefreshButtonLabel(refreshPaused, refreshInterval),
-          iconType: 'refreshTime',
-          testId: 'syntheticsAutoRefreshAppMenu',
-          run: openAutoRefreshPopover,
-        },
-        {
-          id: 'synthetics-explore-data',
-          label: ANALYZE_DATA,
-          iconType: 'inspect',
-          testId: 'syntheticsExploreDataButton',
-          tooltipContent: ANALYZE_MESSAGE,
-          href: syntheticExploratoryViewLink,
-          target: '_self',
-          run: () => {
-            void application.navigateToUrl(syntheticExploratoryViewLink);
-          },
-        },
-      ],
+      secondaryActionItems,
       overflowOnlyItems,
     };
   }, [
@@ -481,10 +513,12 @@ export function MonitorsProjectAppMenu() {
     history,
     inspector,
     inspectorAdapters,
+    isCertificatesRoute,
     openLocationFlyout,
     params,
     projectMenuActive,
     openAutoRefreshPopover,
+    refreshApp,
     refreshInterval,
     refreshPaused,
     setRefreshInterval,

@@ -21,7 +21,10 @@ import {
   useBreadcrumbs,
   useFetcher,
 } from '@kbn/observability-shared-plugin/public';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
 import React, { useEffect, useMemo } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import type { ObservabilityOnboardingLocatorParams } from '@kbn/deeplinks-observability';
 import { OBSERVABILITY_ONBOARDING_LOCATOR } from '@kbn/deeplinks-observability';
 import { LoadingObservability } from '../../components/loading_observability';
@@ -47,12 +50,39 @@ export function OverviewPage() {
     kibanaVersion,
     serverless: isServerless,
     share,
+    application,
+    chrome,
   } = useKibana().services;
+
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
 
   const onboardingLocator = share?.url.locators.get<ObservabilityOnboardingLocatorParams>(
     OBSERVABILITY_ONBOARDING_LOCATOR
   );
   const onboardingHref = onboardingLocator?.useUrl({});
+
+  const overviewAppMenuConfig = useMemo((): AppMenuConfig | undefined => {
+    if (!onboardingHref) {
+      return undefined;
+    }
+    const addDataLabel = i18n.translate('xpack.observability.home.addData', {
+      defaultMessage: 'Add data',
+    });
+    return {
+      primaryActionItem: {
+        id: 'observability-overview-add-data',
+        label: addDataLabel,
+        iconType: 'indexOpen',
+        testId: 'o11yOverviewAppMenuAddData',
+        href: onboardingHref,
+        target: '_self',
+        run: () => {
+          void application.navigateToUrl(onboardingHref);
+        },
+      },
+    };
+  }, [application, onboardingHref]);
 
   const { ObservabilityPageTemplate } = usePluginContext();
   const { euiTheme } = useEuiTheme();
@@ -162,16 +192,20 @@ export function OverviewPage() {
   return (
     <ObservabilityPageTemplate
       isPageDataLoaded={isAllRequestsComplete}
-      pageHeader={{
-        pageTitle: i18n.translate('xpack.observability.overview.pageTitle', {
-          defaultMessage: 'Overview',
-        }),
-        rightSideItems: hasAnyData ? [<HeaderActions />] : [],
-        rightSideGroupProps: {
-          responsive: true,
-        },
-        'data-test-subj': 'obltOverviewPageHeader',
-      }}
+      pageHeader={
+        isProjectChrome
+          ? undefined
+          : {
+              pageTitle: i18n.translate('xpack.observability.overview.pageTitle', {
+                defaultMessage: 'Overview',
+              }),
+              rightSideItems: hasAnyData ? [<HeaderActions />] : [],
+              rightSideGroupProps: {
+                responsive: true,
+              },
+              'data-test-subj': 'obltOverviewPageHeader',
+            }
+      }
       pageSectionProps={{
         contentProps: {
           style: {
@@ -182,11 +216,21 @@ export function OverviewPage() {
         },
       }}
     >
-      <HeaderMenu />
+      {isProjectChrome && overviewAppMenuConfig ? (
+        <AppMenu config={overviewAppMenuConfig} setAppMenu={chrome.setAppMenu} />
+      ) : null}
+      {!isProjectChrome ? <HeaderMenu /> : null}
 
       {hasAnyData ? (
         <>
           <ObservabilityOnboardingCallout />
+
+          {isProjectChrome ? (
+            <>
+              <HeaderActions />
+              <EuiSpacer size="s" />
+            </>
+          ) : null}
 
           <EuiFlexGroup direction="column" gutterSize="s">
             <EuiFlexItem grow={false}>

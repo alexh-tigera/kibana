@@ -16,38 +16,34 @@ import { HeaderHelpMenu } from '../shared/header_help_menu';
 import { useProjectChromeRightControls } from '../shared/chrome_hooks';
 import { useProjectChromeSidenavCompactControlStyles } from './project_chrome_sidenav_control_styles';
 
-const ProjectChromeNavControl = ({ control }: { control: ChromeNavControl }) => (
+const ProjectChromeNavControl = ({
+  control,
+  justifyContent = 'center',
+}: {
+  control: ChromeNavControl;
+  justifyContent?: 'center' | 'flex-start';
+}) => (
   <div
     css={css`
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: ${justifyContent};
+      width: 100%;
     `}
   >
     <HeaderExtension extension={control.content ?? control.mount} />
   </div>
 );
 
-const ProjectChromeHelpExtras = () => {
-  const controls = useProjectChromeRightControls('helpMenuExtras');
-  return (
-    <EuiFlexRowWrap>
-      {controls.map((c, i) => (
-        <ProjectChromeNavControl key={i} control={c} />
-      ))}
-    </EuiFlexRowWrap>
-  );
-};
-
-const EuiFlexRowWrap = ({ children }: { children: React.ReactNode }) => {
+const ProjectChromeHelpExtrasStack = ({ children }: { children: React.ReactNode }) => {
   const { euiTheme } = useEuiTheme();
   return (
     <div
       css={css`
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: ${euiTheme.size.s};
+        flex-direction: column;
+        align-items: stretch;
+        gap: ${euiTheme.size.xs};
         width: 100%;
       `}
     >
@@ -62,8 +58,18 @@ const EuiFlexRowWrap = ({ children }: { children: React.ReactNode }) => {
  */
 export const ProjectChromeNavFooter = React.memo(() => {
   const profileControls = useProjectChromeRightControls('navFooterProfile');
+  const helpMenuExtrasControls = useProjectChromeRightControls('helpMenuExtras');
   const { euiTheme } = useEuiTheme();
   const compactControlStyles = useProjectChromeSidenavCompactControlStyles();
+
+  const helpMenuExtrasContent =
+    helpMenuExtrasControls.length > 0 ? (
+      <ProjectChromeHelpExtrasStack>
+        {helpMenuExtrasControls.map((c, i) => (
+          <ProjectChromeNavControl key={i} control={c} justifyContent="flex-start" />
+        ))}
+      </ProjectChromeHelpExtrasStack>
+    ) : undefined;
 
   return (
     <div
@@ -90,10 +96,7 @@ export const ProjectChromeNavFooter = React.memo(() => {
           <ProjectChromeNavControl key={i} control={c} />
         ))}
       </div>
-      <HeaderHelpMenu
-        displayMode="navFooter"
-        projectChromeExtras={<ProjectChromeHelpExtras />}
-      />
+      <HeaderHelpMenu displayMode="navFooter" projectChromeExtras={helpMenuExtrasContent} />
     </div>
   );
 });

@@ -173,11 +173,12 @@ export const SecurityNavControl: FunctionComponent<SecurityNavControlProps> = ({
       ownFocus
       button={button}
       isOpen={isPopoverOpen}
-      anchorPosition="downRight"
+      anchorPosition="rightUp"
       repositionOnScroll
       closePopover={() => setIsPopoverOpen(false)}
       panelPaddingSize="none"
       buffer={0}
+      aria-label="User menu"
     >
       <EuiContextMenu
         className="chrNavControl__userMenu"

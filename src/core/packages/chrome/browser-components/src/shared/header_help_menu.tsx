@@ -71,7 +71,7 @@ const createCustomLink = (
 ) => {
   return (
     <Fragment key={`helpButton${index}`}>
-      <EuiButtonEmpty {...buttonProps} size="s" flush="left">
+      <EuiButtonEmpty {...buttonProps} size="s" flush="left" color="text">
         {text}
       </EuiButtonEmpty>
       {addSpacer && <EuiSpacer size="xs" />}
@@ -134,7 +134,7 @@ export const HeaderHelpMenu = ({
   );
 
   const euiThemePadding = css`
-    padding: ${euiTheme.size.s};
+    padding: ${euiTheme.size.xs};
   `;
 
   const defaultContent = (
@@ -162,6 +162,7 @@ export const HeaderHelpMenu = ({
               onClick={onClick}
               size="s"
               flush="left"
+              color="text"
               data-test-subj={dataTestSubj}
             >
               {title}
@@ -271,15 +272,16 @@ export const HeaderHelpMenu = ({
 
   return (
     <EuiPopover
-      anchorPosition={displayMode === 'navFooter' ? 'right' : 'downRight'}
+      anchorPosition={displayMode === 'navFooter' ? 'rightDown' : 'downRight'}
       button={button}
       closePopover={closeMenu}
       id="headerHelpMenu"
       isOpen={isOpen}
       repositionOnScroll
+      aria-label="Help menu"
     >
       <EuiPopoverTitle>
-        <EuiFlexGroup responsive={false}>
+        <EuiFlexGroup gutterSize="none" responsive={false}>
           <EuiFlexItem>
             <h2>
               <FormattedMessage
@@ -305,14 +307,13 @@ export const HeaderHelpMenu = ({
       </EuiPopoverTitle>
 
       <div style={{ maxWidth: 240 }}>
-        {globalCustomContent}
-        {defaultContent}
         {projectChromeExtras ? (
           <>
-            <EuiSpacer size="s" />
             {projectChromeExtras}
           </>
         ) : null}
+        {globalCustomContent}
+        {defaultContent}
         {customContent && (
           <>
             <EuiPopoverFooter css={euiThemePadding} />

@@ -18,6 +18,7 @@ import { AutoRefreshButton } from '../components/auto_refresh_button';
 import { useSyntheticsSettingsContext } from '../../../contexts';
 import { useGetUrlParams } from '../../../hooks';
 import {
+  CERTIFICATES_ROUTE,
   GETTING_STARTED_ROUTE,
   MONITOR_ADD_ROUTE,
   MONITOR_EDIT_ROUTE,
@@ -48,7 +49,8 @@ export function ActionMenuContent(): React.ReactElement {
   const isProjectChrome = chromeStyle === 'project';
   const isMonitorsProjectAppMenuRoute = Boolean(
     useRouteMatch({ path: MONITORS_ROUTE, exact: true })?.isExact ||
-      useRouteMatch({ path: GETTING_STARTED_ROUTE, exact: true })?.isExact
+      useRouteMatch({ path: GETTING_STARTED_ROUTE, exact: true })?.isExact ||
+      useRouteMatch({ path: CERTIFICATES_ROUTE, exact: true })?.isExact
   );
   const hideManagementActionsInProjectChrome = isProjectChrome && isMonitorsProjectAppMenuRoute;
 

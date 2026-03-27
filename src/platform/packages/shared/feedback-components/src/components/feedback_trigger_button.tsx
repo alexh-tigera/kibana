@@ -8,8 +8,9 @@
  */
 
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { EuiHeaderSectionItemButton, EuiIcon, EuiToolTip, EuiModal } from '@elastic/eui';
+import { EuiButtonEmpty, EuiToolTip, EuiModal } from '@elastic/eui';
 import { css } from '@emotion/react';
+import { FormattedMessage } from '@kbn/i18n-react';
 import { i18n } from '@kbn/i18n';
 import type { FeedbackRegistryEntry } from '@kbn/feedback-registry';
 import type { FeedbackFormData } from '../types';
@@ -80,21 +81,18 @@ export const FeedbackTriggerButton = ({
               })
         }
       >
-        <EuiHeaderSectionItemButton
+        <EuiButtonEmpty
           data-test-subj="feedbackTriggerButton"
           aria-haspopup="dialog"
+          color="text"
+          flush="left"
+          size="s"
           onClick={handleShowFeedbackContainer}
           isLoading={isLoading}
           disabled={!isOptedIn}
         >
-          <EuiIcon
-            type="comment"
-            size="m"
-            aria-label={i18n.translate('feedback.triggerButton.ariaLabel', {
-              defaultMessage: 'Submit feedback',
-            })}
-          />
-        </EuiHeaderSectionItemButton>
+          <FormattedMessage id="feedback.triggerButton.linkLabel" defaultMessage="Feedback" />
+        </EuiButtonEmpty>
       </EuiToolTip>
       {isModalOpen && (
         <Suspense fallback={null}>
