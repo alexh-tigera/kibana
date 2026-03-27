@@ -28,6 +28,7 @@ import { HeaderAppMenu } from '../shared/header_app_menu';
 import { HeaderActionMenu } from '../shared/header_action_menu';
 import { HeaderExtension } from '../shared/header_extension';
 import { HeaderPageAnnouncer } from '../shared/header_page_announcer';
+import { ProjectHeaderBadgeGroup } from './project_header_badge_group';
 import {
   useAppMenu,
   useHasAppMenuConfig,
@@ -480,21 +481,7 @@ export const AppMenuBar = React.memo(() => {
               )}
             </div>
             {hasHeaderBadges ? (
-              <EuiFlexGroup
-                alignItems="center"
-                data-test-subj="kibanaProjectHeaderBadgeGroup"
-                gutterSize="xs"
-                justifyContent="flexStart"
-                responsive={false}
-                wrap
-                css={styles.badgeGroup}
-              >
-                {headerBadgeItems.map((badge, index) => (
-                  <EuiFlexItem key={index} grow={false}>
-                    {badge}
-                  </EuiFlexItem>
-                ))}
-              </EuiFlexGroup>
+              <ProjectHeaderBadgeGroup badges={headerBadgeItems} badgeGroupCss={styles.badgeGroup} />
             ) : null}
             <div
               className="appMenuBar__globalActions"

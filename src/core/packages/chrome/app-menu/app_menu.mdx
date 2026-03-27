@@ -91,6 +91,8 @@ In **project** chrome (`chromeStyle === 'project'`), the application top bar ren
 - **`headerMetadata`** — a secondary row **between** the title row and `headerTabs`, when present.
 - **`headerBadges`** — optional badges in the **title row**, after the title and before the global action icons (`gutterSize` `xs`).
 
+On **EUI `xs`, `s`, and `m` viewports**, the badge row collapses to a single **`+n`** control (where `n` is the number of badges). Activating it opens a popover that lists the same badge content in a wrapping layout (panel `max-width` `min(400px, 90vw)`). From **`l`** and wider, badges stay inline in the title row as before.
+
 `headerMetadata` is an array of `ReactNode` values. Each item is typically `EuiText` with `size="xs"`; use `<strong>` (or similar) inside the node for bold labels such as “Last updated”. Omit the field, pass an empty array, or pass only falsy entries to hide the row (it takes no vertical space).
 
 Clear metadata when navigating away by resetting app menu config in the same `useEffect` cleanup you use for `setAppMenu` (for example `chrome.setAppMenu(undefined)` or a config without `headerMetadata`).
