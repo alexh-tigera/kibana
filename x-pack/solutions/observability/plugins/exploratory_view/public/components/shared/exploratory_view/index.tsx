@@ -79,10 +79,14 @@ export function ExploratoryViewPage({
   return (
     <UrlStorageContextProvider storage={kbnUrlStateStorage}>
       <ObservabilityPageTemplate
-        pageHeader={{
-          pageTitle: PAGE_TITLE,
-          rightSideItems: isProjectChrome ? [] : [<RefreshButton />, <LastUpdated />],
-        }}
+        pageHeader={
+          isProjectChrome
+            ? undefined
+            : {
+                pageTitle: PAGE_TITLE,
+                rightSideItems: [<RefreshButton />, <LastUpdated />],
+              }
+        }
       >
         <DataViewContextProvider>
           <ExploratoryView saveAttributes={saveAttributes} />
