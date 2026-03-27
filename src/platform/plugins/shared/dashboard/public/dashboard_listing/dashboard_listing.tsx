@@ -7,10 +7,13 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { i18n } from '@kbn/i18n';
+import useObservable from 'react-use/lib/useObservable';
 
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
 import { TabbedTableListView } from '@kbn/content-management-tabbed-table-list-view';
 import { I18nProvider } from '@kbn/i18n-react';
 import { useExecutionContext } from '@kbn/kibana-react-plugin/public';
@@ -37,6 +40,12 @@ export const DashboardListing = ({
   const history = useHistory();
   const { activeTab: activeTabParam } = useParams<{ activeTab?: string }>();
 
+  const chromeStyle = useObservable(
+    coreServices.chrome.getChromeStyle$(),
+    coreServices.chrome.getChromeStyle()
+  );
+  const isProjectChrome = chromeStyle === 'project';
+
   const tabs = useMemo(
     () =>
       getDashboardListingTabs({
@@ -53,14 +62,34 @@ export const DashboardListing = ({
     return tabs.find((tab) => tab.id === activeTabParam)?.id ?? 'dashboards';
   }, [tabs, activeTabParam]);
 
-  const changeActiveTab = (tabId: string) => {
-    history.push(`/list/${tabId}`);
-  };
+  const changeActiveTab = useCallback(
+    (tabId: string) => {
+      history.push(`/list/${tabId}`);
+    },
+    [history]
+  );
+
+  const listingAppMenuConfig = useMemo((): AppMenuConfig | undefined => {
+    if (!isProjectChrome) {
+      return undefined;
+    }
+    return {
+      layout: 'chromeBarV2',
+      headerTabs: tabs.map((tab) => ({
+        id: tab.id,
+        label: tab.title,
+        isSelected: tab.id === activeTabId,
+        onClick: () => changeActiveTab(tab.id),
+        testId: `dashboardListingTab-${tab.id}`,
+      })),
+    };
+  }, [isProjectChrome, tabs, activeTabId, changeActiveTab]);
 
   return (
     <I18nProvider>
       <QueryClientProvider client={dashboardQueryClient}>
         {children}
+        <AppMenu config={listingAppMenuConfig} setAppMenu={coreServices.chrome.setAppMenu} />
         <TabbedTableListView
           headingId="dashboardListingHeading"
           title={i18n.translate('dashboard.listing.title', {
@@ -69,6 +98,8 @@ export const DashboardListing = ({
           tabs={tabs}
           activeTabId={activeTabId}
           changeActiveTab={changeActiveTab}
+          hidePageHeader={isProjectChrome}
+          restrictWidth={false}
         />
       </QueryClientProvider>
     </I18nProvider>

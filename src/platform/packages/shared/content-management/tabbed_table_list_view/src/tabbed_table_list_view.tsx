@@ -9,9 +9,11 @@
 
 import { KibanaPageTemplate } from '@kbn/shared-ux-page-kibana-template';
 import React, { useCallback, useEffect, useState } from 'react';
+import { EuiScreenReaderOnly } from '@elastic/eui';
 import type { TableListViewTableProps } from '@kbn/content-management-table-list-view-table';
 import type { UserContentCommonSchema } from '@kbn/content-management-table-list-view-common';
 import type { TableListViewProps } from '@kbn/content-management-table-list-view';
+import type { EuiPageTemplateProps } from '@elastic/eui';
 
 export type TableListTabParentProps<T extends UserContentCommonSchema = UserContentCommonSchema> =
   Pick<TableListViewTableProps<T>, 'onFetchSuccess' | 'setPageDataTestSubject'>;
@@ -27,7 +29,21 @@ export interface TableListTab<T extends UserContentCommonSchema = UserContentCom
 type TabbedTableListViewProps = Pick<
   TableListViewProps<UserContentCommonSchema>,
   'title' | 'description' | 'headingId' | 'children'
-> & { tabs: TableListTab[]; activeTabId: string; changeActiveTab: (id: string) => void };
+> & {
+  tabs: TableListTab[];
+  activeTabId: string;
+  changeActiveTab: (id: string) => void;
+  /**
+   * When true, omits {@link KibanaPageTemplate.Header} (page title + tabs). Use when the same
+   * navigation is shown in project chrome `AppMenuConfig.headerTabs`.
+   */
+  hidePageHeader?: boolean;
+  /**
+   * Passed to {@link KibanaPageTemplate}. When false, page content spans the full viewport width.
+   * @default true
+   */
+  restrictWidth?: EuiPageTemplateProps['restrictWidth'];
+};
 
 export const TabbedTableListView = ({
   title,
@@ -37,6 +53,8 @@ export const TabbedTableListView = ({
   tabs,
   activeTabId,
   changeActiveTab,
+  hidePageHeader = false,
+  restrictWidth = true,
 }: TabbedTableListViewProps) => {
   const [hasInitialFetchReturned, setHasInitialFetchReturned] = useState(false);
   const [pageDataTestSubject, setPageDataTestSubject] = useState<string>();
@@ -65,17 +83,27 @@ export const TabbedTableListView = ({
   }, [activeTabId, tabs, getActiveTab, onFetchSuccess]);
 
   return (
-    <KibanaPageTemplate panelled data-test-subj={pageDataTestSubject}>
-      <KibanaPageTemplate.Header
-        pageTitle={<span id={headingId}>{title}</span>}
-        description={description}
-        data-test-subj="top-nav"
-        tabs={tabs.map((tab) => ({
-          onClick: () => changeActiveTab(tab.id),
-          isSelected: tab.id === getActiveTab().id,
-          label: tab.title,
-        }))}
-      />
+    <KibanaPageTemplate
+      panelled
+      restrictWidth={restrictWidth}
+      data-test-subj={pageDataTestSubject}
+    >
+      {hidePageHeader ? (
+        <EuiScreenReaderOnly>
+          <h1 id={headingId}>{title}</h1>
+        </EuiScreenReaderOnly>
+      ) : (
+        <KibanaPageTemplate.Header
+          pageTitle={<span id={headingId}>{title}</span>}
+          description={description}
+          data-test-subj="top-nav"
+          tabs={tabs.map((tab) => ({
+            onClick: () => changeActiveTab(tab.id),
+            isSelected: tab.id === getActiveTab().id,
+            label: tab.title,
+          }))}
+        />
+      )}
       <KibanaPageTemplate.Section aria-labelledby={hasInitialFetchReturned ? headingId : undefined}>
         {/* Any children passed to the component */}
         {children}
