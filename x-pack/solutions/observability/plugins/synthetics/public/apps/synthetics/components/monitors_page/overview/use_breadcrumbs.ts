@@ -15,12 +15,13 @@ export const useOverviewBreadcrumbs = () => {
 
   useBreadcrumbs([
     {
-      text: OVERVIEW_PAGE_CRUMB,
+      text: MONITORS_BREADCRUMB,
       href: `${appPath}`,
     },
   ]);
 };
 
-export const OVERVIEW_PAGE_CRUMB = i18n.translate('xpack.synthetics.overviewPage.overviewCrumb', {
-  defaultMessage: 'Overview',
+/** Last crumb on the Synthetics Overview route; drives project chrome title and the breadcrumb trail. */
+export const MONITORS_BREADCRUMB = i18n.translate('xpack.synthetics.breadcrumbs.monitorsCrumb', {
+  defaultMessage: 'Monitors',
 });

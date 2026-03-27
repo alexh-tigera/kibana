@@ -8,13 +8,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useObservable from 'react-use/lib/useObservable';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { FormattedMessage } from '@kbn/i18n-react';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { i18n } from '@kbn/i18n';
 import { EuiFormRow, EuiSelect, EuiWrappingPopover } from '@elastic/eui';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { AppMenu } from '@kbn/core-chrome-app-menu';
 import type {
   AppMenuConfig,
+  AppMenuHeaderTab,
   AppMenuItemType,
   AppMenuPopoverItem,
   AppMenuRunActionParams,
@@ -66,6 +68,7 @@ import { selectPrivateLocationFlyoutVisible } from '../../../state/private_locat
 import { selectAgentPolicies } from '../../../state/agent_policies';
 import { CLIENT_DEFAULTS_SYNTHETICS } from '../../../../../../common/constants/synthetics/client_defaults';
 import { REFRESH_CERT } from '../../certificates/translations';
+import { PLUGIN } from '../../../../../../common/constants/plugin';
 
 const CREATE_MONITOR_LABEL = i18n.translate('xpack.synthetics.monitors.pageHeader.createButton.label', {
   defaultMessage: 'Create Monitor',
@@ -127,6 +130,7 @@ const formatAutoRefreshButtonLabel = (refreshPaused: boolean, refreshInterval: n
 export function MonitorsProjectAppMenu() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const {
     services: { application, chrome, inspector, uiSettings, observability },
   } = useKibana<ClientPluginsStart>();
@@ -411,6 +415,42 @@ export function MonitorsProjectAppMenu() {
   const isInspectorEnabled = uiSettings?.get<boolean>(enableInspectEsQueries);
   const showInspect = Boolean(isInspectorEnabled || isDev);
 
+  const monitorsHeaderTabs = useMemo((): AppMenuHeaderTab[] | undefined => {
+    if (!isOverviewRoute && !isMonitorsListRoute) {
+      return undefined;
+    }
+
+    const syntheticsBase = application.getUrlForApp(PLUGIN.SYNTHETICS_PLUGIN_ID);
+    const search = location.search;
+
+    return [
+      {
+        id: 'synthetics-monitors-tab-overview',
+        label: (
+          <FormattedMessage
+            id="xpack.synthetics.monitorManagement.overviewTab.title"
+            defaultMessage="Overview"
+          />
+        ),
+        isSelected: isOverviewRoute,
+        href: `${syntheticsBase}${OVERVIEW_ROUTE}${search}`,
+        testId: 'syntheticsMonitorOverviewTab',
+      },
+      {
+        id: 'synthetics-monitors-tab-management',
+        label: (
+          <FormattedMessage
+            id="xpack.synthetics.monitorManagement.monitorsTab.title"
+            defaultMessage="Management"
+          />
+        ),
+        isSelected: isMonitorsListRoute,
+        href: `${syntheticsBase}${MONITORS_ROUTE}${search}`,
+        testId: 'syntheticsMonitorManagementTab',
+      },
+    ];
+  }, [application, isMonitorsListRoute, isOverviewRoute, location.search]);
+
   const config = useMemo((): AppMenuConfig | undefined => {
     if (!projectMenuActive) {
       return undefined;
@@ -480,6 +520,7 @@ export function MonitorsProjectAppMenu() {
     if (isCertificatesRoute) {
       return {
         layout: 'chromeBarV2',
+        hideProjectHeaderBackButton: true,
         headerMetadata: [<LastRefreshed key="synthetics-certificates-last-refreshed" />],
         primaryActionItem: {
           id: 'synthetics-certificates-refresh',
@@ -499,7 +540,9 @@ export function MonitorsProjectAppMenu() {
 
     return {
       layout: 'chromeBarV2',
+      hideProjectHeaderBackButton: true,
       headerMetadata: [<LastRefreshed key="synthetics-monitors-last-refreshed" />],
+      ...(monitorsHeaderTabs ? { headerTabs: monitorsHeaderTabs } : {}),
       primaryActionItem: {
         id: 'synthetics-create-monitor',
         label: CREATE_MONITOR_LABEL,
@@ -526,6 +569,7 @@ export function MonitorsProjectAppMenu() {
     isCertificatesRoute,
     isEnabled,
     isServiceAllowed,
+    monitorsHeaderTabs,
     params,
     projectMenuActive,
     openAutoRefreshPopover,

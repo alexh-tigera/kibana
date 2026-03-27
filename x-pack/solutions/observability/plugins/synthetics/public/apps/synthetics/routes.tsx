@@ -23,6 +23,7 @@ import { CertRefreshBtn, CertificateTitle, CertificatesPage } from './components
 import { useSyntheticsPrivileges } from './hooks/use_synthetics_priviliges';
 import type { ClientPluginsStart } from '../../plugin';
 import { getMonitorsRoute } from './components/monitors_page/route_config';
+import { MonitorsChromePageTemplate } from './components/monitors_page/monitors_chrome_page_template';
 import { SyntheticsPageTemplateComponent } from './components/common/page_template/synthetics_page_template';
 import { getMonitorDetailsRoute } from './components/monitor_details/route_config';
 import { getStepDetailsRoute } from './components/step_details_page/route_config';
@@ -199,21 +200,29 @@ export const PageRouter: FC = () => {
           dataTestSubj,
           pageHeader,
           ...pageTemplateProps
-        }: RouteProps) => (
-          <Route path={path} key={dataTestSubj} exact={true}>
-            <div className={APP_WRAPPER_CLASS} data-test-subj={dataTestSubj}>
-              <RouteInit title={title} path={path} />
-              <SyntheticsPageTemplateComponent
-                pageHeader={isUnprivileged ? undefined : pageHeader}
-                data-test-subj={'synthetics-page-template'}
-                isPageDataLoaded={true}
-                {...pageTemplateProps}
-              >
-                {isUnprivileged || <RouteComponent />}
-              </SyntheticsPageTemplateComponent>
-            </div>
-          </Route>
-        )
+        }: RouteProps) => {
+          const PageTemplateComponent =
+            dataTestSubj === 'syntheticsOverviewPage' ||
+            dataTestSubj === 'syntheticsMonitorManagementPage'
+              ? MonitorsChromePageTemplate
+              : SyntheticsPageTemplateComponent;
+
+          return (
+            <Route path={path} key={dataTestSubj} exact={true}>
+              <div className={APP_WRAPPER_CLASS} data-test-subj={dataTestSubj}>
+                <RouteInit title={title} path={path} />
+                <PageTemplateComponent
+                  pageHeader={isUnprivileged ? undefined : pageHeader}
+                  data-test-subj={'synthetics-page-template'}
+                  isPageDataLoaded={true}
+                  {...pageTemplateProps}
+                >
+                  {isUnprivileged || <RouteComponent />}
+                </PageTemplateComponent>
+              </div>
+            </Route>
+          );
+        }
       )}
       <Route
         component={() => (
