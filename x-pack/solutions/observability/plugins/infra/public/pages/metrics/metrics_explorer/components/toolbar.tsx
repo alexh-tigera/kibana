@@ -7,7 +7,7 @@
 
 import { EuiFlexGroup, EuiFlexItem, EuiSuperDatePicker, EuiText } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n-react';
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { UI_SETTINGS } from '@kbn/data-plugin/public';
 import type { Query } from '@kbn/es-query';
 import { UnifiedSearchBar } from '../../../../components/shared/unified_search_bar';
@@ -38,6 +38,8 @@ interface Props {
   onMetricsChange: (metrics: MetricsExplorerMetric[]) => void;
   onAggregationChange: (aggregation: MetricsExplorerAggregation) => void;
   onChartOptionsChange: (chartOptions: MetricsExplorerChartOptions) => void;
+  /** First item on the search bar row (e.g. project chrome saved views). */
+  searchRowLeading?: ReactNode;
 }
 
 export const MetricsExplorerToolbar = ({
@@ -51,6 +53,7 @@ export const MetricsExplorerToolbar = ({
   onAggregationChange,
   chartOptions,
   onChartOptionsChange,
+  searchRowLeading,
 }: Props) => {
   const isDefaultOptions = options.aggregation === 'avg' && options.metrics.length === 0;
   const [timepickerQuickRanges] = useKibanaUiSetting(UI_SETTINGS.TIMEPICKER_QUICK_RANGES);
@@ -97,6 +100,11 @@ export const MetricsExplorerToolbar = ({
       </EuiFlexItem>
       <EuiFlexItem>
         <EuiFlexGroup wrap alignItems="center">
+          {searchRowLeading ? (
+            <EuiFlexItem grow={false}>
+              {searchRowLeading}
+            </EuiFlexItem>
+          ) : null}
           <EuiFlexItem>
             <UnifiedSearchBar onQuerySubmit={onFilterQuerySubmit} />
           </EuiFlexItem>

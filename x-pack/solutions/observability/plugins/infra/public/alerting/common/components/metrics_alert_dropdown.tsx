@@ -22,14 +22,14 @@ import { PrefilledMetricThresholdAlertFlyout } from '../../metric_threshold/comp
 import { AlertFlyout as CustomThresholdAlertFlyout } from '../../custom_threshold';
 import type { InfraClientStartDeps } from '../../../types';
 
-type VisibleFlyoutType = 'inventory' | 'metricThreshold' | 'customThreshold';
+export type VisibleFlyoutType = 'inventory' | 'metricThreshold' | 'customThreshold';
 
 interface ContextMenuEntries {
   items: EuiContextMenuPanelItemDescriptor[];
   panels: EuiContextMenuPanelDescriptor[];
 }
 
-function useInfrastructureMenu(
+export function useInfrastructureMenu(
   onCreateRuleClick: (flyoutType: VisibleFlyoutType) => void
 ): ContextMenuEntries {
   const { featureFlags } = usePluginConfig();
@@ -70,7 +70,7 @@ function useInfrastructureMenu(
   }, [featureFlags.inventoryThresholdAlertRuleEnabled, onCreateRuleClick]);
 }
 
-function useMetricsMenu(
+export function useMetricsMenu(
   onCreateRuleClick: (flyoutType: VisibleFlyoutType) => void
 ): ContextMenuEntries {
   const { featureFlags } = usePluginConfig();
@@ -111,7 +111,7 @@ function useMetricsMenu(
   }, [featureFlags.metricThresholdAlertRuleEnabled, onCreateRuleClick]);
 }
 
-function useCustomThresholdMenu(
+export function useCustomThresholdMenu(
   onCreateRuleClick: (flyoutType: VisibleFlyoutType) => void
 ): ContextMenuEntries {
   const { featureFlags } = usePluginConfig();
@@ -229,7 +229,7 @@ export const MetricsAlertDropdown = () => {
       >
         <EuiContextMenu initialPanelId={0} panels={panels} data-test-subj="metrics-alert-menu" />
       </EuiPopover>
-      <AlertFlyout
+      <MetricsAlertRuleFlyouts
         visibleFlyoutType={visibleFlyoutType}
         onClose={closeFlyout}
         focusTrapProps={focusTrapProps}
@@ -244,7 +244,11 @@ interface AlertFlyoutProps {
   focusTrapProps?: EuiFlyoutResizableProps['focusTrapProps'];
 }
 
-const AlertFlyout = ({ visibleFlyoutType, onClose, focusTrapProps }: AlertFlyoutProps) => {
+export const MetricsAlertRuleFlyouts = ({
+  visibleFlyoutType,
+  onClose,
+  focusTrapProps,
+}: AlertFlyoutProps) => {
   switch (visibleFlyoutType) {
     case 'inventory':
       return <PrefilledInventoryAlertFlyout onClose={onClose} focusTrapProps={focusTrapProps} />;

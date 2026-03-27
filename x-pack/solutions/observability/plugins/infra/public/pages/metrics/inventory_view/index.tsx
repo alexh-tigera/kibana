@@ -6,6 +6,8 @@
  */
 
 import React from 'react';
+import useObservable from 'react-use/lib/useObservable';
+import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { useTrackPageview } from '@kbn/observability-shared-plugin/public';
 import { APP_WRAPPER_CLASS } from '@kbn/core/public';
 import { css } from '@emotion/react';
@@ -21,6 +23,43 @@ import { WaffleFiltersProvider } from './hooks/use_waffle_filters';
 import { InventoryViewsProvider } from './hooks/use_inventory_views';
 import { WaffleOptionsProvider } from './hooks/use_waffle_options';
 import { InventoryTimeRangeMetadataProvider } from './providers/inventory_timerange_metadata_provider';
+
+const SnapshotPageContent = () => {
+  const { chrome } = useKibana().services;
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
+  return (
+    <div className={APP_WRAPPER_CLASS}>
+      <InfraPageTemplate
+        onboardingFlow={OnboardingFlow.Infra}
+        dataSourceAvailability="all"
+        pageHeader={
+          !isProjectChrome
+            ? {
+                pageTitle: inventoryTitle,
+                rightSideItems: [<SavedViews key="inventory-saved-views-classic" />],
+              }
+            : undefined
+        }
+        pageSectionProps={{
+          contentProps: {
+            css: css`
+              ${fullHeightContentStyles};
+              padding-bottom: 0;
+            `,
+          },
+        }}
+      >
+        <SnapshotContainer
+          filterBarLeading={
+            isProjectChrome ? <SavedViews key="inventory-saved-views-project" /> : undefined
+          }
+        />
+      </InfraPageTemplate>
+    </div>
+  );
+};
 
 export const SnapshotPage = () => {
   useTrackPageview({ app: 'infra_metrics', path: 'inventory' });
@@ -38,26 +77,7 @@ export const SnapshotPage = () => {
         <WaffleTimeProvider>
           <WaffleFiltersProvider>
             <InventoryTimeRangeMetadataProvider>
-              <div className={APP_WRAPPER_CLASS}>
-                <InfraPageTemplate
-                  onboardingFlow={OnboardingFlow.Infra}
-                  dataSourceAvailability="all"
-                  pageHeader={{
-                    pageTitle: inventoryTitle,
-                    rightSideItems: [<SavedViews />],
-                  }}
-                  pageSectionProps={{
-                    contentProps: {
-                      css: css`
-                        ${fullHeightContentStyles};
-                        padding-bottom: 0;
-                      `,
-                    },
-                  }}
-                >
-                  <SnapshotContainer />
-                </InfraPageTemplate>
-              </div>
+              <SnapshotPageContent />
             </InventoryTimeRangeMetadataProvider>
           </WaffleFiltersProvider>
         </WaffleTimeProvider>

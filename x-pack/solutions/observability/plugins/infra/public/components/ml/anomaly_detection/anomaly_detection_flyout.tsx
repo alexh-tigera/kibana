@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { EuiHeaderLink, EuiFlyout } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { i18n } from '@kbn/i18n';
@@ -16,13 +16,19 @@ import { useInfraMLCapabilities } from '../../../containers/ml/infra_ml_capabili
 import { MetricHostsModuleProvider } from '../../../containers/ml/modules/metrics_hosts/module';
 import { MetricK8sModuleProvider } from '../../../containers/ml/modules/metrics_k8s/module';
 import { useActiveKibanaSpace } from '../../../hooks/use_kibana_space';
+import { useOptionalMetricsProjectChromeBridge } from '../../../pages/metrics/metrics_project_chrome_bridge';
 
 export const AnomalyDetectionFlyout = ({
   hideJobType = false,
   hideSelectGroup = false,
+  showHeaderLink = true,
 }: {
   hideJobType?: boolean;
   hideSelectGroup?: boolean;
+  /**
+   * When false, the header trigger is omitted (e.g. project chrome opens the flyout from the app menu).
+   */
+  showHeaderLink?: boolean;
 }) => {
   const { hasInfraMLSetupCapabilities } = useInfraMLCapabilities();
   const [showFlyout, setShowFlyout] = useState(false);
@@ -32,10 +38,22 @@ export const AnomalyDetectionFlyout = ({
 
   const { space } = useActiveKibanaSpace();
 
+  const bridge = useOptionalMetricsProjectChromeBridge();
+
   const openFlyout = useCallback(() => {
     setScreenName('home');
     setShowFlyout(true);
   }, []);
+
+  useEffect(() => {
+    if (!bridge) {
+      return;
+    }
+    bridge.registerOpenAnomalyFlyout(openFlyout);
+    return () => {
+      bridge.registerOpenAnomalyFlyout(null);
+    };
+  }, [bridge, openFlyout]);
 
   const openJobSetup = useCallback(
     (jobType: 'hosts' | 'kubernetes') => {
@@ -55,12 +73,14 @@ export const AnomalyDetectionFlyout = ({
 
   return (
     <>
-      <EuiHeaderLink color="primary" onClick={openFlyout} data-test-subj="openAnomalyFlyoutButton">
-        <FormattedMessage
-          id="xpack.infra.ml.anomalyDetectionButton"
-          defaultMessage="Anomaly detection"
-        />
-      </EuiHeaderLink>
+      {showHeaderLink ? (
+        <EuiHeaderLink color="primary" onClick={openFlyout} data-test-subj="openAnomalyFlyoutButton">
+          <FormattedMessage
+            id="xpack.infra.ml.anomalyDetectionButton"
+            defaultMessage="Anomaly detection"
+          />
+        </EuiHeaderLink>
+      ) : null}
       {showFlyout && (
         <MetricHostsModuleProvider
           indexPattern={metricsView?.indices ?? ''}

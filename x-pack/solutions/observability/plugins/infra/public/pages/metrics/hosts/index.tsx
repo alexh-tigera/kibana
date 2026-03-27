@@ -6,6 +6,8 @@
  */
 
 import React from 'react';
+import useObservable from 'react-use/lib/useObservable';
+import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { useTrackPageview } from '@kbn/observability-shared-plugin/public';
 import { APP_WRAPPER_CLASS } from '@kbn/core/public';
 import { css } from '@emotion/react';
@@ -17,6 +19,10 @@ import { fullHeightContentStyles } from '../../../page_template.styles';
 import { HostsContainer } from './components/hosts_container';
 
 export const HostsPage = () => {
+  const { chrome } = useKibana().services;
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
   useTrackPageview({ app: 'infra_metrics', path: 'hosts' });
   useTrackPageview({ app: 'infra_metrics', path: 'hosts', delay: 15000 });
 
@@ -31,20 +37,24 @@ export const HostsPage = () => {
       <InfraPageTemplate
         dataSourceAvailability="host"
         onboardingFlow={OnboardingFlow.Hosts}
-        pageHeader={{
-          alignItems: 'center',
-          pageTitle: (
-            <div
-              css={css`
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-              `}
-            >
-              <h1>{hostsTitle}</h1>
-            </div>
-          ),
-        }}
+        pageHeader={
+          !isProjectChrome
+            ? {
+                alignItems: 'center',
+                pageTitle: (
+                  <div
+                    css={css`
+                      display: flex;
+                      align-items: center;
+                      gap: 0.75rem;
+                    `}
+                  >
+                    <h1>{hostsTitle}</h1>
+                  </div>
+                ),
+              }
+            : undefined
+        }
         pageSectionProps={{
           contentProps: {
             css: fullHeightContentStyles,

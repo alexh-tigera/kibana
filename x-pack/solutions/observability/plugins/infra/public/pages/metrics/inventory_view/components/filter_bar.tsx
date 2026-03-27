@@ -6,14 +6,21 @@
  */
 
 import { EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
-import React from 'react';
+import React, { type ReactNode } from 'react';
 
 import { WaffleTimeControls } from './waffle/waffle_time_controls';
 import { SearchBar } from './search_bar';
 
-export const FilterBar = ({ interval }: { interval: string }) => (
-  <EuiFlexGroup justifyContent="spaceBetween" gutterSize="m" style={{ flexGrow: 0 }}>
-    <EuiFlexItem>
+interface FilterBarProps {
+  interval: string;
+  /** Rendered as the first item on the row, before the search bar (e.g. project chrome saved views). */
+  leadingContent?: ReactNode;
+}
+
+export const FilterBar = ({ interval, leadingContent }: FilterBarProps) => (
+  <EuiFlexGroup alignItems="center" gutterSize="m" style={{ flexGrow: 0 }}>
+    {leadingContent ? <EuiFlexItem grow={false}>{leadingContent}</EuiFlexItem> : null}
+    <EuiFlexItem grow>
       <SearchBar />
     </EuiFlexItem>
     <EuiFlexItem grow={false}>

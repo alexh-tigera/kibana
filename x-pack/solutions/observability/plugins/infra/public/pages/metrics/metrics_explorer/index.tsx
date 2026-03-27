@@ -7,6 +7,8 @@
 
 import { i18n } from '@kbn/i18n';
 import React, { useEffect, useState, useRef } from 'react';
+import useObservable from 'react-use/lib/useObservable';
+import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { useTrackPageview } from '@kbn/observability-shared-plugin/public';
 import { usePerformanceContext } from '@kbn/ebt-tools';
 import { OnboardingFlow } from '../../../components/shared/templates/no_data_config';
@@ -42,6 +44,10 @@ export const MetricsExplorerPage = () => {
 };
 
 const MetricsExplorerContent = () => {
+  const { chrome } = useKibana().services;
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
   const [enabled, setEnabled] = useState(false);
   const {
     isLoading,
@@ -113,10 +119,16 @@ const MetricsExplorerContent = () => {
   return (
     <InfraPageTemplate
       onboardingFlow={OnboardingFlow.Infra}
-      pageHeader={{
-        pageTitle: metricsExplorerTitle,
-        rightSideItems: [<SavedViews viewState={viewState} />],
-      }}
+      pageHeader={
+        !isProjectChrome
+          ? {
+              pageTitle: metricsExplorerTitle,
+              rightSideItems: [
+                <SavedViews key="metrics-explorer-saved-views-classic" viewState={viewState} />,
+              ],
+            }
+          : undefined
+      }
     >
       <MetricsInDiscoverCallout timeRange={timeRange} />
       <MetricsExplorerToolbar
@@ -130,6 +142,11 @@ const MetricsExplorerContent = () => {
         onMetricsChange={handleMetricsChange}
         onAggregationChange={handleAggregationChange}
         onChartOptionsChange={setChartOptions}
+        searchRowLeading={
+          isProjectChrome ? (
+            <SavedViews key="metrics-explorer-saved-views-project" viewState={viewState} />
+          ) : undefined
+        }
       />
       {error ? (
         <NoData

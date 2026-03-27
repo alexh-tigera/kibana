@@ -8,6 +8,7 @@
 import { i18n } from '@kbn/i18n';
 
 import React, { useContext } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import { Routes, Route } from '@kbn/shared-ux-router';
 
 import { EuiHeaderLinks, EuiHeaderLink, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
@@ -41,6 +42,8 @@ import { ReloadRequestTimeProvider } from '../../hooks/use_reload_request_time';
 import { OnboardingFlow } from '../../components/shared/templates/no_data_config';
 import { SurveySection } from './inventory_view/components/survey_section';
 import { useKibanaEnvironmentContext } from '../../hooks/use_kibana';
+import { MetricsProjectAppMenu } from './metrics_project_app_menu';
+import { MetricsProjectChromeBridgeProvider } from './metrics_project_chrome_bridge';
 
 const ADD_DATA_LABEL = i18n.translate('xpack.infra.metricsHeaderAddDataButtonLabel', {
   defaultMessage: 'Add data',
@@ -61,8 +64,11 @@ const HostsPage = dynamic(() => import('./hosts').then((mod) => ({ default: mod.
 
 export const InfrastructurePage = () => {
   const config = usePluginConfig();
-  const { application } = useKibana<{ share: SharePublicStart }>().services;
+  const { application, chrome } = useKibana<{ share: SharePublicStart }>().services;
   const { setHeaderActionMenu, theme$ } = useContext(HeaderActionMenuContext);
+
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
 
   const uiCapabilities = application?.capabilities;
 
@@ -83,70 +89,72 @@ export const InfrastructurePage = () => {
         <AlertPrefillProvider>
           <ReloadRequestTimeProvider>
             <InfraMLCapabilitiesProvider>
-              {setHeaderActionMenu && theme$ && (
-                <HeaderMenuPortal setHeaderActionMenu={setHeaderActionMenu} theme$={theme$}>
-                  <EuiFlexGroup responsive={false} gutterSize="s">
-                    <EuiFlexItem>
-                      <EuiHeaderLinks gutterSize="xs">
-                        <Routes>
-                          <HeaderLinkFeedbackButtonRoute path="/inventory" />
-                          <HeaderLinkFeedbackButtonRoute path="/explorer" />
-                          <HeaderLinkFeedbackButtonRoute path="/hosts" />
-                        </Routes>
-                        <Routes>
-                          <HeaderLinkAnomalyFlyoutRoute path="/inventory" />
-                          <HeaderLinkAnomalyFlyoutRoute path="/hosts" />
-                          <HeaderLinkAnomalyFlyoutRoute path="/detail/host/:node" />
-                        </Routes>
-                        {config.featureFlags.alertsAndRulesDropdownEnabled && (
-                          <MetricsAlertDropdown />
-                        )}
-                        <EuiHeaderLink color={'primary'} {...settingsLinkProps}>
-                          {settingsTabTitle}
-                        </EuiHeaderLink>
-                        <InspectorHeaderLink />
-                        <Routes>
-                          <HeaderLinkAddDataRoute
-                            path="/hosts"
-                            onboardingFlow={OnboardingFlow.Hosts}
-                            exact
-                          />
-                          <HeaderLinkAddDataRoute
-                            path="/detail/host/:node"
-                            onboardingFlow={OnboardingFlow.Hosts}
-                            exact
-                          />
-                          <HeaderLinkAddDataRoute path="/" onboardingFlow={OnboardingFlow.Infra} />
-                        </Routes>
-                      </EuiHeaderLinks>
-                    </EuiFlexItem>
-                  </EuiFlexGroup>
-                </HeaderMenuPortal>
-              )}
-
-              <Routes enableExecutionContextTracking={true}>
-                <Route path="/inventory" component={SnapshotPage} />
-                {config.featureFlags.metricsExplorerEnabled && (
-                  <Route path="/explorer" component={MetricsExplorerPage} />
+              <MetricsProjectChromeBridgeProvider>
+                <MetricsProjectAppMenu />
+                <Routes>
+                  <HeaderLinkAnomalyFlyoutRoute path="/inventory" />
+                  <HeaderLinkAnomalyFlyoutRoute path="/hosts" />
+                  <HeaderLinkAnomalyFlyoutRoute path="/detail/host/:node" />
+                </Routes>
+                {setHeaderActionMenu && theme$ && !isProjectChrome && (
+                  <HeaderMenuPortal setHeaderActionMenu={setHeaderActionMenu} theme$={theme$}>
+                    <EuiFlexGroup responsive={false} gutterSize="s">
+                      <EuiFlexItem>
+                        <EuiHeaderLinks gutterSize="xs">
+                          <Routes>
+                            <HeaderLinkFeedbackButtonRoute path="/inventory" />
+                            <HeaderLinkFeedbackButtonRoute path="/explorer" />
+                            <HeaderLinkFeedbackButtonRoute path="/hosts" />
+                          </Routes>
+                          {config.featureFlags.alertsAndRulesDropdownEnabled && (
+                            <MetricsAlertDropdown />
+                          )}
+                          <EuiHeaderLink color={'primary'} {...settingsLinkProps}>
+                            {settingsTabTitle}
+                          </EuiHeaderLink>
+                          <InspectorHeaderLink />
+                          <Routes>
+                            <HeaderLinkAddDataRoute
+                              path="/hosts"
+                              onboardingFlow={OnboardingFlow.Hosts}
+                              exact
+                            />
+                            <HeaderLinkAddDataRoute
+                              path="/detail/host/:node"
+                              onboardingFlow={OnboardingFlow.Hosts}
+                              exact
+                            />
+                            <HeaderLinkAddDataRoute path="/" onboardingFlow={OnboardingFlow.Infra} />
+                          </Routes>
+                        </EuiHeaderLinks>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>
+                  </HeaderMenuPortal>
                 )}
-                <Route path="/detail/:type/:node" component={NodeDetail} />
-                <Route path="/hosts" component={HostsPage} />
-                <Route path="/settings" component={MetricsSettingsPage} />
-
-                <RedirectWithQueryParams from="/snapshot" exact to="/inventory" />
-                <RedirectWithQueryParams from="/metrics-explorer" exact to="/explorer" />
-                <RedirectWithQueryParams from="/" exact to="/inventory" />
-
-                <Route
-                  render={() => (
-                    <NotFoundPage
-                      title={i18n.translate('xpack.infra.header.infrastructureLabel', {
-                        defaultMessage: 'Infrastructure',
-                      })}
-                    />
+                <Routes enableExecutionContextTracking={true}>
+                  <Route path="/inventory" component={SnapshotPage} />
+                  {config.featureFlags.metricsExplorerEnabled && (
+                    <Route path="/explorer" component={MetricsExplorerPage} />
                   )}
-                />
-              </Routes>
+                  <Route path="/detail/:type/:node" component={NodeDetail} />
+                  <Route path="/hosts" component={HostsPage} />
+                  <Route path="/settings" component={MetricsSettingsPage} />
+
+                  <RedirectWithQueryParams from="/snapshot" exact to="/inventory" />
+                  <RedirectWithQueryParams from="/metrics-explorer" exact to="/explorer" />
+                  <RedirectWithQueryParams from="/" exact to="/inventory" />
+
+                  <Route
+                    render={() => (
+                      <NotFoundPage
+                        title={i18n.translate('xpack.infra.header.infrastructureLabel', {
+                          defaultMessage: 'Infrastructure',
+                        })}
+                      />
+                    )}
+                  />
+                </Routes>
+              </MetricsProjectChromeBridgeProvider>
             </InfraMLCapabilitiesProvider>
           </ReloadRequestTimeProvider>
         </AlertPrefillProvider>
@@ -158,12 +166,20 @@ export const InfrastructurePage = () => {
 const HeaderLinkAnomalyFlyoutRoute = ({ path }: { path: string }) => {
   const isInventory = path !== '/inventory';
   const { isTopbarMenuVisible } = useInfraMLCapabilitiesContext();
+  const { chrome } = useKibana().services;
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
   return (
     <Route
       path={path}
       render={() =>
         isTopbarMenuVisible ? (
-          <AnomalyDetectionFlyout hideJobType={isInventory} hideSelectGroup={isInventory} />
+          <AnomalyDetectionFlyout
+            hideJobType={isInventory}
+            hideSelectGroup={isInventory}
+            showHeaderLink={!isProjectChrome}
+          />
         ) : null
       }
     />

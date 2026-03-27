@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import React, { useEffect } from 'react';
+import React, { type ReactNode, useEffect } from 'react';
 import { useAlertPrefillContext } from '../../../../alerting/use_alert_prefill';
 import { useSourceContext } from '../../../../containers/metrics_source';
 import { useSnapshot } from '../hooks/use_snaphot';
@@ -15,7 +15,11 @@ import { useWaffleTimeContext } from '../hooks/use_waffle_time';
 import { FilterBar } from './filter_bar';
 import { LayoutView } from './layout_view';
 
-export const SnapshotContainer = React.memo(function SnapshotContainer() {
+export const SnapshotContainer = React.memo(function SnapshotContainer({
+  filterBarLeading,
+}: {
+  filterBarLeading?: ReactNode;
+}) {
   const { sourceId } = useSourceContext();
   const { metric, groupBy, nodeType, accountId, region, preferredSchema } =
     useWaffleOptionsContext();
@@ -50,7 +54,7 @@ export const SnapshotContainer = React.memo(function SnapshotContainer() {
 
   return (
     <>
-      <FilterBar interval={interval} />
+      <FilterBar interval={interval} leadingContent={filterBarLeading} />
       <LayoutView loading={loading} nodes={nodes} interval={interval} />
     </>
   );
