@@ -14,9 +14,34 @@ import { useKibana } from '../../../common/lib/kibana';
 
 export interface RuleSettingsLinkProps {
   alertDeleteCategoryIds?: AlertDeleteCategoryIds[];
+  /**
+   * When set with `onFlyoutVisibleChange`, flyout open state is controlled by the parent
+   * (e.g. Stack Management Rules project AppMenu + header button).
+   */
+  flyoutVisible?: boolean;
+  onFlyoutVisibleChange?: (visible: boolean) => void;
+  /**
+   * When false, only the flyout is rendered (opened from project chrome AppMenu).
+   * Default true.
+   */
+  showButton?: boolean;
 }
-export const RulesSettingsLink = ({ alertDeleteCategoryIds }: RuleSettingsLinkProps) => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+export const RulesSettingsLink = ({
+  alertDeleteCategoryIds,
+  flyoutVisible,
+  onFlyoutVisibleChange,
+  showButton = true,
+}: RuleSettingsLinkProps) => {
+  const [internalVisible, setInternalVisible] = useState<boolean>(false);
+  const isControlled = onFlyoutVisibleChange !== undefined;
+  const isVisible = isControlled ? Boolean(flyoutVisible) : internalVisible;
+  const setVisible = (next: boolean) => {
+    if (isControlled) {
+      onFlyoutVisibleChange(next);
+    } else {
+      setInternalVisible(next);
+    }
+  };
   const {
     application: {
       capabilities: { rulesSettings = {} },
@@ -31,19 +56,21 @@ export const RulesSettingsLink = ({ alertDeleteCategoryIds }: RuleSettingsLinkPr
 
   return (
     <>
-      <EuiButtonEmpty
-        onClick={() => setIsVisible(true)}
-        iconType="gear"
-        data-test-subj="rulesSettingsLink"
-      >
-        <FormattedMessage
-          id="xpack.triggersActionsUI.rulesSettings.link.title"
-          defaultMessage="Settings"
-        />
-      </EuiButtonEmpty>
+      {showButton ? (
+        <EuiButtonEmpty
+          onClick={() => setVisible(true)}
+          iconType="gear"
+          data-test-subj="rulesSettingsLink"
+        >
+          <FormattedMessage
+            id="xpack.triggersActionsUI.rulesSettings.link.title"
+            defaultMessage="Settings"
+          />
+        </EuiButtonEmpty>
+      ) : null}
       <RulesSettingsFlyout
         isVisible={isVisible}
-        onClose={() => setIsVisible(false)}
+        onClose={() => setVisible(false)}
         alertDeleteCategoryIds={alertDeleteCategoryIds}
       />
     </>

@@ -8,6 +8,7 @@
 import React, { useState, lazy, useEffect, useCallback } from 'react';
 import type { RouteComponentProps } from 'react-router-dom';
 import { Routes, Route } from '@kbn/shared-ux-router';
+import useObservable from 'react-use/lib/useObservable';
 
 import { FormattedMessage } from '@kbn/i18n-react';
 import { EuiSpacer, EuiPageTemplate } from '@elastic/eui';
@@ -27,6 +28,7 @@ import { getCurrentDocTitle } from './lib/doc_title';
 import { HealthCheck } from './components/health_check';
 import { HealthContextProvider } from './context/health_context';
 import { useKibana } from '../common/lib/kibana';
+import { ManagementRulesHomeAppMenu } from './management_rules_home_app_menu';
 import { suspendedComponentWithProps } from './lib/suspended_component_with_props';
 
 const RulesList = lazy(() => import('./sections/rules_list/components/rules_list'));
@@ -50,8 +52,19 @@ export const TriggersActionsUIHome: React.FunctionComponent<RouteComponentProps<
     http,
     notifications: { toasts },
     ruleTypeRegistry,
-    application: { navigateToApp },
+    application: { capabilities, navigateToApp },
   } = useKibana().services;
+  const rulesSettings = capabilities.rulesSettings ?? {};
+  const {
+    show: rulesSettingsShow,
+    readFlappingSettingsUI,
+    readQueryDelaySettingsUI,
+  } = rulesSettings;
+  const showRulesSettingsInMenu = Boolean(
+    rulesSettingsShow && (readFlappingSettingsUI || readQueryDelaySettingsUI)
+  );
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
   const { authorizedToReadAnyRules, authorizedToCreateAnyRules } = useGetRuleTypesPermissions({
     http,
     toasts,
@@ -79,11 +92,15 @@ export const TriggersActionsUIHome: React.FunctionComponent<RouteComponentProps<
     });
   }
 
-  const onSectionChange = (newSection: Section) => {
-    history.push(`/${newSection}`);
-  };
+  const onSectionChange = useCallback(
+    (newSection: Section) => {
+      history.push(`/${newSection}`);
+    },
+    [history]
+  );
 
   const [ruleTypeModalVisible, setRuleTypeModalVisibility] = useState<boolean>(false);
+  const [settingsFlyoutVisible, setSettingsFlyoutVisible] = useState(false);
 
   const openRuleTypeModal = useCallback(() => {
     setRuleTypeModalVisibility(true);
@@ -92,9 +109,12 @@ export const TriggersActionsUIHome: React.FunctionComponent<RouteComponentProps<
   const headerActions = [
     ...(authorizedToCreateAnyRules ? [<CreateRuleButton openFlyout={openRuleTypeModal} />] : []),
     <RulesSettingsLink
+      key="rules-settings"
       alertDeleteCategoryIds={['management', 'observability', 'securitySolution']}
+      flyoutVisible={settingsFlyoutVisible}
+      onFlyoutVisibleChange={setSettingsFlyoutVisible}
     />,
-    <RulesListDocLink />,
+    <RulesListDocLink key="rules-doc" />,
   ];
 
   const renderRulesList = useCallback(() => {
@@ -122,30 +142,48 @@ export const TriggersActionsUIHome: React.FunctionComponent<RouteComponentProps<
 
   return (
     <>
-      <EuiPageTemplate.Header
-        paddingSize="none"
-        bottomBorder
-        pageTitle={
-          <span data-test-subj="appTitle">
-            <FormattedMessage id="xpack.triggersActionsUI.home.appTitle" defaultMessage="Rules" />
-          </span>
-        }
-        rightSideItems={headerActions}
-        description={
-          <FormattedMessage
-            id="xpack.triggersActionsUI.home.sectionDescription"
-            defaultMessage="Detect conditions using rules."
-          />
-        }
-        tabs={tabs.map((tab) => ({
-          label: tab.name,
-          onClick: () => onSectionChange(tab.id),
-          isSelected: tab.id === section,
-          key: tab.id,
-          'data-test-subj': `${tab.id}Tab`,
-        }))}
+      <ManagementRulesHomeAppMenu
+        activeSection={section}
+        authorizedToCreateAnyRules={authorizedToCreateAnyRules}
+        authorizedToReadAnyRules={authorizedToReadAnyRules}
+        showRulesSettingsInMenu={showRulesSettingsInMenu}
+        onSectionChange={onSectionChange}
+        openRuleTypeModal={openRuleTypeModal}
+        openSettingsFlyout={() => {
+          setSettingsFlyoutVisible(true);
+        }}
       />
-      <EuiSpacer size="l" />
+      {!isProjectChrome && (
+        <>
+          <EuiPageTemplate.Header
+            paddingSize="none"
+            bottomBorder
+            pageTitle={
+              <span data-test-subj="appTitle">
+                <FormattedMessage
+                  id="xpack.triggersActionsUI.home.appTitle"
+                  defaultMessage="Rules"
+                />
+              </span>
+            }
+            rightSideItems={headerActions}
+            description={
+              <FormattedMessage
+                id="xpack.triggersActionsUI.home.sectionDescription"
+                defaultMessage="Detect conditions using rules."
+              />
+            }
+            tabs={tabs.map((tab) => ({
+              label: tab.name,
+              onClick: () => onSectionChange(tab.id),
+              isSelected: tab.id === section,
+              key: tab.id,
+              'data-test-subj': `${tab.id}Tab`,
+            }))}
+          />
+          <EuiSpacer size="l" />
+        </>
+      )}
       <HealthContextProvider>
         <PerformanceContextProvider>
           <HealthCheck waitForCheck={true}>
@@ -157,6 +195,14 @@ export const TriggersActionsUIHome: React.FunctionComponent<RouteComponentProps<
         </PerformanceContextProvider>
       </HealthContextProvider>
 
+      {isProjectChrome && (
+        <RulesSettingsLink
+          alertDeleteCategoryIds={['management', 'observability', 'securitySolution']}
+          flyoutVisible={settingsFlyoutVisible}
+          onFlyoutVisibleChange={setSettingsFlyoutVisible}
+          showButton={false}
+        />
+      )}
       {ruleTypeModalVisible && (
         <RuleTypeModal
           onClose={() => setRuleTypeModalVisibility(false)}
