@@ -14,8 +14,9 @@ import type { ClientPluginsStart } from '../../../../plugin';
 import { SyntheticsPageTemplateComponent } from '../common/page_template/synthetics_page_template';
 
 /**
- * Overview / Management: project chrome shows Overview ↔ Management tabs via
- * {@link MonitorsProjectAppMenu} `headerTabs`; omit duplicate EuiPageHeader tabs in project mode.
+ * Overview / Management: in project chrome the legacy EuiPageHeader is hidden; title, tabs, and
+ * actions come from project chrome ({@link MonitorsProjectAppMenu} + breadcrumbs). Classic chrome
+ * keeps the full page header from route config.
  */
 export function MonitorsChromePageTemplate(props: LazyObservabilityPageTemplateProps) {
   const {
@@ -24,10 +25,7 @@ export function MonitorsChromePageTemplate(props: LazyObservabilityPageTemplateP
   const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
   const isProjectChrome = chromeStyle === 'project';
 
-  const pageHeader =
-    props.pageHeader && isProjectChrome && props.pageHeader.tabs
-      ? { ...props.pageHeader, tabs: undefined }
-      : props.pageHeader;
+  const pageHeader = isProjectChrome ? undefined : props.pageHeader;
 
   return <SyntheticsPageTemplateComponent {...props} pageHeader={pageHeader} />;
 }
