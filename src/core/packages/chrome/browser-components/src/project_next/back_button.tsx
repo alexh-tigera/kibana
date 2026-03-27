@@ -42,6 +42,7 @@ export const ProjectNextBackButton = React.memo(() => {
   return (
     <EuiButtonIcon
       iconType="arrowLeft"
+      color="text"
       display="empty"
       size="s"
       aria-label={ariaLabel}
@@ -50,3 +51,5 @@ export const ProjectNextBackButton = React.memo(() => {
     />
   );
 });
+
+ProjectNextBackButton.displayName = 'ProjectNextBackButton';

@@ -6,7 +6,7 @@
  * your election, the "Elastic License 2.0", the "GNU Affero General Public
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
-
+import type { ReactNode } from 'react';
 import type { AppMenuConfig } from '@kbn/core-chrome-app-menu-components';
 
 /**
@@ -23,17 +23,22 @@ export interface ChromeNextHeaderConfig {
   title: string;
 
   /**
-   * Optional metadata badges/text rendered below the title.
-   * E.g. "Managed", "Read-only", creation date, severity.
-   * Limited to a single row; Chrome controls layout.
+   * Badges inline next to the title. Chrome shows 1–2 as-is; for 3+, first badge plus "+N" popover
+   * for the rest. Max 200px per badge; `filled` is not exposed. TODO: render in `ProjectNextHeader`.
    */
-  metadata?: ChromeNextHeaderMetadataItem[];
+  badges?: ChromeNextHeaderBadge[];
 
   /**
-   * Global object actions whose icon, label, and position are fixed by Chrome.
-   * Apps opt-in by providing handlers; they cannot change icon or order.
+   * Second row below the title (max 3 items, all visible). Text (`EuiText`) or button (`EuiButtonEmpty`).
+   * TODO: render in `ProjectNextHeader`.
+   */
+  metadata?: ChromeNextHeaderMetadataSlotItem[];
+
+  /**
+   * Global object actions next to the title. Edit title and share use fixed Chrome icons;
+   * favorite is an optional app-supplied `ReactNode` (e.g. content-management FavoriteButton).
    *
-   * Rendering order (fixed by Chrome): edit, share, favorite.
+   * Rendering order (fixed by Chrome): editTitle, share, favorite.
    */
   globalActions?: ChromeNextHeaderGlobalActions;
 
@@ -68,32 +73,38 @@ export interface ChromeNextHeaderBack {
   label?: string;
 }
 
-export interface ChromeNextHeaderMetadataItem {
+export interface ChromeNextHeaderBadge {
   label: string;
-  type: 'badge' | 'text';
-  /** Badge color (EUI badge color). Only used when type is 'badge'. */
-  color?: string;
+  /** EUI badge color. `filled` is intentionally excluded. */
+  color?: 'hollow' | 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'accent';
   tooltip?: string;
 }
 
 /**
- * Global actions whose icon, label, and position are fixed by Chrome.
- * Apps provide only the behavioral handlers.
+ * A single metadata slot item — either plain text or an interactive button.
+ * Text renders as `EuiText`; button renders as `EuiButtonEmpty`.
+ */
+export type ChromeNextHeaderMetadataSlotItem =
+  | { type: 'text'; label: string }
+  | { type: 'button'; label: string; onClick: () => void; iconType?: string };
+
+/**
+ * Global actions beside the Chrome-Next title.
  */
 export interface ChromeNextHeaderGlobalActions {
-  /** Edit action. Chrome renders a pencil icon next to the title. */
-  edit?: {
-    onClick: () => void;
+  /**
+   * Inline title edit (Chrome UI TBD). `onSave` runs when the user commits a new title.
+   */
+  editTitle?: {
+    onSave: (newTitle: string) => void;
   };
-  /** Share action. Chrome renders a share icon. */
+  /** Share; Chrome renders the icon. */
   share?: {
     onClick: () => void;
   };
-  /** Favorite/star action. Chrome renders a star icon. */
-  favorite?: {
-    isFavorited: boolean;
-    onClick: () => void;
-  };
+  /** Favorite control as `ReactNode` (e.g. FavoriteButton) so apps supply providers and clients. */
+  /** TODO: should become a structured API */
+  favorite?: ReactNode;
 }
 
 export interface ChromeNextHeaderTab {

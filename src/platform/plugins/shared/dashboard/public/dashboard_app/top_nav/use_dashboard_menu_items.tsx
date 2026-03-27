@@ -483,6 +483,13 @@ export const useDashboardMenuItems = ({
     isLabsEnabled,
   ]);
 
+  const chromeNextHeaderShareGlobalAction = useMemo(() => {
+    if (!shareService) {
+      return undefined;
+    }
+    return { onClick: showShare };
+  }, [showShare]);
+
   const editModeTopNavConfig = useMemo(() => {
     const { storeSearchSession } = getDashboardCapabilities();
 
@@ -525,5 +532,9 @@ export const useDashboardMenuItems = ({
     isLabsEnabled,
   ]);
 
-  return { viewModeTopNavConfig, editModeTopNavConfig };
+  return {
+    viewModeTopNavConfig,
+    editModeTopNavConfig,
+    chromeNextHeaderShareGlobalAction,
+  };
 };
