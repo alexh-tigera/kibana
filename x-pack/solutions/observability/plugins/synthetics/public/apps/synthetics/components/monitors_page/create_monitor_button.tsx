@@ -7,11 +7,14 @@
 import React, { useContext } from 'react';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { EuiButton } from '@elastic/eui';
+import useObservable from 'react-use/lib/useObservable';
+import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { useCanEditSynthetics } from '../../../../hooks/use_capabilities';
 import { NoPermissionsTooltip } from '../common/components/permissions';
 import { useEnablement } from '../../hooks';
 import { MONITOR_ADD_ROUTE } from '../../../../../common/constants';
 
+import type { ClientPluginsStart } from '../../../../plugin';
 import { SyntheticsSettingsContext } from '../../contexts/synthetics_settings_context';
 
 export const CreateMonitorButton: React.FC = () => {
@@ -39,4 +42,18 @@ export const CreateMonitorButton: React.FC = () => {
       </EuiButton>
     </NoPermissionsTooltip>
   );
+};
+
+/** Page header cluster only: hidden in project chrome where `MonitorsProjectAppMenu` provides Create monitor. */
+export const CreateMonitorPageHeaderButton: React.FC = () => {
+  const {
+    services: { chrome },
+  } = useKibana<ClientPluginsStart>();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+
+  if (chromeStyle === 'project') {
+    return null;
+  }
+
+  return <CreateMonitorButton />;
 };

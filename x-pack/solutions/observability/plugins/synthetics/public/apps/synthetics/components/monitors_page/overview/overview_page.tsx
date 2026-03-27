@@ -24,10 +24,12 @@ import { OverviewGrid } from './overview/overview_grid';
 import { OverviewStatus } from './overview/overview_status';
 import { QuickFilters } from './overview/quick_filters';
 import { SearchField } from '../common/search_field';
+import { RefreshButton } from '../../common/components/refresh_button';
 import { NoMonitorsFound } from '../common/no_monitors_found';
 import { OverviewErrors } from './overview/overview_errors/overview_errors';
 import { AlertingCallout } from '../../common/alerting_callout/alerting_callout';
 import { useSyntheticsPageReady } from '../../../hooks/use_synthetics_page_ready';
+import { MonitorsProjectAppMenu } from '../management/monitors_project_app_menu';
 
 export const OverviewPage: React.FC = () => {
   useTrackPageview({ app: 'synthetics', path: 'overview' });
@@ -77,9 +79,10 @@ export const OverviewPage: React.FC = () => {
 
   return (
     <>
+      <MonitorsProjectAppMenu />
       <DisabledCallout total={absoluteTotal} />
       <AlertingCallout />
-      <EuiFlexGroup gutterSize="s" wrap={true}>
+      <EuiFlexGroup gutterSize="s" wrap={true} alignItems="center">
         <EuiFlexItem>
           <SearchField />
         </EuiFlexItem>
@@ -88,6 +91,9 @@ export const OverviewPage: React.FC = () => {
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <FilterGroup handleFilterChange={handleFilterChange} />
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <RefreshButton />
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiSpacer />

@@ -26,7 +26,9 @@ import { useInspectorContext } from '@kbn/observability-shared-plugin/public';
 import { LastRefreshed } from '../../common/components/last_refreshed';
 import { useSyntheticsRefreshContext } from '../../../contexts';
 import { useSyntheticsSettingsContext } from '../../../contexts';
+import { useCanEditSynthetics } from '../../../../../hooks/use_capabilities';
 import { useGetUrlParams } from '../../../hooks';
+import { useEnablement } from '../../../hooks/use_enablement';
 import { useLocations } from '../../../hooks/use_locations';
 import { usePrivateLocationsAPI } from '../../settings/private_locations/hooks/use_locations_api';
 import { AddOrEditLocationFlyout } from '../../settings/private_locations/add_or_edit_location_flyout';
@@ -46,7 +48,9 @@ import {
 import {
   CERTIFICATES_ROUTE,
   GETTING_STARTED_ROUTE,
+  MONITOR_ADD_ROUTE,
   MONITORS_ROUTE,
+  OVERVIEW_ROUTE,
   SETTINGS_ROUTE,
 } from '../../../../../../common/constants';
 import { stringifyUrlParams } from '../../../utils/url_params';
@@ -63,8 +67,8 @@ import { selectAgentPolicies } from '../../../state/agent_policies';
 import { CLIENT_DEFAULTS_SYNTHETICS } from '../../../../../../common/constants/synthetics/client_defaults';
 import { REFRESH_CERT } from '../../certificates/translations';
 
-const CREATE_LOCATION_LABEL = i18n.translate('xpack.synthetics.gettingStarted.createLocationLabel', {
-  defaultMessage: 'Create location',
+const CREATE_MONITOR_LABEL = i18n.translate('xpack.synthetics.monitors.pageHeader.createButton.label', {
+  defaultMessage: 'Create Monitor',
 });
 
 const ANALYZE_DATA = i18n.translate('xpack.synthetics.analyzeDataButtonLabel', {
@@ -129,6 +133,7 @@ export function MonitorsProjectAppMenu() {
 
   const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
   const isProjectChrome = chromeStyle === 'project';
+  const isOverviewRoute = Boolean(useRouteMatch({ path: OVERVIEW_ROUTE, exact: true })?.isExact);
   const isMonitorsListRoute = Boolean(useRouteMatch({ path: MONITORS_ROUTE, exact: true })?.isExact);
   const isGettingStartedRoute = Boolean(
     useRouteMatch({ path: GETTING_STARTED_ROUTE, exact: true })?.isExact
@@ -137,13 +142,15 @@ export function MonitorsProjectAppMenu() {
     useRouteMatch({ path: CERTIFICATES_ROUTE, exact: true })?.isExact
   );
   const isMonitorsProjectAppMenuRoute =
-    isMonitorsListRoute || isGettingStartedRoute || isCertificatesRoute;
+    isOverviewRoute || isMonitorsListRoute || isGettingStartedRoute || isCertificatesRoute;
 
   const projectMenuActive = isProjectChrome && isMonitorsProjectAppMenuRoute;
   const { EditAlertFlyout, NewRuleFlyout, loading, defaultRules } =
     useSyntheticsRules(projectMenuActive);
 
   const { basePath, isDev } = useSyntheticsSettingsContext();
+  const { isEnabled, isServiceAllowed } = useEnablement();
+  const canEditSynthetics = useCanEditSynthetics();
   const params = useGetUrlParams();
   const { dateRangeStart, dateRangeEnd } = params;
   const { inspectorAdapters } = useInspectorContext();
@@ -261,10 +268,6 @@ export function MonitorsProjectAppMenu() {
 
   const closeLocationFlyout = useCallback(() => {
     dispatch(setIsPrivateLocationFlyoutVisible(false));
-  }, [dispatch]);
-
-  const openLocationFlyout = useCallback(() => {
-    dispatch(setIsPrivateLocationFlyoutVisible(true));
   }, [dispatch]);
 
   const statusRuleExists = Boolean(defaultRules?.statusRule);
@@ -492,16 +495,21 @@ export function MonitorsProjectAppMenu() {
       };
     }
 
+    const addMonitorHref = `${basePath}/app/synthetics${MONITOR_ADD_ROUTE}`;
+
     return {
       layout: 'chromeBarV2',
       headerMetadata: [<LastRefreshed key="synthetics-monitors-last-refreshed" />],
       primaryActionItem: {
-        id: 'synthetics-create-location',
-        label: CREATE_LOCATION_LABEL,
+        id: 'synthetics-create-monitor',
+        label: CREATE_MONITOR_LABEL,
         iconType: 'plusInCircleFilled',
-        testId: 'gettingStartedAddLocationButton',
+        testId: 'syntheticsAddMonitorBtn',
+        href: addMonitorHref,
+        target: '_self',
+        disableButton: () => !isEnabled || !canEditSynthetics || !isServiceAllowed,
         run: () => {
-          openLocationFlyout();
+          void application.navigateToUrl(addMonitorHref);
         },
       },
       secondaryActionItems,
@@ -510,11 +518,14 @@ export function MonitorsProjectAppMenu() {
   }, [
     alertsOverflowItem,
     application,
+    basePath,
+    canEditSynthetics,
     history,
     inspector,
     inspectorAdapters,
     isCertificatesRoute,
-    openLocationFlyout,
+    isEnabled,
+    isServiceAllowed,
     params,
     projectMenuActive,
     openAutoRefreshPopover,

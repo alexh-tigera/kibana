@@ -51,28 +51,30 @@ export const MonitorListContainer = ({
   //   sortOrder: pageState.sortOrder,
   // });
 
-  if (!isEnabled && absoluteTotal === 0) {
-    return null;
-  }
+  const hideMonitorListSection = Boolean(!isEnabled && absoluteTotal === 0);
 
   return (
     <>
       <AlertingCallout />
       <MonitorAsyncError />
       <ListFilters handleFilterChange={handleFilterChange} />
-      <EuiSpacer />
-      <MonitorStats overviewStatus={overviewStatus} />
-      <EuiSpacer />
-      <MonitorList
-        syntheticsMonitors={syntheticsMonitors}
-        total={total}
-        pageState={pageState}
-        error={error}
-        loading={monitorsLoading}
-        loadPage={loadPage}
-        reloadPage={reloadPage}
-        overviewStatus={overviewStatus}
-      />
+      {hideMonitorListSection ? null : (
+        <>
+          <EuiSpacer />
+          <MonitorStats overviewStatus={overviewStatus} />
+          <EuiSpacer />
+          <MonitorList
+            syntheticsMonitors={syntheticsMonitors}
+            total={total}
+            pageState={pageState}
+            error={error}
+            loading={monitorsLoading}
+            loadPage={loadPage}
+            reloadPage={reloadPage}
+            overviewStatus={overviewStatus}
+          />
+        </>
+      )}
     </>
   );
 };

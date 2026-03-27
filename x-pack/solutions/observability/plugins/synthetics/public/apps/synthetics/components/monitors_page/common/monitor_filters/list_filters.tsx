@@ -10,6 +10,7 @@ import { EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 
 import { FilterGroup } from './filter_group';
 import { SearchField } from '../search_field';
+import { RefreshButton } from '../../../common/components/refresh_button';
 import type { SyntheticsMonitorFilterChangeHandler } from '../../../../utils/filters/filter_fields';
 
 export const ListFilters = function ({
@@ -18,12 +19,24 @@ export const ListFilters = function ({
   handleFilterChange: SyntheticsMonitorFilterChangeHandler;
 }) {
   return (
-    <EuiFlexGroup gutterSize="s" wrap={true}>
-      <EuiFlexItem grow={2}>
-        <SearchField />
+    <EuiFlexGroup gutterSize="s" alignItems="center" wrap={true} responsive={false}>
+      <EuiFlexItem
+        css={{
+          minWidth: 0,
+          flex: '1 1 0%',
+        }}
+      >
+        <EuiFlexGroup gutterSize="s" wrap={true} alignItems="center">
+          <EuiFlexItem css={{ minWidth: 0 }}>
+            <SearchField />
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <FilterGroup handleFilterChange={handleFilterChange} />
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </EuiFlexItem>
-      <EuiFlexItem grow={1}>
-        <FilterGroup handleFilterChange={handleFilterChange} />
+      <EuiFlexItem grow={false} css={{ flexShrink: 0 }}>
+        <RefreshButton />
       </EuiFlexItem>
     </EuiFlexGroup>
   );

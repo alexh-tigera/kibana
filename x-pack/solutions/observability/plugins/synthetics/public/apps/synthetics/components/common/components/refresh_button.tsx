@@ -17,6 +17,8 @@ export function RefreshButton() {
       data-test-subj="syntheticsRefreshButtonButton"
       iconType="refresh"
       onClick={() => refreshApp()}
+      fill
+      aria-label={REFRESH_LABEL}
     >
       {REFRESH_LABEL}
     </EuiButton>

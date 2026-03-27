@@ -24,6 +24,7 @@ import {
   MONITOR_EDIT_ROUTE,
   MONITOR_ROUTE,
   MONITORS_ROUTE,
+  OVERVIEW_ROUTE,
   SETTINGS_ROUTE,
 } from '../../../../../../common/constants';
 import type { ClientPluginsStart } from '../../../../../plugin';
@@ -48,7 +49,8 @@ export function ActionMenuContent(): React.ReactElement {
   const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
   const isProjectChrome = chromeStyle === 'project';
   const isMonitorsProjectAppMenuRoute = Boolean(
-    useRouteMatch({ path: MONITORS_ROUTE, exact: true })?.isExact ||
+    useRouteMatch({ path: OVERVIEW_ROUTE, exact: true })?.isExact ||
+      useRouteMatch({ path: MONITORS_ROUTE, exact: true })?.isExact ||
       useRouteMatch({ path: GETTING_STARTED_ROUTE, exact: true })?.isExact ||
       useRouteMatch({ path: CERTIFICATES_ROUTE, exact: true })?.isExact
   );
