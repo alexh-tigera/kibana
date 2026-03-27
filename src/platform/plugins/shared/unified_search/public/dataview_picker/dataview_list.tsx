@@ -12,6 +12,7 @@ import type { EuiSelectableProps, Direction } from '@elastic/eui';
 import {
   EuiSelectable,
   EuiBadge,
+  EuiFieldSearch,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPanel,
@@ -76,6 +77,10 @@ export interface DataViewsListProps {
   currentDataViewId?: string;
   selectableProps?: EuiSelectableProps;
   searchListInputId?: string;
+  /**
+   * Called when the search input value changes, with the current value and number of matching options.
+   */
+  onSearchChange?: (value: string, matchCount: number) => void;
 }
 
 export function DataViewsList({
@@ -84,6 +89,7 @@ export function DataViewsList({
   currentDataViewId,
   selectableProps,
   searchListInputId,
+  onSearchChange,
 }: DataViewsListProps) {
   const sortingService = useMemo(
     () =>
@@ -100,6 +106,17 @@ export function DataViewsList({
     );
     return sortingService.sortData(filteredDataViewsList);
   });
+
+  const [searchValue, setSearchValue] = useState('');
+
+  const filteredDataViewsList = useMemo(() => {
+    if (!searchValue) return sortedDataViewsList;
+    const search = searchValue.toLowerCase();
+    return sortedDataViewsList.filter((item) => {
+      const label = (item.name ?? item.title).toLowerCase();
+      return label.includes(search);
+    });
+  }, [sortedDataViewsList, searchValue]);
 
   const sortOrderOptions = useMemo(
     () =>
@@ -121,87 +138,112 @@ export function DataViewsList({
     [sortingService]
   );
 
-  return (
-    <EuiSelectable<{
-      key?: string;
-      label: string;
-      value?: string;
-      checked?: 'on' | 'off' | undefined;
-    }>
-      {...selectableProps}
-      listProps={{
-        truncationProps: MIDDLE_TRUNCATION_PROPS,
-        ...(selectableProps?.listProps ? selectableProps.listProps : undefined),
-      }}
-      data-test-subj="indexPattern-switcher"
-      searchable
-      singleSelection="always"
-      options={sortedDataViewsList?.map(({ title, id, name, isAdhoc, managed }) => ({
-        key: id,
-        label: name ? name : title,
-        value: id,
-        checked: id === currentDataViewId ? 'on' : undefined,
-        append: managed ? (
-          <EuiBadge color="hollow" data-test-subj={`dataViewItemManagedBadge-${name}`}>
-            {strings.editorAndPopover.managed.getManagedDataviewLabel()}
-          </EuiBadge>
-        ) : isAdhoc ? (
-          <EuiBadge color="hollow" data-test-subj={`dataViewItemTempBadge-${name}`}>
-            {strings.editorAndPopover.adhoc.getTemporaryDataviewLabel()}
-          </EuiBadge>
-        ) : null,
-      }))}
-      onChange={(choices) => {
-        const choice = choices.find(({ checked }) => checked) as unknown as {
-          value: string;
-        };
-        onChangeDataView(choice.value);
-      }}
-      searchProps={{
-        id: searchListInputId,
-        compressed: true,
-        placeholder: strings.editorAndPopover.search.getSearchPlaceholder(),
-        'data-test-subj': 'indexPattern-switcher--input',
-        autoFocus: false, // focused manually below - see https://github.com/elastic/eui/issues/8287
-        inputRef: (ref) => {
-          ref?.focus({ preventScroll: true });
-        },
-        ...(selectableProps ? selectableProps.searchProps : undefined),
-      }}
-    >
-      {(list, search) => (
-        <>
-          <EuiPanel
-            css={css`
-              padding-bottom: 0;
-            `}
-            color="transparent"
-            paddingSize="s"
-          >
-            <EuiFlexGroup
-              gutterSize="xs"
-              direction="row"
-              justifyContent="spaceBetween"
-              alignItems="center"
-              responsive={false}
-            >
-              <EuiFlexItem>{search}</EuiFlexItem>
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchValue(value);
+      if (onSearchChange) {
+        const filtered = !value
+          ? sortedDataViewsList
+          : sortedDataViewsList.filter((item) => {
+              const label = (item.name ?? item.title).toLowerCase();
+              return label.includes(value.toLowerCase());
+            });
+        onSearchChange(value, filtered.length);
+      }
+    },
+    [onSearchChange, sortedDataViewsList]
+  );
 
-              <EuiFlexItem grow={false}>
-                <EuiButtonGroup
-                  isIconOnly
-                  buttonSize="compressed"
-                  options={sortOrderOptions}
-                  legend={strings.editorAndPopover.getSortDirectionLegend()}
-                  idSelected={sortingService.direction}
-                  onChange={onChangeSortDirection}
-                />
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiPanel>
-          {list}
-        </>
-      )}
-    </EuiSelectable>
+  // Destructure searchProps out so it is not forwarded to the non-searchable EuiSelectable
+  const {
+    searchProps: _unusedSearchProps,
+    listProps,
+    ...restSelectableProps
+  } = selectableProps ?? {};
+
+  return (
+    <>
+      <EuiPanel
+        css={css`
+          padding-bottom: 0;
+        `}
+        color="transparent"
+        paddingSize="s"
+      >
+        <EuiFlexGroup
+          gutterSize="xs"
+          direction="row"
+          justifyContent="spaceBetween"
+          alignItems="center"
+          responsive={false}
+        >
+          <EuiFlexItem>
+            <EuiFieldSearch
+              id={searchListInputId}
+              compressed
+              value={searchValue}
+              onChange={handleSearchChange}
+              placeholder={strings.editorAndPopover.search.getSearchPlaceholder()}
+              aria-label={strings.editorAndPopover.search.getSearchPlaceholder()}
+              data-test-subj="indexPattern-switcher--input"
+              inputRef={(ref) => {
+                // Focus the search input when the component mounts.
+                // See https://github.com/elastic/eui/issues/8287
+                ref?.focus({ preventScroll: true });
+              }}
+            />
+          </EuiFlexItem>
+
+          <EuiFlexItem grow={false}>
+            <EuiButtonGroup
+              isIconOnly
+              buttonSize="compressed"
+              options={sortOrderOptions}
+              legend={strings.editorAndPopover.getSortDirectionLegend()}
+              idSelected={sortingService.direction}
+              onChange={onChangeSortDirection}
+            />
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPanel>
+      <EuiSelectable<{
+        key?: string;
+        label: string;
+        value?: string;
+        checked?: 'on' | 'off' | undefined;
+      }>
+        {...restSelectableProps}
+        listProps={{
+          truncationProps: MIDDLE_TRUNCATION_PROPS,
+          ...(listProps ?? undefined),
+        }}
+        data-test-subj="indexPattern-switcher"
+        singleSelection="always"
+        options={filteredDataViewsList?.map(({ title, id, name, isAdhoc, managed }) => ({
+          key: id,
+          label: name ? name : title,
+          value: id,
+          checked: id === currentDataViewId ? 'on' : undefined,
+          append: managed ? (
+            <EuiBadge color="hollow" data-test-subj={`dataViewItemManagedBadge-${name}`}>
+              {strings.editorAndPopover.managed.getManagedDataviewLabel()}
+            </EuiBadge>
+          ) : isAdhoc ? (
+            <EuiBadge color="hollow" data-test-subj={`dataViewItemTempBadge-${name}`}>
+              {strings.editorAndPopover.adhoc.getTemporaryDataviewLabel()}
+            </EuiBadge>
+          ) : null,
+        }))}
+        onChange={(choices) => {
+          const choice = choices.find(({ checked }) => checked) as unknown as {
+            value: string;
+          };
+          onChangeDataView(choice.value);
+        }}
+      >
+        {(list) => list}
+      </EuiSelectable>
+    </>
   );
 }
