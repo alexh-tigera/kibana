@@ -8,8 +8,6 @@
 import { schema } from '@kbn/config-schema';
 import { lensApiStateSchema } from '@kbn/lens-embeddable-utils/config_builder';
 
-import { lensCMCreateOptionsSchema } from '../../../../content_management';
-import { pickFromObjectSchema } from '../../../../utils';
 import { lensResponseItemSchema } from './common';
 
 export const lensCreateRequestParamsSchema = schema.object(
@@ -26,20 +24,18 @@ export const lensCreateRequestParamsSchema = schema.object(
   { unknowns: 'forbid' }
 );
 
-const { overwrite: overwriteSchema } = pickFromObjectSchema(
-  lensCMCreateOptionsSchema.getPropSchemas(),
-  ['overwrite']
-);
-
+// Inline schema so that description renders in OAS. See common.ts for rationale.
 
 export const lensCreateRequestQuerySchema = schema.object(
   {
-    overwrite: overwriteSchema.extendsDeep({
-      meta: {
-        description:
-          'When `true` and an `id` is provided, replaces an existing visualization with that ID. Defaults to `false`.',
-      },
-    }),
+    overwrite: schema.maybe(
+      schema.boolean({
+        meta: {
+          description:
+            'When `true` and an `id` is provided, replaces an existing visualization with that ID. Defaults to `false`.',
+        },
+      })
+    ),
   },
   { unknowns: 'forbid' }
 );

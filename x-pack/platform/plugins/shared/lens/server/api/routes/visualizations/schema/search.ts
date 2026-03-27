@@ -6,24 +6,28 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import { searchOptionsSchemas } from '@kbn/content-management-utils';
 
-import { lensCMSearchOptionsSchema } from '../../../../content_management';
 import { lensResponseItemSchema } from './common';
 
+// Request query and response meta fields are defined inline so that descriptions
+// render in the generated OAS. See common.ts for the full rationale.
 export const lensSearchRequestQuerySchema = schema.object({
-  fields: lensCMSearchOptionsSchema.getPropSchemas().fields.extendsDeep({
-    meta: {
-      description:
-        'Attributes to include in each result. Defaults to all. Valid values: `title`, `description`, `visualizationType`, `state`, `version`.',
-    },
-  }),
-  search_fields: lensCMSearchOptionsSchema.getPropSchemas().searchFields.extendsDeep({
-    meta: {
-      description:
-        'Attributes to match `query` against. Valid values: `title`, `description`, `visualizationType`. Defaults to `title` and `description`.',
-    },
-  }),
+  fields: schema.maybe(
+    schema.arrayOf(schema.string(), {
+      meta: {
+        description:
+          'Attributes to include in each result. Defaults to all. Valid values: `title`, `description`, `visualizationType`, `state`, `version`.',
+      },
+    })
+  ),
+  search_fields: schema.maybe(
+    schema.oneOf([schema.string(), schema.arrayOf(schema.string())], {
+      meta: {
+        description:
+          'Attributes to match `query` against. Valid values: `title`, `description`, `visualizationType`. Defaults to `title` and `description`.',
+      },
+    })
+  ),
   query: schema.maybe(
     schema.string({
       meta: {
@@ -50,15 +54,19 @@ export const lensSearchRequestQuerySchema = schema.object({
 
 const lensSearchResponseMetaSchema = schema.object(
   {
-    page: searchOptionsSchemas.page.extendsDeep({
-      meta: { description: 'Current page number.' },
-    }),
-    per_page: searchOptionsSchemas.perPage.extendsDeep({
-      meta: { description: 'Number of results per page.' },
-    }),
+    page: schema.maybe(
+      schema.number({
+        meta: { description: 'Current page number.' },
+      })
+    ),
+    per_page: schema.maybe(
+      schema.number({
+        meta: { description: 'Number of results per page.' },
+      })
+    ),
     total: schema.number({
       meta: { description: 'Total number of matching visualizations.' },
-    }), // TODO use shared definition
+    }),
   },
   { unknowns: 'forbid' }
 );
