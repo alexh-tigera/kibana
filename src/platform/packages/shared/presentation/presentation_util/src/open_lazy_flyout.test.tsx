@@ -8,6 +8,7 @@
  */
 
 import React from 'react';
+import { render, act } from '@testing-library/react';
 import { openLazyFlyout } from './open_lazy_flyout';
 import type { CoreStart } from '@kbn/core/public';
 import type { OverlayRef } from '@kbn/core-mount-utils-browser';
@@ -70,5 +71,27 @@ describe('openLazyFlyout', () => {
     const parentApi = {}; // no openOverlay
     openLazyFlyout({ core, parentApi, loadContent });
     expect(openFlyout).toHaveBeenCalled();
+  });
+
+  it('closes flyout when Escape key is pressed', () => {
+    const closeMock = jest.fn();
+    const testOverlayRef = { close: closeMock } as unknown as OverlayRef;
+    const openFlyoutMock = jest.fn(() => testOverlayRef);
+    const testCore = {
+      ...core,
+      overlays: { openFlyout: openFlyoutMock },
+    } as unknown as CoreStart;
+
+    openLazyFlyout({ ...props, core: testCore });
+
+    // toMountPoint is mocked as identity, so the first argument to openFlyout is the LazyFlyout element
+    const [lazyFlyoutElement] = openFlyoutMock.mock.calls[0];
+    render(lazyFlyoutElement as React.ReactElement);
+
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+
+    expect(closeMock).toHaveBeenCalled();
   });
 });

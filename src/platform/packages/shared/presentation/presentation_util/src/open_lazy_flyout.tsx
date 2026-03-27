@@ -8,7 +8,7 @@
  */
 import React from 'react';
 import type { CoreStart, OverlayFlyoutOpenOptions } from '@kbn/core/public';
-import { htmlIdGenerator } from '@elastic/eui';
+import { EuiWindowEvent, htmlIdGenerator, keys } from '@elastic/eui';
 import { toMountPoint } from '@kbn/react-kibana-mount';
 import useAsync from 'react-use/lib/useAsync';
 import { i18n } from '@kbn/i18n';
@@ -122,5 +122,21 @@ function LazyFlyout({
     focusFirstFocusable(document.querySelector('.kbnPresentationLazyFlyout'));
   }, [LoadedFlyout]);
 
-  return LoadedFlyout ?? LoadingFlyout;
+  const onKeyDown = React.useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === keys.ESCAPE) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeFlyout();
+      }
+    },
+    [closeFlyout]
+  );
+
+  return (
+    <>
+      <EuiWindowEvent event="keydown" handler={onKeyDown} />
+      {LoadedFlyout ?? LoadingFlyout}
+    </>
+  );
 }
