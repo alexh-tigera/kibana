@@ -118,14 +118,14 @@ const globalTempHackStyles = (_euiTheme: UseEuiTheme['euiTheme'], chromeStyle: C
   .kbnBody {
     // adjust position of the classic side-navigation
     .euiFlyout.euiCollapsibleNav {
-      ${logicalCSS('top', layoutVar('application.top', '0px'))};
+      ${logicalCSS('top', `calc(${layoutVar('application.top', '0px')} + 8px)`)};
       ${logicalCSS('left', layoutVar('application.left', '0px'))};
       ${logicalCSS('bottom', layoutVar('application.bottom', '0px'))};
     }
 
     // overlay mask "belowHeader" should only cover the application area
     .euiOverlayMask[data-relative-to-header='below'] {
-      ${logicalCSS('top', layoutVar('application.top', '0px'))};
+      ${logicalCSS('top', `calc(${layoutVar('application.top', '0px')} + 8px)`)};
       ${logicalCSS('left', layoutVar('application.left', '0px'))};
       ${logicalCSS('right', layoutVar('application.right', '0px'))};
       ${logicalCSS('bottom', layoutVar('application.bottom', '0px'))};

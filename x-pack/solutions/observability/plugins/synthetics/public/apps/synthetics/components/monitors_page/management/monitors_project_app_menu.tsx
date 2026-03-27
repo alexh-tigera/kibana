@@ -5,14 +5,20 @@
  * 2.0.
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useObservable from 'react-use/lib/useObservable';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { i18n } from '@kbn/i18n';
+import { EuiFormRow, EuiSelect, EuiWrappingPopover } from '@elastic/eui';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { AppMenu } from '@kbn/core-chrome-app-menu';
-import type { AppMenuConfig, AppMenuItemType, AppMenuPopoverItem } from '@kbn/core-chrome-app-menu-components';
+import type {
+  AppMenuConfig,
+  AppMenuItemType,
+  AppMenuPopoverItem,
+  AppMenuRunActionParams,
+} from '@kbn/core-chrome-app-menu-components';
 import { createExploratoryViewUrl } from '@kbn/exploratory-view-plugin/public';
 import { enableInspectEsQueries } from '@kbn/observability-plugin/public';
 import { useInspectorContext } from '@kbn/observability-shared-plugin/public';
@@ -71,6 +77,12 @@ const OFF_LABEL = i18n.translate('xpack.synthetics.projectAppMenu.autoRefreshOff
   defaultMessage: 'Off',
 });
 
+const AUTO_REFRESH_FORM_LABEL = i18n.translate('xpack.synthetics.projectAppMenu.autoRefreshFormLabel', {
+  defaultMessage: 'Auto refresh',
+});
+
+const OFF_SELECT_VALUE = 'off';
+
 /** Interval options in seconds; matches EUI auto-refresh presets. */
 const AUTO_REFRESH_INTERVALS_SECONDS = [5, 10, 30, 45, 60, 300, 900, 1800, 3600] as const;
 
@@ -99,35 +111,6 @@ const formatAutoRefreshButtonLabel = (refreshPaused: boolean, refreshInterval: n
   }
   const sec = refreshInterval || CLIENT_DEFAULTS_SYNTHETICS.AUTOREFRESH_INTERVAL_SECONDS;
   return formatIntervalLabel(sec);
-};
-
-const buildAutoRefreshIntervalItems = ({
-  setRefreshPaused,
-  setRefreshInterval,
-}: {
-  setRefreshPaused: (paused: boolean) => void;
-  setRefreshInterval: (interval: number) => void;
-}): AppMenuPopoverItem[] => {
-  const offItem: AppMenuPopoverItem = {
-    order: 0,
-    id: 'synthetics-auto-refresh-off',
-    label: OFF_LABEL,
-    run: () => {
-      setRefreshPaused(true);
-    },
-  };
-
-  const intervalItems: AppMenuPopoverItem[] = AUTO_REFRESH_INTERVALS_SECONDS.map((seconds, index) => ({
-    order: index + 1,
-    id: `synthetics-auto-refresh-${seconds}s`,
-    label: formatIntervalLabel(seconds),
-    run: () => {
-      setRefreshPaused(false);
-      setRefreshInterval(seconds);
-    },
-  }));
-
-  return [offItem, ...intervalItems];
 };
 
 export function MonitorsProjectAppMenu() {
@@ -160,6 +143,64 @@ export function MonitorsProjectAppMenu() {
     setRefreshInterval,
     setRefreshPaused,
   } = useSyntheticsRefreshContext();
+
+  const [isAutoRefreshPopoverOpen, setIsAutoRefreshPopoverOpen] = useState(false);
+  const [autoRefreshAnchorEl, setAutoRefreshAnchorEl] = useState<HTMLElement | null>(null);
+
+  const closeAutoRefreshPopover = useCallback(() => {
+    setIsAutoRefreshPopoverOpen(false);
+  }, []);
+
+  const openAutoRefreshPopover = useCallback((params?: AppMenuRunActionParams) => {
+    const el = params?.triggerElement;
+    if (el) {
+      setAutoRefreshAnchorEl(el);
+      setIsAutoRefreshPopoverOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!projectMenuActive) {
+      setIsAutoRefreshPopoverOpen(false);
+      setAutoRefreshAnchorEl(null);
+    }
+  }, [projectMenuActive]);
+
+  const autoRefreshSelectOptions = useMemo(() => {
+    const presets = AUTO_REFRESH_INTERVALS_SECONDS.map((seconds) => ({
+      value: String(seconds),
+      text: formatIntervalLabel(seconds),
+    }));
+    const intervalSec = refreshInterval || CLIENT_DEFAULTS_SYNTHETICS.AUTOREFRESH_INTERVAL_SECONDS;
+    const hasCustomInterval =
+      !refreshPaused &&
+      !AUTO_REFRESH_INTERVALS_SECONDS.some((seconds) => seconds === intervalSec);
+    if (hasCustomInterval) {
+      presets.push({
+        value: String(intervalSec),
+        text: formatIntervalLabel(intervalSec),
+      });
+    }
+    return [{ value: OFF_SELECT_VALUE, text: OFF_LABEL }, ...presets];
+  }, [refreshInterval, refreshPaused]);
+
+  const autoRefreshSelectValue = refreshPaused
+    ? OFF_SELECT_VALUE
+    : String(refreshInterval || CLIENT_DEFAULTS_SYNTHETICS.AUTOREFRESH_INTERVAL_SECONDS);
+
+  const onAutoRefreshSelectChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const v = event.target.value;
+      if (v === OFF_SELECT_VALUE) {
+        setRefreshPaused(true);
+      } else {
+        setRefreshPaused(false);
+        setRefreshInterval(Number(v));
+      }
+      closeAutoRefreshPopover();
+    },
+    [closeAutoRefreshPopover, setRefreshInterval, setRefreshPaused]
+  );
 
   const { onCreateLocationAPI, privateLocations } = usePrivateLocationsAPI();
   const { locations, loading: allLocationsLoading } = useLocations();
@@ -417,7 +458,7 @@ export function MonitorsProjectAppMenu() {
           label: formatAutoRefreshButtonLabel(refreshPaused, refreshInterval),
           iconType: 'refreshTime',
           testId: 'syntheticsAutoRefreshAppMenu',
-          items: buildAutoRefreshIntervalItems({ setRefreshPaused, setRefreshInterval }),
+          run: openAutoRefreshPopover,
         },
         {
           id: 'synthetics-explore-data',
@@ -443,6 +484,7 @@ export function MonitorsProjectAppMenu() {
     openLocationFlyout,
     params,
     projectMenuActive,
+    openAutoRefreshPopover,
     refreshInterval,
     refreshPaused,
     setRefreshInterval,
@@ -458,6 +500,29 @@ export function MonitorsProjectAppMenu() {
   return (
     <>
       <AppMenu config={config} setAppMenu={chrome.setAppMenu} />
+      {autoRefreshAnchorEl ? (
+        <EuiWrappingPopover
+          isOpen={isAutoRefreshPopoverOpen}
+          button={autoRefreshAnchorEl}
+          closePopover={closeAutoRefreshPopover}
+          anchorPosition="downLeft"
+          panelPaddingSize="m"
+          panelProps={{
+            'data-test-subj': 'syntheticsAutoRefreshProjectPopover',
+          }}
+        >
+          <EuiFormRow label={AUTO_REFRESH_FORM_LABEL}>
+            <EuiSelect
+              compressed
+              fullWidth
+              data-test-subj="syntheticsAutoRefreshProjectSelect"
+              options={autoRefreshSelectOptions}
+              value={autoRefreshSelectValue}
+              onChange={onAutoRefreshSelectChange}
+            />
+          </EuiFormRow>
+        </EuiWrappingPopover>
+      ) : null}
       {alertFlyoutVisible ? EditAlertFlyout : null}
       {alertFlyoutVisible ? NewRuleFlyout : null}
       {isPrivateLocationFlyoutVisible &&
