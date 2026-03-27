@@ -78,22 +78,12 @@ export function ExploratoryViewProjectAppMenu({
     const created = moment(lastUpdated).format(dateFormat);
 
     const meta: React.ReactNode[] = [
-      <EuiText size="xs" key="last-updated">
-        <FormattedMessage
-          id="xpack.exploratoryView.expView.projectChrome.lastUpdatedMeta"
-          defaultMessage="{strong} {relative}"
-          values={{
-            strong: <strong>Last updated</strong>,
-            relative: moment(lastUpdated).from(refreshTick),
-          }}
-        />
-      </EuiText>,
       <EuiText size="xs" key="chart-created">
         <FormattedMessage
           id="xpack.exploratoryView.expView.projectChrome.chartCreatedMeta"
           defaultMessage="{strong} {created}"
           values={{
-            strong: <strong>Chart created</strong>,
+            strong: <strong>Created</strong>,
             created,
           }}
         />
@@ -107,7 +97,7 @@ export function ExploratoryViewProjectAppMenu({
             id="xpack.exploratoryView.expView.projectChrome.displayingFromMeta"
             defaultMessage="{strong} {from} → {to}"
             values={{
-              strong: <strong>Displaying from</strong>,
+              strong: <strong>Displaying</strong>,
               from: fromFormatted,
               to: toFormatted,
             }}
@@ -115,6 +105,19 @@ export function ExploratoryViewProjectAppMenu({
         </EuiText>
       );
     }
+
+    meta.push(
+      <EuiText size="xs" key="last-updated">
+        <FormattedMessage
+          id="xpack.exploratoryView.expView.projectChrome.lastUpdatedMeta"
+          defaultMessage="{strong} {relative}"
+          values={{
+            strong: <strong>Updated</strong>,
+            relative: moment(lastUpdated).from(refreshTick),
+          }}
+        />
+      </EuiText>
+    );
 
     return meta;
   }, [lastUpdated, from, to, refreshTick]);
