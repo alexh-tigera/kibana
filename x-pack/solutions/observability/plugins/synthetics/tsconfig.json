@@ -100,6 +100,8 @@
     "@kbn/slo-plugin",
     "@kbn/ebt-tools",
     "@kbn/alerting-types",
+    "@kbn/core-chrome-app-menu",
+    "@kbn/core-chrome-app-menu-components",
     "@kbn/core-chrome-browser",
     "@kbn/core-rendering-browser",
     "@kbn/index-lifecycle-management-common-shared",

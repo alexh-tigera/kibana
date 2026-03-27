@@ -9,18 +9,23 @@ import React from 'react';
 import { EuiHeaderLinks, EuiToolTip, EuiHeaderLink } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
+import useObservable from 'react-use/lib/useObservable';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { createExploratoryViewUrl } from '@kbn/exploratory-view-plugin/public';
 import { LastRefreshed } from '../components/last_refreshed';
 import { AutoRefreshButton } from '../components/auto_refresh_button';
 import { useSyntheticsSettingsContext } from '../../../contexts';
 import { useGetUrlParams } from '../../../hooks';
 import {
+  GETTING_STARTED_ROUTE,
   MONITOR_ADD_ROUTE,
   MONITOR_EDIT_ROUTE,
   MONITOR_ROUTE,
+  MONITORS_ROUTE,
   SETTINGS_ROUTE,
 } from '../../../../../../common/constants';
+import type { ClientPluginsStart } from '../../../../../plugin';
 import { stringifyUrlParams } from '../../../utils/url_params';
 import { InspectorHeaderLink } from './inspector_header_link';
 import { ToggleAlertFlyoutButton } from '../../alerts/toggle_alert_flyout_button';
@@ -35,6 +40,18 @@ const ANALYZE_MESSAGE = i18n.translate('xpack.synthetics.analyzeDataButtonLabel.
 });
 
 export function ActionMenuContent(): React.ReactElement {
+  const {
+    services: { chrome },
+  } = useKibana<ClientPluginsStart>();
+
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+  const isMonitorsProjectAppMenuRoute = Boolean(
+    useRouteMatch({ path: MONITORS_ROUTE, exact: true })?.isExact ||
+      useRouteMatch({ path: GETTING_STARTED_ROUTE, exact: true })?.isExact
+  );
+  const hideManagementActionsInProjectChrome = isProjectChrome && isMonitorsProjectAppMenuRoute;
+
   const { basePath } = useSyntheticsSettingsContext();
 
   const params = useGetUrlParams();
@@ -49,6 +66,10 @@ export function ActionMenuContent(): React.ReactElement {
   const isEditRoute = useRouteMatch(MONITOR_EDIT_ROUTE);
   const isAddRoute = useRouteMatch(MONITOR_ADD_ROUTE);
   const monitorId = selectedMonitor?.monitor?.id;
+
+  if (hideManagementActionsInProjectChrome) {
+    return <EuiHeaderLinks gutterSize="xs" />;
+  }
 
   const syntheticExploratoryViewLink = createExploratoryViewUrl(
     {

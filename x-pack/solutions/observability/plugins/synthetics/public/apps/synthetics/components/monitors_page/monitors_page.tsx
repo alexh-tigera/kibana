@@ -21,6 +21,7 @@ import { useEnablement } from '../../hooks/use_enablement';
 
 import { EnablementEmptyState } from './management/synthetics_enablement/synthetics_enablement';
 import { MonitorListContainer } from './management/monitor_list_container';
+import { MonitorsProjectAppMenu } from './management/monitors_project_app_menu';
 import { useMonitorListBreadcrumbs } from './hooks/use_breadcrumbs';
 import { useMonitorList } from './hooks/use_monitor_list';
 import * as labels from './management/labels';
@@ -47,6 +48,7 @@ export const MonitorManagementPage: React.FC = () => {
 
   return (
     <>
+      <MonitorsProjectAppMenu />
       <Loader
         loading={enablementLoading || locationsLoading}
         error={Boolean(enablementError)}

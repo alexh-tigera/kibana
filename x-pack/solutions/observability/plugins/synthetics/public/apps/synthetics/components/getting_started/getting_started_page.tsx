@@ -29,6 +29,7 @@ import { MONITOR_ADD_ROUTE } from '../../../../../common/constants/ui';
 import { SimpleMonitorForm } from './simple_monitor_form';
 import type { NewLocation } from '../settings/private_locations/add_or_edit_location_flyout';
 import { AddOrEditLocationFlyout } from '../settings/private_locations/add_or_edit_location_flyout';
+import { MonitorsProjectAppMenu } from '../monitors_page/management/monitors_project_app_menu';
 import type { ClientPluginsStart } from '../../../../plugin';
 import { getAgentPoliciesAction, selectAgentPolicies } from '../../state/agent_policies';
 import { setIsPrivateLocationFlyoutVisible } from '../../state/private_locations/actions';
@@ -85,11 +86,14 @@ export const GettingStartedPage = () => {
     });
   }, [setScreenContext, hasNoLocations, locations]);
 
-  return !loading ? (
-    <Wrapper>
-      {hasNoLocations ? (
-        <GettingStartedOnPrem />
-      ) : (
+  return (
+    <>
+      <MonitorsProjectAppMenu />
+      {!loading ? (
+        <Wrapper>
+          {hasNoLocations ? (
+            <GettingStartedOnPrem />
+          ) : (
         <EuiEmptyPrompt
           title={<h2>{CREATE_SINGLE_PAGE_LABEL}</h2>}
           layout="horizontal"
@@ -116,10 +120,12 @@ export const GettingStartedPage = () => {
           }
           footer={<GettingStartedLink />}
         />
+          )}
+        </Wrapper>
+      ) : (
+        <LoadingState />
       )}
-    </Wrapper>
-  ) : (
-    <LoadingState />
+    </>
   );
 };
 
