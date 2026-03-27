@@ -356,4 +356,10 @@ export interface AppMenuConfig {
    * Omitted when rendering {@link AppMenuComponent} so actions strip logic stays unchanged.
    */
   headerBadges?: ReactNode[];
+  /**
+   * When true, the project chrome application top bar hides the back-to-parent control (chevron
+   * next to the title). Use when breadcrumb hierarchy is flat or the parent link would duplicate
+   * the current route.
+   */
+  hideProjectHeaderBackButton?: boolean;
 }

@@ -336,7 +336,11 @@ export const AppMenuBar = React.memo(() => {
   const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
   const parentBreadcrumb =
     breadcrumbs.length >= 2 ? breadcrumbs[breadcrumbs.length - 2] : undefined;
-  const showBackToParent = Boolean(parentBreadcrumb) && canNavigateToParent(parentBreadcrumb);
+  const hideBackFromAppMenu = appMenuConfig?.hideProjectHeaderBackButton === true;
+  const showBackToParent =
+    !hideBackFromAppMenu &&
+    Boolean(parentBreadcrumb) &&
+    canNavigateToParent(parentBreadcrumb);
   const styles = useAppMenuBarStyles(euiTheme, hasSecondaryRow, showBackToParent, hasHeaderTabs);
   const hasAppMenuConfig = useHasAppMenuConfig();
   const appBarControls = useProjectChromeRightControls('appBar');

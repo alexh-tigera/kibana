@@ -380,6 +380,8 @@ export function MetricsProjectAppMenu() {
 
     return {
       layout: 'chromeBarV2',
+      /** Hide for Inventory, Hosts, and Metrics Explorer — sibling routes under Metrics, not a drill-down hierarchy. */
+      hideProjectHeaderBackButton: true,
       primaryActionItem: {
         id: 'metrics-add-data',
         label: i18n.translate('xpack.infra.metricsHeaderAddDataButtonLabel', {
