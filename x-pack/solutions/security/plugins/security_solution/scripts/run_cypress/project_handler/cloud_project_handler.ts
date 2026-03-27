@@ -56,7 +56,7 @@ export class CloudHandler extends ProjectHandler {
     const commitOverride = commit && commit !== '' ? commit : process.env.KIBANA_MKI_IMAGE_COMMIT;
 
     const esDockerImage =
-      'docker.elastic.co/elasticsearch-ci/elasticsearch-serverless:git-9902dc3bc00f';
+      'docker.elastic.co/elasticsearch-ci/elasticsearch-serverless:git-c26909103543';
 
     if (dockerImageOverride && !qualityGate) {
       this.log.info(`Overriding Kibana image with KIBANA_DOCKER_IMAGE: ${dockerImageOverride}`);
