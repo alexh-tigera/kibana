@@ -101,22 +101,27 @@ export function DataViewsList({
 
   const [sortedDataViewsList, setSortedDataViewsList] = useState<DataViewListItemEnhanced[]>(() => {
     // Don't show ES|QL ad hoc data views in the data view list
-    const filteredDataViewsList = dataViewsList.filter(
+    const withoutEsqlAdHoc = dataViewsList.filter(
       (dataView) => !dataView.isAdhoc || dataView.type !== ESQL_TYPE
     );
-    return sortingService.sortData(filteredDataViewsList);
+    return sortingService.sortData(withoutEsqlAdHoc);
   });
 
   const [searchValue, setSearchValue] = useState('');
 
-  const filteredDataViewsList = useMemo(() => {
-    if (!searchValue) return sortedDataViewsList;
-    const search = searchValue.toLowerCase();
-    return sortedDataViewsList.filter((item) => {
+  const filterBySearchValue = useCallback((items: DataViewListItemEnhanced[], value: string) => {
+    if (!value) return items;
+    const search = value.toLowerCase();
+    return items.filter((item) => {
       const label = (item.name ?? item.title).toLowerCase();
       return label.includes(search);
     });
-  }, [sortedDataViewsList, searchValue]);
+  }, []);
+
+  const searchFilteredDataViews = useMemo(
+    () => filterBySearchValue(sortedDataViewsList, searchValue),
+    [filterBySearchValue, sortedDataViewsList, searchValue]
+  );
 
   const sortOrderOptions = useMemo(
     () =>
@@ -143,24 +148,14 @@ export function DataViewsList({
       const value = e.target.value;
       setSearchValue(value);
       if (onSearchChange) {
-        const filtered = !value
-          ? sortedDataViewsList
-          : sortedDataViewsList.filter((item) => {
-              const label = (item.name ?? item.title).toLowerCase();
-              return label.includes(value.toLowerCase());
-            });
-        onSearchChange(value, filtered.length);
+        onSearchChange(value, filterBySearchValue(sortedDataViewsList, value).length);
       }
     },
-    [onSearchChange, sortedDataViewsList]
+    [filterBySearchValue, onSearchChange, sortedDataViewsList]
   );
 
   // Destructure searchProps out so it is not forwarded to the non-searchable EuiSelectable
-  const {
-    searchProps: _unusedSearchProps,
-    listProps,
-    ...restSelectableProps
-  } = selectableProps ?? {};
+  const { searchProps: _searchProps, listProps, ...restSelectableProps } = selectableProps ?? {};
 
   return (
     <>
@@ -220,7 +215,7 @@ export function DataViewsList({
         }}
         data-test-subj="indexPattern-switcher"
         singleSelection="always"
-        options={filteredDataViewsList?.map(({ title, id, name, isAdhoc, managed }) => ({
+        options={searchFilteredDataViews?.map(({ title, id, name, isAdhoc, managed }) => ({
           key: id,
           label: name ? name : title,
           value: id,
