@@ -5,10 +5,11 @@
  * 2.0.
  */
 
-import React, { lazy, useCallback, useEffect, useState } from 'react';
+import React, { lazy, useCallback, useEffect, useMemo, useState } from 'react';
 import type { RouteComponentProps } from 'react-router-dom';
 import { Routes, Route } from '@kbn/shared-ux-router';
 import { useLocation, matchPath } from 'react-router-dom';
+import useObservable from 'react-use/lib/useObservable';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { i18n } from '@kbn/i18n';
 import { EuiPageTemplate, EuiSpacer, EuiPageHeader, EuiButton, EuiButtonEmpty } from '@elastic/eui';
@@ -28,6 +29,7 @@ import { EditConnectorFlyout } from '../../action_connector_form/edit_connector_
 import type { EditConnectorProps } from './types';
 import { loadAllActions } from '../../../lib/action_connector_api';
 import { hasSaveActionsCapability } from '../../../lib/capabilities';
+import { ManagementConnectorsHomeAppMenu } from '../../../management_connectors_home_app_menu';
 
 const ConnectorsList = lazy(() => import('./actions_connectors_list'));
 
@@ -50,6 +52,9 @@ export const ActionsConnectorsHome: React.FunctionComponent<RouteComponentProps<
     notifications: { toasts },
     application: { capabilities },
   } = useKibana().services;
+
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
 
   const location = useLocation();
 
@@ -112,9 +117,27 @@ export const ActionsConnectorsHome: React.FunctionComponent<RouteComponentProps<
     ),
   });
 
-  const onSectionChange = (newSection: Section) => {
-    history.push(`/${newSection}`);
-  };
+  const onSectionChange = useCallback(
+    (newSection: Section) => {
+      history.push(`/${newSection}`);
+    },
+    [history]
+  );
+
+  const showCreateConnectorInMenu = useMemo(() => {
+    const canSave = hasSaveActionsCapability(capabilities);
+    const onConnectorsPath =
+      matchPath(location.pathname, {
+        path: routeToConnectors,
+        exact: true,
+      }) ||
+      matchPath(location.pathname, { path: routeToConnectorEdit, exact: true });
+    return Boolean(canSave && onConnectorsPath);
+  }, [capabilities, location.pathname]);
+
+  const onCreateConnectorClick = useCallback(() => {
+    setAddFlyoutVisibility(true);
+  }, []);
 
   // Set breadcrumb and page title
   useEffect(() => {
@@ -203,26 +226,36 @@ export const ActionsConnectorsHome: React.FunctionComponent<RouteComponentProps<
 
   return (
     <>
-      <EuiPageHeader
-        bottomBorder
-        paddingSize="none"
-        pageTitle={i18n.translate('xpack.triggersActionsUI.connectors.home.appTitle', {
-          defaultMessage: 'Connectors',
-        })}
-        description={i18n.translate('xpack.triggersActionsUI.connectors.home.description', {
-          defaultMessage: 'Connect third-party software with your alerting data.',
-        })}
-        rightSideItems={topRightSideButtons}
-        tabs={tabs.map((tab) => ({
-          label: tab.name,
-          onClick: () => onSectionChange(tab.id),
-          isSelected: tab.id === section,
-          key: tab.id,
-          'data-test-subj': `${tab.id}Tab`,
-        }))}
+      <ManagementConnectorsHomeAppMenu
+        activeSection={section}
+        showCreateConnectorInMenu={showCreateConnectorInMenu}
+        onSectionChange={onSectionChange}
+        onCreateConnectorClick={onCreateConnectorClick}
       />
+      {!isProjectChrome && (
+        <>
+          <EuiPageHeader
+            bottomBorder
+            paddingSize="none"
+            pageTitle={i18n.translate('xpack.triggersActionsUI.connectors.home.appTitle', {
+              defaultMessage: 'Connectors',
+            })}
+            description={i18n.translate('xpack.triggersActionsUI.connectors.home.description', {
+              defaultMessage: 'Connect third-party software with your alerting data.',
+            })}
+            rightSideItems={topRightSideButtons}
+            tabs={tabs.map((tab) => ({
+              label: tab.name,
+              onClick: () => onSectionChange(tab.id),
+              isSelected: tab.id === section,
+              key: tab.id,
+              'data-test-subj': `${tab.id}Tab`,
+            }))}
+          />
 
-      <EuiSpacer size="l" />
+          <EuiSpacer size="l" />
+        </>
+      )}
 
       {addFlyoutVisible && (
         <CreateConnectorFlyout
