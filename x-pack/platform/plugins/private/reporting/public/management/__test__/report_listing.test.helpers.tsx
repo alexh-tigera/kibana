@@ -8,6 +8,7 @@
 import type { NotificationsSetup } from '@kbn/core/public';
 import {
   applicationServiceMock,
+  chromeServiceMock,
   coreMock,
   httpServiceMock,
   notificationServiceMock,
@@ -120,7 +121,16 @@ export const createTestBed = registerTestBed(
     ...rest
   }: Partial<Props> & TestDependencies) => (
     <EuiThemeProvider>
-      <KibanaContextProvider services={{ http, application, uiSettings, data, share }}>
+      <KibanaContextProvider
+        services={{
+          http,
+          application,
+          uiSettings,
+          data,
+          share,
+          chrome: chromeServiceMock.createStartContract(),
+        }}
+      >
         <InternalApiClientProvider apiClient={reportingAPIClient} http={http}>
           <IlmPolicyStatusContextProvider>
             <ReportingTabs

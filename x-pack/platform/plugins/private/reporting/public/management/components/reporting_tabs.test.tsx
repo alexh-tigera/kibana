@@ -17,6 +17,7 @@ import ReportingTabs from './reporting_tabs';
 import { QueryClient, QueryClientProvider } from '@kbn/react-query';
 import {
   applicationServiceMock,
+  chromeServiceMock,
   coreMock,
   httpServiceMock,
   notificationServiceMock,
@@ -138,6 +139,7 @@ describe('Reporting tabs', () => {
               },
             },
             notifications: notificationServiceMock.createStartContract(),
+            chrome: chromeServiceMock.createStartContract(),
           }}
         >
           <InternalApiClientProvider apiClient={updatedReportingAPIClient} http={http}>

@@ -38,6 +38,7 @@ export interface KibanaContext {
   notifications: NotificationsStart;
   license$: LicensingPluginStart['license$'];
   userProfile: CoreStart['userProfile'];
+  chrome: CoreStart['chrome'];
 }
 
 export const useKibana = () => _useKibana<KibanaContext>();

@@ -60,6 +60,7 @@ export async function mountManagementSection({
     actions: actionsService,
     notifications: notificationsService,
     userProfile: coreStart.userProfile,
+    chrome: coreStart.chrome,
   };
   const sections: Section[] = ['exports', 'schedules'];
   const { element, history } = params;

@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import React, { Suspense, useMemo } from 'react';
+import React, { Suspense, useCallback, useMemo, useRef } from 'react';
 import { EuiLoadingSpinner, EuiPageTemplate } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import { Route, Routes } from '@kbn/shared-ux-router';
@@ -23,6 +23,9 @@ import ReportExportsTable from './report_exports_table';
 import ReportSchedulesTable from './report_schedules_table';
 import { LicensePrompt } from './license_prompt';
 import IlmPolicyWrapper from './ilm_policy_wrapper';
+import { MigrateIlmPolicyCallOut } from './migrate_ilm_policy_callout';
+import { ReportDiagnostic, type ReportDiagnosticHandle } from './report_diagnostic';
+import { ReportingManagementAppMenu } from './reporting_management_app_menu';
 
 export interface MatchParams {
   section: Section;
@@ -46,8 +49,11 @@ export const ReportingTabs: React.FunctionComponent<{ config: ClientConfigType }
       notifications,
       share: { url: urlService },
       license$,
+      chrome,
     },
   } = useKibana();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
   const license = useObservable<ILicense | null>(license$ ?? new Observable(), null);
 
   const licensingInfo = useMemo(() => {
@@ -104,38 +110,70 @@ export const ReportingTabs: React.FunctionComponent<{ config: ClientConfigType }
 
   const { enableLinks, showLinks } = licensingInfo;
 
-  const onSectionChange = (newSection: Section) => {
-    history.push(`/${newSection}`);
-  };
+  const activeSection = (section ?? 'exports') as Section;
+
+  const onSectionChange = useCallback(
+    (newSection: Section) => {
+      history.push(`/${newSection}`);
+    },
+    [history]
+  );
+
+  const diagnosticRef = useRef<ReportDiagnosticHandle>(null);
+
+  const onRunDiagnosis = useCallback(() => {
+    diagnosticRef.current?.open();
+  }, []);
 
   return (
     <>
-      <EuiPageTemplate.Header
-        paddingSize="none"
-        bottomBorder
-        rightSideItems={
-          config.statefulSettings.enabled
-            ? [<IlmPolicyWrapper config={config} apiClient={apiClient} />]
-            : []
-        }
-        data-test-subj="reportingPageHeader"
-        pageTitle={
-          <FormattedMessage id="xpack.reporting.reports.titleStateful" defaultMessage="Reporting" />
-        }
-        description={
-          <FormattedMessage
-            id="xpack.reporting.reports.subtitleStateful"
-            defaultMessage="Get reports generated in Kibana applications."
-          />
-        }
-        tabs={tabs.map(({ id, name, isBeta = false }) => ({
-          label: !isBeta ? name : <>{name}</>,
-          onClick: () => onSectionChange(id as Section),
-          isSelected: id === section,
-          key: id,
-          'data-test-subj': `reportingTabs-${id}`,
-        }))}
+      <ReportingManagementAppMenu
+        activeSection={activeSection}
+        onSectionChange={onSectionChange}
+        clientConfig={config}
+        statefulSettingsEnabled={config.statefulSettings.enabled}
+        onRunDiagnosis={onRunDiagnosis}
       />
+      {!isProjectChrome && (
+        <EuiPageTemplate.Header
+          paddingSize="none"
+          bottomBorder
+          rightSideItems={
+            config.statefulSettings.enabled
+              ? [<IlmPolicyWrapper config={config} apiClient={apiClient} />]
+              : []
+          }
+          data-test-subj="reportingPageHeader"
+          pageTitle={
+            <FormattedMessage id="xpack.reporting.reports.titleStateful" defaultMessage="Reporting" />
+          }
+          description={
+            <FormattedMessage
+              id="xpack.reporting.reports.subtitleStateful"
+              defaultMessage="Get reports generated in Kibana applications."
+            />
+          }
+          tabs={tabs.map(({ id, name, isBeta = false }) => ({
+            label: !isBeta ? name : <>{name}</>,
+            onClick: () => onSectionChange(id as Section),
+            isSelected: id === section,
+            key: id,
+            'data-test-subj': `reportingTabs-${id}`,
+          }))}
+        />
+      )}
+
+      {isProjectChrome && config.statefulSettings.enabled && (
+        <>
+          <MigrateIlmPolicyCallOut toasts={notifications.toasts} />
+          <ReportDiagnostic
+            ref={diagnosticRef}
+            apiClient={apiClient}
+            clientConfig={config}
+            hideTriggerButton
+          />
+        </>
+      )}
 
       <Routes>
         <Route

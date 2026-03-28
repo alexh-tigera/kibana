@@ -6,7 +6,7 @@
  */
 
 import { i18n } from '@kbn/i18n';
-import React, { useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { FormattedMessage } from '@kbn/i18n-react';
 import {
   EuiButton,
@@ -21,9 +21,13 @@ import {
 import type { ClientConfigType, ReportingAPIClient } from '@kbn/reporting-public';
 import type { DiagnoseResponse } from '@kbn/reporting-public/reporting_api_client';
 
-interface Props {
+export interface ReportDiagnosticProps {
   apiClient: ReportingAPIClient;
   clientConfig: ClientConfigType;
+  /**
+   * When true, the inline "Run diagnosis" button is not rendered (e.g. project chrome uses app menu).
+   */
+  hideTriggerButton?: boolean;
 }
 
 type ResultStatus = 'danger' | 'incomplete' | 'complete';
@@ -51,7 +55,12 @@ const initialState: State = {
   success: true,
 };
 
-export const ReportDiagnostic = ({ apiClient, clientConfig }: Props) => {
+export type ReportDiagnosticHandle = {
+  open: () => void;
+};
+
+export const ReportDiagnostic = forwardRef<ReportDiagnosticHandle, ReportDiagnosticProps>(
+  ({ apiClient, clientConfig, hideTriggerButton = false }, ref) => {
   const [state, setStateBase] = useState(initialState);
   const setState = (s: Partial<typeof state>) =>
     setStateBase({
@@ -64,6 +73,12 @@ export const ReportDiagnostic = ({ apiClient, clientConfig }: Props) => {
 
   const closeFlyout = () => setState({ ...initialState, isFlyoutVisible: false });
   const showFlyout = () => setState({ isFlyoutVisible: true });
+
+  useImperativeHandle(ref, () => ({
+    open: () => {
+      setStateBase((prev) => ({ ...prev, isFlyoutVisible: true }));
+    },
+  }));
   const apiWrapper = (apiMethod: () => Promise<DiagnoseResponse>, statusProp: statuses) => () => {
     setState({ isBusy: true, [statusProp]: 'incomplete' });
     apiMethod()
@@ -183,14 +198,18 @@ export const ReportDiagnostic = ({ apiClient, clientConfig }: Props) => {
       {configAllowsImageReports && (
         <div>
           {flyout}
-          <EuiButton data-test-subj="screenshotDiagnosticLink" size="s" onClick={showFlyout}>
-            <FormattedMessage
-              id="xpack.reporting.listing.diagnosticButton"
-              defaultMessage="Run diagnosis"
-            />
-          </EuiButton>
+          {!hideTriggerButton && (
+            <EuiButton data-test-subj="screenshotDiagnosticLink" size="s" onClick={showFlyout}>
+              <FormattedMessage
+                id="xpack.reporting.listing.diagnosticButton"
+                defaultMessage="Run diagnosis"
+              />
+            </EuiButton>
+          )}
         </div>
       )}
     </div>
   );
-};
+});
+
+ReportDiagnostic.displayName = 'ReportDiagnostic';
