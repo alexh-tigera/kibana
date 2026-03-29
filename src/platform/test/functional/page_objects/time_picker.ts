@@ -463,7 +463,7 @@ export class TimePickerPageObject extends FtrService {
 
   public async getShowDatesButtonText() {
     if (await this.isNewDateRangePicker()) {
-      return await this.testSubjects.getAttribute('dateRangePickerControlButton', 'value');
+      return (await this.testSubjects.getAttribute('dateRangePickerControlButton', 'value')) ?? '';
     }
     const button = await this.testSubjects.find('superDatePickerShowDatesButton');
     const text = await button.getVisibleText();
