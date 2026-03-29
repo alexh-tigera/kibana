@@ -289,6 +289,10 @@ export const stackManagementSchema: MakeSchemaFrom<UsageStats> = {
     type: 'keyword',
     _meta: { description: 'Non-default value of setting.' },
   },
+  'timepicker:useDateRangePicker': {
+    type: 'boolean',
+    _meta: { description: 'Non-default value of setting.' },
+  },
   'theme:version': {
     type: 'keyword',
     _meta: { description: 'Non-default value of setting.' },
