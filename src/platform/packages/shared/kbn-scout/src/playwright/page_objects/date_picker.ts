@@ -294,6 +294,25 @@ export class DatePicker {
     }
   }
 
+  /** @deprecated Use {@link setAbsoluteRangeInRootContainer} instead. */
+  async typeAbsoluteRange({
+    from,
+    to,
+    validateDates = false,
+    containerLocator,
+  }: {
+    from: string;
+    to: string;
+    validateDates?: boolean;
+    containerLocator?: Locator;
+  }) {
+    if (await this.isNewDateRangePicker()) {
+      await this.typeAbsoluteRangeNewPicker({ from, to, validateDates, containerLocator });
+    } else {
+      await this.typeAbsoluteRangeLegacy({ from, to, validateDates, containerLocator });
+    }
+  }
+
   async getTimeConfig(): Promise<{ start: string; end: string }> {
     if (await this.isNewDateRangePicker()) {
       const dateRange =
