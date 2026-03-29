@@ -57,6 +57,12 @@ import { SplitButton } from '@kbn/split-button';
 import { useMemoCss } from '@kbn/css-utils/public/use_memo_css';
 import { QueryStringInput, FilterButtonGroup } from '@kbn/kql/public';
 import type { SuggestionsAbstraction, SuggestionsListSize } from '@kbn/kql/public';
+import {
+  DateRangePicker,
+  type DateRangePickerSettings,
+  type DateRangePickerOnChangeProps,
+  type AutoRefreshSettings,
+} from '@kbn/date-range-picker';
 import { AddFilterPopover } from './add_filter_popover';
 import type { DataViewPickerProps } from '../dataview_picker';
 import { DataViewPicker } from '../dataview_picker';
@@ -67,6 +73,10 @@ import { FilterBarToggleButton } from '../filter_bar/filter_bar_toggle_button';
 import { FilterBarContextProvider } from '../filter_bar/filter_bar_context';
 
 const BUTTON_MIN_WIDTH = 108;
+
+const SuperDatePicker = React.memo(
+  EuiSuperDatePicker as any
+) as unknown as typeof EuiSuperDatePicker;
 
 export const strings = {
   getNeedsUpdatingLabel: () =>
@@ -127,10 +137,6 @@ const getWrapperWithTooltip = (
     return children;
   }
 };
-
-const SuperDatePicker = React.memo(
-  EuiSuperDatePicker as any
-) as unknown as typeof EuiSuperDatePicker;
 
 // @internal
 export interface QueryBarTopRowProps<QT extends Query | AggregateQuery = Query> {
@@ -326,6 +332,30 @@ export const QueryBarTopRow = React.memo(
 
     const [isDateRangeInvalid, setIsDateRangeInvalid] = useState(false);
     const [isQueryInputFocused, setIsQueryInputFocused] = useState(false);
+    const [dateRangePickerSettings, setDateRangePickerSettings] = useState<DateRangePickerSettings>(
+      {
+        roundRelativeTime: true,
+        timePrecision: 'none',
+      }
+    );
+    // SuperDatePicker uses a single `isPaused` boolean (pause = off).
+    // DateRangePicker splits this into two: `isEnabled` (feature on/off via Settings)
+    // and `isPaused` (play/pause toggle while enabled). `isPaused` is local-only
+    // and has no equivalent in the legacy path.
+    const [autoRefresh, setAutoRefresh] = useState<AutoRefreshSettings>(() => ({
+      isEnabled: props.isRefreshPaused === false,
+      isPaused: false,
+      interval: props.refreshInterval ?? 10000,
+      intervalUnit: 's',
+    }));
+
+    useEffect(() => {
+      setAutoRefresh((prev) => ({
+        ...prev,
+        ...(props.refreshInterval != null ? { interval: props.refreshInterval } : {}),
+        isEnabled: props.isRefreshPaused === false,
+      }));
+    }, [props.refreshInterval, props.isRefreshPaused]);
 
     const kibana = useKibana<IUnifiedSearchPluginServices>();
 
@@ -341,6 +371,8 @@ export const QueryBarTopRow = React.memo(
       http,
       dataViews,
     } = kibana.services;
+
+    const shouldUseLegacyTimePicker = !uiSettings.get(UI_SETTINGS.TIMEPICKER_USE_DATE_RANGE_PICKER);
 
     const isQueryLangSelected = props.query && !isOfQueryType(props.query);
 
@@ -515,17 +547,69 @@ export const QueryBarTopRow = React.memo(
     const propsOnRefresh = props.onRefresh;
     const onRefresh = useCallback(
       ({ start, end }: OnRefreshProps) => {
-        const retVal = {
-          dateRange: {
-            from: start,
-            to: end,
-          },
-        };
         if (propsOnRefresh) {
-          propsOnRefresh(retVal);
+          propsOnRefresh({ dateRange: { from: start, to: end } });
         }
       },
       [propsOnRefresh]
+    );
+
+    const onDateRangeChange = useCallback(
+      ({ start, end, isInvalid }: DateRangePickerOnChangeProps) => {
+        setIsDateRangeInvalid(isInvalid);
+        if (!isInvalid) {
+          onSubmit({
+            query: queryRef.current,
+            dateRange: { from: start, to: end },
+          });
+        }
+      },
+      [onSubmit]
+    );
+
+    const onDateRangeInputChange = useCallback(() => {
+      setIsDateRangeInvalid(false);
+    }, []);
+
+    const propsOnRefreshChange = props.onRefreshChange;
+
+    const onDateRangePickerRefresh = useCallback(() => {
+      if (propsOnRefresh) {
+        propsOnRefresh({ dateRange: dateRangeRef.current });
+      }
+    }, [propsOnRefresh]);
+
+    const dateRangePickerSettingsWithAutoRefresh = useMemo<DateRangePickerSettings>(
+      () =>
+        propsOnRefreshChange
+          ? { ...dateRangePickerSettings, autoRefresh }
+          : dateRangePickerSettings,
+      [dateRangePickerSettings, autoRefresh, propsOnRefreshChange]
+    );
+
+    const onDateRangePickerSettingsChange = useCallback(
+      (next: DateRangePickerSettings) => {
+        const { autoRefresh: nextAutoRefresh, ...rest } = next;
+
+        setDateRangePickerSettings(rest);
+
+        if (nextAutoRefresh) {
+          setAutoRefresh((prev) => {
+            const isEnabledChanged = prev.isEnabled !== nextAutoRefresh.isEnabled;
+            const intervalChanged = prev.interval !== nextAutoRefresh.interval;
+
+            if (isEnabledChanged || intervalChanged) {
+              propsOnRefreshChange?.({
+                isPaused: !nextAutoRefresh.isEnabled,
+                refreshInterval: nextAutoRefresh.interval,
+              });
+            }
+
+            return nextAutoRefresh;
+          });
+        }
+      },
+      [propsOnRefreshChange]
     );
 
     const onInputSubmit = useCallback(
@@ -579,6 +663,11 @@ export const QueryBarTopRow = React.memo(
       };
     }, [onDraftChangeDebounced]);
 
+    // Pass raw date math / ISO strings so DateRangePicker's internal parser can handle them.
+    // Display label resolution (e.g. "now/w to now/w" → "This week") is done by
+    // DateRangePicker itself using the `presets` it already receives.
+    const dateRangeValue = `${props.dateRangeFrom ?? 'now-15m'} to ${props.dateRangeTo ?? 'now'}`;
+
     function shouldRenderQueryInput(): boolean {
       return Boolean(showQueryInput && props.query && storage);
     }
@@ -611,8 +700,6 @@ export const QueryBarTopRow = React.memo(
       }
       let isDisabled: boolean | { display: React.ReactNode } = Boolean(props.isDisabled);
       let enableTooltip = false;
-      // On text based mode the datepicker is always on when the user has unsaved changes.
-      // When the user doesn't have any changes it should be disabled if dataview doesn't have @timestamp field
       if (Boolean(isQueryLangSelected) && !props.isDirty) {
         const adHocDataview = props.indexPatterns?.[0];
         if (adHocDataview && typeof adHocDataview !== 'string') {
@@ -631,48 +718,78 @@ export const QueryBarTopRow = React.memo(
 
       const wrapperClasses = classNames('kbnQueryBar__datePickerWrapper');
 
-      const timeZoneName = uiSettings.get('dateFormat:tz');
-      const timeZoneSettingTip = i18n.translate(
-        'unifiedSearch.queryBarTopRow.datePicker.timeZoneSettingTip',
-        {
-          defaultMessage: 'Time zone is set in space settings by administrators',
-        }
-      );
-      const timeZoneCustomRender: EuiTimeZoneDisplayProps['customRender'] = ({ nameDisplay }) => (
-        <>
-          {nameDisplay}
-          <EuiIconTip content={timeZoneSettingTip} color="subdued" />
-        </>
-      );
+      let datePicker: JSX.Element;
 
-      const datePicker = (
-        <SuperDatePicker
-          isDisabled={isDisabled}
-          start={props.dateRangeFrom}
-          end={props.dateRangeTo}
-          isPaused={props.isRefreshPaused}
-          refreshInterval={props.refreshInterval}
-          refreshMinInterval={props.minRefreshInterval}
-          onTimeChange={onTimeChange}
-          onRefresh={onRefresh}
-          onRefreshChange={props.onRefreshChange}
-          showUpdateButton={false}
-          recentlyUsedRanges={recentlyUsedRanges}
-          locale={i18n.getLocale()}
-          commonlyUsedRanges={commonlyUsedRanges}
-          dateFormat={uiSettings.get('dateFormat')}
-          isAutoRefreshOnly={showAutoRefreshOnly}
-          className="kbnQueryBar__datePicker"
-          isQuickSelectOnly={isMobile ? false : isQueryInputFocused}
-          width={isMobile ? 'full' : 'auto'}
-          compressed
-          showTimeWindowButtons
-          timeZoneDisplayProps={{
-            timeZone: timeZoneName,
-            customRender: timeZoneCustomRender,
-          }}
-        />
-      );
+      if (shouldUseLegacyTimePicker) {
+        const timeZoneName = uiSettings.get('dateFormat:tz');
+        const timeZoneSettingTip = i18n.translate(
+          'unifiedSearch.queryBarTopRow.datePicker.timeZoneSettingTip',
+          {
+            defaultMessage: 'Time zone is set in space settings by administrators',
+          }
+        );
+        const timeZoneCustomRender: EuiTimeZoneDisplayProps['customRender'] = ({ nameDisplay }) => (
+          <>
+            {nameDisplay}
+            <EuiIconTip content={timeZoneSettingTip} color="subdued" />
+          </>
+        );
+        datePicker = (
+          <SuperDatePicker
+            isDisabled={isDisabled}
+            start={props.dateRangeFrom}
+            end={props.dateRangeTo}
+            isPaused={props.isRefreshPaused}
+            refreshInterval={props.refreshInterval}
+            refreshMinInterval={props.minRefreshInterval}
+            onTimeChange={onTimeChange}
+            onRefresh={onRefresh}
+            onRefreshChange={props.onRefreshChange}
+            showUpdateButton={false}
+            recentlyUsedRanges={recentlyUsedRanges}
+            locale={i18n.getLocale()}
+            commonlyUsedRanges={commonlyUsedRanges}
+            dateFormat={uiSettings.get('dateFormat')}
+            isAutoRefreshOnly={showAutoRefreshOnly}
+            className="kbnQueryBar__datePicker"
+            isQuickSelectOnly={isMobile ? false : isQueryInputFocused}
+            width={isMobile ? 'full' : 'auto'}
+            compressed
+            showTimeWindowButtons
+            timeZoneDisplayProps={{
+              timeZone: timeZoneName,
+              customRender: timeZoneCustomRender,
+            }}
+          />
+        );
+      } else {
+        const noTimeFieldNameDisabled =
+          typeof isDisabled === 'object' && isDisabled.display !== undefined;
+        datePicker = (
+          <DateRangePicker
+            data-test-subj={`${props.dataTestSubj}-dateRangePicker`}
+            className="kbnQueryBar__datePicker"
+            value={noTimeFieldNameDisabled ? strings.getDisabledDatePickerLabel() : dateRangeValue}
+            onChange={onDateRangeChange}
+            onInputChange={onDateRangeInputChange}
+            isInvalid={isDateRangeInvalid}
+            isLoading={props.isLoading}
+            disabled={props.isDisabled || noTimeFieldNameDisabled}
+            width="auto"
+            compressed
+            collapsed="auto"
+            showTimeWindowButtons
+            presets={commonlyUsedRanges}
+            recent={recentlyUsedRanges}
+            settings={dateRangePickerSettingsWithAutoRefresh}
+            onSettingsChange={onDateRangePickerSettingsChange}
+            onRefresh={propsOnRefreshChange ? onDateRangePickerRefresh : undefined}
+            timeZone={uiSettings.get('dateFormat:tz')}
+            prependBasePath={http?.basePath.prepend}
+          />
+        );
+      }
+
       const component = getWrapperWithTooltip(datePicker, enableTooltip, props.query);
 
       return (
@@ -1058,6 +1175,7 @@ export const QueryBarTopRow = React.memo(
       wrap: true,
       css: css`
         padding: ${isQueryLangSelected && !props.disableExternalPadding ? euiTheme.size.s : 0};
+        container-type: inline-size;
       `,
     };
 
