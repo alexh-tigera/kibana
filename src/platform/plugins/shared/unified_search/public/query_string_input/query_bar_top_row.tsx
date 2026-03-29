@@ -777,7 +777,7 @@ export const QueryBarTopRow = React.memo(
             disabled={props.isDisabled || noTimeFieldNameDisabled}
             width="auto"
             compressed
-            collapsed="auto"
+            collapsed="never"
             showTimeWindowButtons
             presets={commonlyUsedRanges}
             recent={recentlyUsedRanges}
@@ -1175,7 +1175,6 @@ export const QueryBarTopRow = React.memo(
       wrap: true,
       css: css`
         padding: ${isQueryLangSelected && !props.disableExternalPadding ? euiTheme.size.s : 0};
-        container-type: inline-size;
       `,
     };
 
