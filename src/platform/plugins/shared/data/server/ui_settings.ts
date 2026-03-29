@@ -496,7 +496,7 @@ export function getUiSettings(
       name: i18n.translate('data.advancedSettings.timepicker.useDateRangePickerTitle', {
         defaultMessage: 'New date range picker',
       }),
-      value: false,
+      value: true,
       description: i18n.translate('data.advancedSettings.timepicker.useDateRangePickerText', {
         defaultMessage:
           'Use the new picker for time filtering in Discover, Dashboards and some parts of Kibana. When disabled, the legacy picker is used instead.',
