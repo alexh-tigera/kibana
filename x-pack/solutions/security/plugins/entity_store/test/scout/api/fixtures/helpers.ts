@@ -22,7 +22,12 @@ import {
  */
 export const clearEntityStoreIndices = async (esClient: EsClient) => {
   await esClient.indices.delete(
-    { index: [LATEST_INDEX, UPDATES_INDEX, HISTORY_INDEX_PATTERN], ignore_unavailable: true },
+    {
+      index: [LATEST_INDEX, UPDATES_INDEX, HISTORY_INDEX_PATTERN],
+      ignore_unavailable: true,
+      expand_wildcards: 'all',
+      allow_no_indices: true,
+    },
     { ignore: [404] }
   );
 };
