@@ -224,6 +224,11 @@ export class TimePickerPageObject extends FtrService {
 
   private async setAbsoluteRangeNewPicker(fromTime: string, toTime: string) {
     const rangeText = `${fromTime} to ${toTime}`;
+    // The parser normalizes absolute dates to ISO, so data-date-range will
+    // contain ISO strings. Convert the expected start time to ISO for matching.
+    const expectedFromISO = moment
+      .utc(fromTime, TimePickerPageObject.LEGACY_DATE_FORMAT)
+      .toISOString();
     await this.retry.waitFor(`date range to be set to ${rangeText}`, async () => {
       await this.testSubjects.click('dateRangePickerControlButton');
       await this.testSubjects.exists('dateRangePickerInput', { timeout: 5000 });
@@ -236,9 +241,9 @@ export class TimePickerPageObject extends FtrService {
         'data-date-range'
       );
       this.log.debug(
-        `Validating date range - expected contains: '${fromTime}', actual: '${actualRange}'`
+        `Validating date range - expected ISO: '${expectedFromISO}', actual: '${actualRange}'`
       );
-      return actualRange != null && actualRange.includes(fromTime);
+      return actualRange != null && actualRange.includes(expectedFromISO);
     });
   }
 
@@ -391,7 +396,7 @@ export class TimePickerPageObject extends FtrService {
    * (e.g. `now-15m`) are returned as-is.
    */
   private static formatDateForLegacy(raw: string): string {
-    const parsed = moment(raw);
+    const parsed = moment.utc(raw);
     return parsed.isValid() ? parsed.format(TimePickerPageObject.LEGACY_DATE_FORMAT) : raw;
   }
 
@@ -415,21 +420,11 @@ export class TimePickerPageObject extends FtrService {
   }
 
   /**
-   * Reads the current date range from the new DateRangePicker. Prefers the
-   * display `value` attribute (split on →) for absolute ranges, falls back
-   * to `data-date-range` for relative/dateMath values.
+   * Reads the current date range from the new DateRangePicker via data-date-range,
+   * which contains ISO strings for absolute dates and dateMath for relative dates.
+   * ISO dates are formatted with the legacy display format for test compatibility.
    */
   private async getNewPickerTimeConfig(): Promise<{ start: string; end: string }> {
-    const displayText =
-      (await this.testSubjects.getAttribute('dateRangePickerControlButton', 'value')) ?? '';
-    if (displayText.includes('→')) {
-      const [start, end] = displayText.split('→').map((s) => s.trim());
-      return {
-        start: TimePickerPageObject.formatDateForLegacy(start),
-        end: TimePickerPageObject.formatDateForLegacy(end),
-      };
-    }
-    // Preset label (e.g. "Last 15 minutes") — fall back to raw dateMath
     const dateRange = await this.getStableDateRange();
     const [rawStart, rawEnd] = dateRange.split(' to ');
     return {
