@@ -21,13 +21,12 @@ import {
  * sequential test-target runs that share the same ES cluster.
  */
 export const clearEntityStoreIndices = async (esClient: EsClient) => {
+  const resolved = await esClient.indices.resolveIndex({ name: HISTORY_INDEX_PATTERN });
+  const historyIndices = resolved.indices.map((i) => i.name);
+
+  const toDelete = [LATEST_INDEX, UPDATES_INDEX, ...historyIndices];
   await esClient.indices.delete(
-    {
-      index: [LATEST_INDEX, UPDATES_INDEX, HISTORY_INDEX_PATTERN],
-      ignore_unavailable: true,
-      expand_wildcards: 'all',
-      allow_no_indices: true,
-    },
+    { index: toDelete, ignore_unavailable: true },
     { ignore: [404] }
   );
 };
