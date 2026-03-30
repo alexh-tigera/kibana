@@ -20,6 +20,8 @@ import {
 import type { CloudConnectorSOAttributes } from '../../types/so_attributes';
 import { appContextService } from '../../services';
 import { agentPolicyService, getAgentPolicySavedObjectType } from '../../services/agent_policy';
+import { getInstallation, getPackageInfo } from '../../services/epm/packages';
+import { FleetError } from '../../errors';
 import { throwIfAborted } from '../utils';
 
 const TASK_TYPE = 'fleet:verify_permissions';
@@ -196,15 +198,15 @@ async function runPermissionVerifierTask(abortController: AbortController) {
         })`
       );
 
-      const verificationInfo = packagePolicyMap.get(connector.id);
-      if (!verificationInfo || verificationInfo.policyTemplates.length === 0) {
+      const policyTemplates = packagePolicyMap.get(connector.id);
+      if (!policyTemplates || policyTemplates.length === 0) {
         logger.debug(
           `${VERIFY_PERMISSIONS_TASK} Connector ${connector.id} has no policy templates, skipping`
         );
         continue;
       }
       try {
-        await verifyConnector(soClient, esClient, connector, verificationInfo, abortController);
+        await verifyConnector(soClient, esClient, connector, policyTemplates, abortController);
       } catch (error) {
         logger.error(
           `${VERIFY_PERMISSIONS_TASK} Failed to verify connector ${connector.id}: ${error.message}`
@@ -283,24 +285,23 @@ interface ConnectorVerificationInfo {
 }
 
 /**
- * Build a map of connector ID -> verification info from package policies
+ * Build a map of connector ID -> policy templates from package policies
  * that have a cloud_connector_id set. Extracts policy_templates from each
- * package policy's enabled input and captures package metadata.
+ * package policy's enabled input.
  */
 async function getPackagePolicyMap(
   soClient: SavedObjectsClientContract
-): Promise<Map<string, ConnectorVerificationInfo>> {
+): Promise<Map<string, string[]>> {
   const packagePolicies = await soClient.find<{
     cloud_connector_id?: string;
     inputs?: Array<{ enabled: boolean; policy_template?: string }>;
-    package?: { name: string; title: string; version: string };
   }>({
     type: PACKAGE_POLICY_SAVED_OBJECT_TYPE,
     filter: `${PACKAGE_POLICY_SAVED_OBJECT_TYPE}.attributes.cloud_connector_id: *`,
     perPage: 100,
   });
 
-  const map = new Map<string, ConnectorVerificationInfo>();
+  const map = new Map<string, string[]>();
   for (const pp of packagePolicies.saved_objects) {
     const connectorId = pp.attributes.cloud_connector_id?.trim();
     if (!connectorId) continue;
@@ -308,15 +309,10 @@ async function getPackagePolicyMap(
     const enabledInput = pp.attributes.inputs?.find((i) => i.enabled);
     const template = enabledInput?.policy_template ?? '';
 
-    const existing = map.get(connectorId) ?? {
-      policyTemplates: [],
-      packageName: pp.attributes.package?.name ?? '',
-      packageTitle: pp.attributes.package?.title ?? '',
-      packageVersion: pp.attributes.package?.version ?? '',
-    };
+    const existing = map.get(connectorId) ?? [];
 
-    if (template && !existing.policyTemplates.includes(template)) {
-      existing.policyTemplates.push(template);
+    if (template && !existing.includes(template)) {
+      existing.push(template);
     }
 
     map.set(connectorId, existing);
@@ -392,12 +388,35 @@ async function verifyConnector(
   soClient: SavedObjectsClientContract,
   esClient: ElasticsearchClient,
   connector: SavedObject<CloudConnectorSOAttributes>,
-  verificationInfo: ConnectorVerificationInfo,
+  policyTemplates: string[],
   abortController: AbortController
 ) {
   const logger = appContextService.getLogger().get('otel-verifier');
 
   try {
+    const { cloudProvider } = connector.attributes;
+    const installation = await getInstallation({
+      savedObjectsClient: soClient,
+      pkgName: cloudProvider,
+    });
+    if (!installation) {
+      throw new FleetError(`Package '${cloudProvider}' is not installed`);
+    }
+
+    const pkgInfo = await getPackageInfo({
+      savedObjectsClient: soClient,
+      pkgName: cloudProvider,
+      pkgVersion: installation.version,
+      skipArchive: true,
+    });
+
+    const verificationInfo: ConnectorVerificationInfo = {
+      policyTemplates,
+      packageName: pkgInfo.name,
+      packageTitle: pkgInfo.title ?? cloudProvider,
+      packageVersion: pkgInfo.version,
+    };
+
     logger.info(
       `${VERIFY_PERMISSIONS_TASK} Creating verifier policy for connector ${connector.id} with templates [` +
         `${verificationInfo.policyTemplates.join(', ')}]`

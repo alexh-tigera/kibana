@@ -32,6 +32,11 @@ jest.mock('../../services/agent_policy', () => ({
   getAgentPolicySavedObjectType: jest.fn().mockResolvedValue('ingest-agent-policies'),
 }));
 
+jest.mock('../../services/epm/packages', () => ({
+  getInstallation: jest.fn().mockResolvedValue({ name: 'aws', version: '2.0.0' }),
+  getPackageInfo: jest.fn().mockResolvedValue({ name: 'aws', title: 'AWS', version: '2.0.0' }),
+}));
+
 const mockedAgentPolicyService = agentPolicyService as jest.Mocked<typeof agentPolicyService>;
 const mockedGetAgentPolicySavedObjectType = getAgentPolicySavedObjectType as jest.MockedFunction<
   typeof getAgentPolicySavedObjectType

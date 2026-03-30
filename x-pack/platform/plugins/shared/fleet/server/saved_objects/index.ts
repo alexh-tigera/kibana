@@ -455,19 +455,6 @@ export const getSavedObjectTypes = (
               type: 'mappings_addition',
               addedMappings: {
                 is_verifier: { type: 'boolean' },
-              },
-            },
-          ],
-          schemas: {
-            forwardCompatibility: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
-            create: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
-          },
-        },
-        '10': {
-          changes: [
-            {
-              type: 'mappings_addition',
-              addedMappings: {
                 created_at: { type: 'date' },
               },
             },
@@ -570,19 +557,6 @@ export const getSavedObjectTypes = (
               type: 'mappings_addition',
               addedMappings: {
                 is_verifier: { type: 'boolean' },
-              },
-            },
-          ],
-          schemas: {
-            forwardCompatibility: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
-            create: AgentPolicySchemaV3.extends({}, { unknowns: 'ignore' }),
-          },
-        },
-        '5': {
-          changes: [
-            {
-              type: 'mappings_addition',
-              addedMappings: {
                 created_at: { type: 'date' },
               },
             },

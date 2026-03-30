@@ -40,6 +40,7 @@ import {
 } from '../errors';
 
 import { appContextService } from './app_context';
+import { validatePolicyNamespaceForSpace } from './spaces/policy_namespaces';
 import { extractSecretIdsFromCloudConnectorVars } from './secrets/cloud_connector';
 import { deleteSecrets } from './secrets/common';
 
@@ -222,10 +223,14 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
       // Validate and normalize the name, checking for duplicates
       const name = await this.validateAndNormalizeName(soClient, cloudConnector.name);
 
-      // Check if space awareness is enabled for namespace handling
-      const { isSpaceAwarenessEnabled } = await import('./spaces/helpers');
-      const useSpaceAwareness = await isSpaceAwarenessEnabled();
-      const namespace = useSpaceAwareness ? '*' : undefined;
+      const namespace = cloudConnector.namespace ?? 'default';
+
+      if (namespace) {
+        await validatePolicyNamespaceForSpace({
+          namespace,
+          spaceId: soClient.getCurrentNamespace(),
+        });
+      }
 
       const cloudConnectorAttributes: CloudConnectorSOAttributes = {
         name,

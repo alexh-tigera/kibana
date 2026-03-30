@@ -2534,12 +2534,10 @@ class AgentPolicyService {
       cloudProvider,
       accountType,
       vars: connectorVars,
-      namespace: connectorNamespace,
     } = connector.attributes;
     const { policyTemplates, packageName, packageTitle, packageVersion } = verificationInfo;
     const shortId = uuidv4().slice(0, 8);
-    const policyName = `verifier-${connectorId}-${shortId}`;
-    const policyId = uuidv4();
+    const policyName = `Verifier-Agent-Policy-${connectorName}-${shortId}`;
     const verificationId = uuidv4();
 
     const agentPolicy = await this.create(
@@ -2555,8 +2553,14 @@ class AgentPolicyService {
         monitoring_enabled: [],
         keep_monitoring_alive: true,
         is_protected: false,
+        agentless: {
+          cloud_connectors: {
+            enabled: true,
+            target_csp: cloudProvider,
+          },
+        },
       },
-      { id: policyId, skipDeploy: true }
+      { skipDeploy: true }
     );
 
     const credentialVars = buildVerifierCredentialVars(cloudProvider, connectorVars);
@@ -2581,30 +2585,30 @@ class AgentPolicyService {
               enabled: true,
               data_stream: {
                 type: 'logs',
-                dataset: 'verifier_otel.verifierreceiver',
+                dataset: 'verifier_otel.verification',
               },
               vars: {
                 'data_stream.dataset': {
                   type: 'text',
-                  value: 'verifier_otel.verifierreceiver',
+                  value: 'verifier_otel.verification',
                 },
                 cloud_connector_id: { type: 'text', value: connectorId },
                 cloud_connector_name: { type: 'text', value: connectorName },
                 verification_id: { type: 'text', value: verificationId },
-                verification_type: { type: 'select', value: 'scheduled' },
+                verification_type: { type: 'select', value: 'on_demand' },
                 provider: { type: 'text', value: cloudProvider },
                 account_type: {
                   type: 'select',
                   value: accountType ?? 'single_account',
                 },
                 ...credentialVars,
-                policy_id: { type: 'text', value: '' },
-                policy_name: { type: 'text', value: `Verifier-Policy-${connectorName}-${shortId}` },
-                policy_templates: { type: 'multi', value: policyTemplates },
+                policy_id: { type: 'text', value: agentPolicy.id },
+                policy_name: { type: 'text', value: policyName },
+                policy_templates: { type: 'text', value: policyTemplates.join(',') },
                 package_name: { type: 'text', value: packageName },
                 package_title: { type: 'text', value: packageTitle },
                 package_version: { type: 'text', value: packageVersion },
-                namespace: { type: 'text', value: connectorNamespace ?? 'default' },
+                namespace: { type: 'text', value: 'default' },
               },
             },
           ],
@@ -2627,7 +2631,7 @@ class AgentPolicyService {
         }
       );
       logger.info(
-        `${VERIFY_PERMISSIONS_TASK} Created OTel package policy ${otelPackagePolicy.id} for verifier policy ${agentPolicy.id}`
+        `${VERIFY_PERMISSIONS_TASK} Successfully Created OTel package policy ${otelPackagePolicy.id} for verifier policy ${agentPolicy.id}`
       );
     } catch (err) {
       logger.error(
