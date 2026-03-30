@@ -173,12 +173,17 @@ export class StreamsApp {
   }
 
   async verifyDatePickerTimeRange(expectedRange: { from: string; to: string }) {
-    // Use .first() because some pages (like Retention) may have multiple date pickers
-    const isNewPicker = await this.page.testSubj
-      .locator('dateRangePickerControlButton')
-      .first()
-      .isVisible({ timeout: 2000 })
-      .catch(() => false);
+    // Detect which picker variant is on the page by waiting for the control button
+    let isNewPicker = false;
+    try {
+      await this.page.testSubj
+        .locator('dateRangePickerControlButton')
+        .first()
+        .waitFor({ state: 'visible', timeout: 5000 });
+      isNewPicker = true;
+    } catch {
+      // DateRangePickerControlButton not found — fall back to legacy
+    }
 
     if (isNewPicker) {
       // The control button stores the raw time range in a data attribute
@@ -187,17 +192,18 @@ export class StreamsApp {
       const dateRange = (await controlButton.getAttribute('data-date-range')) ?? '';
       const [rawStart, rawEnd] = dateRange.split(' to ');
 
-      // Convert Kibana-formatted dates (e.g. "Sep 20, 2023 @ 00:00:00.000") to ISO
-      const toIso = (s: string) => {
-        const parsed = new Date(s.replace(' @ ', ', '));
+      // Convert Kibana-formatted dates (e.g. "Sep 20, 2023 @ 00:00:00.000") to UTC ISO.
+      // Append ' UTC' to force UTC interpretation so we match the ISO dates in data-date-range.
+      const toUtcIso = (s: string) => {
+        const parsed = new Date(s.replace(' @ ', ', ') + ' UTC');
         return isNaN(parsed.getTime()) ? s : parsed.toISOString();
       };
 
-      expect(toIso(rawStart?.trim() ?? ''), `Date picker 'start date' is incorrect`).toBe(
-        toIso(expectedRange.from)
+      expect(rawStart?.trim() ?? '', `Date picker 'start date' is incorrect`).toBe(
+        toUtcIso(expectedRange.from)
       );
-      expect(toIso(rawEnd?.trim() ?? ''), `Date picker 'end date' is incorrect`).toBe(
-        toIso(expectedRange.to)
+      expect(rawEnd?.trim() ?? '', `Date picker 'end date' is incorrect`).toBe(
+        toUtcIso(expectedRange.to)
       );
     } else {
       await expect(

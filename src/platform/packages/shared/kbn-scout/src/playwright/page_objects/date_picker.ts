@@ -36,10 +36,15 @@ export class DatePicker {
    * Detects whether the page is using the new DateRangePicker or the legacy
    * EuiSuperDatePicker. Not cached because the lazy page object proxy lacks a
    * `set` trap, so instance property writes through the proxy are lost.
+   *
+   * When a containerLocator is provided, the detection is scoped to that
+   * container (useful when the only DateRangePicker lives inside a panel).
    */
-  private async isNewDateRangePicker(): Promise<boolean> {
+  private async isNewDateRangePicker(containerLocator?: Locator): Promise<boolean> {
     try {
-      await this.page.testSubj.locator('dateRangePickerControlButton').waitFor({ timeout: 2000 });
+      await this.getTestSubjLocator('dateRangePickerControlButton', containerLocator).waitFor({
+        timeout: 5000,
+      });
       return true;
     } catch {
       return false;
@@ -190,13 +195,17 @@ export class DatePicker {
 
   private async openCustomRangePanel(containerLocator?: Locator) {
     await this.ensurePickerVisible(containerLocator);
+    // Click the control button scoped to the container
     await this.getTestSubjLocator('dateRangePickerControlButton', containerLocator).click();
-    await this.getTestSubjLocator('dateRangePickerCustomRangeNavItem', containerLocator).click();
-    await this.getTestSubjLocator('dateRangePickerCustomRangePanel', containerLocator).waitFor();
+    // The dialog/popover renders as a portal at the page root, not inside the container,
+    // so dialog elements must be found at the page level.
+    await this.page.testSubj.locator('dateRangePickerCustomRangeNavItem').click();
+    await this.page.testSubj.locator('dateRangePickerCustomRangePanel').waitFor();
   }
 
-  private async setDatePart(side: 'Start' | 'End', value: string, containerLocator?: Locator) {
-    const datePart = this.getTestSubjLocator(`dateRangePicker${side}DatePart`, containerLocator);
+  private async setDatePart(side: 'Start' | 'End', value: string) {
+    // Dialog elements render as a portal at the page root
+    const datePart = this.page.testSubj.locator(`dateRangePicker${side}DatePart`);
     await datePart.getByRole('button', { name: 'Absolute' }).click();
     const input = datePart.getByRole('textbox');
     await input.clear();
@@ -214,12 +223,10 @@ export class DatePicker {
     validateDates?: boolean;
     containerLocator?: Locator;
   }) {
-    await this.setDatePart('Start', from, containerLocator);
-    await this.setDatePart('End', to, containerLocator);
-    await this.getTestSubjLocator(
-      'dateRangePickerCustomRangeApplyButton',
-      containerLocator
-    ).click();
+    // Dialog elements render as a portal at the page root
+    await this.setDatePart('Start', from);
+    await this.setDatePart('End', to);
+    await this.page.testSubj.locator('dateRangePickerCustomRangeApplyButton').click();
 
     if (validateDates) {
       const controlButton = this.getTestSubjLocator(
@@ -275,7 +282,7 @@ export class DatePicker {
     to: string;
     containerLocator: Locator;
   }) {
-    if (await this.isNewDateRangePicker()) {
+    if (await this.isNewDateRangePicker(containerLocator)) {
       await this.openCustomRangePanel(containerLocator);
       await this.typeAbsoluteRangeNewPicker({
         from,
@@ -306,7 +313,7 @@ export class DatePicker {
     validateDates?: boolean;
     containerLocator?: Locator;
   }) {
-    if (await this.isNewDateRangePicker()) {
+    if (await this.isNewDateRangePicker(containerLocator)) {
       await this.typeAbsoluteRangeNewPicker({ from, to, validateDates, containerLocator });
     } else {
       await this.typeAbsoluteRangeLegacy({ from, to, validateDates, containerLocator });
