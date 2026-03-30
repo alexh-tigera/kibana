@@ -143,8 +143,8 @@ export class TimePickerPageObject extends FtrService {
     if (await this.isNewDateRangePicker()) {
       await this.testSubjects.click('dateRangePickerControlButton');
       await this.testSubjects.exists('dateRangePickerMainPanel', { timeout: 5000 });
-      // Preset items use a different naming convention: spaces become underscores
-      const presetTestSubj = `dateRangePickerPresetItem-${option}`;
+      // The component's toTestSubj replaces all whitespace with underscores
+      const presetTestSubj = `dateRangePickerPresetItem-${option.replace(/\s+/g, '_')}`;
       await this.testSubjects.exists(presetTestSubj, { timeout: 5000 });
       await this.testSubjects.click(presetTestSubj);
     } else {

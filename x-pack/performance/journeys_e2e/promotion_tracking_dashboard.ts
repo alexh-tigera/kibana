@@ -45,8 +45,14 @@ export const journey = new Journey({
   })
 
   .step('Change time range', async ({ page }) => {
-    await page.click(subj('superDatePickerToggleQuickMenuButton'));
-    await page.click(subj('superDatePickerCommonlyUsed_Last_30 days'));
+    const isNewPicker = (await page.$(subj('dateRangePickerControlButton'))) !== null;
+    if (isNewPicker) {
+      await page.click(subj('dateRangePickerControlButton'));
+      await page.click(subj('dateRangePickerPresetItem-Last_30_days'));
+    } else {
+      await page.click(subj('superDatePickerToggleQuickMenuButton'));
+      await page.click(subj('superDatePickerCommonlyUsed_Last_30 days'));
+    }
   })
 
   .step('Wait for visualization animations to finish', async ({ kibanaPage }) => {
