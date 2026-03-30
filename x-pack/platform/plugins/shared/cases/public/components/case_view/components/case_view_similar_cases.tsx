@@ -19,9 +19,14 @@ import { SimilarCasesTable } from '../../similar_cases/table';
 interface CaseViewSimilarCasesProps {
   caseData: CaseUI;
   searchTerm?: string;
+  hideTopLevelCaseTabs?: boolean;
 }
 
-export const CaseViewSimilarCases = ({ caseData, searchTerm }: CaseViewSimilarCasesProps) => {
+export const CaseViewSimilarCases = ({
+  caseData,
+  searchTerm,
+  hideTopLevelCaseTabs = false,
+}: CaseViewSimilarCasesProps) => {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(CASES_TABLE_PER_PAGE_VALUES[0]);
 
@@ -50,11 +55,13 @@ export const CaseViewSimilarCases = ({ caseData, searchTerm }: CaseViewSimilarCa
   return (
     <EuiFlexGroup>
       <EuiFlexItem>
-        <CaseViewTabs
-          caseData={caseData}
-          activeTab={CASE_VIEW_PAGE_TABS.SIMILAR_CASES}
-          searchTerm={searchTerm}
-        />
+        {hideTopLevelCaseTabs ? null : (
+          <CaseViewTabs
+            caseData={caseData}
+            activeTab={CASE_VIEW_PAGE_TABS.SIMILAR_CASES}
+            searchTerm={searchTerm}
+          />
+        )}
         <EuiFlexGroup>
           <EuiFlexItem>
             <SimilarCasesTable

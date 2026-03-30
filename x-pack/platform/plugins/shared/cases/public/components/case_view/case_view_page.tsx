@@ -6,11 +6,16 @@
  */
 
 import { EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import { CASE_VIEW_PAGE_TABS } from '../../../common/types';
-import { useUrlParams } from '../../common/navigation';
+import { useAllCasesNavigation, useUrlParams } from '../../common/navigation';
+import { useKibana } from '../../common/lib/kibana';
+import { useDeleteCases } from '../../containers/use_delete_cases';
 import { useCasesContext } from '../cases_context/use_cases_context';
 import { CaseActionBar } from '../case_action_bar';
+import { ConfirmDeleteCaseModal } from '../confirm_delete_case';
 import { HeaderPage } from '../header_page';
 import { EditableTitle } from '../header_page/editable_title';
 import { useCasesTitleBreadcrumbs } from '../use_breadcrumbs';
@@ -26,6 +31,10 @@ import { CaseViewSimilarCases } from './components/case_view_similar_cases';
 import { CaseViewEvents } from './components/case_view_events';
 import { CaseViewAttachments } from './components/case_view_attachments';
 import { filterCaseAttachmentsBySearchTerm } from './components/helpers';
+import { useCaseViewAppMenu } from './use_case_view_app_menu';
+import { useCaseViewHeaderMetadata } from './use_case_view_header_metadata';
+import { useCaseViewHeaderTabs } from './use_case_view_header_tabs';
+import * as caseViewI18n from './translations';
 
 const getActiveTabId = (tabId?: string) => {
   if (tabId && Object.values(CASE_VIEW_PAGE_TABS).includes(tabId as CASE_VIEW_PAGE_TABS)) {
@@ -55,8 +64,14 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
     renderEventsTable,
   }) => {
     const { features } = useCasesContext();
+    const { chrome } = useKibana().services;
+    const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+    const isProjectChrome = chromeStyle === 'project';
     const { urlParams } = useUrlParams();
     const refreshCaseViewPage = useRefreshCaseViewPage();
+    const { mutate: deleteCases } = useDeleteCases();
+    const { navigateToAllCases } = useAllCasesNavigation();
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState<string>('');
     const onSearch = useCallback(
@@ -74,11 +89,45 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
 
     useCasesTitleBreadcrumbs(caseData.title);
 
-    const activeTabId = getActiveTabId(urlParams?.tabId);
+    const activeTabId = getActiveTabId(urlParams?.tabId) as CASE_VIEW_PAGE_TABS;
 
     const { onUpdateField, isLoading, loadingKey } = useOnUpdateField({
       caseData,
     });
+
+    const headerMetadata = useCaseViewHeaderMetadata(caseData);
+    const caseViewAppMenuBase = useCaseViewAppMenu({
+      caseData,
+      onOpenDeleteModal: () => {
+        setIsDeleteModalVisible(true);
+      },
+    });
+    const caseViewHeaderTabs = useCaseViewHeaderTabs({
+      caseData: caseWithFilteredAttachments,
+      activeTabId,
+      searchTerm,
+    });
+    const caseViewAppMenuConfig = useMemo(() => {
+      if (!caseViewAppMenuBase) {
+        return undefined;
+      }
+      const withMetadata = headerMetadata
+        ? { ...caseViewAppMenuBase, headerMetadata }
+        : caseViewAppMenuBase;
+      return { ...withMetadata, headerTabs: caseViewHeaderTabs };
+    }, [caseViewAppMenuBase, headerMetadata, caseViewHeaderTabs]);
+
+    const onConfirmCaseDeletion = useCallback(() => {
+      setIsDeleteModalVisible(false);
+      deleteCases(
+        { caseIds: [caseData.id], successToasterTitle: caseViewI18n.DELETED_CASES(1) },
+        { onSuccess: navigateToAllCases }
+      );
+    }, [caseData.id, deleteCases, navigateToAllCases]);
+
+    const onCancelCaseDeletion = useCallback(() => {
+      setIsDeleteModalVisible(false);
+    }, []);
 
     // Set `refreshRef` if needed
     useEffect(() => {
@@ -111,6 +160,16 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
 
     return (
       <>
+        {isProjectChrome && caseViewAppMenuConfig ? (
+          <AppMenu config={caseViewAppMenuConfig} setAppMenu={chrome.setAppMenu} />
+        ) : null}
+        {isProjectChrome && isDeleteModalVisible ? (
+          <ConfirmDeleteCaseModal
+            totalCasesToBeDeleted={1}
+            onCancel={onCancelCaseDeletion}
+            onConfirm={onConfirmCaseDeletion}
+          />
+        ) : null}
         <HeaderPage
           border={false}
           data-test-subj="case-view-title"
@@ -124,11 +183,13 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
           }
           title={caseData.title}
           incrementalId={caseData.incrementalId}
+          hideIncrementalIdRow={isProjectChrome}
         >
           <CaseActionBar
             caseData={caseData}
             isLoading={isLoading && (loadingKey === 'status' || loadingKey === 'settings')}
             onUpdateField={onUpdateField}
+            variant={isProjectChrome ? 'projectChromeSupplements' : 'full'}
           />
         </HeaderPage>
         <EuiFlexGroup>
@@ -146,6 +207,7 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
               actionsNavigation={actionsNavigation}
               showAlertDetails={showAlertDetails}
               useFetchAlertData={useFetchAlertData}
+              hideTopLevelCaseTabs={isProjectChrome}
             />
           )}
           {ATTACHMENT_TABS.includes(activeTabId as CASE_VIEW_PAGE_TABS) && (
@@ -154,6 +216,7 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
               searchTerm={searchTerm}
               activeTab={activeTabId as CASE_VIEW_PAGE_TABS}
               caseData={caseWithFilteredAttachments}
+              hideTopLevelCaseTabs={isProjectChrome}
             >
               <>
                 {activeTabId === CASE_VIEW_PAGE_TABS.ALERTS && features.alerts.enabled && (
@@ -184,7 +247,11 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
             </CaseViewAttachments>
           )}
           {activeTabId === CASE_VIEW_PAGE_TABS.SIMILAR_CASES && (
-            <CaseViewSimilarCases caseData={caseWithFilteredAttachments} searchTerm={searchTerm} />
+            <CaseViewSimilarCases
+              caseData={caseWithFilteredAttachments}
+              searchTerm={searchTerm}
+              hideTopLevelCaseTabs={isProjectChrome}
+            />
           )}
         </EuiFlexGroup>
       </>

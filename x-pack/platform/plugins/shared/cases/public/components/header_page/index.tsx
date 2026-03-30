@@ -24,6 +24,10 @@ export interface HeaderPageProps extends HeaderProps {
   title: string | React.ReactNode;
   titleNode?: React.ReactElement;
   incrementalId?: number | null;
+  /**
+   * When true, the incremental id row is omitted (e.g. shown in project chrome `headerMetadata`).
+   */
+  hideIncrementalIdRow?: boolean;
   'data-test-subj'?: string;
 }
 
@@ -46,6 +50,7 @@ const HeaderPageComponent: React.FC<HeaderPageProps> = ({
   title,
   titleNode,
   incrementalId,
+  hideIncrementalIdRow,
   'data-test-subj': dataTestSubj,
 }) => {
   const { releasePhase } = useCasesContext();
@@ -76,13 +81,15 @@ const HeaderPageComponent: React.FC<HeaderPageProps> = ({
           </EuiFlexItem>
         )}
       </EuiFlexGroup>
-      <EuiFlexGroup>
-        {typeof incrementalId === 'number' && (
-          <EuiFlexItem>
-            <IncrementalIdText incrementalId={incrementalId} />
-          </EuiFlexItem>
-        )}
-      </EuiFlexGroup>
+      {!hideIncrementalIdRow ? (
+        <EuiFlexGroup>
+          {typeof incrementalId === 'number' && (
+            <EuiFlexItem>
+              <IncrementalIdText incrementalId={incrementalId} />
+            </EuiFlexItem>
+          )}
+        </EuiFlexGroup>
+      ) : null}
     </header>
   );
 };

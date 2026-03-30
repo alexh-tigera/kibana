@@ -40,6 +40,7 @@ import * as i18n from '../translations';
 import { SeveritySidebarSelector } from '../../severity/sidebar_selector';
 import { useGetCaseUserActionsStats } from '../../../containers/use_get_case_user_actions_stats';
 import { AssignUsers } from './assign_users';
+import { CaseSidebarStatus } from './case_sidebar_status';
 import { UserActionsActivityBar } from '../../user_actions_activity_bar';
 import type { Assignee } from '../../user_profiles/types';
 import type {
@@ -65,6 +66,7 @@ export const CaseViewActivity = ({
   actionsNavigation,
   showAlertDetails,
   useFetchAlertData,
+  hideTopLevelCaseTabs = false,
 }: {
   ruleDetailsNavigation?: CasesNavigation<string | null | undefined, 'configurable'>;
   caseData: CaseUI;
@@ -72,6 +74,8 @@ export const CaseViewActivity = ({
   showAlertDetails?: (alertId: string, index: string) => void;
   useFetchAlertData: UseFetchAlertData;
   searchTerm?: string;
+  /** When true, top-level case tabs render in project chrome (`headerTabs`) instead. */
+  hideTopLevelCaseTabs?: boolean;
 }) => {
   const [sortOrder, setSortOrder] = useCasesLocalStorage<UserActivitySortOrder>(
     LOCALSTORAGE_SORT_ORDER_KEY,
@@ -217,12 +221,16 @@ export const CaseViewActivity = ({
           max-width: 75%;
         `}
       >
-        <CaseViewTabs
-          caseData={caseData}
-          activeTab={CASE_VIEW_PAGE_TABS.ACTIVITY}
-          searchTerm={searchTerm}
-        />
-        <EuiSpacer size="l" />
+        {hideTopLevelCaseTabs ? null : (
+          <>
+            <CaseViewTabs
+              caseData={caseData}
+              activeTab={CASE_VIEW_PAGE_TABS.ACTIVITY}
+              searchTerm={searchTerm}
+            />
+            <EuiSpacer size="l" />
+          </>
+        )}
         <Description
           isLoadingDescription={isLoadingDescription}
           caseData={caseData}
@@ -277,6 +285,11 @@ export const CaseViewActivity = ({
           <h2>{i18n.CASE_SETTINGS}</h2>
         </EuiScreenReaderOnly>
         <EuiFlexGroup direction="column" responsive={false} gutterSize="xl">
+          <CaseSidebarStatus
+            caseData={caseData}
+            isStatusLoading={isLoading && loadingKey === 'status'}
+            onUpdateField={onUpdateField}
+          />
           {caseAssignmentAuthorized ? (
             <>
               <AssignUsers

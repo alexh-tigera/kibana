@@ -62,11 +62,13 @@ export const CaseViewAttachments = ({
   onSearch,
   searchTerm,
   children,
+  hideTopLevelCaseTabs = false,
 }: PropsWithChildren<{
   caseData: CaseUI;
   activeTab: CASE_VIEW_PAGE_TABS;
   onSearch: (searchTerm: string) => void;
   searchTerm?: string;
+  hideTopLevelCaseTabs?: boolean;
 }>) => {
   const { tabs: caseViewTabs } = useCaseAttachmentTabs({ caseData, activeTab, searchTerm });
   const { navigateToCaseView } = useCaseViewNavigation();
@@ -93,8 +95,12 @@ export const CaseViewAttachments = ({
   return (
     <>
       <EuiFlexItem grow={6}>
-        <CaseViewTabs caseData={caseData} activeTab={activeTab} searchTerm={searchTerm} />
-        <EuiSpacer size="s" />
+        {hideTopLevelCaseTabs ? null : (
+          <>
+            <CaseViewTabs caseData={caseData} activeTab={activeTab} searchTerm={searchTerm} />
+            <EuiSpacer size="s" />
+          </>
+        )}
         <EuiFieldSearch
           placeholder={SEARCH_PLACEHOLDER}
           onSearch={onSearch}
