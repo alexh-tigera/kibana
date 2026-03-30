@@ -31,6 +31,8 @@ import {
   NavigationService,
   ToolsService,
   SkillsService,
+  SmlService,
+  PluginsService,
   EventsService,
   type AgentBuilderInternalService,
 } from './services';
@@ -142,6 +144,8 @@ export class AgentBuilderPlugin
     const docLinksService = new DocLinksService(core.docLinks.links);
     const toolsService = new ToolsService({ http });
     const skillsService = new SkillsService({ http });
+    const smlService = new SmlService({ http });
+    const pluginsService = new PluginsService({ http });
     const accessChecker = new AgentBuilderAccessChecker({ licensing, inference });
 
     const isExperimentalFeaturesEnabled = core.settings.client.get<boolean>(
@@ -157,24 +161,6 @@ export class AgentBuilderPlugin
     }
 
     const { navigationService } = this.setupServices;
-
-    const internalServices: AgentBuilderInternalService = {
-      agentService,
-      attachmentsService,
-      chatService,
-      conversationsService,
-      docLinksService,
-      navigationService,
-      toolsService,
-      skillsService,
-      startDependencies,
-      accessChecker,
-      eventsService,
-    };
-
-    this.internalServices = internalServices;
-
-    setSidebarServices(core, internalServices);
 
     const hasAgentBuilder = core.application.capabilities.agentBuilder?.show === true;
     const sidebar = core.chrome.sidebar.getApp('agentBuilder');
@@ -215,6 +201,29 @@ export class AgentBuilderPlugin
       this.activeSidebarRef = sidebarRef;
       return { chatRef: sidebarRef };
     };
+
+    const internalServices: AgentBuilderInternalService = {
+      agentService,
+      attachmentsService,
+      chatService,
+      conversationsService,
+      docLinksService,
+      navigationService,
+      toolsService,
+      skillsService,
+      smlService,
+      pluginsService,
+      startDependencies,
+      accessChecker,
+      eventsService,
+      openSidebarConversation: (options?: OpenConversationSidebarOptions) => {
+        return openSidebarInternal(options);
+      },
+    };
+
+    this.internalServices = internalServices;
+
+    setSidebarServices(core, internalServices);
 
     const agentBuilderService: AgentBuilderPluginStart = {
       agents: createPublicAgentsContract({ agentService }),
@@ -258,7 +267,7 @@ export class AgentBuilderPlugin
 
         openSidebarInternal(options);
       },
-      updateAttachmentOrigin: (conversationId: string, attachmentId: string, origin: unknown) => {
+      updateAttachmentOrigin: (conversationId: string, attachmentId: string, origin: string) => {
         return attachmentsService.updateOrigin(conversationId, attachmentId, origin);
       },
     };
