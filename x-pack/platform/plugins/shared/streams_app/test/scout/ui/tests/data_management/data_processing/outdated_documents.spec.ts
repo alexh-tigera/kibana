@@ -121,7 +121,10 @@ test.describe(
         .getByTestId('streamsAppKqlSamplesDataSourceNameField')
         .fill('Kql Samples');
       // Set date range within the KQL data source card
-      await pageObjects.datePicker.setAbsoluteRangeInRootContainer({
+      await kqlDataSourceCard
+        .locator('[data-test-subj="superDatePickerShowDatesButton"]:not([disabled])')
+        .click();
+      await pageObjects.datePicker.typeAbsoluteRange({
         from: oldDocumentsDateRange.from,
         to: oldDocumentsDateRange.to,
         containerLocator: kqlDataSourceCard,
@@ -155,7 +158,10 @@ test.describe(
         .getByTestId('streamsAppKqlSamplesDataSourceNameField')
         .fill('Kql Samples');
       // Set date range within the KQL data source card
-      await pageObjects.datePicker.setAbsoluteRangeInRootContainer({
+      await kqlDataSourceCard
+        .locator('[data-test-subj="superDatePickerShowDatesButton"]:not([disabled])')
+        .click();
+      await pageObjects.datePicker.typeAbsoluteRange({
         from: oldDocumentsDateRange.from,
         to: oldDocumentsDateRange.to,
         containerLocator: kqlDataSourceCard,

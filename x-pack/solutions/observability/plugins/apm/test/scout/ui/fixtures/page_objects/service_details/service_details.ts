@@ -61,7 +61,7 @@ export class ServiceDetailsPage {
       })}`
     );
     await this.page
-      .getByTestId('apmUnifiedSearchBar')
+      .getByTestId('superDatePickerToggleQuickMenuButton')
       .waitFor({ state: 'visible', timeout: EXTENDED_TIMEOUT });
   }
 

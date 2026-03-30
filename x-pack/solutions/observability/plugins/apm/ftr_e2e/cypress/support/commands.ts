@@ -113,27 +113,17 @@ Cypress.Commands.add('visitKibana', (url, options) => {
 Cypress.Commands.add('selectAbsoluteTimeRange', (start: string, end: string) => {
   const format = 'MMM D, YYYY @ HH:mm:ss.SSS';
 
-  // Open the DateRangePicker and navigate to the custom range panel
-  cy.getByTestSubj('dateRangePickerControlButton').click();
-  cy.getByTestSubj('dateRangePickerCustomRangeNavItem').click();
-  cy.getByTestSubj('dateRangePickerCustomRangePanel').should('be.visible');
+  cy.getByTestSubj('superDatePickerstartDatePopoverButton').click();
+  cy.getByTestSubj('superDatePickerAbsoluteDateInput').clear({ force: true });
+  cy.getByTestSubj('superDatePickerAbsoluteDateInput')
+    .type(moment(start).format(format), { force: true })
+    .type('{enter}');
 
-  // Set start date
-  cy.getByTestSubj('dateRangePickerStartDatePart').within(() => {
-    cy.contains('button', 'Absolute').click();
-    cy.get('input[type="text"]').clear({ force: true });
-    cy.get('input[type="text"]').type(moment(start).format(format), { force: true });
-  });
-
-  // Set end date
-  cy.getByTestSubj('dateRangePickerEndDatePart').within(() => {
-    cy.contains('button', 'Absolute').click();
-    cy.get('input[type="text"]').clear({ force: true });
-    cy.get('input[type="text"]').type(moment(end).format(format), { force: true });
-  });
-
-  // Apply the custom range
-  cy.getByTestSubj('dateRangePickerCustomRangeApplyButton').click();
+  cy.getByTestSubj('superDatePickerendDatePopoverButton').click();
+  cy.getByTestSubj('superDatePickerAbsoluteDateInput').clear({ force: true });
+  cy.getByTestSubj('superDatePickerAbsoluteDateInput')
+    .type(moment(end).format(format), { force: true })
+    .type('{enter}');
 });
 
 Cypress.Commands.add(

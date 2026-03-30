@@ -48,6 +48,9 @@ test.describe(
         .getByTestId('streamsAppKqlSamplesDataSourceNameField')
         .fill('Kql Samples');
       // Set date range within the KQL data source card
+      await kqlDataSourceCard
+        .locator('[data-test-subj="superDatePickerShowDatesButton"]:not([disabled])')
+        .click();
       await pageObjects.datePicker.setAbsoluteRangeInRootContainer({
         from: DATE_RANGE.from,
         to: DATE_RANGE.to,

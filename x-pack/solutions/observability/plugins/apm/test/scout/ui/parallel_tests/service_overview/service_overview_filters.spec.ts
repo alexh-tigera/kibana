@@ -141,25 +141,24 @@ test.describe(
       });
 
       await test.step('Open date picker and select new time range', async () => {
-        // Wait for the page to fully load
+        // Click on the date picker button to open it
         await page
           .getByTestId('apmSloCalloutCreateSloButton')
           .waitFor({ state: 'visible', timeout: EXTENDED_TIMEOUT });
+        await page.getByTestId('superDatePickerToggleQuickMenuButton').click();
+        await expect(page.getByTestId('superDatePickerQuickSelectApplyButton')).toBeVisible();
+        await page.getByTestId('superDatePickerToggleQuickMenuButton').click();
+        await expect(page.getByTestId('superDatePickerQuickSelectApplyButton')).toBeHidden();
 
-        // Open the DateRangePicker and navigate to the custom range panel
-        await page.getByTestId('dateRangePickerControlButton').click();
-        await page.getByTestId('dateRangePickerCustomRangeNavItem').click();
-        await page.getByTestId('dateRangePickerCustomRangePanel').waitFor();
+        // Click on "Absolute" tab for the start date
+        await page.getByTestId('superDatePickerstartDatePopoverButton').click();
+        await page.getByTestId('superDatePickerAbsoluteTab').click();
 
-        // Set new start date (5 minutes earlier)
-        const startDatePart = page.getByTestId('dateRangePickerStartDatePart');
-        await startDatePart.getByRole('button', { name: 'Absolute' }).click();
-        const startInput = startDatePart.getByRole('textbox');
-        await startInput.clear();
-        await startInput.fill('2021-10-09T23:55:00.000Z');
-
-        // Apply the custom range
-        await page.getByTestId('dateRangePickerCustomRangeApplyButton').click();
+        // Clear and set new start date (5 minutes earlier)
+        const startDateInput = page.getByTestId('superDatePickerAbsoluteDateInput');
+        await startDateInput.clear();
+        await startDateInput.fill('2021-10-09T23:55:00.000Z');
+        await startDateInput.press('Enter');
       });
 
       await test.step('Click Update button and verify URL is updated', async () => {
