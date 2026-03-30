@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 import type { WebElementWrapper } from '@kbn/ftr-common-functional-ui-services';
 import { FtrService } from '../ftr_provider_context';
 
@@ -40,6 +40,20 @@ export class TimePickerPageObject extends FtrService {
     menuTestSubject: 'superDatePickerQuickMenu',
     toggleButtonTestSubject: 'superDatePickerToggleQuickMenuButton',
   });
+
+  /**
+   * Returns the IANA timezone from the `dateFormat:tz` UI setting, falling
+   * back to UTC when the setting is `'Browser'` or absent.
+   */
+  private async getConfiguredTimezone(): Promise<string> {
+    try {
+      const tz = await this.kibanaServer.uiSettings.get('dateFormat:tz');
+      if (tz === undefined || tz === 'Browser') return 'UTC';
+      return tz as string;
+    } catch {
+      return 'UTC';
+    }
+  }
 
   /** Cached result of which date picker variant is active on the page. */
   private _isNewDateRangePicker: boolean | undefined;
@@ -225,9 +239,11 @@ export class TimePickerPageObject extends FtrService {
   private async setAbsoluteRangeNewPicker(fromTime: string, toTime: string) {
     const rangeText = `${fromTime} to ${toTime}`;
     // The parser normalizes absolute dates to ISO, so data-date-range will
-    // contain ISO strings. Convert the expected start time to ISO for matching.
+    // contain ISO strings. Convert the expected start time to ISO for matching,
+    // using the configured timezone so it matches what the picker's parser produces.
+    const tz = await this.getConfiguredTimezone();
     const expectedFromISO = moment
-      .utc(fromTime, TimePickerPageObject.LEGACY_DATE_FORMAT)
+      .tz(fromTime, TimePickerPageObject.LEGACY_DATE_FORMAT, tz)
       .toISOString();
     await this.retry.waitFor(`date range to be set to ${rangeText}`, async () => {
       await this.testSubjects.click('dateRangePickerControlButton');
@@ -393,11 +409,12 @@ export class TimePickerPageObject extends FtrService {
   /**
    * Formats a raw date string from data-date-range into the legacy display
    * format so existing test assertions stay stable. Relative dateMath values
-   * (e.g. `now-15m`) are returned as-is.
+   * (e.g. `now-15m`) are returned as-is. Uses the configured `dateFormat:tz`
+   * so that the result matches what the legacy picker would have displayed.
    */
-  private static formatDateForLegacy(raw: string): string {
+  private formatDateForLegacy(raw: string, tz: string): string {
     const parsed = moment.utc(raw);
-    return parsed.isValid() ? parsed.format(TimePickerPageObject.LEGACY_DATE_FORMAT) : raw;
+    return parsed.isValid() ? parsed.tz(tz).format(TimePickerPageObject.LEGACY_DATE_FORMAT) : raw;
   }
 
   /**
@@ -426,10 +443,11 @@ export class TimePickerPageObject extends FtrService {
    */
   private async getNewPickerTimeConfig(): Promise<{ start: string; end: string }> {
     const dateRange = await this.getStableDateRange();
+    const tz = await this.getConfiguredTimezone();
     const [rawStart, rawEnd] = dateRange.split(' to ');
     return {
-      start: TimePickerPageObject.formatDateForLegacy(rawStart),
-      end: TimePickerPageObject.formatDateForLegacy(rawEnd),
+      start: this.formatDateForLegacy(rawStart, tz),
+      end: this.formatDateForLegacy(rawEnd, tz),
     };
   }
 
