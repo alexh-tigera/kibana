@@ -126,6 +126,22 @@ export const CASE_REFRESH = i18n.translate('xpack.cases.caseView.caseRefresh', {
   defaultMessage: 'Refresh case',
 });
 
+export const RENAME_CASE_OVERFLOW = i18n.translate('xpack.cases.caseView.renameCaseOverflow', {
+  defaultMessage: 'Rename case',
+});
+
+export const RENAME_CASE_MODAL_TITLE = i18n.translate('xpack.cases.caseView.renameCaseModalTitle', {
+  defaultMessage: 'Rename case',
+});
+
+export const RENAME_CASE_FIELD_LABEL = i18n.translate('xpack.cases.caseView.renameCaseFieldLabel', {
+  defaultMessage: 'Case name',
+});
+
+export const RENAME_CASE_MODAL_SAVE = i18n.translate('xpack.cases.caseView.renameCaseModalSave', {
+  defaultMessage: 'Save',
+});
+
 export const ACTIVITY = i18n.translate('xpack.cases.caseView.activity', {
   defaultMessage: 'Activity',
 });

@@ -22,24 +22,16 @@ import { useCasesContext } from '../cases_context/use_cases_context';
 import { useCasesFeatures } from '../../common/use_cases_features';
 import { useGetCaseConnectors } from '../../containers/use_get_case_connectors';
 
-export type CaseActionBarVariant = 'full' | 'projectChromeSupplements';
-
 export interface CaseActionBarProps {
   caseData: CaseUI;
   isLoading: boolean;
   onUpdateField: (args: OnUpdateFields) => void;
-  /**
-   * `projectChromeSupplements` renders sync-alerts in-page when enabled; status lives in the
-   * activity sidebar. Refresh and overflow actions live in project `AppMenu`.
-   */
-  variant?: CaseActionBarVariant;
 }
 
 const CaseActionBarComponent: React.FC<CaseActionBarProps> = ({
   caseData,
   isLoading,
   onUpdateField,
-  variant = 'full',
 }) => {
   const { permissions } = useCasesContext();
   const { isSyncAlertsEnabled, metricsFeatures } = useCasesFeatures();
@@ -63,42 +55,6 @@ const CaseActionBarComponent: React.FC<CaseActionBarProps> = ({
       }),
     [caseData.settings, onUpdateField]
   );
-
-  if (variant === 'projectChromeSupplements') {
-    if (!permissions.update || !isSyncAlertsEnabled) {
-      return null;
-    }
-
-    return (
-      <EuiFlexGroup
-        gutterSize="l"
-        justifyContent="flexEnd"
-        data-test-subj="case-action-bar-wrapper"
-      >
-        <EuiFlexItem grow={false}>
-          <ActionBarStatusItem
-            title={
-              <EuiFlexGroup component="span" alignItems="center" gutterSize="xs" responsive={false}>
-                <EuiFlexItem grow={false}>
-                  <span>{i18n.SYNC_ALERTS}</span>
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiIconTip content={i18n.SYNC_ALERTS_HELP} />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            }
-            data-test-subj="case-view-sync-alerts"
-          >
-            <SyncAlertsSwitch
-              disabled={isLoading}
-              isSynced={caseData.settings.syncAlerts}
-              onSwitchChange={onSyncAlertsChanged}
-            />
-          </ActionBarStatusItem>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    );
-  }
 
   return (
     <EuiFlexGroup gutterSize="l" justifyContent="flexEnd" data-test-subj="case-action-bar-wrapper">

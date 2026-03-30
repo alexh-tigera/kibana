@@ -335,7 +335,11 @@ function InternalAlertsPage() {
             ? undefined
             : {
                 pageTitle: (
-                  <>{i18n.translate('xpack.observability.alertsTitle', { defaultMessage: 'Alerts' })} </>
+                  <>
+                    {i18n.translate('xpack.observability.alertsTitle', {
+                      defaultMessage: 'Alerts',
+                    })}{' '}
+                  </>
                 ),
                 rightSideItems: renderRuleStats(
                   ruleStats,
@@ -350,13 +354,11 @@ function InternalAlertsPage() {
           <AppMenu config={alertsAppMenuConfig} setAppMenu={chrome.setAppMenu} />
         ) : null}
         {!isProjectChrome ? <HeaderMenu /> : null}
+        <MaintenanceWindowCallout
+          kibanaServices={kibanaServices}
+          categories={[DEFAULT_APP_CATEGORIES.observability.id]}
+        />
         <EuiFlexGroup direction="column" gutterSize="m">
-          <EuiFlexItem>
-            <MaintenanceWindowCallout
-              kibanaServices={kibanaServices}
-              categories={[DEFAULT_APP_CATEGORIES.observability.id]}
-            />
-          </EuiFlexItem>
           <EuiFlexItem>
             <ObservabilityAlertSearchBar
               {...alertSearchBarStateProps}
@@ -378,7 +380,7 @@ function InternalAlertsPage() {
                 uiSettings,
               }}
             />
-            <EuiSpacer size="s" />
+            {!isProjectChrome ? <EuiSpacer size="s" /> : null}
           </EuiFlexItem>
           {isProjectChrome ? (
             <EuiFlexItem grow={true}>

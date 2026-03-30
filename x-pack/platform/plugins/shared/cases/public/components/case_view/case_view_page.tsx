@@ -11,6 +11,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useObservable from 'react-use/lib/useObservable';
 import { CASE_VIEW_PAGE_TABS } from '../../../common/types';
 import { useAllCasesNavigation, useUrlParams } from '../../common/navigation';
+import { useCasesFeatures } from '../../common/use_cases_features';
 import { useKibana } from '../../common/lib/kibana';
 import { useDeleteCases } from '../../containers/use_delete_cases';
 import { useCasesContext } from '../cases_context/use_cases_context';
@@ -30,6 +31,8 @@ import { useOnUpdateField } from './use_on_update_field';
 import { CaseViewSimilarCases } from './components/case_view_similar_cases';
 import { CaseViewEvents } from './components/case_view_events';
 import { CaseViewAttachments } from './components/case_view_attachments';
+import { RenameCaseModal } from './components/rename_case_modal';
+import { CaseViewProjectSyncAlerts } from './components/case_view_project_sync_alerts';
 import { filterCaseAttachmentsBySearchTerm } from './components/helpers';
 import { useCaseViewAppMenu } from './use_case_view_app_menu';
 import { useCaseViewHeaderMetadata } from './use_case_view_header_metadata';
@@ -63,15 +66,19 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
     renderAlertsTable,
     renderEventsTable,
   }) => {
-    const { features } = useCasesContext();
+    const { features, permissions } = useCasesContext();
+    const { metricsFeatures, isSyncAlertsEnabled } = useCasesFeatures();
     const { chrome } = useKibana().services;
     const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
     const isProjectChrome = chromeStyle === 'project';
+    const showSpacerBeforeTabContent =
+      !isProjectChrome || metricsFeatures.length > 0 || (permissions.update && isSyncAlertsEnabled);
     const { urlParams } = useUrlParams();
     const refreshCaseViewPage = useRefreshCaseViewPage();
     const { mutate: deleteCases } = useDeleteCases();
     const { navigateToAllCases } = useAllCasesNavigation();
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [isRenameModalVisible, setIsRenameModalVisible] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState<string>('');
     const onSearch = useCallback(
@@ -101,6 +108,9 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
       onOpenDeleteModal: () => {
         setIsDeleteModalVisible(true);
       },
+      onOpenRenameModal: () => {
+        setIsRenameModalVisible(true);
+      },
     });
     const caseViewHeaderTabs = useCaseViewHeaderTabs({
       caseData: caseWithFilteredAttachments,
@@ -128,6 +138,21 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
     const onCancelCaseDeletion = useCallback(() => {
       setIsDeleteModalVisible(false);
     }, []);
+
+    const onCancelRename = useCallback(() => {
+      setIsRenameModalVisible(false);
+    }, []);
+
+    const onSaveRenamedTitle = useCallback(
+      (newTitle: string) => {
+        onUpdateField({
+          key: 'title',
+          value: newTitle,
+        });
+        setIsRenameModalVisible(false);
+      },
+      [onUpdateField]
+    );
 
     // Set `refreshRef` if needed
     useEffect(() => {
@@ -170,34 +195,50 @@ export const CaseViewPage = React.memo<CaseViewPageProps>(
             onConfirm={onConfirmCaseDeletion}
           />
         ) : null}
-        <HeaderPage
-          border={false}
-          data-test-subj="case-view-title"
-          titleNode={
-            <EditableTitle
-              key={caseData.id}
-              isLoading={isLoading && loadingKey === 'title'}
-              title={caseData.title}
-              onSubmit={onSubmitTitle}
+        {isProjectChrome ? (
+          <RenameCaseModal
+            currentTitle={caseData.title}
+            isVisible={isRenameModalVisible}
+            isSaving={isLoading && loadingKey === 'title'}
+            onCancel={onCancelRename}
+            onSave={onSaveRenamedTitle}
+          />
+        ) : null}
+        {!isProjectChrome ? (
+          <HeaderPage
+            border={false}
+            data-test-subj="case-view-title"
+            titleNode={
+              <EditableTitle
+                key={caseData.id}
+                isLoading={isLoading && loadingKey === 'title'}
+                title={caseData.title}
+                onSubmit={onSubmitTitle}
+              />
+            }
+            title={caseData.title}
+            incrementalId={caseData.incrementalId}
+          >
+            <CaseActionBar
+              caseData={caseData}
+              isLoading={isLoading && (loadingKey === 'status' || loadingKey === 'settings')}
+              onUpdateField={onUpdateField}
             />
-          }
-          title={caseData.title}
-          incrementalId={caseData.incrementalId}
-          hideIncrementalIdRow={isProjectChrome}
-        >
-          <CaseActionBar
+          </HeaderPage>
+        ) : null}
+        {isProjectChrome ? (
+          <CaseViewProjectSyncAlerts
             caseData={caseData}
             isLoading={isLoading && (loadingKey === 'status' || loadingKey === 'settings')}
             onUpdateField={onUpdateField}
-            variant={isProjectChrome ? 'projectChromeSupplements' : 'full'}
           />
-        </HeaderPage>
+        ) : null}
         <EuiFlexGroup>
           <EuiFlexItem>
             <CaseViewMetrics data-test-subj="case-view-metrics" caseId={caseData.id} />
           </EuiFlexItem>
         </EuiFlexGroup>
-        <EuiSpacer size="l" />
+        {showSpacerBeforeTabContent ? <EuiSpacer size={isProjectChrome ? 'm' : 'l'} /> : null}
         <EuiFlexGroup data-test-subj={`case-view-tab-content-${activeTabId}`} alignItems="baseline">
           {activeTabId === CASE_VIEW_PAGE_TABS.ACTIVITY && (
             <CaseViewActivity

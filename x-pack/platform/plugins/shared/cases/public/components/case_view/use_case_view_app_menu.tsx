@@ -25,11 +25,13 @@ import { useRefreshCaseViewPage } from './use_on_refresh_case_view_page';
 export interface UseCaseViewAppMenuParams {
   caseData: CaseUI;
   onOpenDeleteModal: () => void;
+  onOpenRenameModal: () => void;
 }
 
 export function useCaseViewAppMenu({
   caseData,
   onOpenDeleteModal,
+  onOpenRenameModal,
 }: UseCaseViewAppMenuParams): AppMenuConfig | undefined {
   const { chrome } = useKibana().services;
   const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
@@ -60,6 +62,19 @@ export function useCaseViewAppMenu({
       },
       testId: 'cases-case-view-copy-id-app-menu',
     });
+
+    if (permissions.update) {
+      overflowOnlyItems.push({
+        order: 15,
+        id: 'case-view-rename',
+        label: i18n.RENAME_CASE_OVERFLOW,
+        iconType: 'pencil',
+        run: () => {
+          onOpenRenameModal();
+        },
+        testId: 'cases-case-view-rename-app-menu',
+      });
+    }
 
     if (currentExternalIncident != null && !isEmpty(currentExternalIncident?.externalUrl)) {
       overflowOnlyItems.push({
@@ -106,7 +121,9 @@ export function useCaseViewAppMenu({
     caseData,
     caseConnectors,
     onOpenDeleteModal,
+    onOpenRenameModal,
     permissions.delete,
+    permissions.update,
     refreshCaseViewPage,
     showSuccessToast,
   ]);
