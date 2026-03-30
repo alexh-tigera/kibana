@@ -79,6 +79,8 @@ export interface SearchBarOwnProps<QT extends AggregateQuery | Query = Query> {
   showFilterBar?: boolean;
   showDatePicker?: boolean;
   showAutoRefreshOnly?: boolean;
+  /** Opt-in to the new DateRangePicker (requires the UI setting to also be enabled). */
+  useDateRangePicker?: boolean;
   filters?: Filter[];
   additionalQueryBarMenuItems?: AdditionalQueryBarMenuItems;
   filtersForSuggestions?: Filter[];
@@ -811,6 +813,7 @@ export class SearchBarUI<QT extends (Query | AggregateQuery) | Query = Query> ex
           esqlQueryStats={this.props.esqlQueryStats}
           onOpenQueryInNewTab={this.props.onOpenQueryInNewTab}
           useBackgroundSearchButton={this.props.useBackgroundSearchButton}
+          useDateRangePicker={this.props.useDateRangePicker}
           enableResourceBrowser={this.props.enableResourceBrowser}
         />
       </div>
