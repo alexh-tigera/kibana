@@ -31,6 +31,7 @@ export function BetaBadge({ icon }: Props) {
       aria-label={badgeDescription}
       tooltipContent={badgeDescription}
       iconType={icon}
+      size="s"
     />
   );
 }

@@ -6,8 +6,9 @@
  */
 
 import { EuiFlexGroup, EuiFlexItem, EuiLoadingLogo, EuiSpacer, EuiTitle } from '@elastic/eui';
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import useObservable from 'react-use/lib/useObservable';
 import type { AgentName } from '@kbn/elastic-agent-utils';
 import { i18n } from '@kbn/i18n';
 import {
@@ -19,7 +20,6 @@ import { ApmIndexSettingsContextProvider } from '../../../../context/apm_index_s
 import { ApmServiceContextProvider } from '../../../../context/apm_service/apm_service_context';
 import { useApmServiceContext } from '../../../../context/apm_service/use_apm_service_context';
 import { ServiceSloContextProvider } from '../../../../context/service_slo/service_slo_context';
-import { useBreadcrumb } from '../../../../context/breadcrumbs/use_breadcrumb';
 import { ServiceAnomalyTimeseriesContextProvider } from '../../../../context/service_anomaly_timeseries/service_anomaly_timeseries_context';
 import { useApmParams } from '../../../../hooks/use_apm_params';
 import { useApmRouter } from '../../../../hooks/use_apm_router';
@@ -33,11 +33,12 @@ import { ApmMainTemplate } from '../apm_main_template';
 import { AnalyzeDataButton } from './analyze_data_button';
 import { ServiceHeaderBadges } from './service_header_badges';
 import type { Tab } from './use_tabs';
+import { mapApmPageHeaderTabsToAppMenuHeaderTabs } from './map_apm_page_header_tabs_to_app_menu';
 import { useTabs } from './use_tabs';
 import { useApmPluginContext } from '../../../../context/apm_plugin/use_apm_plugin_context';
+import { useSetApmServiceDetailAppMenuHeaderTabs } from '../../../../context/apm_service_detail_app_menu_header_tabs/apm_service_detail_app_menu_header_tabs_context';
 
 interface Props {
-  title: string;
   children: React.ReactChild;
   selectedTab: Tab['key'];
   searchBarOptions?: React.ComponentProps<typeof SearchBar>;
@@ -53,7 +54,7 @@ export function ApmServiceTemplate(props: Props) {
   );
 }
 
-function TemplateWithContext({ title, children, selectedTab, searchBarOptions }: Props) {
+function TemplateWithContext({ children, selectedTab, searchBarOptions }: Props) {
   const {
     path: { serviceName },
     query,
@@ -61,7 +62,10 @@ function TemplateWithContext({ title, children, selectedTab, searchBarOptions }:
   } = useApmParams('/services/{serviceName}/*');
   const history = useHistory();
   const location = useLocation();
-  const { agentBuilder } = useApmPluginContext();
+  const { agentBuilder, core } = useApmPluginContext();
+  const setServiceDetailHeaderTabs = useSetApmServiceDetailAppMenuHeaderTabs();
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
 
   const { start, end } = useTimeRange({ rangeFrom, rangeTo });
 
@@ -91,16 +95,27 @@ function TemplateWithContext({ title, children, selectedTab, searchBarOptions }:
     query,
   });
 
-  useBreadcrumb(
-    () => ({
-      title,
-      href: router.link(`/services/{serviceName}/${selectedTab}` as const, {
-        path: { serviceName },
-        query,
-      }),
-    }),
-    [query, router, selectedTab, serviceName, title]
-  );
+  const serviceDetailTabsSignatureRef = useRef('');
+
+  useEffect(() => {
+    if (!isProjectChrome) {
+      setServiceDetailHeaderTabs(undefined);
+      return;
+    }
+    const signature = tabs.map((t) => `${t.key}:${t.isSelected}:${t.href}`).join('|');
+    if (serviceDetailTabsSignatureRef.current === signature) {
+      return;
+    }
+    serviceDetailTabsSignatureRef.current = signature;
+    setServiceDetailHeaderTabs(mapApmPageHeaderTabsToAppMenuHeaderTabs(tabs));
+  }, [isProjectChrome, setServiceDetailHeaderTabs, tabs]);
+
+  useEffect(() => {
+    return () => {
+      serviceDetailTabsSignatureRef.current = '';
+      setServiceDetailHeaderTabs(undefined);
+    };
+  }, [setServiceDetailHeaderTabs]);
 
   // Configure agent builder global flyout with the service attachment
   useEffect(() => {

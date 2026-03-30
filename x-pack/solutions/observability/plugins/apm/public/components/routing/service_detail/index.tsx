@@ -65,12 +65,10 @@ const ProfilingOverview = dynamic(() =>
 );
 
 function page({
-  title,
   tab,
   element,
   searchBarOptions,
 }: {
-  title: string;
   tab: React.ComponentProps<typeof ApmServiceTemplate>['selectedTab'];
   element: React.ReactElement<any, any>;
   searchBarOptions?: React.ComponentProps<typeof SearchBar>;
@@ -79,7 +77,7 @@ function page({
 } {
   return {
     element: (
-      <ApmServiceTemplate title={title} selectedTab={tab} searchBarOptions={searchBarOptions}>
+      <ApmServiceTemplate selectedTab={tab} searchBarOptions={searchBarOptions}>
         {element}
       </ApmServiceTemplate>
     ),
@@ -151,9 +149,6 @@ export const serviceDetailRoute = {
         ...page({
           element: <ServiceOverview />,
           tab: 'overview',
-          title: i18n.translate('xpack.apm.views.overview.title', {
-            defaultMessage: 'Overview',
-          }),
           searchBarOptions: {
             hidden: true,
           },
@@ -170,9 +165,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/transactions': {
         ...page({
           tab: 'transactions',
-          title: i18n.translate('xpack.apm.views.transactions.title', {
-            defaultMessage: 'Transactions',
-          }),
           element: <Outlet />,
           searchBarOptions: {
             showTransactionTypeSelector: true,
@@ -227,9 +219,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/dependencies': page({
         element: <ServiceDependencies />,
         tab: 'dependencies',
-        title: i18n.translate('xpack.apm.views.dependencies.title', {
-          defaultMessage: 'Dependencies',
-        }),
         searchBarOptions: {
           showTimeComparison: true,
         },
@@ -237,9 +226,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/errors': {
         ...page({
           tab: 'errors',
-          title: i18n.translate('xpack.apm.views.errors.title', {
-            defaultMessage: 'Errors',
-          }),
           element: <Outlet />,
           searchBarOptions: {
             showTimeComparison: true,
@@ -271,9 +257,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/metrics': {
         ...page({
           tab: 'metrics',
-          title: i18n.translate('xpack.apm.views.metrics.title', {
-            defaultMessage: 'Metrics',
-          }),
           element: <Outlet />,
         }),
         children: {
@@ -294,9 +277,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/nodes': {
         ...page({
           tab: 'nodes',
-          title: i18n.translate('xpack.apm.views.nodes.title', {
-            defaultMessage: 'Metrics',
-          }),
           element: <Outlet />,
         }),
         children: {
@@ -323,9 +303,6 @@ export const serviceDetailRoute = {
       },
       '/services/{serviceName}/service-map': page({
         tab: 'service-map',
-        title: i18n.translate('xpack.apm.views.serviceMap.title', {
-          defaultMessage: 'Service map',
-        }),
         element: <ServiceMapServiceDetail />,
         searchBarOptions: {
           hidden: true,
@@ -333,9 +310,6 @@ export const serviceDetailRoute = {
       }),
       '/services/{serviceName}/logs': page({
         tab: 'logs',
-        title: i18n.translate('xpack.apm.views.logs.title', {
-          defaultMessage: 'Logs',
-        }),
         element: <ServiceLogs />,
         searchBarOptions: {
           showQueryInput: true,
@@ -347,9 +321,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/infrastructure': {
         ...page({
           tab: 'infrastructure',
-          title: i18n.translate('xpack.apm.views.infra.title', {
-            defaultMessage: 'Infrastructure',
-          }),
           element: <InfraOverview />,
           searchBarOptions: {
             showUnifiedSearchBar: false,
@@ -368,9 +339,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/alerts': {
         ...page({
           tab: 'alerts',
-          title: i18n.translate('xpack.apm.views.alerts.title', {
-            defaultMessage: 'Alerts',
-          }),
           element: <AlertsOverview />,
           searchBarOptions: {
             hidden: true,
@@ -389,9 +357,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/profiling': {
         ...page({
           tab: 'profiling',
-          title: i18n.translate('xpack.apm.views.profiling.title', {
-            defaultMessage: 'Universal Profiling',
-          }),
           element: <ProfilingOverview />,
           searchBarOptions: {
             hidden: true,
@@ -401,9 +366,6 @@ export const serviceDetailRoute = {
       '/services/{serviceName}/dashboards': {
         ...page({
           tab: 'dashboards',
-          title: i18n.translate('xpack.apm.views.dashboard.title', {
-            defaultMessage: 'Dashboards',
-          }),
           element: <ServiceDashboards />,
         }),
         params: t.partial({

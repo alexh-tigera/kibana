@@ -31,6 +31,7 @@ import {
 } from './use_service_group_tabs';
 import { getPathForFeedback } from '../utils/get_path_for_feedback';
 import { getStorageExplorerFeedbackHref } from '../components/app/storage_explorer/get_storage_explorer_links';
+import { useApmServiceDetailAppMenuHeaderTabs } from '../context/apm_service_detail_app_menu_header_tabs/apm_service_detail_app_menu_header_tabs_context';
 
 const APM_FEEDBACK_LINK = 'https://ela.st/services-feedback';
 
@@ -99,6 +100,7 @@ function getServiceGroupTabKeyFromPathname(pathname: string): ServiceGroupTabKey
 }
 
 export function useApmAppMenuConfig(): AppMenuConfig {
+  const serviceDetailHeaderTabsFromContext = useApmServiceDetailAppMenuHeaderTabs();
   const { pathname } = useLocation();
   const { search } = window.location;
   const { core, plugins, config, share, inspector, kibanaEnvironment, observability } =
@@ -368,7 +370,9 @@ export function useApmAppMenuConfig(): AppMenuConfig {
     const serviceGroupQuery = servicesParams?.query ?? serviceMapParams?.query;
     const tabKey = getServiceGroupTabKeyFromPathname(pathname);
     let headerTabs: ReturnType<typeof getServiceGroupAppMenuHeaderTabs> | undefined;
-    if (tabKey && serviceGroupQuery) {
+    if (serviceDetailHeaderTabsFromContext?.length) {
+      headerTabs = serviceDetailHeaderTabsFromContext;
+    } else if (tabKey && serviceGroupQuery) {
       try {
         headerTabs = getServiceGroupAppMenuHeaderTabs({
           router,
@@ -427,6 +431,7 @@ export function useApmAppMenuConfig(): AppMenuConfig {
     router,
     search,
     basePath,
+    serviceDetailHeaderTabsFromContext,
     serviceDetailParams?.path.serviceName,
     serviceDetailParams?.query.environment,
     servicePageRangeForIcons.end,

@@ -38,12 +38,10 @@ const ServiceLogs = dynamic(() =>
 );
 
 export function page({
-  title,
   tabKey,
   element,
   searchBarOptions,
 }: {
-  title: string;
   tabKey: React.ComponentProps<typeof MobileServiceTemplate>['selectedTabKey'];
   element: React.ReactElement<any, any>;
   searchBarOptions?: React.ComponentProps<typeof MobileSearchBar>;
@@ -52,11 +50,7 @@ export function page({
 } {
   return {
     element: (
-      <MobileServiceTemplate
-        title={title}
-        selectedTabKey={tabKey}
-        searchBarOptions={searchBarOptions}
-      >
+      <MobileServiceTemplate selectedTabKey={tabKey} searchBarOptions={searchBarOptions}>
         {element}
       </MobileServiceTemplate>
     ),
@@ -109,9 +103,6 @@ export const mobileServiceDetailRoute = {
         ...page({
           element: <MobileServiceOverview />,
           tabKey: 'overview',
-          title: i18n.translate('xpack.apm.views.overview.title', {
-            defaultMessage: 'Overview',
-          }),
           searchBarOptions: {
             showTransactionTypeSelector: true,
             showTimeComparison: true,
@@ -134,9 +125,6 @@ export const mobileServiceDetailRoute = {
       '/mobile-services/{serviceName}/transactions': {
         ...page({
           tabKey: 'transactions',
-          title: i18n.translate('xpack.apm.views.transactions.title', {
-            defaultMessage: 'Transactions',
-          }),
           element: <Outlet />,
           searchBarOptions: {
             showTransactionTypeSelector: true,
@@ -193,9 +181,6 @@ export const mobileServiceDetailRoute = {
       '/mobile-services/{serviceName}/errors-and-crashes': {
         ...page({
           tabKey: 'errors-and-crashes',
-          title: i18n.translate('xpack.apm.views.errorsAndCrashes.title', {
-            defaultMessage: 'Errors & Crashes',
-          }),
           element: <Outlet />,
           searchBarOptions: {
             showTimeComparison: true,
@@ -242,18 +227,12 @@ export const mobileServiceDetailRoute = {
       '/mobile-services/{serviceName}/dependencies': page({
         element: <ServiceDependencies />,
         tabKey: 'dependencies',
-        title: i18n.translate('xpack.apm.views.dependencies.title', {
-          defaultMessage: 'Dependencies',
-        }),
         searchBarOptions: {
           showTimeComparison: true,
         },
       }),
       '/mobile-services/{serviceName}/service-map': page({
         tabKey: 'service-map',
-        title: i18n.translate('xpack.apm.views.serviceMap.title', {
-          defaultMessage: 'Service map',
-        }),
         element: <ServiceMapServiceDetail />,
         searchBarOptions: {
           hidden: true,
@@ -261,9 +240,6 @@ export const mobileServiceDetailRoute = {
       }),
       '/mobile-services/{serviceName}/logs': page({
         tabKey: 'logs',
-        title: i18n.translate('xpack.apm.views.logs.title', {
-          defaultMessage: 'Logs',
-        }),
         element: <ServiceLogs />,
         searchBarOptions: {
           showMobileFilters: false,
@@ -276,9 +252,6 @@ export const mobileServiceDetailRoute = {
       '/mobile-services/{serviceName}/alerts': {
         ...page({
           tabKey: 'alerts',
-          title: i18n.translate('xpack.apm.views.alerts.title', {
-            defaultMessage: 'Alerts',
-          }),
           element: <AlertsOverview />,
           searchBarOptions: {
             hidden: true,
@@ -293,9 +266,6 @@ export const mobileServiceDetailRoute = {
       '/mobile-services/{serviceName}/dashboards': {
         ...page({
           tabKey: 'dashboards',
-          title: i18n.translate('xpack.apm.views.dashboard.title', {
-            defaultMessage: 'Dashboards',
-          }),
           element: <ServiceDashboards />,
         }),
         params: t.partial({

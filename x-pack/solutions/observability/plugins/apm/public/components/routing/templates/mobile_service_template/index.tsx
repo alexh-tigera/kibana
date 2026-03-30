@@ -9,11 +9,13 @@ import type { EuiPageHeaderProps } from '@elastic/eui';
 import { EuiFlexGroup, EuiFlexItem, EuiTitle } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import { omit } from 'lodash';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import { useApmPluginContext } from '../../../../context/apm_plugin/use_apm_plugin_context';
 import { ApmIndexSettingsContextProvider } from '../../../../context/apm_index_settings/apm_index_settings_context';
 import { ApmServiceContextProvider } from '../../../../context/apm_service/apm_service_context';
 import { useBreadcrumb } from '../../../../context/breadcrumbs/use_breadcrumb';
+import { useSetApmServiceDetailAppMenuHeaderTabs } from '../../../../context/apm_service_detail_app_menu_header_tabs/apm_service_detail_app_menu_header_tabs_context';
 import { ServiceAnomalyTimeseriesContextProvider } from '../../../../context/service_anomaly_timeseries/service_anomaly_timeseries_context';
 import { useApmParams } from '../../../../hooks/use_apm_params';
 import { useApmRouter } from '../../../../hooks/use_apm_router';
@@ -24,6 +26,7 @@ import { ServiceIcons } from '../../../shared/service_icons';
 import { TechnicalPreviewBadge } from '../../../shared/technical_preview_badge';
 import { ApmMainTemplate } from '../apm_main_template';
 import { AnalyzeDataButton } from '../apm_service_template/analyze_data_button';
+import { mapApmPageHeaderTabsToAppMenuHeaderTabs } from '../apm_service_template/map_apm_page_header_tabs_to_app_menu';
 
 type Tab = NonNullable<EuiPageHeaderProps['tabs']>[0] & {
   key:
@@ -39,7 +42,6 @@ type Tab = NonNullable<EuiPageHeaderProps['tabs']>[0] & {
 };
 
 interface Props {
-  title: string;
   children: React.ReactChild;
   selectedTabKey: Tab['key'];
   searchBarOptions?: React.ComponentProps<typeof MobileSearchBar>;
@@ -55,7 +57,7 @@ export function MobileServiceTemplate(props: Props) {
   );
 }
 
-function TemplateWithContext({ title, children, selectedTabKey, searchBarOptions }: Props) {
+function TemplateWithContext({ children, selectedTabKey, searchBarOptions }: Props) {
   const {
     path: { serviceName },
     query,
@@ -65,6 +67,10 @@ function TemplateWithContext({ title, children, selectedTabKey, searchBarOptions
   const { start, end } = useTimeRange({ rangeFrom, rangeTo });
 
   const router = useApmRouter();
+  const { core } = useApmPluginContext();
+  const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+  const setServiceDetailHeaderTabs = useSetApmServiceDetailAppMenuHeaderTabs();
 
   const tabs = useTabs({ selectedTabKey });
   const selectedTab = tabs?.find(({ isSelected }) => isSelected);
@@ -74,34 +80,63 @@ function TemplateWithContext({ title, children, selectedTabKey, searchBarOptions
   });
 
   useBreadcrumb(
-    () => [
-      {
+    () => {
+      const inventoryCrumb = {
         title: i18n.translate('xpack.apm.mobileServices.breadcrumb.title', {
           defaultMessage: 'Service inventory',
         }),
         href: servicesLink,
-      },
-      ...(selectedTab
-        ? [
-            {
-              title: serviceName,
-              href: router.link('/mobile-services/{serviceName}', {
-                path: { serviceName },
-                query,
-              }),
-            },
-            {
-              title: selectedTab.label,
-              href: selectedTab.href,
-            } as { title: string; href: string },
-          ]
-        : []),
-    ],
-    [query, router, selectedTab, serviceName, servicesLink],
+      };
+      const serviceNameCrumb = {
+        title: serviceName,
+        href: router.link('/mobile-services/{serviceName}', {
+          path: { serviceName },
+          query,
+        }),
+      };
+      if (isProjectChrome) {
+        return [inventoryCrumb, serviceNameCrumb];
+      }
+      return [
+        inventoryCrumb,
+        ...(selectedTab
+          ? [
+              serviceNameCrumb,
+              {
+                title: selectedTab.label,
+                href: selectedTab.href,
+              } as { title: string; href: string },
+            ]
+          : []),
+      ];
+    },
+    [isProjectChrome, query, router, selectedTab, serviceName, servicesLink],
     {
       omitRootOnServerless: true,
     }
   );
+
+  const mobileTabsSignatureRef = useRef('');
+
+  useEffect(() => {
+    if (!isProjectChrome) {
+      setServiceDetailHeaderTabs(undefined);
+      return;
+    }
+    const signature = tabs.map((t) => `${t.key}:${t.isSelected}:${t.href}`).join('|');
+    if (mobileTabsSignatureRef.current === signature) {
+      return;
+    }
+    mobileTabsSignatureRef.current = signature;
+    setServiceDetailHeaderTabs(mapApmPageHeaderTabsToAppMenuHeaderTabs(tabs));
+  }, [isProjectChrome, setServiceDetailHeaderTabs, tabs]);
+
+  useEffect(() => {
+    return () => {
+      mobileTabsSignatureRef.current = '';
+      setServiceDetailHeaderTabs(undefined);
+    };
+  }, [setServiceDetailHeaderTabs]);
 
   return (
     <ApmMainTemplate
@@ -243,6 +278,7 @@ function useTabs({ selectedTabKey }: { selectedTabKey: Tab['key'] }) {
   return tabs
     .filter((t) => !t.hidden)
     .map(({ href, key, label, append }) => ({
+      key,
       href,
       label,
       append,

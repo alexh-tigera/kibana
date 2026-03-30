@@ -233,7 +233,7 @@ export function useTabs({ selectedTab }: { selectedTab: Tab['key'] }) {
       label: i18n.translate('xpack.apm.home.dashboardsTabLabel', {
         defaultMessage: 'Dashboards',
       }),
-      append: <TechnicalPreviewBadge icon="beaker" />,
+      append: <TechnicalPreviewBadge size="s" icon="beaker" />,
     },
   ];
 
@@ -243,6 +243,7 @@ export function useTabs({ selectedTab }: { selectedTab: Tab['key'] }) {
     .map((key) => tabsGroupedByKey[key])
     .filter((t) => !t.hidden)
     .map(({ href, key, label, prepend, append }) => ({
+      key,
       href,
       label,
       prepend,
