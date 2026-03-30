@@ -52,7 +52,7 @@ export class TimePickerPageObject extends FtrService {
   private async isNewDateRangePicker(): Promise<boolean> {
     if (this._isNewDateRangePicker === undefined) {
       this._isNewDateRangePicker = await this.testSubjects.exists('dateRangePickerControlButton', {
-        timeout: 1000,
+        timeout: 5000,
       });
       this.log.debug(
         `Detected date picker variant: ${

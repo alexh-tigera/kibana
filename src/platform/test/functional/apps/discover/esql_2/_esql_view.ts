@@ -90,7 +90,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         await unifiedFieldList.waitUntilSidebarHasLoaded();
 
         expect(await testSubjects.exists('showQueryBarMenu')).to.be(true);
-        expect(await testSubjects.exists('superDatePickerToggleQuickMenuButton')).to.be(true);
+        expect(await testSubjects.exists('dateRangePickerControlButton')).to.be(true);
         expect(await testSubjects.exists('addFilter')).to.be(true);
         expect(await testSubjects.exists('dscViewModeDocumentButton')).to.be(true);
         expect(await testSubjects.exists('unifiedHistogramChart')).to.be(true);
@@ -112,7 +112,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
 
         expect(await testSubjects.exists('fieldListFiltersFieldSearch')).to.be(true);
         expect(await testSubjects.exists('ESQLEditor')).to.be(true);
-        expect(await testSubjects.exists('superDatePickerToggleQuickMenuButton')).to.be(true);
+        expect(await testSubjects.exists('dateRangePickerControlButton')).to.be(true);
 
         expect(await testSubjects.exists('showQueryBarMenu')).to.be(false);
         expect(await testSubjects.exists('addFilter')).to.be(false);

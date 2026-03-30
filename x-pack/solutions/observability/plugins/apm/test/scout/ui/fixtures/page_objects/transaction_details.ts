@@ -122,9 +122,7 @@ export class TransactionDetailsPage {
   }
 
   async waitForPageToLoad(page: ScoutPage) {
-    await page
-      .getByTestId('superDatePickerToggleQuickMenuButton')
-      .waitFor({ timeout: EXTENDED_TIMEOUT });
+    await page.getByTestId('apmUnifiedSearchBar').waitFor({ timeout: EXTENDED_TIMEOUT });
   }
 
   // Span links methods

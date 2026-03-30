@@ -174,14 +174,41 @@ export class StreamsApp {
 
   async verifyDatePickerTimeRange(expectedRange: { from: string; to: string }) {
     // Use .first() because some pages (like Retention) may have multiple date pickers
-    await expect(
-      this.page.testSubj.locator('superDatePickerstartDatePopoverButton').first(),
-      `Date picker 'start date' is incorrect`
-    ).toHaveText(expectedRange.from);
-    await expect(
-      this.page.testSubj.locator('superDatePickerendDatePopoverButton').first(),
-      `Date picker 'end date' is incorrect`
-    ).toHaveText(expectedRange.to);
+    const isNewPicker = await this.page.testSubj
+      .locator('dateRangePickerControlButton')
+      .first()
+      .isVisible({ timeout: 2000 })
+      .catch(() => false);
+
+    if (isNewPicker) {
+      // The control button stores the raw time range in a data attribute
+      // (e.g. "2023-09-20T00:00:00.000Z to 2023-09-20T00:30:00.000Z")
+      const controlButton = this.page.testSubj.locator('dateRangePickerControlButton').first();
+      const dateRange = (await controlButton.getAttribute('data-date-range')) ?? '';
+      const [rawStart, rawEnd] = dateRange.split(' to ');
+
+      // Convert Kibana-formatted dates (e.g. "Sep 20, 2023 @ 00:00:00.000") to ISO
+      const toIso = (s: string) => {
+        const parsed = new Date(s.replace(' @ ', ', '));
+        return isNaN(parsed.getTime()) ? s : parsed.toISOString();
+      };
+
+      expect(toIso(rawStart?.trim() ?? ''), `Date picker 'start date' is incorrect`).toBe(
+        toIso(expectedRange.from)
+      );
+      expect(toIso(rawEnd?.trim() ?? ''), `Date picker 'end date' is incorrect`).toBe(
+        toIso(expectedRange.to)
+      );
+    } else {
+      await expect(
+        this.page.testSubj.locator('superDatePickerstartDatePopoverButton').first(),
+        `Date picker 'start date' is incorrect`
+      ).toHaveText(expectedRange.from);
+      await expect(
+        this.page.testSubj.locator('superDatePickerendDatePopoverButton').first(),
+        `Date picker 'end date' is incorrect`
+      ).toHaveText(expectedRange.to);
+    }
   }
 
   async verifyDocCount(streamName: string, expectedCount: number) {

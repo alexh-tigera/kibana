@@ -81,7 +81,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         await PageObjects.unifiedFieldList.waitUntilSidebarHasLoaded();
 
         await testSubjects.existOrFail('showQueryBarMenu');
-        await testSubjects.existOrFail('superDatePickerToggleQuickMenuButton');
+        await testSubjects.existOrFail('dateRangePickerControlButton');
         await testSubjects.existOrFail('addFilter');
         await testSubjects.existOrFail('dscViewModeDocumentButton');
         await testSubjects.existOrFail('unifiedHistogramChart');
@@ -103,7 +103,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
 
         await testSubjects.existOrFail('fieldListFiltersFieldSearch');
         await testSubjects.existOrFail('ESQLEditor');
-        await testSubjects.existOrFail('superDatePickerToggleQuickMenuButton');
+        await testSubjects.existOrFail('dateRangePickerControlButton');
 
         await testSubjects.missingOrFail('showQueryBarMenu');
         await testSubjects.missingOrFail('addFilter');

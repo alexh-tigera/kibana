@@ -22,7 +22,7 @@ export class ErrorsPage {
       `${this.kbnUrl.app('apm')}/services/${serviceName}/errors?rangeFrom=${start}&rangeTo=${end}`
     );
     await this.page
-      .getByTestId('superDatePickerToggleQuickMenuButton')
+      .getByTestId('apmUnifiedSearchBar')
       .waitFor({ state: 'visible', timeout: EXTENDED_TIMEOUT });
   }
 
@@ -38,7 +38,7 @@ export class ErrorsPage {
       )}/services/${serviceName}/errors/${errorGroupingKey}?rangeFrom=${start}&rangeTo=${end}`
     );
     await this.page
-      .getByTestId('superDatePickerToggleQuickMenuButton')
+      .getByTestId('apmUnifiedSearchBar')
       .waitFor({ state: 'visible', timeout: EXTENDED_TIMEOUT });
   }
 
