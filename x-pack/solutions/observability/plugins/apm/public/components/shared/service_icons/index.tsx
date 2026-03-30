@@ -6,22 +6,16 @@
  */
 
 import { EuiFlexGroup, EuiFlexItem, EuiLoadingSpinner } from '@elastic/eui';
-import { i18n } from '@kbn/i18n';
-import { useKibanaIsDarkMode } from '@kbn/react-kibana-context-theme';
-import type { CloudProvider } from '@kbn/custom-icons';
-import { getAgentIcon, getCloudProviderIcon, getServerlessIcon } from '@kbn/custom-icons';
-import type { ReactChild } from 'react';
-import React, { useState } from 'react';
-import type { ContainerType } from '../../../../common/service_metadata';
-import { FETCH_STATUS, useFetcher } from '../../../hooks/use_fetcher';
-import { CloudDetails } from './cloud_details';
-import { ServerlessDetails } from './serverless_details';
-import { ContainerDetails } from './container_details';
-import { OTelDetails } from './otel_details';
+import React from 'react';
 import { IconPopover } from './icon_popover';
-import { ServiceDetails } from './service_details';
-import { ServerlessType } from '../../../../common/serverless';
-import { isOpenTelemetryAgentName } from '../../../../common/agent_name';
+import { useServiceIconsModel } from './use_service_icons_model';
+
+export { getContainerIcon } from './get_container_icon';
+export type {
+  ServiceIconsPopoverItem,
+  ServiceIconsPopoverKey,
+} from './service_icons_popover_types';
+export { ServiceIconsHeaderBadges } from './service_icons_header_badges';
 
 interface Props {
   serviceName: string;
@@ -30,147 +24,18 @@ interface Props {
   end: string;
 }
 
-function getServerlessTitle(serverlessType?: ServerlessType): string {
-  switch (serverlessType) {
-    case ServerlessType.AWS_LAMBDA: {
-      return i18n.translate('xpack.apm.serviceIcons.aws_lambda', {
-        defaultMessage: 'AWS Lambda',
-      });
-    }
-    case ServerlessType.AZURE_FUNCTIONS: {
-      return i18n.translate('xpack.apm.serviceIcons.azure_functions', {
-        defaultMessage: 'Azure Functions',
-      });
-    }
-    default: {
-      return i18n.translate('xpack.apm.serviceIcons.serverless', {
-        defaultMessage: 'Serverless',
-      });
-    }
-  }
-}
-
-export function getContainerIcon(container?: ContainerType) {
-  if (!container) {
-    return;
-  }
-  switch (container) {
-    case 'Kubernetes':
-      return 'logoKubernetes';
-    default:
-      return 'logoDocker';
-  }
-}
-
-type Icons = 'service' | 'opentelemetry' | 'container' | 'serverless' | 'cloud' | 'alerts';
-
-export interface PopoverItem {
-  key: Icons;
-  icon: {
-    type?: string;
-    size?: 's' | 'm' | 'l';
-  };
-  isVisible: boolean;
-  title: string;
-  component: ReactChild;
-}
-
 export function ServiceIcons({ start, end, serviceName, environment }: Props) {
-  const isDarkMode = useKibanaIsDarkMode();
-  const [selectedIconPopover, setSelectedIconPopover] = useState<Icons | null>();
-
-  const { data: icons, status: iconsFetchStatus } = useFetcher(
-    (callApmApi) => {
-      if (serviceName && start && end) {
-        return callApmApi('GET /internal/apm/services/{serviceName}/metadata/icons', {
-          params: {
-            path: { serviceName },
-            query: { start, end },
-          },
-        });
-      }
-    },
-    [serviceName, start, end]
-  );
-
-  const { data: details, status: detailsFetchStatus } = useFetcher(
-    (callApmApi) => {
-      if (selectedIconPopover && serviceName && start && end && environment) {
-        return callApmApi('GET /internal/apm/services/{serviceName}/metadata/details', {
-          isCachable: true,
-          params: {
-            path: { serviceName },
-            query: { start, end, environment },
-          },
-        });
-      }
-    },
-    [selectedIconPopover, serviceName, start, end, environment]
-  );
-
-  const isLoading = !icons && iconsFetchStatus === FETCH_STATUS.LOADING;
+  const {
+    popoverItems,
+    selectedIconPopover,
+    setSelectedIconPopover,
+    detailsFetchStatus,
+    isLoading,
+  } = useServiceIconsModel({ serviceName, environment, start, end });
 
   if (isLoading) {
     return <EuiLoadingSpinner data-test-subj="loading" />;
   }
-
-  const popoverItems: PopoverItem[] = [
-    {
-      key: 'service',
-      icon: {
-        type: getAgentIcon(icons?.agentName, isDarkMode) || 'node',
-      },
-      isVisible: !!icons?.agentName,
-      title: i18n.translate('xpack.apm.serviceIcons.service', {
-        defaultMessage: 'Service',
-      }),
-      component: <ServiceDetails service={details?.service} />,
-    },
-    {
-      key: 'opentelemetry',
-      icon: {
-        type: getAgentIcon('opentelemetry', isDarkMode),
-      },
-      isVisible: !!icons?.agentName && isOpenTelemetryAgentName(icons.agentName),
-      title: i18n.translate('xpack.apm.serviceIcons.opentelemetry', {
-        defaultMessage: 'OpenTelemetry',
-      }),
-      component: <OTelDetails opentelemetry={details?.opentelemetry} />,
-    },
-    {
-      key: 'container',
-      icon: {
-        type: getContainerIcon(icons?.containerType),
-      },
-      isVisible: !!icons?.containerType,
-      title: i18n.translate('xpack.apm.serviceIcons.container', {
-        defaultMessage: 'Container',
-      }),
-      component: (
-        <ContainerDetails container={details?.container} kubernetes={details?.kubernetes} />
-      ),
-    },
-    {
-      key: 'serverless',
-      icon: {
-        type: getServerlessIcon(icons?.serverlessType) || 'node',
-      },
-      isVisible: !!icons?.serverlessType,
-      title: getServerlessTitle(icons?.serverlessType),
-      component: <ServerlessDetails serverless={details?.serverless} />,
-    },
-    {
-      key: 'cloud',
-      icon: {
-        type: getCloudProviderIcon(icons?.cloudProvider as CloudProvider),
-      },
-      isVisible: !!icons?.cloudProvider,
-      title: i18n.translate('xpack.apm.serviceIcons.cloud', {
-        defaultMessage: 'Cloud',
-      }),
-      component: <CloudDetails cloud={details?.cloud} isServerless={!!details?.serverless} />,
-    },
-  ];
 
   return (
     <EuiFlexGroup gutterSize="s" responsive={false}>

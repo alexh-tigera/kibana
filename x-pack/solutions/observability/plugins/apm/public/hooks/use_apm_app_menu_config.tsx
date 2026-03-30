@@ -13,7 +13,7 @@ import type { ObservabilityOnboardingLocatorParams } from '@kbn/deeplinks-observ
 import { OBSERVABILITY_ONBOARDING_LOCATOR } from '@kbn/deeplinks-observability';
 import { enableInspectEsQueries } from '@kbn/observability-plugin/public';
 import { ApmRuleType } from '@kbn/rule-data-utils';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLocatorUrl } from '@kbn/share-plugin/public';
 import { useApmHeaderFlyouts } from '../context/apm_header_flyouts/apm_header_flyouts_context';
@@ -22,6 +22,8 @@ import { getLegacyApmHref } from '../components/shared/links/apm/apm_link_hooks'
 import { getAlertingCapabilities } from '../components/alerting/utils/get_alerting_capabilities';
 import { useManageSlosUrl } from './use_manage_slos_url';
 import { useApmRouter } from './use_apm_router';
+import { ServiceIconsHeaderBadges } from '../components/shared/service_icons';
+import { getDateRange } from '../context/url_params_context/helpers';
 import { useMaybeApmParams } from './use_apm_params';
 import {
   getServiceGroupAppMenuHeaderTabs,
@@ -129,6 +131,20 @@ export function useApmAppMenuConfig(): AppMenuConfig {
 
   const servicesParams = useMaybeApmParams('/services');
   const serviceMapParams = useMaybeApmParams('/service-map');
+  const classicServiceDetailParams = useMaybeApmParams('/services/{serviceName}/*');
+  const mobileServiceDetailParams = useMaybeApmParams('/mobile-services/{serviceName}/*');
+  const serviceDetailParams = classicServiceDetailParams ?? mobileServiceDetailParams;
+
+  // Derive ISO bounds from the same decoded router `query` as `useApmParams` (not UrlParamsContext).
+  // The context provider can lag or omit `start`/`end` on some renders, which hid project header badges.
+  const servicePageRangeForIcons = useMemo(() => {
+    const rangeFrom = serviceDetailParams?.query.rangeFrom;
+    const rangeTo = serviceDetailParams?.query.rangeTo;
+    if (!rangeFrom || !rangeTo) {
+      return { start: undefined as string | undefined, end: undefined as string | undefined };
+    }
+    return getDateRange({ state: {}, rangeFrom, rangeTo });
+  }, [serviceDetailParams?.query.rangeFrom, serviceDetailParams?.query.rangeTo]);
 
   return useMemo((): AppMenuConfig => {
     function apmHref(path: string) {
@@ -364,10 +380,26 @@ export function useApmAppMenuConfig(): AppMenuConfig {
       }
     }
 
+    const serviceTechnologyHeaderBadges =
+      serviceDetailParams?.path.serviceName &&
+      servicePageRangeForIcons.start &&
+      servicePageRangeForIcons.end
+        ? [
+            <ServiceIconsHeaderBadges
+              key="apm-service-tech-badges"
+              environment={serviceDetailParams.query.environment}
+              serviceName={serviceDetailParams.path.serviceName}
+              start={servicePageRangeForIcons.start}
+              end={servicePageRangeForIcons.end}
+            />,
+          ]
+        : undefined;
+
     return {
       layout: 'chromeBarV2',
       overflowOnlyItems,
       ...(headerTabs?.length ? { headerTabs } : {}),
+      ...(serviceTechnologyHeaderBadges ? { headerBadges: serviceTechnologyHeaderBadges } : {}),
     };
   }, [
     addDataUrl,
@@ -395,6 +427,10 @@ export function useApmAppMenuConfig(): AppMenuConfig {
     router,
     search,
     basePath,
+    serviceDetailParams?.path.serviceName,
+    serviceDetailParams?.query.environment,
+    servicePageRangeForIcons.end,
+    servicePageRangeForIcons.start,
     servicesParams?.query,
     serviceMapParams?.query,
   ]);

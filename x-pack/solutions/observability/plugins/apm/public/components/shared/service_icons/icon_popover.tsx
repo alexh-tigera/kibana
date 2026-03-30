@@ -7,7 +7,7 @@
 
 import { EuiButtonIcon, EuiSkeletonText, EuiPopover, EuiPopoverTitle } from '@elastic/eui';
 import React from 'react';
-import type { PopoverItem } from '.';
+import type { ServiceIconsPopoverItem } from './service_icons_popover_types';
 import { FETCH_STATUS } from '../../../hooks/use_fetcher';
 
 interface IconPopoverProps {
@@ -17,7 +17,7 @@ interface IconPopoverProps {
   onClose: () => void;
   detailsFetchStatus: FETCH_STATUS;
   isOpen: boolean;
-  icon: PopoverItem['icon'];
+  icon: ServiceIconsPopoverItem['icon'];
 }
 
 export function IconPopover({
