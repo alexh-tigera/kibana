@@ -358,6 +358,7 @@ function InternalAlertsPage() {
           kibanaServices={kibanaServices}
           categories={[DEFAULT_APP_CATEGORIES.observability.id]}
         />
+        {isProjectChrome ? <EuiSpacer size="m" /> : null}
         <EuiFlexGroup direction="column" gutterSize="m">
           <EuiFlexItem>
             <ObservabilityAlertSearchBar

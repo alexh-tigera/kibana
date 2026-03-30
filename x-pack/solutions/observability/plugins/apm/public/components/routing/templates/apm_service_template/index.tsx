@@ -206,6 +206,7 @@ function TemplateWithContext({ children, selectedTab, searchBarOptions }: Props)
           </EuiFlexGroup>
         ) : (
           <>
+            {isProjectChrome ? <EuiSpacer size="m" /> : null}
             <SearchBar {...searchBarOptions} />
             <ServiceAnomalyTimeseriesContextProvider>
               {children}
