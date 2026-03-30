@@ -229,14 +229,17 @@ export function RuleDetailsPage() {
     onDeleteRule: handleDeleteRule,
   });
 
-  const { getChromeBarV2Fragment } = ruleDetailsHeaderActions;
+  const { getChromeBarV2Fragment, enabledStateHeaderBadge } = ruleDetailsHeaderActions;
 
   const ruleDetailAppMenuConfig = useMemo((): AppMenuConfig => {
     if (!rule) {
       return {};
     }
     const base: AppMenuConfig = {
-      headerBadges: buildRuleDetailHeaderBadges(rule),
+      headerBadges: [
+        ...buildRuleDetailHeaderBadges(rule),
+        ...(enabledStateHeaderBadge ? [enabledStateHeaderBadge] : []),
+      ],
       headerMetadata: buildRuleDetailHeaderMetadata(rule),
     };
     if (!isProjectChrome) {
@@ -246,7 +249,7 @@ export function RuleDetailsPage() {
       ...base,
       ...getChromeBarV2Fragment(),
     };
-  }, [rule, isProjectChrome, getChromeBarV2Fragment]);
+  }, [rule, isProjectChrome, getChromeBarV2Fragment, enabledStateHeaderBadge]);
 
   const ruleStatusMessage =
     rule?.executionStatus.error?.reason === RuleExecutionStatusErrorReasons.License

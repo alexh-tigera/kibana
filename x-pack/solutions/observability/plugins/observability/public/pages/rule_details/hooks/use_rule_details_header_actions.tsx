@@ -8,6 +8,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import {
+  EuiBadge,
   EuiButton,
   EuiButtonEmpty,
   EuiButtonIcon,
@@ -28,6 +29,103 @@ import { useUpdateAPIKey } from '../../../hooks/use_update_api_key';
 import { useAppLink } from '../../../hooks/use_app_link';
 import { useKibana } from '../../../utils/kibana_react';
 
+function RuleEnabledStateHeaderBadgePopover({
+  rule,
+  onDisableModalOpen,
+  onEnable,
+}: {
+  rule: Rule;
+  onDisableModalOpen: () => void;
+  onEnable: () => void;
+}) {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const closePopover = useCallback(() => setIsPopoverOpen(false), []);
+
+  const enabledLabel = i18n.translate('xpack.observability.ruleDetails.ruleEnabledStateLabel', {
+    defaultMessage: 'Enabled',
+  });
+  const disabledLabel = i18n.translate('xpack.observability.ruleDetails.ruleDisabledStateLabel', {
+    defaultMessage: 'Disabled',
+  });
+
+  const togglePopover = useCallback(() => {
+    setIsPopoverOpen((open) => !open);
+  }, []);
+
+  const onSelectEnabled = useCallback(() => {
+    if (!rule.enabled) {
+      onEnable();
+    }
+    closePopover();
+  }, [rule.enabled, onEnable, closePopover]);
+
+  const onSelectDisabled = useCallback(() => {
+    if (rule.enabled) {
+      onDisableModalOpen();
+    }
+    closePopover();
+  }, [rule.enabled, onDisableModalOpen, closePopover]);
+
+  const popoverButtonAriaLabel = i18n.translate(
+    'xpack.observability.ruleDetails.ruleEnabledStatePopoverButtonAriaLabel',
+    {
+      defaultMessage: 'Change rule enabled state',
+    }
+  );
+
+  const popoverPanelAriaLabel = i18n.translate(
+    'xpack.observability.ruleDetails.ruleEnabledStatePopoverPanelAriaLabel',
+    {
+      defaultMessage: 'Choose whether the rule is enabled or disabled',
+    }
+  );
+
+  const panels = [
+    {
+      id: 0,
+      items: [
+        {
+          name: enabledLabel,
+          icon: rule.enabled ? ('check' as const) : ('empty' as const),
+          onClick: onSelectEnabled,
+          'data-test-subj': 'ruleDetailsEnabledStateOptionEnabled',
+        },
+        {
+          name: disabledLabel,
+          icon: !rule.enabled ? ('check' as const) : ('empty' as const),
+          onClick: onSelectDisabled,
+          'data-test-subj': 'ruleDetailsEnabledStateOptionDisabled',
+        },
+      ],
+    },
+  ];
+
+  return (
+    <EuiPopover
+      id="ruleDetailsEnabledStatePopover"
+      aria-label={popoverPanelAriaLabel}
+      anchorPosition="downLeft"
+      panelPaddingSize="none"
+      button={
+        <EuiBadge
+          color={rule.enabled ? 'primary' : 'default'}
+          data-test-subj="ruleDetailsEnabledStateBadge"
+          iconType="arrowDown"
+          iconSide="right"
+          onClick={togglePopover}
+          onClickAriaLabel={popoverButtonAriaLabel}
+        >
+          {rule.enabled ? enabledLabel : disabledLabel}
+        </EuiBadge>
+      }
+      isOpen={isPopoverOpen}
+      closePopover={closePopover}
+    >
+      <EuiContextMenu initialPanelId={0} panels={panels} size="s" />
+    </EuiPopover>
+  );
+}
+
 export interface UseRuleDetailsHeaderActionsParams {
   ruleId: string;
   rule: Rule | undefined;
@@ -42,9 +140,11 @@ export interface RuleDetailsHeaderActionsApi {
   showClassicHeaderActions: boolean;
   modals: React.ReactNode;
   renderClassicHeaderActions: () => React.ReactNode;
+  /** Project chrome: interactive enabled/disabled badge (primary vs default color). */
+  enabledStateHeaderBadge: React.ReactNode;
   getChromeBarV2Fragment: () => Pick<
     AppMenuConfig,
-    'layout' | 'primaryActionItem' | 'secondaryActionItem' | 'overflowOnlyItems'
+    'layout' | 'secondaryActionItems' | 'overflowOnlyItems'
   >;
 }
 
@@ -135,9 +235,56 @@ export function useRuleDetailsHeaderActions({
     [disableRule, ruleId, onDisableModalClose]
   );
 
+  const enabledStateHeaderBadge = useMemo(() => {
+    if (!rule) {
+      return null;
+    }
+
+    const enabledLabel = i18n.translate('xpack.observability.ruleDetails.ruleEnabledStateLabel', {
+      defaultMessage: 'Enabled',
+    });
+    const disabledLabel = i18n.translate('xpack.observability.ruleDetails.ruleDisabledStateLabel', {
+      defaultMessage: 'Disabled',
+    });
+
+    if (!isRuleEditable) {
+      return (
+        <EuiBadge
+          key="rule-enabled-state"
+          color={rule.enabled ? 'primary' : 'default'}
+          data-test-subj="ruleDetailsEnabledStateBadge"
+        >
+          {rule.enabled ? enabledLabel : disabledLabel}
+        </EuiBadge>
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <EuiBadge
+          key="rule-enabled-state"
+          color={rule.enabled ? 'primary' : 'default'}
+          data-test-subj="ruleDetailsEnabledStateBadge"
+          isDisabled
+        >
+          {rule.enabled ? enabledLabel : disabledLabel}
+        </EuiBadge>
+      );
+    }
+
+    return (
+      <RuleEnabledStateHeaderBadgePopover
+        key="rule-enabled-state"
+        rule={rule}
+        onDisableModalOpen={onDisableModalOpen}
+        onEnable={handleEnableRule}
+      />
+    );
+  }, [rule, isRuleEditable, isLoading, onDisableModalOpen, handleEnableRule]);
+
   const getChromeBarV2Fragment = useCallback((): Pick<
     AppMenuConfig,
-    'layout' | 'primaryActionItem' | 'secondaryActionItem' | 'overflowOnlyItems'
+    'layout' | 'secondaryActionItems' | 'overflowOnlyItems'
   > => {
     if (!isRuleEditable || !rule) {
       return {};
@@ -148,29 +295,18 @@ export function useRuleDetailsHeaderActions({
     const overflowOnlyItems: AppMenuItemType[] = [];
     let order = 1;
 
-    overflowOnlyItems.push(
-      rule.enabled
-        ? {
-            order: order++,
-            id: 'observability-rule-detail-disable',
-            label: i18n.translate('xpack.observability.ruleDetails.disableRule', {
-              defaultMessage: 'Disable',
-            }),
-            iconType: 'stopSlash',
-            testId: 'disableRuleButton',
-            run: onDisableModalOpen,
-          }
-        : {
-            order: order++,
-            id: 'observability-rule-detail-enable',
-            label: i18n.translate('xpack.observability.ruleDetails.enableRule', {
-              defaultMessage: 'Enable',
-            }),
-            iconType: 'play',
-            testId: 'enableRuleButton',
-            run: handleEnableRule,
-          }
-    );
+    overflowOnlyItems.push({
+      order: order++,
+      id: 'observability-rule-detail-edit',
+      label: i18n.translate('xpack.observability.ruleDetails.editRule', {
+        defaultMessage: 'Edit',
+      }),
+      iconType: 'pencil',
+      testId: 'editRuleButton',
+      run: () => {
+        handleEditRule();
+      },
+    });
 
     overflowOnlyItems.push({
       order: order++,
@@ -222,33 +358,23 @@ export function useRuleDetailsHeaderActions({
 
     return {
       layout: 'chromeBarV2',
-      primaryActionItem: {
-        id: 'observability-rule-detail-edit',
-        label: i18n.translate('xpack.observability.ruleDetails.editRule', {
-          defaultMessage: 'Edit',
-        }),
-        iconType: 'pencil',
-        testId: 'editRuleButton',
-        disableButton: isLoading,
-        run: () => {
-          handleEditRule();
+      secondaryActionItems: [
+        {
+          id: 'observability-rule-detail-snooze',
+          label: i18n.translate('xpack.observability.ruleDetails.snoozeMenuLabel', {
+            defaultMessage: 'Snooze',
+          }),
+          iconType: snoozeIconType,
+          testId: 'snoozeRuleButton',
+          disableButton: isLoading,
+          tooltipContent: i18n.translate('xpack.observability.ruleDetails.snoozeButtonAriaLabel', {
+            defaultMessage: 'Manage rule snooze',
+          }),
+          run: () => {
+            setSnoozeModalOpen(true);
+          },
         },
-      },
-      secondaryActionItem: {
-        id: 'observability-rule-detail-snooze',
-        label: i18n.translate('xpack.observability.ruleDetails.snoozeMenuLabel', {
-          defaultMessage: 'Snooze',
-        }),
-        iconType: snoozeIconType,
-        testId: 'snoozeRuleButton',
-        disableButton: isLoading,
-        tooltipContent: i18n.translate('xpack.observability.ruleDetails.snoozeButtonAriaLabel', {
-          defaultMessage: 'Manage rule snooze',
-        }),
-        run: () => {
-          setSnoozeModalOpen(true);
-        },
-      },
+      ],
       overflowOnlyItems,
     };
   }, [
@@ -258,8 +384,6 @@ export function useRuleDetailsHeaderActions({
     linkUrl,
     buttonText,
     application,
-    onDisableModalOpen,
-    handleEnableRule,
     handleRunRule,
     handleUpdateAPIKey,
     handleRemoveRule,
@@ -287,7 +411,14 @@ export function useRuleDetailsHeaderActions({
         ) : null}
       </>
     ),
-    [snoozeModalOpen, rule, refetch, isUntrackAlertsModalOpen, onDisableModalClose, handleDisableRule]
+    [
+      snoozeModalOpen,
+      rule,
+      refetch,
+      isUntrackAlertsModalOpen,
+      onDisableModalClose,
+      handleDisableRule,
+    ]
   );
 
   const renderClassicHeaderActions = useCallback(() => {
@@ -444,6 +575,7 @@ export function useRuleDetailsHeaderActions({
     showClassicHeaderActions,
     modals,
     renderClassicHeaderActions,
+    enabledStateHeaderBadge,
     getChromeBarV2Fragment,
   };
 }
