@@ -131,6 +131,13 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
     }
   `;
 
+  const resolvedMinWidthCss =
+    minWidthProp != null && minWidthProp !== false
+      ? typeof minWidthProp === 'number'
+        ? `${minWidthProp}px`
+        : minWidthProp
+      : undefined;
+
   const buttonCss = css`
     background-color: ${isPopoverOpen
       ? getIsSelectedColor({
@@ -139,6 +146,9 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
           isFilled: isSecondaryAction ? false : Boolean(isFilledProp),
         })
       : undefined};
+    ${resolvedMinWidthCss != null && isSecondaryAction
+      ? `min-width: ${resolvedMinWidthCss};`
+      : ''}
   `;
 
   const buttonComponent = splitButtonProps ? (
@@ -171,7 +181,6 @@ export const AppMenuActionButton = (props: AppMenuActionButtonProps) => {
         isSelected={isPopoverOpen}
         css={buttonCss}
         color="text"
-        minWidth={minWidthProp}
       >
         {itemText}
       </EuiButtonEmpty>
