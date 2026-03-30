@@ -499,7 +499,7 @@ export function getUiSettings(
       value: true,
       description: i18n.translate('data.advancedSettings.timepicker.useDateRangePickerText', {
         defaultMessage:
-          'Use the new picker for time filtering in Discover, Dashboards and some parts of Kibana. When disabled, the legacy picker is used instead.',
+          'Use the new picker for time filtering in Discover and Dashboards. When disabled, the legacy picker is used instead.',
       }),
       schema: schema.boolean(),
       requiresPageReload: true,
