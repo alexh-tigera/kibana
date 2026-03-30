@@ -7,11 +7,11 @@
 
 import React from 'react';
 import {
+  EuiButton,
   EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiNotificationBadge,
-  EuiText,
 } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import type { LocatorPublic } from '@kbn/share-plugin/common';
@@ -48,42 +48,43 @@ const errorsLabel = i18n.translate('xpack.observability.alerts.ruleStats.errors'
   defaultMessage: 'Errors',
 });
 
-const rulesSectionLabel = i18n.translate('xpack.observability.alerts.ruleStats.rulesSectionLabel', {
-  defaultMessage: 'Rules',
-});
-
 const ruleCountLabel = i18n.translate('xpack.observability.alerts.ruleStats.ruleCount', {
   defaultMessage: 'Rule count',
 });
 
-const RuleMetricButton = ({
-  label,
-  count,
-  isLoading,
-  interactive,
-  onClick,
-  testSubj,
-}: {
+interface RuleMetricButtonProps {
   label: string;
   count: number;
   isLoading: boolean;
   interactive: boolean;
   onClick?: () => void;
   testSubj: string;
-}) => (
-  <EuiButtonEmpty
-    size="xs"
-    isDisabled={!interactive}
-    isLoading={isLoading}
-    onClick={interactive ? onClick : undefined}
-    data-test-subj={testSubj}
-  >
-    <EuiText size="xs" component="span">
+}
+
+function RuleMetricButton({
+  label,
+  count,
+  isLoading,
+  interactive,
+  onClick,
+  testSubj,
+}: RuleMetricButtonProps) {
+  return (
+    <EuiButtonEmpty
+      size="s"
+      isDisabled={!interactive}
+      color="text"
+      isLoading={isLoading}
+      onClick={interactive ? onClick : undefined}
+      data-test-subj={testSubj}
+    >
       {label}:{' '}
-      <EuiNotificationBadge color={interactive ? 'accent' : 'subdued'}>{count}</EuiNotificationBadge>
-    </EuiText>
-  </EuiButtonEmpty>
-);
+      <EuiNotificationBadge color={interactive ? 'accent' : 'subdued'}>
+        {count}
+      </EuiNotificationBadge>
+    </EuiButtonEmpty>
+  );
+}
 
 function buildRuleStatElements(
   ruleStats: RuleStatsState,
@@ -163,10 +164,12 @@ export function RuleStatsMetricsRow({
   ruleStats,
   ruleStatsLoading,
   rulesLocator,
+  manageRulesHref,
 }: {
   ruleStats: RuleStatsState;
   ruleStatsLoading: boolean;
   rulesLocator?: LocatorPublic<RulesLocatorParams>;
+  manageRulesHref: string;
 }) {
   const { ruleCountStat, disabledStatsComponent, snoozedStatsComponent, errorStatsComponent } =
     buildRuleStatElements(ruleStats, ruleStatsLoading, rulesLocator);
@@ -176,17 +179,12 @@ export function RuleStatsMetricsRow({
       alignItems="center"
       responsive={true}
       wrap
+      justifyContent="flexEnd"
       data-test-subj="o11yAlertsRuleStatsRow"
-      css={{ width: '100%' }}
     >
       <EuiFlexItem grow={false}>
-        <EuiText size="s">
-          <strong>{rulesSectionLabel}</strong>
-        </EuiText>
-      </EuiFlexItem>
-      <EuiFlexItem grow={true}>
         <EuiFlexGroup
-          gutterSize="m"
+          gutterSize="xs"
           responsive={false}
           wrap
           alignItems="center"
@@ -197,6 +195,19 @@ export function RuleStatsMetricsRow({
           <EuiFlexItem grow={false}>{snoozedStatsComponent}</EuiFlexItem>
           <EuiFlexItem grow={false}>{errorStatsComponent}</EuiFlexItem>
         </EuiFlexGroup>
+      </EuiFlexItem>
+      <EuiFlexItem grow={false}>
+        <EuiButton
+          size="s"
+          color="text"
+          iconType="tableOfContents"
+          data-test-subj="manageRulesPageButton"
+          href={manageRulesHref}
+        >
+          {i18n.translate('xpack.observability.alerts.manageRulesButtonLabel', {
+            defaultMessage: 'Manage Rules',
+          })}
+        </EuiButton>
       </EuiFlexItem>
     </EuiFlexGroup>
   );

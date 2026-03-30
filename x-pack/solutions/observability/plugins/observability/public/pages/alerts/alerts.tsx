@@ -302,22 +302,9 @@ function InternalAlertsPage() {
     const addDataLabel = i18n.translate('xpack.observability.home.addData', {
       defaultMessage: 'Add data',
     });
-    const manageRulesLabel = i18n.translate('xpack.observability.alerts.manageRulesButtonLabel', {
-      defaultMessage: 'Manage Rules',
-    });
 
     const config: AppMenuConfig = {
       layout: 'chromeBarV2',
-      primaryActionItem: {
-        id: 'observability-alerts-manage-rules',
-        label: manageRulesLabel,
-        iconType: 'tableOfContents',
-        testId: 'manageRulesPageButton',
-        href: manageRulesHref,
-        run: () => {
-          void application.navigateToUrl(manageRulesHref);
-        },
-      },
     };
 
     if (addDataHref) {
@@ -336,7 +323,7 @@ function InternalAlertsPage() {
     }
 
     return config;
-  }, [addDataHref, application, manageRulesHref]);
+  }, [addDataHref, application]);
 
   return (
     <Provider value={alertSearchBarStateContainer}>
@@ -399,6 +386,7 @@ function InternalAlertsPage() {
                 ruleStats={ruleStats}
                 ruleStatsLoading={ruleStatsLoading}
                 rulesLocator={locators.get<RulesLocatorParams>(rulesLocatorID)}
+                manageRulesHref={manageRulesHref as string}
               />
             </EuiFlexItem>
           ) : null}
