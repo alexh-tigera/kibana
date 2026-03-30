@@ -6,7 +6,13 @@
  */
 
 import React from 'react';
-import { EuiButtonEmpty, EuiFlexGroup, EuiFlexItem, EuiStat } from '@elastic/eui';
+import {
+  EuiButtonEmpty,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiNotificationBadge,
+  EuiText,
+} from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import type { LocatorPublic } from '@kbn/share-plugin/common';
 import { euiThemeVars } from '@kbn/ui-theme';
@@ -27,22 +33,6 @@ const Divider = euiStyled.div`
   height: 100%;
 `;
 
-const StyledStat = euiStyled(EuiStat)`
-  .euiText {
-    line-height: 1;
-  }
-`;
-
-const ConditionalWrap = ({
-  condition,
-  wrap,
-  children,
-}: {
-  condition: boolean;
-  wrap: (wrappedChildren: React.ReactNode) => JSX.Element;
-  children: JSX.Element;
-}): JSX.Element => (condition ? wrap(children) : children);
-
 const getStatCount = (stats: RuleStatsState, status: Status) => {
   if (status === 'snoozed') return stats.snoozed + stats.muted;
   return stats[status];
@@ -57,6 +47,43 @@ const snoozedLabel = i18n.translate('xpack.observability.alerts.ruleStats.muted'
 const errorsLabel = i18n.translate('xpack.observability.alerts.ruleStats.errors', {
   defaultMessage: 'Errors',
 });
+
+const rulesSectionLabel = i18n.translate('xpack.observability.alerts.ruleStats.rulesSectionLabel', {
+  defaultMessage: 'Rules',
+});
+
+const ruleCountLabel = i18n.translate('xpack.observability.alerts.ruleStats.ruleCount', {
+  defaultMessage: 'Rule count',
+});
+
+const RuleMetricButton = ({
+  label,
+  count,
+  isLoading,
+  interactive,
+  onClick,
+  testSubj,
+}: {
+  label: string;
+  count: number;
+  isLoading: boolean;
+  interactive: boolean;
+  onClick?: () => void;
+  testSubj: string;
+}) => (
+  <EuiButtonEmpty
+    size="xs"
+    isDisabled={!interactive}
+    isLoading={isLoading}
+    onClick={interactive ? onClick : undefined}
+    data-test-subj={testSubj}
+  >
+    <EuiText size="xs" component="span">
+      {label}:{' '}
+      <EuiNotificationBadge color={interactive ? 'accent' : 'subdued'}>{count}</EuiNotificationBadge>
+    </EuiText>
+  </EuiButtonEmpty>
+);
 
 function buildRuleStatElements(
   ruleStats: RuleStatsState,
@@ -81,90 +108,46 @@ function buildRuleStatElements(
   };
 
   const disabledStatsComponent = (
-    <ConditionalWrap
-      condition={ruleStats.disabled > 0}
-      wrap={(wrappedChildren) => (
-        <EuiButtonEmpty
-          aria-label={disabledLabel}
-          data-test-subj="o11yDisabledStatsComponentButton"
-          onClick={() => handleNavigateToRules(ruleStats, 'disabled')}
-        >
-          {wrappedChildren}
-        </EuiButtonEmpty>
-      )}
-    >
-      <StyledStat
-        title={ruleStats.disabled}
-        description={disabledLabel}
-        color="primary"
-        titleColor={ruleStats.disabled > 0 ? 'primary' : ''}
-        titleSize="xs"
-        isLoading={ruleStatsLoading}
-        data-test-subj="statDisabled"
-      />
-    </ConditionalWrap>
+    <RuleMetricButton
+      label={disabledLabel}
+      count={ruleStats.disabled}
+      isLoading={ruleStatsLoading}
+      interactive={ruleStats.disabled > 0}
+      onClick={() => handleNavigateToRules(ruleStats, 'disabled')}
+      testSubj="statDisabled"
+    />
   );
 
+  const snoozedCount = ruleStats.muted + ruleStats.snoozed;
   const snoozedStatsComponent = (
-    <ConditionalWrap
-      condition={ruleStats.muted + ruleStats.snoozed > 0}
-      wrap={(wrappedChildren) => (
-        <EuiButtonEmpty
-          aria-label={snoozedLabel}
-          data-test-subj="o11ySnoozedStatsComponentButton"
-          onClick={() => handleNavigateToRules(ruleStats, 'snoozed')}
-        >
-          {wrappedChildren}
-        </EuiButtonEmpty>
-      )}
-    >
-      <StyledStat
-        title={ruleStats.muted + ruleStats.snoozed}
-        description={snoozedLabel}
-        color="primary"
-        titleColor={ruleStats.muted + ruleStats.snoozed > 0 ? 'primary' : ''}
-        titleSize="xs"
-        isLoading={ruleStatsLoading}
-        data-test-subj="statMuted"
-      />
-    </ConditionalWrap>
+    <RuleMetricButton
+      label={snoozedLabel}
+      count={snoozedCount}
+      isLoading={ruleStatsLoading}
+      interactive={snoozedCount > 0}
+      onClick={() => handleNavigateToRules(ruleStats, 'snoozed')}
+      testSubj="statMuted"
+    />
   );
 
   const errorStatsComponent = (
-    <ConditionalWrap
-      condition={ruleStats.error > 0}
-      wrap={(wrappedChildren) => (
-        <EuiButtonEmpty
-          aria-label={errorsLabel}
-          data-test-subj="o11yErrorStatsComponentButton"
-          onClick={() => handleNavigateToRules(ruleStats, 'error')}
-        >
-          {wrappedChildren}
-        </EuiButtonEmpty>
-      )}
-    >
-      <StyledStat
-        title={ruleStats.error}
-        description={errorsLabel}
-        color="primary"
-        titleColor={ruleStats.error > 0 ? 'primary' : ''}
-        titleSize="xs"
-        isLoading={ruleStatsLoading}
-        data-test-subj="statErrors"
-      />
-    </ConditionalWrap>
+    <RuleMetricButton
+      label={errorsLabel}
+      count={ruleStats.error}
+      isLoading={ruleStatsLoading}
+      interactive={ruleStats.error > 0}
+      onClick={() => handleNavigateToRules(ruleStats, 'error')}
+      testSubj="statErrors"
+    />
   );
 
   const ruleCountStat = (
-    <StyledStat
-      title={ruleStats.total}
-      description={i18n.translate('xpack.observability.alerts.ruleStats.ruleCount', {
-        defaultMessage: 'Rule count',
-      })}
-      color="primary"
-      titleSize="xs"
+    <RuleMetricButton
+      label={ruleCountLabel}
+      count={ruleStats.total}
       isLoading={ruleStatsLoading}
-      data-test-subj="statRuleCount"
+      interactive={false}
+      testSubj="statRuleCount"
     />
   );
 
@@ -189,11 +172,32 @@ export function RuleStatsMetricsRow({
     buildRuleStatElements(ruleStats, ruleStatsLoading, rulesLocator);
 
   return (
-    <EuiFlexGroup gutterSize="m" responsive={false} wrap alignItems="center" data-test-subj="o11yAlertsRuleStatsRow">
-      <EuiFlexItem grow={false}>{ruleCountStat}</EuiFlexItem>
-      <EuiFlexItem grow={false}>{disabledStatsComponent}</EuiFlexItem>
-      <EuiFlexItem grow={false}>{snoozedStatsComponent}</EuiFlexItem>
-      <EuiFlexItem grow={false}>{errorStatsComponent}</EuiFlexItem>
+    <EuiFlexGroup
+      alignItems="center"
+      responsive={true}
+      wrap
+      data-test-subj="o11yAlertsRuleStatsRow"
+      css={{ width: '100%' }}
+    >
+      <EuiFlexItem grow={false}>
+        <EuiText size="s">
+          <strong>{rulesSectionLabel}</strong>
+        </EuiText>
+      </EuiFlexItem>
+      <EuiFlexItem grow={true}>
+        <EuiFlexGroup
+          gutterSize="m"
+          responsive={false}
+          wrap
+          alignItems="center"
+          justifyContent="flexEnd"
+        >
+          <EuiFlexItem grow={false}>{ruleCountStat}</EuiFlexItem>
+          <EuiFlexItem grow={false}>{disabledStatsComponent}</EuiFlexItem>
+          <EuiFlexItem grow={false}>{snoozedStatsComponent}</EuiFlexItem>
+          <EuiFlexItem grow={false}>{errorStatsComponent}</EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiFlexItem>
     </EuiFlexGroup>
   );
 }

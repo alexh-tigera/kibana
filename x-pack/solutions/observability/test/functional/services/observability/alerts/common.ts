@@ -342,8 +342,8 @@ export function ObservabilityAlertsCommonProvider({
 
   const getRuleStatValue = retryOnStale.wrap(async (testSubj: string) => {
     const stat = await testSubjects.find(testSubj);
-    const title = await stat.findByCssSelector('.euiStat__title');
-    const count = await title.getVisibleText();
+    const badge = await stat.findByCssSelector('.euiNotificationBadge');
+    const count = await badge.getVisibleText();
     const value = Number.parseInt(count, 10);
     expect(Number.isNaN(value)).to.be(false);
     return value;

@@ -60,7 +60,7 @@ import { getColumns } from '../../components/alerts_table/common/get_columns';
 import { HeaderMenu } from '../overview/components/header_menu/header_menu';
 import { buildEsQuery } from '../../utils/build_es_query';
 import type { RuleStatsState } from './components/rule_stats';
-import { renderRuleStats } from './components/rule_stats';
+import { renderRuleStats, RuleStatsMetricsRow } from './components/rule_stats';
 import { mergeBoolQueries } from './helpers/merge_bool_queries';
 import { GroupingToolbarControls } from '../../components/alerts_table/grouping/grouping_toolbar_controls';
 import { AlertsLoader } from './components/alerts_loader';
@@ -393,6 +393,15 @@ function InternalAlertsPage() {
             />
             <EuiSpacer size="s" />
           </EuiFlexItem>
+          {isProjectChrome ? (
+            <EuiFlexItem grow={true}>
+              <RuleStatsMetricsRow
+                ruleStats={ruleStats}
+                ruleStatsLoading={ruleStatsLoading}
+                rulesLocator={locators.get<RulesLocatorParams>(rulesLocatorID)}
+              />
+            </EuiFlexItem>
+          ) : null}
           <EuiFlexItem>
             {hasInitialControlLoadingFinished ? (
               <AlertSummaryWidget
