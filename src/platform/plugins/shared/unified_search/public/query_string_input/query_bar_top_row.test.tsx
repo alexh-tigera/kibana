@@ -595,9 +595,12 @@ describe('QueryBarTopRowTopRow', () => {
       useDateRangePickerSetting = useNewPicker;
     });
 
+    const wrapWithPicker = (props: any, opts?: any) =>
+      wrapQueryBarTopRowInContext({ useDateRangePicker: useNewPicker, ...props }, opts);
+
     it('Should render query and time picker', async () => {
       const { getByText, getByTestId } = render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           query: kqlQuery,
           screenTitle: 'Another Screen',
           isDirty: false,
@@ -614,7 +617,7 @@ describe('QueryBarTopRowTopRow', () => {
 
     it('Should render only timepicker when no options provided', async () => {
       const { container } = render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           isDirty: false,
           timeHistory: mockTimeHistory,
         })
@@ -630,7 +633,7 @@ describe('QueryBarTopRowTopRow', () => {
 
     it('Should not show timepicker when asked', async () => {
       const { container } = render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           showDatePicker: false,
           timeHistory: mockTimeHistory,
           isDirty: false,
@@ -648,7 +651,7 @@ describe('QueryBarTopRowTopRow', () => {
 
     it('Should render timepicker with options', async () => {
       const { container } = render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           isDirty: false,
           screenTitle: 'Another Screen',
           showDatePicker: true,
@@ -668,7 +671,7 @@ describe('QueryBarTopRowTopRow', () => {
 
     it('Should render timepicker without the submit button if showSubmitButton is false', async () => {
       render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           isDirty: false,
           screenTitle: 'Another Screen',
           showDatePicker: true,
@@ -688,7 +691,7 @@ describe('QueryBarTopRowTopRow', () => {
 
     it('Should render only query input bar', async () => {
       render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           query: kqlQuery,
           indexPatterns: [stubIndexPattern],
           isDirty: false,
@@ -708,7 +711,7 @@ describe('QueryBarTopRowTopRow', () => {
 
     it('Should NOT render query input bar if disabled', async () => {
       const { container } = render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           query: kqlQuery,
           isDirty: false,
           screenTitle: 'Another Screen',
@@ -730,7 +733,7 @@ describe('QueryBarTopRowTopRow', () => {
 
     it('Should NOT render query input bar if missing options', async () => {
       const { container } = render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           isDirty: false,
           screenTitle: 'Another Screen',
           showDatePicker: false,
@@ -749,7 +752,7 @@ describe('QueryBarTopRowTopRow', () => {
 
     it('Should NOT render query input bar if on text based languages mode', async () => {
       const { container } = render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           query: esqlQuery,
           isDirty: false,
           screenTitle: 'SQL Screen',
@@ -777,7 +780,7 @@ describe('QueryBarTopRowTopRow', () => {
         isPersisted: () => false,
       };
       const { container } = render(
-        wrapQueryBarTopRowInContext({
+        wrapWithPicker({
           query: esqlQuery,
           isDirty: false,
           screenTitle: 'SQL Screen',
