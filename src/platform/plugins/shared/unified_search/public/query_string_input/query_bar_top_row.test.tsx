@@ -596,7 +596,7 @@ describe('QueryBarTopRowTopRow', () => {
     });
 
     const wrapWithPicker = (props: any, opts?: any) =>
-      wrapQueryBarTopRowInContext({ useDateRangePicker: useNewPicker, ...props }, opts);
+      wrapQueryBarTopRowInContext({ enableDateRangePicker: useNewPicker, ...props }, opts);
 
     it('Should render query and time picker', async () => {
       const { getByText, getByTestId } = render(

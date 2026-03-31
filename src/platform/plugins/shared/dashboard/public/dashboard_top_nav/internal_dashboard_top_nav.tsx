@@ -400,7 +400,7 @@ export function InternalDashboardTopNav({
           savedQueryId={savedQueryId}
           indexPatterns={allDataViews ?? []}
           allowSavingQueries
-          useDateRangePicker
+          enableDateRangePicker
           appName={DASHBOARD_APP_ID}
           onQuerySubmit={(_payload, isUpdate) => {
             if (isUpdate === false) {

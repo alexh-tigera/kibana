@@ -254,7 +254,7 @@ export interface QueryBarTopRowProps<QT extends Query | AggregateQuery = Query> 
    * `timepicker:useDateRangePicker` UI setting is enabled, the new picker
    * replaces the legacy EuiSuperDatePicker. Currently used by Discover and Dashboard.
    */
-  useDateRangePicker?: boolean;
+  enableDateRangePicker?: boolean;
 }
 
 export const SharingMetaFields = React.memo(function SharingMetaFields({
@@ -379,7 +379,7 @@ export const QueryBarTopRow = React.memo(
     } = kibana.services;
 
     const shouldUseLegacyTimePicker =
-      !props.useDateRangePicker || !uiSettings.get(UI_SETTINGS.TIMEPICKER_USE_DATE_RANGE_PICKER);
+      !props.enableDateRangePicker || !uiSettings.get(UI_SETTINGS.TIMEPICKER_USE_DATE_RANGE_PICKER);
 
     const isQueryLangSelected = props.query && !isOfQueryType(props.query);
 

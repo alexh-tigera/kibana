@@ -308,7 +308,7 @@ export function createSearchBar({
             useBackgroundSearchButton={props.useBackgroundSearchButton}
             esqlQueryStats={props.esqlQueryStats}
             enableResourceBrowser={props.enableResourceBrowser}
-            useDateRangePicker={props.useDateRangePicker}
+            enableDateRangePicker={props.enableDateRangePicker}
           />
         </core.i18n.Context>
       </KibanaContextProvider>
