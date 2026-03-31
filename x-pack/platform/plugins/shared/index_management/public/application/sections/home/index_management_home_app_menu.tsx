@@ -15,7 +15,7 @@ import type {
   AppMenuItemType,
 } from '@kbn/core-chrome-app-menu-components';
 
-import type { Section } from '../../../../common/constants';
+import { Section } from '../../../../common/constants';
 import { documentationService } from '../../services/documentation';
 import { useAppContext } from '../../app_context';
 
@@ -73,6 +73,7 @@ export const IndexManagementHomeAppMenu: React.FC<IndexManagementHomeAppMenuProp
       layout: 'chromeBarV2',
       overflowOnlyItems,
       headerTabs,
+      ...(section === Section.Indices ? { hideProjectHeaderBackButton: true } : {}),
     };
   }, [isProjectChrome, onSectionChange, section, tabs]);
 

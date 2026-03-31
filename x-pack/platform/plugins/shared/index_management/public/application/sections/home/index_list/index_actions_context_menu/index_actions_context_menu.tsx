@@ -407,7 +407,8 @@ export const IndexActionsContextMenu = ({
         values: { selectedIndexCount },
       })}
       onClick={onButtonClick}
-      iconType="gear"
+      iconType={iconType}
+      fill={fill}
       isLoading={isLoading}
     >
       {label ? (
