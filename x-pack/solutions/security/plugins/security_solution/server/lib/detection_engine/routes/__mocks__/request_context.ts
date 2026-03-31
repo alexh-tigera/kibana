@@ -51,7 +51,6 @@ import { createProductFeaturesServiceMock } from '../../../product_features_serv
 import type { EndpointAppContextService } from '../../../../endpoint/endpoint_app_context_services';
 import { padPackageInstallationClientMock } from '../../../entity_analytics/privilege_monitoring/privileged_access_detection/pad_package_installation_client.mock';
 import { privilegeMonitorDataClientMock } from '../../../entity_analytics/privilege_monitoring/engine/data_client.mock';
-import { entityStoreCrudClientMock } from '../../../entity_analytics/entity_store/entity_store_crud_client.mock';
 import { getMockRulesAuthz } from '../../rule_management/__mocks__/authz';
 
 export const createMockClients = () => {
@@ -85,7 +84,6 @@ export const createMockClients = () => {
     riskScoreDataClient: riskScoreDataClientMock.create(),
     assetCriticalityDataClient: assetCriticalityDataClientMock.create(),
     entityStoreDataClient: entityStoreDataClientMock.create(),
-    entityStoreCrudClient: entityStoreCrudClientMock.create(),
     privilegeMonitorDataClient: privilegeMonitorDataClientMock.create(),
     padPackageInstallationClient: padPackageInstallationClientMock.create(),
 
@@ -204,8 +202,6 @@ const createSecuritySolutionRequestContextMock = (
     getInternalDataViewsService: jest.fn(async () => dataViewsService),
     getEntityStoreApiKeyManager: jest.fn(),
     getPrivilegedUserMonitoringApiKeyManager: jest.fn(),
-    getEntityStoreCrudClient: jest.fn(() => clients.entityStoreCrudClient),
-    getEntityStoreUpdateClient: jest.fn(() => clients.entityStoreCrudClient as never),
     getEntityStoreDataClient: jest.fn(() => clients.entityStoreDataClient),
     getPrivilegeMonitoringDataClient: jest.fn(() => clients.privilegeMonitorDataClient),
     getPadPackageInstallationClient: jest.fn(() => clients.padPackageInstallationClient),

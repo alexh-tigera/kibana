@@ -43,7 +43,6 @@ import { getApiKeyManager as getApiKeyManagerPrivilegedUserMonitoring } from './
 import { getApiKeyManager as getApiKeyManagerEntityStore } from './lib/entity_analytics/entity_store/auth/api_key';
 import { monitoringEntitySourceType } from './lib/entity_analytics/privilege_monitoring/saved_objects';
 import { getSiemMigrationClients } from './lib/siem_migrations';
-import { EntityStoreCrudClient } from './lib/entity_analytics/entity_store/entity_store_crud_client';
 import { calculateRulesAuthz } from './lib/detection_engine/rule_management/authz';
 
 export interface IRequestContextFactory {
@@ -364,20 +363,6 @@ export class RequestContextFactory implements IRequestContextFactory {
         });
       }),
       getEntityStoreDataClient,
-      getEntityStoreCrudClient: memoize(() => {
-        return new EntityStoreCrudClient({
-          clusterClient: coreContext.elasticsearch.client,
-          namespace: getSpaceId(),
-          logger: options.logger,
-          dataClient: getEntityStoreDataClient(),
-        });
-      }),
-      getEntityStoreUpdateClient: memoize(() => {
-        return startPlugins.entityStore.createCRUDClient(
-          coreContext.elasticsearch.client.asCurrentUser,
-          getSpaceId()
-        );
-      }),
       getAssetInventoryClient: memoize(
         () =>
           new AssetInventoryDataClient({
