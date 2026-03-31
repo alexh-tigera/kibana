@@ -399,6 +399,12 @@ export class TimePickerPageObject extends FtrService {
    * then navigating to the settings sub-panel.
    */
   private async openNewPickerSettingsPanel() {
+    // If the settings panel is already visible, nothing to do.
+    const alreadyOpen = await this.testSubjects.exists('dateRangePickerSettingsPanel', {
+      timeout: 500,
+    });
+    if (alreadyOpen) return;
+
     await this.testSubjects.click('dateRangePickerControlButton');
     await this.testSubjects.exists('dateRangePickerMainPanel', { timeout: 5000 });
     await this.testSubjects.click('dateRangePickerSettingsButton');
@@ -586,13 +592,18 @@ export class TimePickerPageObject extends FtrService {
   public async pauseAutoRefresh() {
     this.log.debug('pauseAutoRefresh');
     if (await this.isNewDateRangePicker()) {
-      // In the new picker, clicking the auto-refresh button directly pauses it
-      const buttonExists = await this.testSubjects.exists('dateRangePickerAutoRefreshButton', {
-        timeout: 1000,
-      });
-      if (buttonExists) {
-        await this.testSubjects.click('dateRangePickerAutoRefreshButton');
+      // Disable auto-refresh via the settings panel toggle so that
+      // onRefreshChange fires with isPaused: true (the play/pause button
+      // only toggles isPaused locally without notifying the timefilter).
+      await this.openNewPickerSettingsPanel();
+      const toggleChecked = await this.testSubjects.getAttribute(
+        'dateRangePickerAutoRefreshToggle',
+        'aria-checked'
+      );
+      if (toggleChecked === 'true') {
+        await this.testSubjects.click('dateRangePickerAutoRefreshToggle');
       }
+      await this.browser.pressKeys(this.browser.keys.ESCAPE);
     } else {
       const refreshConfig = await this.getRefreshConfig(true);
       if (!refreshConfig.isPaused) {
