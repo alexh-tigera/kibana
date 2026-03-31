@@ -7,6 +7,7 @@
 
 import type { FunctionComponent } from 'react';
 import React, { useCallback, useMemo } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import type { EuiPageHeaderProps } from '@elastic/eui';
 import { EuiButton, EuiPageHeader, EuiPageSection, EuiSpacer } from '@elastic/eui';
 import { css } from '@emotion/react';
@@ -30,6 +31,7 @@ import { DetailsPageSettings } from './details_page_settings';
 import { DetailsPageStats } from './details_page_stats';
 import { DetailsPageTab } from './details_page_tab';
 import { IndexErrorCallout } from './index_error_callout';
+import { IndexDetailsAppMenu } from './index_details_app_menu';
 
 const defaultTabs: IndexDetailsTab[] = [
   {
@@ -88,11 +90,14 @@ export const DetailsPageContent: FunctionComponent<Props> = ({
   const {
     core: {
       application: { capabilities },
+      chrome,
     },
     config: { enableIndexStats },
     plugins: { console: consolePlugin, ml },
     services: { extensionsService },
   } = useAppContext();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
   const hasMLPermissions = capabilities?.ml?.canGetTrainedModels ? true : false;
 
   const indexErrors = useIndexErrors(index, ml, hasMLPermissions);
@@ -140,40 +145,60 @@ export const DetailsPageContent: FunctionComponent<Props> = ({
 
   return (
     <>
-      <EuiPageSection paddingSize="none">
-        <EuiButton
-          data-test-subj="indexDetailsBackToIndicesButton"
-          color="text"
-          iconType="chevronSingleLeft"
-          onClick={navigateToIndicesList}
+      <IndexDetailsAppMenu
+        index={index}
+        tab={tab}
+        tabs={tabs}
+        onSectionChange={onSectionChange}
+        fetchIndexDetails={fetchIndexDetails}
+        navigateToIndicesList={navigateToIndicesList}
+      />
+      {!isProjectChrome ? (
+        <EuiPageSection paddingSize="none">
+          <EuiButton
+            data-test-subj="indexDetailsBackToIndicesButton"
+            color="text"
+            iconType="chevronSingleLeft"
+            onClick={navigateToIndicesList}
+          >
+            <FormattedMessage
+              id="xpack.idxMgmt.indexDetails.backToIndicesButtonLabel"
+              defaultMessage="Back to indices"
+            />
+          </EuiButton>
+        </EuiPageSection>
+      ) : null}
+      {!isProjectChrome ? <EuiSpacer size="l" /> : null}
+      {!isProjectChrome ? (
+        <EuiPageHeader
+          data-test-subj="indexDetailsHeader"
+          pageTitle={pageTitle}
+          bottomBorder
+          rightSideItems={[
+            <DiscoverLink key="discover" indexName={index.name} asButton={true} fill={true} />,
+            <ManageIndexButton
+              key="manage"
+              index={index}
+              reloadIndexDetails={fetchIndexDetails}
+              navigateToIndicesList={navigateToIndicesList}
+              fill={false}
+            />,
+          ]}
+          rightSideGroupProps={{
+            wrap: false,
+          }}
+          responsive="reverse"
+          tabs={headerTabs}
         >
-          <FormattedMessage
-            id="xpack.idxMgmt.indexDetails.backToIndicesButtonLabel"
-            defaultMessage="Back to indices"
-          />
-        </EuiButton>
-      </EuiPageSection>
-      <EuiSpacer size="l" />
-      <EuiPageHeader
-        data-test-subj="indexDetailsHeader"
-        pageTitle={pageTitle}
-        bottomBorder
-        rightSideItems={[
-          <DiscoverLink indexName={index.name} asButton={true} />,
-          <ManageIndexButton
-            index={index}
-            reloadIndexDetails={fetchIndexDetails}
-            navigateToIndicesList={navigateToIndicesList}
-          />,
-        ]}
-        rightSideGroupProps={{
-          wrap: false,
-        }}
-        responsive="reverse"
-        tabs={headerTabs}
-      >
-        {indexErrors.length > 0 ? <IndexErrorCallout errors={indexErrors} /> : null}
-      </EuiPageHeader>
+          {indexErrors.length > 0 ? <IndexErrorCallout errors={indexErrors} /> : null}
+        </EuiPageHeader>
+      ) : null}
+      {isProjectChrome && indexErrors.length > 0 ? (
+        <>
+          <IndexErrorCallout errors={indexErrors} />
+          <EuiSpacer size="m" />
+        </>
+      ) : null}
       <EuiSpacer size="l" />
       <div
         data-test-subj={`indexDetailsContent`}

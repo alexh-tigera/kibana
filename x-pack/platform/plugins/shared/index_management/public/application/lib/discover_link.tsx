@@ -44,15 +44,15 @@ export const DiscoverLink = ({
     link = fill ? (
       <EuiButton fill onClick={onClick} iconType="discoverApp" data-test-subj="discoverButtonLink">
         <FormattedMessage
-          id="xpack.idxMgmt.goToDiscover.discoverIndexButtonLabel"
-          defaultMessage="Discover index"
+          id="xpack.idxMgmt.goToDiscover.openInDiscoverButtonLabel"
+          defaultMessage="Open in Discover"
         />
       </EuiButton>
     ) : (
       <EuiButtonEmpty onClick={onClick} iconType="discoverApp" data-test-subj="discoverButtonLink">
         <FormattedMessage
-          id="xpack.idxMgmt.goToDiscover.discoverIndexButtonLabel"
-          defaultMessage="Discover index"
+          id="xpack.idxMgmt.goToDiscover.openInDiscoverButtonLabel"
+          defaultMessage="Open in Discover"
         />
       </EuiButtonEmpty>
     );

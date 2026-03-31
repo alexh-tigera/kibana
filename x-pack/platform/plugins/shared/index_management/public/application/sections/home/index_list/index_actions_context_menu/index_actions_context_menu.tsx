@@ -165,7 +165,7 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'showOverviewIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.showIndexOverviewLabel', {
-          defaultMessage: 'Show index overview',
+          defaultMessage: 'Show overview',
         }),
         onClick: () => {
           closePopoverAndExecute(() => {
@@ -183,7 +183,7 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'showSettingsIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.showIndexSettingsLabel', {
-          defaultMessage: 'Show index settings',
+          defaultMessage: 'Show settings',
         }),
         onClick: () => {
           closePopoverAndExecute(() => {
@@ -201,7 +201,7 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'showMappingsIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.showIndexMappingLabel', {
-          defaultMessage: 'Show index mapping',
+          defaultMessage: 'Show mapping',
         }),
         onClick: () => {
           closePopoverAndExecute(() => {
@@ -220,7 +220,7 @@ export const IndexActionsContextMenu = ({
         items.push({
           'data-test-subj': 'showStatsIndexMenuButton',
           name: i18n.translate('xpack.idxMgmt.indexActionsMenu.showIndexStatsLabel', {
-            defaultMessage: 'Show index stats',
+            defaultMessage: 'Show statistics',
           }),
           onClick: () => {
             history.push(
@@ -234,7 +234,7 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'closeIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.closeIndexLabel', {
-          defaultMessage: 'Close {selectedIndexCount, plural, one {index} other {indices} }',
+          defaultMessage: '{selectedIndexCount, plural, one {Close} other {Close indices}}',
           values: { selectedIndexCount },
         }),
         onClick: () => {
@@ -244,7 +244,8 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'forcemergeIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.forceMergeIndexLabel', {
-          defaultMessage: 'Force merge {selectedIndexCount, plural, one {index} other {indices} }',
+          defaultMessage:
+            '{selectedIndexCount, plural, one {Force merge} other {Force merge indices}}',
           values: { selectedIndexCount },
         }),
         onClick: () => {
@@ -255,7 +256,7 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'refreshIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.refreshIndexLabel', {
-          defaultMessage: 'Refresh {selectedIndexCount, plural, one {index} other {indices} }',
+          defaultMessage: '{selectedIndexCount, plural, one {Refresh} other {Refresh indices}}',
           values: { selectedIndexCount },
         }),
         onClick: () => {
@@ -265,7 +266,8 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'clearCacheIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.clearIndexCacheLabel', {
-          defaultMessage: 'Clear {selectedIndexCount, plural, one {index} other {indices} } cache',
+          defaultMessage:
+            '{selectedIndexCount, plural, one {Clear cache} other {Clear indices cache}}',
           values: { selectedIndexCount },
         }),
         onClick: () => {
@@ -275,7 +277,7 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'flushIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.flushIndexLabel', {
-          defaultMessage: 'Flush {selectedIndexCount, plural, one {index} other {indices} }',
+          defaultMessage: '{selectedIndexCount, plural, one {Flush} other {Flush indices}}',
           values: { selectedIndexCount },
         }),
         onClick: () => {
@@ -286,7 +288,7 @@ export const IndexActionsContextMenu = ({
       items.push({
         'data-test-subj': 'openIndexMenuButton',
         name: i18n.translate('xpack.idxMgmt.indexActionsMenu.openIndexLabel', {
-          defaultMessage: 'Open {selectedIndexCount, plural, one {index} other {indices} }',
+          defaultMessage: '{selectedIndexCount, plural, one {Open} other {Open indices}}',
           values: { selectedIndexCount },
         }),
         onClick: () => {
@@ -297,7 +299,7 @@ export const IndexActionsContextMenu = ({
     items.push({
       'data-test-subj': 'deleteIndexMenuButton',
       name: i18n.translate('xpack.idxMgmt.indexActionsMenu.deleteIndexLabel', {
-        defaultMessage: 'Delete {selectedIndexCount, plural, one {index} other {indices} }',
+        defaultMessage: '{selectedIndexCount, plural, one {Delete} other {Delete indices}}',
         values: { selectedIndexCount },
       }),
       onClick: () => {
@@ -350,7 +352,7 @@ export const IndexActionsContextMenu = ({
               <EuiText size="s">
                 <FormattedMessage
                   id="xpack.idxMgmt.indexActionsMenu.convertToLookupIndexButton"
-                  defaultMessage="Convert to lookup index"
+                  defaultMessage="Convert to lookup"
                 />
               </EuiText>
               {!isConvertable && (
@@ -384,8 +386,7 @@ export const IndexActionsContextMenu = ({
     const panelTree = {
       id: 0,
       title: i18n.translate('xpack.idxMgmt.indexActionsMenu.panelTitle', {
-        defaultMessage: '{selectedIndexCount, plural, one {Index} other {Indices} } options',
-        values: { selectedIndexCount },
+        defaultMessage: 'Options',
       }),
       items,
     };
@@ -402,12 +403,11 @@ export const IndexActionsContextMenu = ({
       iconSide={iconSide}
       aria-label={i18n.translate('xpack.idxMgmt.indexActionsMenu.manageButtonAriaLabel', {
         defaultMessage:
-          'Manage {selectedIndexCount, plural, one {index} other {{selectedIndexCount} indices}}',
+          '{selectedIndexCount, plural, one {Manage} other {Manage {selectedIndexCount} indices}}',
         values: { selectedIndexCount },
       })}
       onClick={onButtonClick}
-      iconType={iconType}
-      fill={fill}
+      iconType="gear"
       isLoading={isLoading}
     >
       {label ? (
@@ -415,7 +415,7 @@ export const IndexActionsContextMenu = ({
       ) : (
         <FormattedMessage
           id="xpack.idxMgmt.indexActionsMenu.manageButtonLabel"
-          defaultMessage="Manage {selectedIndexCount, plural, one {index} other {{selectedIndexCount} indices}}"
+          defaultMessage="{selectedIndexCount, plural, one {Manage} other {Manage {selectedIndexCount} indices}}"
           values={{ selectedIndexCount }}
         />
       )}
@@ -441,7 +441,7 @@ export const IndexActionsContextMenu = ({
       <EuiPopover
         id="contextMenuIndices"
         aria-label={i18n.translate('xpack.idxMgmt.indexActionsMenu.popoverAriaLabel', {
-          defaultMessage: 'Index actions menu',
+          defaultMessage: 'Actions',
         })}
         button={button}
         isOpen={isPopoverOpen}

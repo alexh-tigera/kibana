@@ -7,6 +7,7 @@
 
 import type { FunctionComponent } from 'react';
 import { useEffect } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import type { EuiBreadcrumb } from '@elastic/eui';
 import { useEuiTheme } from '@elastic/eui';
 import { breadcrumbService, IndexManagementBreadcrumb } from '../../../../services/breadcrumbs';
@@ -23,15 +24,20 @@ export const DetailsPageTab: FunctionComponent<Props> = ({ tabs, tab, index }) =
   const effectiveTab = tabs[0]; // Set the overview tab as the fallback/default tab
   const selectedTab = tabs.find((tabConfig) => tabConfig.id === tab) ?? effectiveTab;
   const {
-    core: { getUrlForApp },
+    core: { getUrlForApp, chrome },
   } = useAppContext();
+
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
 
   const { euiTheme } = useEuiTheme();
 
   useEffect(() => {
-    const breadcrumb: EuiBreadcrumb = selectedTab?.breadcrumb ?? { text: selectedTab?.name };
+    const breadcrumb: EuiBreadcrumb = isProjectChrome
+      ? { text: index.name }
+      : selectedTab?.breadcrumb ?? { text: selectedTab?.name };
     breadcrumbService.setBreadcrumbs(IndexManagementBreadcrumb.indexDetails, breadcrumb);
-  }, [selectedTab]);
+  }, [selectedTab, index.name, isProjectChrome]);
 
   return selectedTab.renderTabContent({ index, getUrlForApp, euiTheme });
 };

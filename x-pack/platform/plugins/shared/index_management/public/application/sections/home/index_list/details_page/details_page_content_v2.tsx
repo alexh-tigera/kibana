@@ -7,6 +7,7 @@
 
 import type { FunctionComponent } from 'react';
 import React, { useCallback, useMemo } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 import type { EuiPageHeaderProps } from '@elastic/eui';
 import { EuiButtonEmpty, EuiPageHeader, EuiSpacer } from '@elastic/eui';
 import { css } from '@emotion/react';
@@ -32,6 +33,7 @@ import { DetailsPageStats } from './details_page_stats';
 import { DetailsPageTab } from './details_page_tab';
 import { IndexErrorCallout } from './index_error_callout';
 import { DetailsPageOverviewV2 } from './details_page_overview/details_page_overview_v2';
+import { IndexDetailsAppMenu } from './index_details_app_menu';
 
 const defaultTabs: IndexDetailsTab[] = [
   // Overview tab is injected in component to pass live docs sample data.
@@ -83,11 +85,14 @@ export const DetailsPageContentV2: FunctionComponent<Props> = ({
   const {
     core: {
       application: { capabilities },
+      chrome,
     },
     config: { enableIndexStats },
     plugins: { console: consolePlugin, ml },
     services: { extensionsService, notificationService },
   } = useAppContext();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
   const hasMLPermissions = capabilities?.ml?.canGetTrainedModels ? true : false;
 
   const indexErrors = useIndexErrors(index, ml, hasMLPermissions);
@@ -169,40 +174,60 @@ export const DetailsPageContentV2: FunctionComponent<Props> = ({
 
   return (
     <>
-      <EuiPageHeader
-        data-test-subj="indexDetailsHeader"
-        pageTitle={pageTitle}
-        bottomBorder
-        tabs={headerTabs}
-        rightSideItems={[
-          <ManageIndexButton
-            index={index}
-            reloadIndexDetails={fetchIndexDetails}
-            navigateToIndicesList={navigateToIndicesList}
-            onIndexRefresh={onIndexRefresh}
-            fill={true}
-          />,
-          <DiscoverLink indexName={index.name} asButton={true} fill={false} />,
-          <EuiButtonEmpty
-            onClick={() =>
-              openWiredConnectionDetails({
-                props: { options: { defaultTabId: 'apiKeys' } },
-              }).catch((error) => {
-                notificationService.showDangerToast(error.body.message);
-              })
-            }
-            iconType="plugs"
-            data-test-subj="openConnectionDetails"
-          >
-            <FormattedMessage
-              id="xpack.idxMgmt.indexDetails.connectionDetailsButtonLabel"
-              defaultMessage="Connection details"
-            />
-          </EuiButtonEmpty>,
-        ]}
-      >
-        {indexErrors.length > 0 ? <IndexErrorCallout errors={indexErrors} /> : null}
-      </EuiPageHeader>
+      <IndexDetailsAppMenu
+        index={index}
+        tab={tab}
+        tabs={tabs}
+        onSectionChange={onSectionChange}
+        fetchIndexDetails={fetchIndexDetails}
+        navigateToIndicesList={navigateToIndicesList}
+        onIndexRefresh={onIndexRefresh}
+        showConnectionDetails
+      />
+      {!isProjectChrome ? (
+        <EuiPageHeader
+          data-test-subj="indexDetailsHeader"
+          pageTitle={pageTitle}
+          bottomBorder
+          tabs={headerTabs}
+          rightSideItems={[
+            <DiscoverLink key="discover" indexName={index.name} asButton={true} fill={true} />,
+            <ManageIndexButton
+              key="manage"
+              index={index}
+              reloadIndexDetails={fetchIndexDetails}
+              navigateToIndicesList={navigateToIndicesList}
+              onIndexRefresh={onIndexRefresh}
+              fill={false}
+            />,
+            <EuiButtonEmpty
+              key="connection"
+              onClick={() =>
+                openWiredConnectionDetails({
+                  props: { options: { defaultTabId: 'apiKeys' } },
+                }).catch((error) => {
+                  notificationService.showDangerToast(error.body.message);
+                })
+              }
+              iconType="plugs"
+              data-test-subj="openConnectionDetails"
+            >
+              <FormattedMessage
+                id="xpack.idxMgmt.indexDetails.connectionDetailsButtonLabel"
+                defaultMessage="Connection details"
+              />
+            </EuiButtonEmpty>,
+          ]}
+        >
+          {indexErrors.length > 0 ? <IndexErrorCallout errors={indexErrors} /> : null}
+        </EuiPageHeader>
+      ) : null}
+      {isProjectChrome && indexErrors.length > 0 ? (
+        <>
+          <IndexErrorCallout errors={indexErrors} />
+          <EuiSpacer size="m" />
+        </>
+      ) : null}
       <EuiSpacer size="l" />
       <div
         data-test-subj={`indexDetailsContent`}
