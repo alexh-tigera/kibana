@@ -791,6 +791,7 @@ export const QueryBarTopRow = React.memo(
             settings={dateRangePickerSettingsWithAutoRefresh}
             onSettingsChange={onDateRangePickerSettingsChange}
             onRefresh={propsOnRefreshChange ? onDateRangePickerRefresh : undefined}
+            dateFormat={uiSettings.get('dateFormat')}
             timeZone={uiSettings.get('dateFormat:tz')}
             prependBasePath={http?.basePath.prepend}
           />
