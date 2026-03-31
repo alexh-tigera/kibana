@@ -61,6 +61,9 @@ export class TimePickerPageObject extends FtrService {
    * picker variants within the same test suite.
    */
   private async isNewDateRangePicker(): Promise<boolean> {
+    // Wait for the page to settle before detecting, otherwise a stale picker
+    // from a previous app may briefly appear during navigation.
+    await this.header.awaitGlobalLoadingIndicatorHidden();
     const isNew = await this.testSubjects.exists('dateRangePickerControlButton', {
       timeout: 5000,
     });
