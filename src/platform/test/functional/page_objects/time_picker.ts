@@ -246,9 +246,10 @@ export class TimePickerPageObject extends FtrService {
     // contain ISO strings. Convert the expected start time to ISO for matching,
     // using the configured timezone so it matches what the picker's parser produces.
     const tz = await this.getConfiguredTimezone();
-    const expectedFromISO = moment
-      .tz(fromTime, TimePickerPageObject.LEGACY_DATE_FORMAT, tz)
-      .toISOString();
+    // Try the legacy format first; fall back to moment's auto-detection
+    // so callers can pass dates in any format (e.g. custom dateFormat).
+    const parsed = moment.tz(fromTime, TimePickerPageObject.LEGACY_DATE_FORMAT, true, tz);
+    const expectedFromISO = (parsed.isValid() ? parsed : moment.tz(fromTime, tz)).toISOString();
     await this.retry.waitFor(`date range to be set to ${rangeText}`, async () => {
       await this.testSubjects.click('dateRangePickerControlButton');
       await this.testSubjects.exists('dateRangePickerInput', { timeout: 5000 });
