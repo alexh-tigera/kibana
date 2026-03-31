@@ -55,31 +55,19 @@ export class TimePickerPageObject extends FtrService {
     }
   }
 
-  /** Cached result of which date picker variant is active on the page. */
-  private _isNewDateRangePicker: boolean | undefined;
-
   /**
    * Detects whether the page is using the new DateRangePicker or the legacy
-   * EuiSuperDatePicker. Result is cached for the lifetime of the page object
-   * since toggling requires a page reload.
+   * EuiSuperDatePicker. Not cached because different apps may use different
+   * picker variants within the same test suite.
    */
   private async isNewDateRangePicker(): Promise<boolean> {
-    if (this._isNewDateRangePicker === undefined) {
-      this._isNewDateRangePicker = await this.testSubjects.exists('dateRangePickerControlButton', {
-        timeout: 5000,
-      });
-      this.log.debug(
-        `Detected date picker variant: ${
-          this._isNewDateRangePicker ? 'DateRangePicker' : 'EuiSuperDatePicker'
-        }`
-      );
-    }
-    return this._isNewDateRangePicker;
-  }
-
-  /** Reset the cached picker detection (e.g. after toggling the UI setting). */
-  public resetPickerDetection() {
-    this._isNewDateRangePicker = undefined;
+    const isNew = await this.testSubjects.exists('dateRangePickerControlButton', {
+      timeout: 5000,
+    });
+    this.log.debug(
+      `Detected date picker variant: ${isNew ? 'DateRangePicker' : 'EuiSuperDatePicker'}`
+    );
+    return isNew;
   }
 
   public readonly defaultStartTime = 'Sep 19, 2015 @ 06:31:44.000';
