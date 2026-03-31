@@ -45,12 +45,17 @@ export const journey = new Journey({
   })
 
   .step('Change time range', async ({ page }) => {
-    const isNewPicker = (await page.$(subj('dateRangePickerControlButton'))) !== null;
-    if (isNewPicker) {
-      await page.click(subj('dateRangePickerControlButton'));
+    // Wait for either picker variant to appear before deciding which path to take.
+    const control = await Promise.race([
+      page.waitForSelector(subj('dateRangePickerControlButton'), { timeout: 30000 }),
+      page.waitForSelector(subj('superDatePickerToggleQuickMenuButton'), { timeout: 30000 }),
+    ]);
+    const testSubj = await control.getAttribute('data-test-subj');
+    if (testSubj === 'dateRangePickerControlButton') {
+      await control.click();
       await page.click(subj('dateRangePickerPresetItem-Last_30_days'));
     } else {
-      await page.click(subj('superDatePickerToggleQuickMenuButton'));
+      await control.click();
       await page.click(subj('superDatePickerCommonlyUsed_Last_30 days'));
     }
   })
