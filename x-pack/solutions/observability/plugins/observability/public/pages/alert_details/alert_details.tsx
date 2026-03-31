@@ -7,6 +7,11 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import useObservable from 'react-use/lib/useObservable';
+import { of } from 'rxjs';
+import { AppMenu } from '@kbn/core-chrome-app-menu';
+import type { AppMenuHeaderTab } from '@kbn/core-chrome-app-menu-components';
+import type { ChromeStart, ChromeStyle } from '@kbn/core-chrome-browser';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import type { EuiTabbedContentTab } from '@elastic/eui';
@@ -59,6 +64,7 @@ import { HeaderActions } from './components/header_actions';
 import { CenterJustifiedSpinner } from '../../components/center_justified_spinner';
 import { getTimeZone } from '../../utils/get_time_zone';
 import { isAlertDetailsEnabledPerApp } from '../../utils/is_alert_details_enabled';
+import { observabilityFeatureId } from '../../../common';
 import { paths } from '../../../common/locators/paths';
 import { HeaderMenu } from '../overview/components/header_menu/header_menu';
 import { AlertOverview } from '../../components/alert_overview/alert_overview';
@@ -73,6 +79,8 @@ import { ProximalAlertsCallout } from './proximal_alerts_callout';
 import { useTabId } from './hooks/use_tab_id';
 import { useRelatedDashboards } from './hooks/use_related_dashboards';
 import { useAlertDetailsPageViewEbt } from '../../hooks/use_alert_details_page_view_ebt';
+import { useAlertDetailsAppMenu } from './hooks/use_alert_details_app_menu';
+import type { UseAlertDetailsAppMenuParams } from './hooks/use_alert_details_app_menu';
 
 interface AlertDetailsPathParams {
   alertId: string;
@@ -95,6 +103,7 @@ export function AlertDetails() {
   const { services } = useKibana();
   const {
     http,
+    chrome,
     triggersActionsUi: { ruleTypeRegistry },
     observabilityAIAssistant,
     agentBuilder,
@@ -102,6 +111,12 @@ export function AlertDetails() {
     serverless,
     observabilityAgentBuilder,
   } = services;
+
+  const chromeStyle = useObservable(
+    chrome?.getChromeStyle$() ?? of<ChromeStyle>('classic'),
+    chrome?.getChromeStyle() ?? 'classic'
+  );
+  const isProjectChrome = chromeStyle === 'project';
 
   const AlertAiInsight = observabilityAgentBuilder?.getAlertAIInsight();
 
@@ -145,15 +160,18 @@ export function AlertDetails() {
   const [sources, setSources] = useState<AlertDetailsSource[]>();
   const [activeTabId, setActiveTabId] = useState<TabId>();
 
-  const handleSetTabId = async (tabId: TabId, newUrlState?: Record<string, string>) => {
-    setActiveTabId(tabId);
+  const handleSetTabId = useCallback(
+    async (tabId: TabId, newUrlState?: Record<string, string>) => {
+      setActiveTabId(tabId);
 
-    if (newUrlState) {
-      setUrlTabId(tabId, true, newUrlState);
-    } else {
-      setUrlTabId(tabId, true);
-    }
-  };
+      if (newUrlState) {
+        setUrlTabId(tabId, true, newUrlState);
+      } else {
+        setUrlTabId(tabId, true);
+      }
+    },
+    [setUrlTabId]
+  );
 
   useEffect(() => {
     if (!alertDetail || !observabilityAIAssistant) {
@@ -262,6 +280,84 @@ export function AlertDetails() {
       to: moment(alertDetail?.formatted.start).add(30, 'minutes').toISOString(),
     };
   }, [alertDetail]);
+
+  const alertAppMenuHeaderTabs = useMemo((): AppMenuHeaderTab[] => {
+    return [
+      {
+        id: 'overview',
+        label: i18n.translate('xpack.observability.alertDetails.tab.overviewLabel', {
+          defaultMessage: 'Overview',
+        }),
+        isSelected: activeTabId === 'overview',
+        onClick: () => handleSetTabId('overview'),
+        testId: 'overviewTab',
+      },
+      {
+        id: 'metadata',
+        label: i18n.translate('xpack.observability.alertDetails.tab.metadataLabel', {
+          defaultMessage: 'Metadata',
+        }),
+        isSelected: activeTabId === 'metadata',
+        onClick: () => handleSetTabId('metadata'),
+        testId: 'metadataTab',
+      },
+      {
+        id: 'investigation_guide',
+        label: (
+          <FormattedMessage
+            id="xpack.observability.alertDetails.tab.investigationGuideLabel"
+            defaultMessage="Investigation guide"
+          />
+        ),
+        append: rule?.artifacts?.investigation_guide?.blob ? (
+          <EuiNotificationBadge color="success" css={{ marginLeft: '5px' }}>
+            <EuiIcon type="dot" size="s" aria-hidden={true} />
+          </EuiNotificationBadge>
+        ) : undefined,
+        isSelected: activeTabId === 'investigation_guide',
+        onClick: () => handleSetTabId('investigation_guide'),
+        testId: 'investigationGuideTab',
+      },
+      {
+        id: 'related_alerts',
+        label: (
+          <FormattedMessage
+            id="xpack.observability.alertDetails.tab.relatedAlertsLabe"
+            defaultMessage="Related alerts"
+          />
+        ),
+        isSelected: activeTabId === 'related_alerts',
+        onClick: () => handleSetTabId('related_alerts'),
+        testId: 'relatedAlertsTab',
+      },
+      {
+        id: 'related_dashboards',
+        label: (
+          <FormattedMessage
+            id="xpack.observability.alertDetails.tab.relatedDashboardsLabel"
+            defaultMessage="Related dashboards"
+          />
+        ),
+        append: isLoadingRelatedDashboards ? (
+          <EuiLoadingSpinner css={{ marginLeft: '5px' }} />
+        ) : (
+          <EuiNotificationBadge color="success" css={{ marginLeft: '5px' }}>
+            {(linkedDashboards?.length || 0) + (suggestedDashboards?.length || 0)}
+          </EuiNotificationBadge>
+        ),
+        isSelected: activeTabId === 'related_dashboards',
+        onClick: () => handleSetTabId('related_dashboards'),
+        testId: 'relatedDashboardsTab',
+      },
+    ];
+  }, [
+    activeTabId,
+    handleSetTabId,
+    rule?.artifacts?.investigation_guide?.blob,
+    isLoadingRelatedDashboards,
+    linkedDashboards?.length,
+    suggestedDashboards?.length,
+  ]);
 
   if (isLoading) {
     return <CenterJustifiedSpinner />;
@@ -461,48 +557,56 @@ export function AlertDetails() {
     },
   ];
 
+  const selectedTabContent = tabs.find((tab) => tab.id === activeTabId)?.content;
+
+  const ruleBadgeLabel = rule?.name ?? String(ruleName ?? '');
+
   return (
     <ObservabilityPageTemplate
-      pageHeader={{
-        pageTitle:
-          alertDetail?.formatted && ruleName ? (
-            <>
-              <EuiToolTip content={ruleName}>
-                <span
-                  tabIndex={0}
-                  data-test-subj="alertDetailsPageTitle"
-                  css={css`
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    word-break: break-word;
-                  `}
-                >
-                  {ruleName}
-                </span>
-              </EuiToolTip>
-              <EuiSpacer size="xs" />
-              <AlertSubtitle alert={alertDetail.formatted} />
-            </>
-          ) : (
-            <EuiLoadingSpinner />
-          ),
-        rightSideItems: [
-          <HeaderActions
-            alert={alertDetail?.formatted ?? null}
-            alertIndex={alertDetail?.raw._index}
-            alertStatus={alertStatus}
-            onUntrackAlert={onUntrackAlert}
-            onUpdate={onUpdate}
-            rule={rule}
-            refetch={refetch}
-          />,
-        ],
-        bottomBorder: false,
-        'data-test-subj': rule?.ruleTypeId || 'alertDetailsPageTitle',
-      }}
+      pageHeader={
+        isProjectChrome
+          ? undefined
+          : {
+              pageTitle:
+                alertDetail?.formatted && ruleName ? (
+                  <>
+                    <EuiToolTip content={ruleName}>
+                      <span
+                        tabIndex={0}
+                        data-test-subj="alertDetailsPageTitle"
+                        css={css`
+                          display: -webkit-box;
+                          -webkit-line-clamp: 2;
+                          -webkit-box-orient: vertical;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          word-break: break-word;
+                        `}
+                      >
+                        {ruleName}
+                      </span>
+                    </EuiToolTip>
+                    <EuiSpacer size="xs" />
+                    <AlertSubtitle alert={alertDetail.formatted} />
+                  </>
+                ) : (
+                  <EuiLoadingSpinner />
+                ),
+              rightSideItems: [
+                <HeaderActions
+                  alert={alertDetail?.formatted ?? null}
+                  alertIndex={alertDetail?.raw._index}
+                  alertStatus={alertStatus}
+                  onUntrackAlert={onUntrackAlert}
+                  onUpdate={onUpdate}
+                  rule={rule}
+                  refetch={refetch}
+                />,
+              ],
+              bottomBorder: false,
+              'data-test-subj': rule?.ruleTypeId || 'alertDetailsPageTitle',
+            }
+      }
       pageSectionProps={{
         paddingSize: 'none',
         css: css`
@@ -512,17 +616,103 @@ export function AlertDetails() {
       data-test-subj="alertDetails"
     >
       <ObsCasesContext>
-        <StatusBar alert={alertDetail?.formatted ?? null} alertStatus={alertStatus} />
-        <EuiSpacer size="l" />
-        <HeaderMenu />
-        <EuiTabbedContent
-          data-test-subj="alertDetailsTabbedContent"
-          tabs={tabs}
-          selectedTab={tabs.find((tab) => tab.id === activeTabId)}
-          onTabClick={(tab) => handleSetTabId(tab.id as TabId)}
+        {isProjectChrome && chrome ? (
+          <AlertDetailsProjectChrome
+            alert={alertDetail?.formatted ?? null}
+            alertIndex={alertDetail?.raw._index}
+            alertStatus={alertStatus}
+            chrome={chrome}
+            headerTabs={alertAppMenuHeaderTabs}
+            onUntrackAlert={onUntrackAlert}
+            onUpdate={onUpdate}
+            refetch={refetch}
+            rule={rule}
+            ruleBadgeLabel={ruleBadgeLabel}
+          />
+        ) : null}
+        <StatusBar
+          alert={alertDetail?.formatted ?? null}
+          alertStatus={alertStatus}
+          showTimingAndStatusBadge={!isProjectChrome}
         />
+        <EuiSpacer size="l" />
+        {!isProjectChrome ? <HeaderMenu /> : null}
+        {isProjectChrome ? (
+          <div data-test-subj="alertDetailsTabbedContent">{selectedTabContent}</div>
+        ) : (
+          <EuiTabbedContent
+            data-test-subj="alertDetailsTabbedContent"
+            tabs={tabs}
+            selectedTab={tabs.find((tab) => tab.id === activeTabId)}
+            onTabClick={(tab) => handleSetTabId(tab.id as TabId)}
+          />
+        )}
       </ObsCasesContext>
     </ObservabilityPageTemplate>
+  );
+}
+
+type AlertDetailsProjectChromeOuterProps = Omit<
+  UseAlertDetailsAppMenuParams,
+  'isProjectChrome' | 'addToCaseModalApi'
+> & { chrome: ChromeStart };
+
+/**
+ * `useCasesAddToExistingCaseModal` requires `CasesContext` (see `ObsCasesContext`). It must not run
+ * when the Cases plugin is absent, or when the user has no cases permissions — otherwise
+ * `useCasesContext()` throws. Match the same gate as `obs_cases_context.tsx`.
+ */
+function AlertDetailsProjectChrome(props: AlertDetailsProjectChromeOuterProps) {
+  const { cases } = useKibana().services;
+  const userCasesPermissions = cases?.helpers.canUseCases([observabilityFeatureId]);
+  const CasesContextComponent = cases?.ui.getCasesContext();
+
+  if (cases && userCasesPermissions && CasesContextComponent) {
+    return <AlertDetailsProjectChromeWithCases {...props} />;
+  }
+
+  return <AlertDetailsProjectChromeWithoutCases {...props} />;
+}
+
+function AlertDetailsProjectChromeWithCases(props: AlertDetailsProjectChromeOuterProps) {
+  const {
+    services: { cases, telemetryClient },
+  } = useKibana();
+
+  const addToCaseModalApi = cases.hooks.useCasesAddToExistingCaseModal({
+    onSuccess: ({ updatedAt }) => {
+      const isNewCaseCreated = !updatedAt;
+      telemetryClient?.reportAlertAddedToCase(
+        isNewCaseCreated,
+        'alertDetails.addToCaseBtn',
+        props.rule?.ruleTypeId || 'unknown'
+      );
+    },
+  });
+
+  return <AlertDetailsProjectChromeInner {...props} addToCaseModalApi={addToCaseModalApi} />;
+}
+
+function AlertDetailsProjectChromeWithoutCases(props: AlertDetailsProjectChromeOuterProps) {
+  return <AlertDetailsProjectChromeInner {...props} />;
+}
+
+function AlertDetailsProjectChromeInner(
+  props: AlertDetailsProjectChromeOuterProps & {
+    addToCaseModalApi?: UseAlertDetailsAppMenuParams['addToCaseModalApi'];
+  }
+) {
+  const { chrome, ...menuProps } = props;
+  const { appMenuConfig, modals } = useAlertDetailsAppMenu({
+    ...menuProps,
+    isProjectChrome: true,
+  });
+
+  return (
+    <>
+      <AppMenu config={appMenuConfig} setAppMenu={chrome.setAppMenu} />
+      {modals}
+    </>
   );
 }
 

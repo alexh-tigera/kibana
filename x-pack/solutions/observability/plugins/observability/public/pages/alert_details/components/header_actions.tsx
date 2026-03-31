@@ -13,7 +13,6 @@ import {
   EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiHorizontalRule,
   EuiPopover,
   EuiText,
 } from '@elastic/eui';
@@ -31,6 +30,7 @@ import {
 import { ObsCasesContext } from './obs_cases_context';
 import { AddToCaseButton } from './add_to_case_button';
 import { useDiscoverUrl } from '../hooks/use_discover_url/use_discover_url';
+import { AlertDetailsRuleActionsMenuItems } from './alert_details_rule_actions_menu_items';
 
 export interface HeaderActionsProps extends AlertDetailsRuleFormFlyoutBaseProps {
   alert: TopAlert | null;
@@ -116,6 +116,8 @@ export function HeaderActions({
         )}
         <EuiFlexItem grow={false}>
           <EuiPopover
+            anchorPosition="downLeft"
+            hasArrow={false}
             panelPaddingSize="none"
             isOpen={isPopoverOpen}
             closePopover={handleClosePopover}
@@ -132,79 +134,22 @@ export function HeaderActions({
               />
             }
           >
-            <div style={{ width: '220px' }}>
-              <EuiFlexGroup direction="column" alignItems="flexStart" gutterSize="s">
-                <div />
-
-                <EuiButtonEmpty
-                  size="s"
-                  color="text"
-                  iconType="bellSlash"
-                  onClick={handleOpenSnoozeModal}
-                  disabled={!alert?.fields[ALERT_RULE_UUID] || !rule}
-                  data-test-subj="snooze-rule-button"
-                >
-                  <EuiText size="s">
-                    {i18n.translate('xpack.observability.alertDetails.editSnoozeRule', {
-                      defaultMessage: 'Snooze the rule',
-                    })}
-                  </EuiText>
-                </EuiButtonEmpty>
-
-                <EuiButtonEmpty
-                  size="s"
-                  color="text"
-                  iconType="pencil"
-                  onClick={() => {
-                    setIsPopoverOpen(false);
-                    setAlertDetailsRuleFormFlyoutOpen(true);
-                  }}
-                  disabled={!alert?.fields[ALERT_RULE_UUID] || !rule}
-                  data-test-subj="edit-rule-button"
-                >
-                  <EuiText size="s">
-                    {i18n.translate('xpack.observability.alertDetails.editRule', {
-                      defaultMessage: 'Edit rule',
-                    })}
-                  </EuiText>
-                </EuiButtonEmpty>
-
-                <EuiButtonEmpty
-                  size="s"
-                  color="text"
-                  iconType="eyeClosed"
-                  onClick={handleUntrackAlert}
-                  data-test-subj="untrack-alert-button"
-                  disabled={alertStatus !== ALERT_STATUS_ACTIVE}
-                >
-                  <EuiText size="s">
-                    {i18n.translate('xpack.observability.alertDetails.untrackAlert', {
-                      defaultMessage: 'Mark as untracked',
-                    })}
-                  </EuiText>
-                </EuiButtonEmpty>
-
-                <EuiHorizontalRule margin="none" />
-
-                <EuiButtonEmpty
-                  size="s"
-                  color="text"
-                  iconType="link"
-                  disabled={!alert?.fields[ALERT_RULE_UUID] || !rule}
-                  data-test-subj="view-rule-details-button"
-                  href={rule ? http.basePath.prepend(paths.observability.ruleDetails(rule.id)) : ''}
-                  target="_blank"
-                >
-                  <EuiText size="s">
-                    {i18n.translate('xpack.observability.alertDetails.viewRuleDetails', {
-                      defaultMessage: 'Go to rule details',
-                    })}
-                  </EuiText>
-                </EuiButtonEmpty>
-
-                <div />
-              </EuiFlexGroup>
-            </div>
+            <AlertDetailsRuleActionsMenuItems
+              alert={alert}
+              alertStatus={alertStatus}
+              rule={rule}
+              httpBasePathPrepend={http.basePath.prepend}
+              onClosePopover={handleClosePopover}
+              onSnooze={handleOpenSnoozeModal}
+              onEditRule={() => {
+                setIsPopoverOpen(false);
+                setAlertDetailsRuleFormFlyoutOpen(true);
+              }}
+              onUntrackAlert={async () => {
+                setIsPopoverOpen(false);
+                await handleUntrackAlert();
+              }}
+            />
           </EuiPopover>
         </EuiFlexItem>
       </EuiFlexGroup>

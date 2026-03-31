@@ -23,9 +23,17 @@ import { CaseLinks } from './case_links';
 export interface StatusBarProps {
   alert: TopAlert | null;
   alertStatus?: AlertStatus;
+  /**
+   * When false (project chrome), status badge and timing columns are omitted; they render in `AppMenu` instead.
+   */
+  showTimingAndStatusBadge?: boolean;
 }
 
-export function StatusBar({ alert, alertStatus }: StatusBarProps) {
+export function StatusBar({
+  alert,
+  alertStatus,
+  showTimingAndStatusBadge = true,
+}: StatusBarProps) {
   const { euiTheme } = useEuiTheme();
   const dateFormat = useUiSetting<string>('dateFormat');
 
@@ -44,14 +52,16 @@ export function StatusBar({ alert, alertStatus }: StatusBarProps) {
       data-test-subj="statusBar"
       wrap
     >
-      <EuiFlexItem grow={false}>
-        {alertStatus && (
-          <AlertLifecycleStatusBadge
-            alertStatus={alertStatus}
-            flapping={alert.fields[ALERT_FLAPPING]}
-          />
-        )}
-      </EuiFlexItem>
+      {showTimingAndStatusBadge ? (
+        <EuiFlexItem grow={false}>
+          {alertStatus && (
+            <AlertLifecycleStatusBadge
+              alertStatus={alertStatus}
+              flapping={alert.fields[ALERT_FLAPPING]}
+            />
+          )}
+        </EuiFlexItem>
+      ) : null}
       <CaseLinks alert={alert} />
       {tags && tags.length > 0 && (
         <EuiFlexItem grow={false}>
@@ -80,66 +90,70 @@ export function StatusBar({ alert, alertStatus }: StatusBarProps) {
         </EuiFlexItem>
       )}
 
-      <EuiFlexItem grow={false} css={{ minWidth: 100 }}>
-        <EuiFlexGroup gutterSize="xs">
-          <EuiText size="s" color="subdued">
-            <FormattedMessage
-              id="xpack.observability.pages.alertDetails.pageTitle.triggered"
-              defaultMessage="Triggered:"
-            />
-          </EuiText>
-          <EuiToolTip content={moment(Number(alert.start)).format(dateFormat)}>
-            <EuiText
-              tabIndex={0}
-              css={css`
-                font-weight: ${euiTheme.font.weight.semiBold};
-              `}
-              size="s"
-            >
-              {moment(Number(alert.start)).locale(i18n.getLocale()).fromNow()}
-            </EuiText>
-          </EuiToolTip>
-        </EuiFlexGroup>
-      </EuiFlexItem>
-      <EuiFlexItem grow={false} css={{ minWidth: 120 }}>
-        <EuiFlexGroup gutterSize="xs">
-          <EuiText size="s" color="subdued">
-            <FormattedMessage
-              id="xpack.observability.pages.alertDetails.pageTitle.duration"
-              defaultMessage="Duration:"
-            />
-          </EuiText>
-          <EuiText
-            css={css`
-              font-weight: ${euiTheme.font.weight.semiBold};
-            `}
-            size="s"
-          >
-            {asDuration(Number(alert.fields[ALERT_DURATION]))}
-          </EuiText>
-        </EuiFlexGroup>
-      </EuiFlexItem>
-      <EuiFlexItem grow={false} css={{ minWidth: 240 }}>
-        <EuiFlexGroup gutterSize="xs">
-          <EuiText size="s" color="subdued">
-            <FormattedMessage
-              id="xpack.observability.pages.alertDetails.pageTitle.lastStatusUpdate"
-              defaultMessage="Last status update:"
-            />
-          </EuiText>
-          <EuiToolTip content={moment(alert.fields[TIMESTAMP]).format(dateFormat)}>
-            <EuiText
-              tabIndex={0}
-              css={css`
-                font-weight: ${euiTheme.font.weight.semiBold};
-              `}
-              size="s"
-            >
-              {moment(alert.fields[TIMESTAMP]?.toString()).locale(i18n.getLocale()).fromNow()}
-            </EuiText>
-          </EuiToolTip>
-        </EuiFlexGroup>
-      </EuiFlexItem>
+      {showTimingAndStatusBadge ? (
+        <>
+          <EuiFlexItem grow={false} css={{ minWidth: 100 }}>
+            <EuiFlexGroup gutterSize="xs">
+              <EuiText size="s" color="subdued">
+                <FormattedMessage
+                  id="xpack.observability.pages.alertDetails.pageTitle.triggered"
+                  defaultMessage="Triggered:"
+                />
+              </EuiText>
+              <EuiToolTip content={moment(Number(alert.start)).format(dateFormat)}>
+                <EuiText
+                  tabIndex={0}
+                  css={css`
+                    font-weight: ${euiTheme.font.weight.semiBold};
+                  `}
+                  size="s"
+                >
+                  {moment(Number(alert.start)).locale(i18n.getLocale()).fromNow()}
+                </EuiText>
+              </EuiToolTip>
+            </EuiFlexGroup>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false} css={{ minWidth: 120 }}>
+            <EuiFlexGroup gutterSize="xs">
+              <EuiText size="s" color="subdued">
+                <FormattedMessage
+                  id="xpack.observability.pages.alertDetails.pageTitle.duration"
+                  defaultMessage="Duration:"
+                />
+              </EuiText>
+              <EuiText
+                css={css`
+                  font-weight: ${euiTheme.font.weight.semiBold};
+                `}
+                size="s"
+              >
+                {asDuration(Number(alert.fields[ALERT_DURATION]))}
+              </EuiText>
+            </EuiFlexGroup>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false} css={{ minWidth: 240 }}>
+            <EuiFlexGroup gutterSize="xs">
+              <EuiText size="s" color="subdued">
+                <FormattedMessage
+                  id="xpack.observability.pages.alertDetails.pageTitle.lastStatusUpdate"
+                  defaultMessage="Last status update:"
+                />
+              </EuiText>
+              <EuiToolTip content={moment(alert.fields[TIMESTAMP]).format(dateFormat)}>
+                <EuiText
+                  tabIndex={0}
+                  css={css`
+                    font-weight: ${euiTheme.font.weight.semiBold};
+                  `}
+                  size="s"
+                >
+                  {moment(alert.fields[TIMESTAMP]?.toString()).locale(i18n.getLocale()).fromNow()}
+                </EuiText>
+              </EuiToolTip>
+            </EuiFlexGroup>
+          </EuiFlexItem>
+        </>
+      ) : null}
     </EuiFlexGroup>
   );
 }
