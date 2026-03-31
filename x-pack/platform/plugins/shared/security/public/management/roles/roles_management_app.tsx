@@ -130,6 +130,7 @@ export const rolesManagementApp = Object.freeze({
                   <Breadcrumb text={title} href="/">
                     <Route path={['/', '']} exact={true}>
                       <RolesGridPage
+                        chrome={chrome}
                         rolesAPIClient={rolesAPIClient}
                         history={history}
                         readOnly={!startServices.application.capabilities.roles.save}

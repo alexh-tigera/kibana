@@ -21,7 +21,8 @@ const renderWithIntl = (ui: React.ReactElement) => render(<I18nProvider>{ui}</I1
 describe('<RolesGridPage />', () => {
   let apiClientMock: jest.Mocked<PublicMethodsOf<RolesAPIClient>>;
   let history: ReturnType<typeof scopedHistoryMock.create>;
-  const { userProfile, theme, i18n, analytics, notifications, rendering } = coreMock.createStart();
+  const { userProfile, theme, i18n, analytics, notifications, rendering, chrome } =
+    coreMock.createStart();
 
   beforeEach(() => {
     history = scopedHistoryMock.create();
@@ -67,6 +68,7 @@ describe('<RolesGridPage />', () => {
   it('renders reserved roles as such', async () => {
     renderWithIntl(
       <RolesGridPage
+        chrome={chrome}
         rolesAPIClient={apiClientMock}
         history={history}
         notifications={notifications}
@@ -88,6 +90,7 @@ describe('<RolesGridPage />', () => {
   it('renders disabled roles as such', async () => {
     renderWithIntl(
       <RolesGridPage
+        chrome={chrome}
         rolesAPIClient={apiClientMock}
         history={history}
         notifications={notifications}
@@ -111,6 +114,7 @@ describe('<RolesGridPage />', () => {
 
     const { container } = renderWithIntl(
       <RolesGridPage
+        chrome={chrome}
         rolesAPIClient={apiClientMock}
         history={history}
         notifications={notifications}
@@ -132,6 +136,7 @@ describe('<RolesGridPage />', () => {
   it('renders role actions as appropriate, escaping when necessary', async () => {
     renderWithIntl(
       <RolesGridPage
+        chrome={chrome}
         rolesAPIClient={apiClientMock}
         history={history}
         notifications={notifications}
@@ -172,6 +177,7 @@ describe('<RolesGridPage />', () => {
   it('hides controls when readOnly is enabled', async () => {
     renderWithIntl(
       <RolesGridPage
+        chrome={chrome}
         rolesAPIClient={apiClientMock}
         history={history}
         notifications={notifications}

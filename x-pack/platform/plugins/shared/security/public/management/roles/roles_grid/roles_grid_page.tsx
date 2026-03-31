@@ -29,9 +29,10 @@ import {
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 
 import type { BuildFlavor } from '@kbn/config';
-import type { NotificationsStart, ScopedHistory } from '@kbn/core/public';
+import type { ChromeStart, NotificationsStart, ScopedHistory } from '@kbn/core/public';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { reactRouterNavigate } from '@kbn/kibana-react-plugin/public';
@@ -41,6 +42,7 @@ import type { PublicMethodsOf } from '@kbn/utility-types';
 
 import { ConfirmDelete } from './confirm_delete';
 import { PermissionDenied } from './permission_denied';
+import { RolesGridAppMenu } from './roles_grid_app_menu';
 import type { StartServices } from '../../..';
 import type { Role } from '../../../../common';
 import {
@@ -55,6 +57,7 @@ import type { RolesAPIClient } from '../roles_api_client';
 
 export interface Props extends StartServices {
   notifications: NotificationsStart;
+  chrome: ChromeStart;
   rolesAPIClient: PublicMethodsOf<RolesAPIClient>;
   history: ScopedHistory;
   readOnly?: boolean;
@@ -93,6 +96,7 @@ const DEFAULT_TABLE_STATE = {
 
 export const RolesGridPage: FC<Props> = ({
   notifications,
+  chrome,
   rolesAPIClient,
   history,
   readOnly,
@@ -100,6 +104,8 @@ export const RolesGridPage: FC<Props> = ({
   cloudOrgUrl,
   ...startServices
 }) => {
+  const isProjectChrome =
+    useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle()) === 'project';
   const [rolesResponse, setRolesResponse] = useState<QueryRolesResult>({} as QueryRolesResult);
 
   const [selection, setSelection] = useState<Role[]>([]);
@@ -411,52 +417,85 @@ export const RolesGridPage: FC<Props> = ({
     <PermissionDenied />
   ) : (
     <>
-      <KibanaPageTemplate.Header
-        bottomBorder
-        data-test-subj="rolesGridPageHeader"
-        pageTitle={
-          buildFlavor === 'serverless' ? (
-            <FormattedMessage
-              id="xpack.security.management.roles.customRoleTitle"
-              defaultMessage="Custom Roles"
-            />
-          ) : (
-            <FormattedMessage
-              id="xpack.security.management.roles.roleTitle"
-              defaultMessage="Roles"
-            />
-          )
-        }
-        description={
-          buildFlavor === 'serverless' ? (
-            <FormattedMessage
-              id="xpack.security.management.roles.customRolesSubtitle"
-              defaultMessage="In addition to the predefined roles on the system, you can create your own roles and provide your users with the exact set of privileges that they need."
-            />
-          ) : (
-            <FormattedMessage
-              id="xpack.security.management.roles.subtitle"
-              defaultMessage="Apply roles to groups of users and manage permissions across the stack."
-            />
-          )
-        }
-        rightSideItems={
-          readOnly
-            ? undefined
-            : [
-                <EuiButton
-                  data-test-subj="createRoleButton"
-                  {...reactRouterNavigate(history, getRoleManagementHref('edit'))}
-                  fill
-                  iconType="plusInCircleFilled"
-                >
-                  <FormattedMessage
-                    id="xpack.security.management.roles.createRoleButtonLabel"
-                    defaultMessage="Create role"
-                  />
-                </EuiButton>,
-                buildFlavor === 'serverless' && (
+      <RolesGridAppMenu
+        chrome={chrome}
+        history={history}
+        readOnly={!!readOnly}
+        isProjectChrome={isProjectChrome}
+      />
+      {!isProjectChrome ? (
+        <>
+          <KibanaPageTemplate.Header
+            bottomBorder
+            data-test-subj="rolesGridPageHeader"
+            pageTitle={
+              buildFlavor === 'serverless' ? (
+                <FormattedMessage
+                  id="xpack.security.management.roles.customRoleTitle"
+                  defaultMessage="Custom Roles"
+                />
+              ) : (
+                <FormattedMessage
+                  id="xpack.security.management.roles.roleTitle"
+                  defaultMessage="Roles"
+                />
+              )
+            }
+            description={
+              buildFlavor === 'serverless' ? (
+                <FormattedMessage
+                  id="xpack.security.management.roles.customRolesSubtitle"
+                  defaultMessage="In addition to the predefined roles on the system, you can create your own roles and provide your users with the exact set of privileges that they need."
+                />
+              ) : (
+                <FormattedMessage
+                  id="xpack.security.management.roles.subtitle"
+                  defaultMessage="Apply roles to groups of users and manage permissions across the stack."
+                />
+              )
+            }
+            rightSideItems={
+              readOnly
+                ? undefined
+                : [
+                    <EuiButton
+                      data-test-subj="createRoleButton"
+                      {...reactRouterNavigate(history, getRoleManagementHref('edit'))}
+                      fill
+                      iconType="plusInCircleFilled"
+                    >
+                      <FormattedMessage
+                        id="xpack.security.management.roles.createRoleButtonLabel"
+                        defaultMessage="Create role"
+                      />
+                    </EuiButton>,
+                    buildFlavor === 'serverless' && (
+                      <EuiButtonEmpty
+                        href={cloudOrgUrl}
+                        target="_blank"
+                        iconSide="right"
+                        iconType="popout"
+                      >
+                        <FormattedMessage
+                          id="xpack.security.management.roles.assignRolesLinkLabel"
+                          defaultMessage="Assign roles"
+                        />
+                      </EuiButtonEmpty>
+                    ),
+                  ]
+            }
+          />
+
+          <EuiSpacer size="l" />
+        </>
+      ) : (
+        <>
+          {buildFlavor === 'serverless' && cloudOrgUrl ? (
+            <>
+              <EuiFlexGroup justifyContent="flexEnd" gutterSize="none">
+                <EuiFlexItem grow={false}>
                   <EuiButtonEmpty
+                    data-test-subj="assignRolesLink"
                     href={cloudOrgUrl}
                     target="_blank"
                     iconSide="right"
@@ -467,12 +506,14 @@ export const RolesGridPage: FC<Props> = ({
                       defaultMessage="Assign roles"
                     />
                   </EuiButtonEmpty>
-                ),
-              ]
-        }
-      />
-
-      <EuiSpacer size="l" />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiSpacer size="s" />
+            </>
+          ) : null}
+          <EuiSpacer size="l" />
+        </>
+      )}
       <KibanaPageTemplate.Section paddingSize="none">
         {showDeleteConfirmation ? (
           <ConfirmDelete
