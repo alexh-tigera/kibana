@@ -2181,9 +2181,6 @@
         "dynamic": false,
         "properties": {}
       },
-      "created_at": {
-        "type": "date"
-      },
       "data_output_id": {
         "type": "keyword"
       },
@@ -2635,9 +2632,6 @@
       "agentless": {
         "dynamic": false,
         "properties": {}
-      },
-      "created_at": {
-        "type": "date"
       },
       "data_output_id": {
         "type": "keyword"

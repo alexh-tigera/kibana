@@ -54,7 +54,6 @@ export interface AgentPolicySOAttributes {
   name: string;
   namespace: string;
   is_managed: boolean; // required for created policy
-  created_at?: string;
   updated_at: string;
   updated_by: string;
   revision: number;

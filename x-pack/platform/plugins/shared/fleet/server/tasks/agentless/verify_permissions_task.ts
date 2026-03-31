@@ -38,7 +38,6 @@ export function registerVerifyPermissionsTask(taskManager: TaskManagerSetupContr
     [TASK_TYPE]: {
       title: TASK_TITLE,
       timeout: TASK_TIMEOUT,
-      maxAttempts: 1,
       createTaskRunner: ({
         taskInstance,
         abortController,
@@ -50,7 +49,6 @@ export function registerVerifyPermissionsTask(taskManager: TaskManagerSetupContr
           run: async () => {
             await runPermissionVerifierTask(abortController);
           },
-          cancel: async () => {},
         };
       },
     },
@@ -109,14 +107,14 @@ async function runPermissionVerifierTask(abortController: AbortController) {
     return;
   }
 
-  logger.info(`${VERIFY_PERMISSIONS_TASK} Task run started`);
+  logger.debug(`${VERIFY_PERMISSIONS_TASK} Task run started`);
 
   const soClient = appContextService.getInternalUserSOClientWithoutSpaceExtension();
   const esClient = appContextService.getInternalUserESClient();
 
   // Phase 1: Cleanup expired verifier policies before creating new ones
   try {
-    await cleanupExpiredVerifierPolicies(soClient, esClient);
+    await cleanupExpiredVerifierPolicies(soClient, esClient, abortController);
   } catch (error) {
     logger.error(
       `${VERIFY_PERMISSIONS_TASK} Failed to cleanup expired verifier policies: ${error.message}`
@@ -136,17 +134,18 @@ async function runPermissionVerifierTask(abortController: AbortController) {
 
     if (activeVerifiers.items.length > 0) {
       const policy = activeVerifiers.items[0];
-      const createdAt = policy.created_at ?? policy.updated_at;
-      const ageMs = Date.now() - new Date(createdAt).getTime();
+      const ageMs = Date.now() - new Date(policy.updated_at).getTime();
       const ageSec = Math.round(ageMs / 1000);
       if (ageMs <= VERIFICATION_TTL_MS) {
-        logger.info(
+        logger.debug(
           `${VERIFY_PERMISSIONS_TASK} Active verifier policy ${policy.id} exists (age: ${ageSec}s), skipping new verifications`
         );
-        logger.info(`${VERIFY_PERMISSIONS_TASK} Task run completed`);
+        logger.debug(`${VERIFY_PERMISSIONS_TASK} Task run completed`);
         return;
       }
     }
+
+    throwIfAborted(abortController);
 
     // Phase 2: Pre-filter package policies to build connector -> package policy IDs map
     const packagePolicyMap = await getPackagePolicyMap(soClient);
@@ -168,6 +167,7 @@ async function runPermissionVerifierTask(abortController: AbortController) {
     const SO_TYPE = CLOUD_CONNECTOR_SAVED_OBJECT_TYPE;
     const idFilter = connectorIds.map((id) => `${SO_TYPE}.id:"${SO_TYPE}:${id}"`).join(' or ');
 
+    throwIfAborted(abortController);
     const connectorResults = await soClient.find<CloudConnectorSOAttributes>({
       type: CLOUD_CONNECTOR_SAVED_OBJECT_TYPE,
       filter: idFilter,
@@ -233,7 +233,8 @@ async function runPermissionVerifierTask(abortController: AbortController) {
  */
 async function cleanupExpiredVerifierPolicies(
   soClient: SavedObjectsClientContract,
-  esClient: ElasticsearchClient
+  esClient: ElasticsearchClient,
+  abortController: AbortController
 ) {
   const logger = appContextService.getLogger().get('otel-verifier');
   const saveObjectType = await getAgentPolicySavedObjectType();
@@ -249,8 +250,8 @@ async function cleanupExpiredVerifierPolicies(
     );
 
     for (const policy of verifierPolicies.items) {
-      const createdAt = policy.created_at ?? policy.updated_at;
-      const ageMs = Date.now() - new Date(createdAt).getTime();
+      throwIfAborted(abortController);
+      const ageMs = Date.now() - new Date(policy.updated_at).getTime();
 
       if (ageMs <= VERIFICATION_TTL_MS) {
         continue;
@@ -394,6 +395,7 @@ async function verifyConnector(
   const logger = appContextService.getLogger().get('otel-verifier');
 
   try {
+    throwIfAborted(abortController);
     const { cloudProvider } = connector.attributes;
     const installation = await getInstallation({
       savedObjectsClient: soClient,
@@ -403,6 +405,7 @@ async function verifyConnector(
       throw new FleetError(`Package '${cloudProvider}' is not installed`);
     }
 
+    throwIfAborted(abortController);
     const pkgInfo = await getPackageInfo({
       savedObjectsClient: soClient,
       pkgName: cloudProvider,
@@ -421,6 +424,7 @@ async function verifyConnector(
       `${VERIFY_PERMISSIONS_TASK} Creating verifier policy for connector ${connector.id} with templates [` +
         `${verificationInfo.policyTemplates.join(', ')}]`
     );
+    throwIfAborted(abortController);
     const { policyId } = await agentPolicyService.createVerifierPolicy(
       soClient,
       esClient,

@@ -68,7 +68,6 @@ export interface NewAgentPolicy {
   required_versions?: AgentTargetVersion[] | null;
   has_agent_version_conditions?: boolean;
   is_verifier?: boolean;
-  created_at?: string;
 }
 
 export interface AgentTargetVersion {

@@ -352,7 +352,6 @@ export const getSavedObjectTypes = (
           required_versions: { type: 'flattened', index: false },
           has_agent_version_conditions: { type: 'boolean' },
           is_verifier: { type: 'boolean' },
-          created_at: { type: 'date' },
           min_agent_version: { type: 'keyword' },
           package_agent_version_conditions: { dynamic: false, properties: {} },
         },
@@ -462,7 +461,6 @@ export const getSavedObjectTypes = (
               type: 'mappings_addition',
               addedMappings: {
                 is_verifier: { type: 'boolean' },
-                created_at: { type: 'date' },
                 min_agent_version: { type: 'keyword' },
                 package_agent_version_conditions: { dynamic: false, properties: {} },
               },
@@ -524,7 +522,6 @@ export const getSavedObjectTypes = (
           required_versions: { type: 'flattened', index: false },
           has_agent_version_conditions: { type: 'boolean' },
           is_verifier: { type: 'boolean' },
-          created_at: { type: 'date' },
           min_agent_version: { type: 'keyword' },
           package_agent_version_conditions: { dynamic: false, properties: {} },
         },
@@ -568,7 +565,6 @@ export const getSavedObjectTypes = (
               type: 'mappings_addition',
               addedMappings: {
                 is_verifier: { type: 'boolean' },
-                created_at: { type: 'date' },
                 min_agent_version: { type: 'keyword' },
                 package_agent_version_conditions: { dynamic: false, properties: {} },
               },

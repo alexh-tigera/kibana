@@ -110,7 +110,7 @@ describe('verify_permissions_task', () => {
   });
 
   describe('runPermissionVerifierTask (via task runner)', () => {
-    let taskRunner: { run: () => Promise<void>; cancel: () => Promise<void> };
+    let taskRunner: { run: () => Promise<unknown>; cancel?: () => Promise<unknown> };
 
     beforeEach(() => {
       const taskManager = taskManagerMock.createSetup();
