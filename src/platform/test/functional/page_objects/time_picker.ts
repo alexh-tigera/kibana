@@ -147,6 +147,8 @@ export class TimePickerPageObject extends FtrService {
       const presetTestSubj = `dateRangePickerPresetItem-${option.replace(/\s+/g, '_')}`;
       await this.testSubjects.exists(presetTestSubj, { timeout: 5000 });
       await this.testSubjects.click(presetTestSubj);
+      await this.testSubjects.missingOrFail('dateRangePickerPopoverPanel', { timeout: 5000 });
+      await this.browser.pressKeys(this.browser.keys.ESCAPE);
     } else {
       await this.testSubjects.exists('superDatePickerToggleQuickMenuButton', { timeout: 5000 });
       await this.testSubjects.click('superDatePickerToggleQuickMenuButton');
@@ -167,6 +169,8 @@ export class TimePickerPageObject extends FtrService {
       const panel = await this.testSubjects.find('dateRangePickerMainPanel');
       const buttonByOptionText = await panel.findByXpath(`.//button[text()='${option}']`);
       await buttonByOptionText?.click();
+      await this.testSubjects.missingOrFail('dateRangePickerPopoverPanel', { timeout: 5000 });
+      await this.browser.pressKeys(this.browser.keys.ESCAPE);
     } else {
       await this.testSubjects.exists('superDatePickerToggleQuickMenuButton', { timeout: 5000 });
       await this.testSubjects.click('superDatePickerToggleQuickMenuButton');
@@ -261,6 +265,12 @@ export class TimePickerPageObject extends FtrService {
       );
       return actualRange != null && actualRange.includes(expectedFromISO);
     });
+    // Ensure the popover is fully closed before returning, so it doesn't
+    // overlay other elements and intercept clicks.
+    await this.testSubjects.missingOrFail('dateRangePickerPopoverPanel', { timeout: 5000 });
+    // Blur the control button so its tooltip doesn't overlay elements above
+    // (e.g. the top nav "Open" button in Discover).
+    await this.browser.pressKeys(this.browser.keys.ESCAPE);
   }
 
   private async setAbsoluteRangeLegacyPicker(fromTime: string, toTime: string) {
