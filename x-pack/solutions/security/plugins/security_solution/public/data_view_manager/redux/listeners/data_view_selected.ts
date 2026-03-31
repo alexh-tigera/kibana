@@ -115,10 +115,14 @@ export const createDataViewSelectedListener = (dependencies: {
         try {
           if (action.payload.id) {
             dataViewById = await dependencies.dataViews.getDataViewLazy(action.payload.id);
-            console.log(">>> dependencies.dataViews.getDataViewLazy succeeds", action.payload.id, dataViewById)
+            console.log(
+              '>>> dependencies.dataViews.getDataViewLazy succeeds',
+              action.payload.id,
+              dataViewById
+            );
           }
         } catch (error: unknown) {
-          console.log(">>> error", error)
+          console.log('>>> error', error);
           logger.error(`Error fetching data view by id ${action.payload.id}: ${error}`);
           dependencies.notifications.toasts.addDanger({
             title: 'Selected data view is unavailable',

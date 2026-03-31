@@ -66,7 +66,10 @@ describe('InitializationProvider - happy path', () => {
   it('sets loading=false, result={status:ready, payload} when a single flow succeeds', async () => {
     mockInitializeSecuritySolution.mockResolvedValueOnce({
       flows: {
-        [flowB]: { status: INITIALIZATION_FLOW_STATUS_READY, payload: mockSecurityDataviewsPayload },
+        [flowB]: {
+          status: INITIALIZATION_FLOW_STATUS_READY,
+          payload: mockSecurityDataviewsPayload,
+        },
       },
     });
 
@@ -105,7 +108,10 @@ describe('InitializationProvider - happy path', () => {
     mockInitializeSecuritySolution.mockResolvedValueOnce({
       flows: {
         [flowA]: { status: INITIALIZATION_FLOW_STATUS_READY },
-        [flowB]: { status: INITIALIZATION_FLOW_STATUS_READY, payload: mockSecurityDataviewsPayload },
+        [flowB]: {
+          status: INITIALIZATION_FLOW_STATUS_READY,
+          payload: mockSecurityDataviewsPayload,
+        },
       },
     });
 
@@ -408,7 +414,10 @@ describe('InitializationProvider - per-flow schema validation', () => {
         // flowA: invalid status triggers validation failure
         [flowA]: { status: 'invalid-status' },
         // flowB: valid result
-        [flowB]: { status: INITIALIZATION_FLOW_STATUS_READY, payload: mockSecurityDataviewsPayload },
+        [flowB]: {
+          status: INITIALIZATION_FLOW_STATUS_READY,
+          payload: mockSecurityDataviewsPayload,
+        },
       },
     });
 
