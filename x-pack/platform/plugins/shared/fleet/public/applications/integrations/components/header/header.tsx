@@ -17,6 +17,7 @@ import {
 } from '@elastic/eui';
 import { css } from '@emotion/css';
 import type { AppMountParameters } from '@kbn/core/public';
+import useObservable from 'react-use/lib/useObservable';
 
 import type { FleetStartServices } from '../../../../plugin';
 import { useIsReadOnly } from '../../hooks/use_read_only_context';
@@ -29,8 +30,13 @@ export const IntegrationsHeader = ({
   startServices,
 }: {
   setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'];
-  startServices: Pick<FleetStartServices, 'analytics' | 'i18n' | 'theme'>;
+  startServices: Pick<FleetStartServices, 'analytics' | 'i18n' | 'theme' | 'chrome'>;
 }) => {
+  const chromeStyle = useObservable(
+    startServices.chrome.getChromeStyle$(),
+    startServices.chrome.getChromeStyle()
+  );
+  const isProjectChrome = chromeStyle === 'project';
   const { euiTheme } = useEuiTheme();
   const readOnlyBtnClass = React.useMemo(() => {
     return css`
@@ -42,11 +48,13 @@ export const IntegrationsHeader = ({
   return (
     <HeaderPortal {...{ setHeaderActionMenu, startServices }}>
       <EuiHeaderSection grow={false}>
-        <EuiHeaderSectionItem>
-          <EuiHeaderLinks>
-            <DeploymentDetails />
-          </EuiHeaderLinks>
-        </EuiHeaderSectionItem>
+        {!isProjectChrome ? (
+          <EuiHeaderSectionItem>
+            <EuiHeaderLinks>
+              <DeploymentDetails />
+            </EuiHeaderLinks>
+          </EuiHeaderSectionItem>
+        ) : null}
         {isReadOnly ? (
           <EuiHeaderSectionItem>
             <EuiHeaderLinks>

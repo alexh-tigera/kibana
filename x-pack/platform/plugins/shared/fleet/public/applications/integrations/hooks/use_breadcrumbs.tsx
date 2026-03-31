@@ -5,8 +5,9 @@
  * 2.0.
  */
 
-import { useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
+import useObservable from 'react-use/lib/useObservable';
 import type { ChromeBreadcrumb } from '@kbn/core/public';
 
 import type { Page, DynamicPagePathValues } from '../constants';
@@ -112,18 +113,31 @@ const breadcrumbGetters: {
   ],
 };
 
-export function useBreadcrumbs(page: Page, values: DynamicPagePathValues = {}) {
+const EMPTY_DYNAMIC_PATH_VALUES: DynamicPagePathValues = {};
+
+export function useBreadcrumbs(
+  page: Page,
+  values: DynamicPagePathValues = EMPTY_DYNAMIC_PATH_VALUES
+) {
   const { chrome, http, application } = useStartServices();
-  const pageRef = useRef<Page | undefined>();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const valuesKey = JSON.stringify(values);
 
-  if (pageRef.current === page) {
-    return;
-  }
+  const breadcrumbs = useMemo((): ChromeBreadcrumb[] => {
+    const getter = breadcrumbGetters[page];
+    if (!getter) {
+      return [];
+    }
 
-  pageRef.current = page;
+    let crumbs = getter(values);
+    if (
+      chromeStyle === 'project' &&
+      (page === 'integrations_all' || page === 'integrations_installed')
+    ) {
+      crumbs = [BASE_BREADCRUMB];
+    }
 
-  const breadcrumbs: ChromeBreadcrumb[] =
-    breadcrumbGetters[page]?.(values).map((breadcrumb) => {
+    return crumbs.map((breadcrumb) => {
       const href = breadcrumb.href
         ? http.basePath.prepend(`${INTEGRATIONS_BASE_PATH}${breadcrumb.href}`)
         : undefined;
@@ -137,12 +151,15 @@ export function useBreadcrumbs(page: Page, values: DynamicPagePathValues = {}) {
             }
           : undefined,
       };
-    }) || [];
+    });
+  }, [application, chromeStyle, http, page, values, valuesKey]);
 
-  const docTitle: string[] = [...breadcrumbs]
-    .reverse()
-    .map((breadcrumb) => breadcrumb.text as string);
+  useEffect(() => {
+    const docTitle: string[] = [...breadcrumbs]
+      .reverse()
+      .map((breadcrumb) => breadcrumb.text as string);
 
-  chrome.docTitle.change(docTitle);
-  chrome.setBreadcrumbs(breadcrumbs);
+    chrome.docTitle.change(docTitle);
+    chrome.setBreadcrumbs(breadcrumbs);
+  }, [breadcrumbs, chrome]);
 }

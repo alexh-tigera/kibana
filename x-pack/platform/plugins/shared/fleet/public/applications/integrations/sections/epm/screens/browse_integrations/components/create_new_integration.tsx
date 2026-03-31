@@ -48,7 +48,7 @@ export const CreateNewIntegrationButton: React.FC = () => {
           data-test-subj="createNewIntegrationBtn"
         >
           {i18n.translate('xpack.fleet.epmList.createNewIntegrationButton', {
-            defaultMessage: 'Create new integration',
+            defaultMessage: 'Create integration',
           })}
         </EuiButton>
       </EuiFlexItem>

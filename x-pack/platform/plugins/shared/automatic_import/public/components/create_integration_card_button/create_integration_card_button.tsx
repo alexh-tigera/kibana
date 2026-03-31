@@ -111,7 +111,7 @@ export const CreateIntegrationCardButton = React.memo<CreateIntegrationCardButto
                     <EuiFlexItem>
                       <FormattedMessage
                         id="xpack.automaticImport.createIntegrationButton"
-                        defaultMessage="Create new integration"
+                        defaultMessage="Create integration"
                       />
                     </EuiFlexItem>
                   </EuiFlexGroup>

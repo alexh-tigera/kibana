@@ -54,6 +54,11 @@ export interface HeaderProps {
   tabs?: Array<Omit<EuiTabProps, 'name'> & { name?: JSX.Element | string }>;
   tabsCss?: string;
   'data-test-subj'?: string;
+  /**
+   * When true, the local page header (title row and tabs) is omitted because project chrome
+   * renders the same content via `AppMenuConfig` (`headerTabs`, `headerMetadata`, actions).
+   */
+  suppressHeaderContent?: boolean;
 }
 
 const HeaderColumns: React.FC<Omit<HeaderProps, 'tabs'>> = memo(
@@ -73,33 +78,40 @@ export const Header: React.FC<HeaderProps> = ({
   tabs,
   maxWidth,
   tabsCss,
+  suppressHeaderContent,
   'data-test-subj': dataTestSubj,
-}) => (
-  <Container data-test-subj={dataTestSubj}>
-    <Wrapper maxWidth={maxWidth}>
-      {topContent}
-      <HeaderColumns
-        leftColumn={leftColumn}
-        rightColumn={rightColumn}
-        rightColumnGrow={rightColumnGrow}
-      />
-      <EuiFlexGroup>
-        {tabs ? (
-          <EuiFlexItem>
-            <Tabs $tabsCss={tabsCss}>
-              {tabs.map((props, index) => (
-                <EuiTab {...(props as EuiTabProps)} key={`${props.id}-${index}`}>
-                  {props.name}
-                </EuiTab>
-              ))}
-            </Tabs>
-          </EuiFlexItem>
-        ) : (
-          <EuiFlexItem>
-            <EuiSpacer size="l" />
-          </EuiFlexItem>
-        )}
-      </EuiFlexGroup>
-    </Wrapper>
-  </Container>
-);
+}) => {
+  if (suppressHeaderContent) {
+    return null;
+  }
+
+  return (
+    <Container data-test-subj={dataTestSubj}>
+      <Wrapper maxWidth={maxWidth}>
+        {topContent}
+        <HeaderColumns
+          leftColumn={leftColumn}
+          rightColumn={rightColumn}
+          rightColumnGrow={rightColumnGrow}
+        />
+        <EuiFlexGroup>
+          {tabs ? (
+            <EuiFlexItem>
+              <Tabs $tabsCss={tabsCss}>
+                {tabs.map((props, index) => (
+                  <EuiTab {...(props as EuiTabProps)} key={`${props.id}-${index}`}>
+                    {props.name}
+                  </EuiTab>
+                ))}
+              </Tabs>
+            </EuiFlexItem>
+          ) : (
+            <EuiFlexItem>
+              <EuiSpacer size="l" />
+            </EuiFlexItem>
+          )}
+        </EuiFlexGroup>
+      </Wrapper>
+    </Container>
+  );
+};
