@@ -5,9 +5,10 @@
  * 2.0.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import type { RouteComponentProps } from 'react-router-dom';
 import { Routes, Route } from '@kbn/shared-ux-router';
+import useObservable from 'react-use/lib/useObservable';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { EuiButtonEmpty, EuiPageHeader, EuiSpacer } from '@elastic/eui';
 
@@ -20,6 +21,7 @@ import { EnrichPoliciesList } from './enrich_policies_list';
 import { IndexDetailsPage } from './index_list/details_page';
 import { DataStreamList } from './data_stream_list';
 import { TemplateList } from './template_list';
+import { IndexManagementHomeAppMenu } from './index_management_home_app_menu';
 
 export const homeSections = [
   Section.Indices,
@@ -40,9 +42,13 @@ export const IndexManagementHome: React.FunctionComponent<RouteComponentProps<Ma
   history,
 }) => {
   const {
+    core: { chrome },
     plugins: { console: consolePlugin },
     privs,
   } = useAppContext();
+  const chromeStyle = useObservable(chrome.getChromeStyle$(), chrome.getChromeStyle());
+  const isProjectChrome = chromeStyle === 'project';
+
   const tabs = [
     {
       id: Section.Indices,
@@ -92,43 +98,58 @@ export const IndexManagementHome: React.FunctionComponent<RouteComponentProps<Ma
     });
   }
 
-  const onSectionChange = (newSection: Section) => {
-    history.push(`/${newSection}`);
-  };
+  const onSectionChange = useCallback(
+    (newSection: Section) => {
+      history.push(`/${newSection}`);
+    },
+    [history]
+  );
 
   const indexManagementTabs = (
     <>
-      <EuiPageHeader
-        data-test-subj="indexManagementHeaderContent"
-        pageTitle={
-          <span data-test-subj="appTitle">
-            <FormattedMessage id="xpack.idxMgmt.home.appTitle" defaultMessage="Index Management" />
-          </span>
-        }
-        bottomBorder
-        rightSideItems={[
-          <EuiButtonEmpty
-            href={documentationService.getIdxMgmtDocumentationLink()}
-            target="_blank"
-            iconType="question"
-            data-test-subj="documentationLink"
-          >
-            <FormattedMessage
-              id="xpack.idxMgmt.home.idxMgmtDocsLinkText"
-              defaultMessage="Index Management docs"
-            />
-          </EuiButtonEmpty>,
-        ]}
-        tabs={tabs.map((tab) => ({
-          onClick: () => onSectionChange(tab.id),
-          isSelected: tab.id === section,
-          key: tab.id,
-          'data-test-subj': `${tab.id}Tab`,
-          label: tab.name,
-        }))}
+      <IndexManagementHomeAppMenu
+        section={section}
+        tabs={tabs}
+        onSectionChange={onSectionChange}
       />
+      {!isProjectChrome && (
+        <>
+          <EuiPageHeader
+            data-test-subj="indexManagementHeaderContent"
+            pageTitle={
+              <span data-test-subj="appTitle">
+                <FormattedMessage
+                  id="xpack.idxMgmt.home.appTitle"
+                  defaultMessage="Index Management"
+                />
+              </span>
+            }
+            bottomBorder
+            rightSideItems={[
+              <EuiButtonEmpty
+                href={documentationService.getIdxMgmtDocumentationLink()}
+                target="_blank"
+                iconType="question"
+                data-test-subj="documentationLink"
+              >
+                <FormattedMessage
+                  id="xpack.idxMgmt.home.idxMgmtDocsLinkText"
+                  defaultMessage="Index Management docs"
+                />
+              </EuiButtonEmpty>,
+            ]}
+            tabs={tabs.map((tab) => ({
+              onClick: () => onSectionChange(tab.id),
+              isSelected: tab.id === section,
+              key: tab.id,
+              'data-test-subj': `${tab.id}Tab`,
+              label: tab.name,
+            }))}
+          />
 
-      <EuiSpacer size="l" />
+          <EuiSpacer size="l" />
+        </>
+      )}
 
       <Routes>
         <Route
