@@ -206,7 +206,7 @@ export const DetailsPageContent: FunctionComponent<Props> = ({
           height: 100%;
         `}
       >
-        <DetailsPageTab tabs={tabs} tab={tab} index={index} />
+        <DetailsPageTab tabs={tabs} tab={tab} index={index} search={search} />
       </div>
       {consolePlugin?.EmbeddableConsole ? <consolePlugin.EmbeddableConsole /> : null}
     </>
