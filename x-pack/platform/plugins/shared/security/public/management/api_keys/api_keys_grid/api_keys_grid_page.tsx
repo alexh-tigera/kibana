@@ -12,6 +12,7 @@ import type { FunctionComponent } from 'react';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
+import useObservable from 'react-use/lib/useObservable';
 
 import type { CoreStart } from '@kbn/core/public';
 import { SectionLoading } from '@kbn/es-ui-shared-plugin/public';
@@ -28,6 +29,7 @@ import type { CategorizedApiKey } from '@kbn/security-plugin-types-common';
 import { KibanaPageTemplate } from '@kbn/shared-ux-page-kibana-template';
 import { Route } from '@kbn/shared-ux-router';
 
+import { ApiKeysGridAppMenu } from './api_keys_grid_app_menu';
 import { ApiKeysEmptyPrompt } from './api_keys_empty_prompt';
 import { ApiKeysTable } from './api_keys_table';
 import type { QueryFilters } from './api_keys_table';
@@ -64,6 +66,9 @@ const PLUS_SIGN_REGEX = /[+]/g;
 export const APIKeysGridPage: FunctionComponent = () => {
   const { services } = useKibana<CoreStart>();
   const history = useHistory();
+  const isProjectChrome =
+    useObservable(services.chrome.getChromeStyle$(), services.chrome.getChromeStyle()) ===
+    'project';
   const authc = useAuthentication();
 
   const [createdApiKey, setCreatedApiKey] = useState<CreateAPIKeyResult>();
@@ -262,6 +267,12 @@ export const APIKeysGridPage: FunctionComponent = () => {
 
   return (
     <>
+      <ApiKeysGridAppMenu
+        chrome={services.chrome}
+        history={history}
+        readOnly={readOnly}
+        isProjectChrome={isProjectChrome}
+      />
       <Route path="/create">
         <Breadcrumb
           text={i18n.translate('xpack.security.management.apiKeys.createBreadcrumb', {
@@ -308,54 +319,60 @@ export const APIKeysGridPage: FunctionComponent = () => {
       )}
       {totalKeys === 0 ? (
         <ApiKeysEmptyPrompt readOnly={readOnly}>
-          <EuiButton
-            {...reactRouterNavigate(history, '/create')}
-            fill
-            iconType="plusInCircleFilled"
-            data-test-subj="apiKeysCreatePromptButton"
-          >
-            <FormattedMessage
-              id="xpack.security.management.apiKeys.table.createButton"
-              defaultMessage="Create API key"
-            />
-          </EuiButton>
+          {!isProjectChrome ? (
+            <EuiButton
+              {...reactRouterNavigate(history, '/create')}
+              fill
+              iconType="plusInCircleFilled"
+              data-test-subj="apiKeysCreatePromptButton"
+            >
+              <FormattedMessage
+                id="xpack.security.management.apiKeys.table.createButton"
+                defaultMessage="Create API key"
+              />
+            </EuiButton>
+          ) : null}
         </ApiKeysEmptyPrompt>
       ) : (
         <>
-          <KibanaPageTemplate.Header
-            pageTitle={
-              <FormattedMessage
-                id="xpack.security.management.apiKeys.table.apiKeysTitle"
-                defaultMessage="API keys"
+          {!isProjectChrome ? (
+            <>
+              <KibanaPageTemplate.Header
+                pageTitle={
+                  <FormattedMessage
+                    id="xpack.security.management.apiKeys.table.apiKeysTitle"
+                    defaultMessage="API keys"
+                  />
+                }
+                description={
+                  <FormattedMessage
+                    id="xpack.security.management.apiKeys.table.apiKeysAllDescription"
+                    defaultMessage="Allow external services to access the Elastic Stack on behalf of a user."
+                  />
+                }
+                rightSideItems={
+                  !readOnly
+                    ? [
+                        <EuiButton
+                          {...reactRouterNavigate(history, '/create')}
+                          fill
+                          iconType="plusInCircleFilled"
+                          data-test-subj="apiKeysCreateTableButton"
+                        >
+                          <FormattedMessage
+                            id="xpack.security.management.apiKeys.table.createButton"
+                            defaultMessage="Create API key"
+                          />
+                        </EuiButton>,
+                      ]
+                    : undefined
+                }
+                paddingSize="none"
+                bottomBorder
               />
-            }
-            description={
-              <FormattedMessage
-                id="xpack.security.management.apiKeys.table.apiKeysAllDescription"
-                defaultMessage="Allow external services to access the Elastic Stack on behalf of a user."
-              />
-            }
-            rightSideItems={
-              !readOnly
-                ? [
-                    <EuiButton
-                      {...reactRouterNavigate(history, '/create')}
-                      fill
-                      iconType="plusInCircleFilled"
-                      data-test-subj="apiKeysCreateTableButton"
-                    >
-                      <FormattedMessage
-                        id="xpack.security.management.apiKeys.table.createButton"
-                        defaultMessage="Create API key"
-                      />
-                    </EuiButton>,
-                  ]
-                : undefined
-            }
-            paddingSize="none"
-            bottomBorder
-          />
-          <EuiSpacer />
+              <EuiSpacer />
+            </>
+          ) : null}
           <KibanaPageTemplate.Section paddingSize="none">
             {createdApiKey && (
               <>
