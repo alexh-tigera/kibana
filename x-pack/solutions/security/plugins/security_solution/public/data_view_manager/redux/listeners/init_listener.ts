@@ -67,12 +67,6 @@ export const createInitListener = (
           http: dependencies.http,
         });
 
-        console.log('>>> at init_listener - createDefaultDataView', {
-          defaultDataView,
-          alertDataView,
-          attackDataView,
-        });
-
         logger.debug(`Default data views created:
           - Default Data View: ${defaultDataView.title} (ID: ${defaultDataView.id})
           - Alert Data View: ${alertDataView.title} (ID: ${alertDataView.id})

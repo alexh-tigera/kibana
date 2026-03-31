@@ -23,7 +23,7 @@ jest.mock('./flows/create_list_indices', () => ({
   },
 }));
 
-jest.mock('./flows/initialize_sourcerer_data_views', () => ({
+jest.mock('./flows/initialize_security_data_views', () => ({
   initializeSecurityDataViewsFlow: {
     id: 'security-data-views' as const,
     resolveProvisionContext: jest.fn().mockResolvedValue({}),
