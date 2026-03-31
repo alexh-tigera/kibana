@@ -31,7 +31,7 @@ import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import {
   DISPATCH_PER_DESCRIPTIONS,
   DISPATCH_PER_OPTIONS,
-  NOTIFY_PER_LABEL,
+  DISPATCH_PER_LABEL,
   EPISODE_FREQUENCY_DESCRIPTIONS,
   EPISODE_FREQUENCY_OPTIONS,
   GROUP_FREQUENCY_DESCRIPTIONS,
@@ -333,7 +333,7 @@ export const NotificationPolicyForm = () => {
           <EuiText size="xs" color="subdued">
             <FormattedMessage
               id="xpack.alertingV2.notificationPolicy.form.dispatch.description"
-              defaultMessage="Dispatch sets what counts as one notification (per episode or per group) and how often it can be sent."
+              defaultMessage="Dispatch sets what counts as one dispatch (per episode or per group) and how often it can be sent."
             />
           </EuiText>
         </EuiSplitPanel.Inner>
@@ -343,12 +343,12 @@ export const NotificationPolicyForm = () => {
             control={control}
             render={({ field }) => (
               <EuiFormRow
-                label={NOTIFY_PER_LABEL}
+                label={DISPATCH_PER_LABEL}
                 helpText={DISPATCH_PER_DESCRIPTIONS[field.value as DispatchPer]}
                 fullWidth
               >
                 <EuiButtonGroup
-                  legend={NOTIFY_PER_LABEL}
+                  legend={DISPATCH_PER_LABEL}
                   options={DISPATCH_PER_OPTIONS}
                   idSelected={field.value}
                   onChange={(id: string) => {
@@ -393,7 +393,7 @@ export const NotificationPolicyForm = () => {
                       'xpack.alertingV2.notificationPolicy.form.groupBy.help',
                       {
                         defaultMessage:
-                          'Episodes that share these field values are notified as one group.',
+                          'Episodes that share these field values are grouped together for dispatch.',
                       }
                     )}
                     fullWidth

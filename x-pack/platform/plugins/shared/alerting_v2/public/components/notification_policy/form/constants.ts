@@ -54,7 +54,7 @@ export const EPISODE_FREQUENCY_DESCRIPTIONS: Record<string, string> = {
   episode_every_evaluation: i18n.translate(
     'xpack.alertingV2.notificationPolicy.form.frequency.episode.everyEvaluation.description',
     {
-      defaultMessage: 'No minimum time between notifications for the same episode.',
+      defaultMessage: 'No minimum time between dispatches for the same episode.',
     }
   ),
 };
@@ -82,13 +82,13 @@ export const GROUP_FREQUENCY_DESCRIPTIONS: Record<string, string> = {
   group_throttle: i18n.translate(
     'xpack.alertingV2.notificationPolicy.form.frequency.group.throttle.description',
     {
-      defaultMessage: 'At most one notification per group per repeat interval.',
+      defaultMessage: 'At most one dispatch per group per repeat interval.',
     }
   ),
   group_immediate: i18n.translate(
     'xpack.alertingV2.notificationPolicy.form.frequency.group.immediate.description',
     {
-      defaultMessage: 'No minimum time between notifications for the same group.',
+      defaultMessage: 'No minimum time between dispatches for the same group.',
     }
   ),
 };
@@ -135,10 +135,10 @@ export const DISPATCH_PER_OPTIONS: Array<{ id: DispatchPer; label: string }> = [
   },
 ];
 
-/** Single label for the episode vs group control (replaces separate “Unit of dispatch” heading + “Send notification per”). */
-export const NOTIFY_PER_LABEL = i18n.translate(
-  'xpack.alertingV2.notificationPolicy.form.dispatchPer.notifyPer',
-  { defaultMessage: 'Notify per' }
+/** Single label for the episode vs group control (replaces separate “Unit of dispatch” heading + prior “notify per” wording). */
+export const DISPATCH_PER_LABEL = i18n.translate(
+  'xpack.alertingV2.notificationPolicy.form.dispatchPer.dispatchPerLabel',
+  { defaultMessage: 'Dispatch per' }
 );
 
 export const DISPATCH_PER_DESCRIPTIONS: Record<DispatchPer, string> = {
@@ -148,7 +148,7 @@ export const DISPATCH_PER_DESCRIPTIONS: Record<DispatchPer, string> = {
   ),
   group: i18n.translate('xpack.alertingV2.notificationPolicy.form.dispatchPer.group.description', {
     defaultMessage:
-      'One notification per group. Add at least one field under Group by to define each group.',
+      'One dispatch per group. Add at least one field under Group by to define each group.',
   }),
 };
 
