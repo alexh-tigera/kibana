@@ -87,6 +87,7 @@ export const usersManagementApp = Object.freeze({
                       rolesAPIClient={new RolesAPIClient(coreStart.http)}
                       history={history}
                       navigateToApp={coreStart.application.navigateToApp}
+                      chrome={coreStart.chrome}
                       readOnly={!coreStart.application.capabilities.users.save}
                     />
                   </Route>

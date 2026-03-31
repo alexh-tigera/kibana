@@ -6,3 +6,4 @@
  */
 
 export { UsersGridPage } from './users_grid_page';
+export type { UsersGridPageProps } from './users_grid_page';

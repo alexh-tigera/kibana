@@ -58,6 +58,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -97,6 +98,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -118,6 +120,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -147,6 +150,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -170,6 +174,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -198,6 +203,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -230,6 +236,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -276,6 +283,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -314,6 +322,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
       />
     );
 
@@ -349,6 +358,7 @@ describe('UsersGridPage', () => {
         notifications={coreStart.notifications}
         history={history}
         navigateToApp={coreStart.application.navigateToApp}
+        chrome={coreStart.chrome}
         readOnly
       />
     );

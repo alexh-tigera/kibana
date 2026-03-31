@@ -19,8 +19,9 @@ import {
   EuiSwitch,
 } from '@elastic/eui';
 import React, { Component } from 'react';
+import type { Subscription } from 'rxjs';
 
-import type { ApplicationStart, NotificationsStart, ScopedHistory } from '@kbn/core/public';
+import type { ApplicationStart, ChromeStart, NotificationsStart, ScopedHistory } from '@kbn/core/public';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { reactRouterNavigate } from '@kbn/kibana-react-plugin/public';
@@ -33,13 +34,15 @@ import type { RolesAPIClient } from '../../roles';
 import { ConfirmDeleteUsers } from '../components';
 import type { UserAPIClient } from '../user_api_client';
 import { getExtendedUserDeprecationNotice, isUserDeprecated, isUserReserved } from '../user_utils';
+import { UsersGridAppMenu } from './users_grid_app_menu';
 
-interface Props {
+export interface UsersGridPageProps {
   userAPIClient: PublicMethodsOf<UserAPIClient>;
   rolesAPIClient: PublicMethodsOf<RolesAPIClient>;
   notifications: NotificationsStart;
   history: ScopedHistory;
   navigateToApp: ApplicationStart['navigateToApp'];
+  chrome: ChromeStart;
   readOnly?: boolean;
 }
 
@@ -53,14 +56,18 @@ interface State {
   filter: string;
   includeReservedUsers: boolean;
   isTableLoading: boolean;
+  /** When true, Create user is shown in project chrome AppMenuBar instead of the page header. */
+  isProjectChrome: boolean;
 }
 
-export class UsersGridPage extends Component<Props, State> {
-  static defaultProps: Partial<Props> = {
+export class UsersGridPage extends Component<UsersGridPageProps, State> {
+  static defaultProps: Partial<UsersGridPageProps> = {
     readOnly: false,
   };
 
-  constructor(props: Props) {
+  private chromeStyleSubscription?: Subscription;
+
+  constructor(props: UsersGridPageProps) {
     super(props);
     this.state = {
       users: [],
@@ -72,11 +79,19 @@ export class UsersGridPage extends Component<Props, State> {
       filter: '',
       includeReservedUsers: true,
       isTableLoading: false,
+      isProjectChrome: props.chrome.getChromeStyle() === 'project',
     };
   }
 
   public componentDidMount() {
+    this.chromeStyleSubscription = this.props.chrome.getChromeStyle$().subscribe((style) => {
+      this.setState({ isProjectChrome: style === 'project' });
+    });
     this.loadUsersAndRoles();
+  }
+
+  public componentWillUnmount() {
+    this.chromeStyleSubscription?.unsubscribe();
   }
 
   public render() {
@@ -226,37 +241,50 @@ export class UsersGridPage extends Component<Props, State> {
       };
     };
 
+    const { readOnly } = this.props;
+    const { isProjectChrome } = this.state;
+
     return (
       <>
-        <EuiPageHeader
-          bottomBorder
-          pageTitle={
-            <FormattedMessage
-              id="xpack.security.management.users.usersTitle"
-              defaultMessage="Users"
-            />
-          }
-          data-test-subj="securityUsersPageHeader"
-          rightSideItems={
-            this.props.readOnly
-              ? undefined
-              : [
-                  <EuiButton
-                    data-test-subj="createUserButton"
-                    {...reactRouterNavigate(this.props.history, `/create`)}
-                    fill
-                    iconType="plusInCircleFilled"
-                  >
-                    <FormattedMessage
-                      id="xpack.security.management.users.createNewUserButtonLabel"
-                      defaultMessage="Create user"
-                    />
-                  </EuiButton>,
-                ]
-          }
+        <UsersGridAppMenu
+          chrome={this.props.chrome}
+          history={this.props.history}
+          readOnly={!!readOnly}
+          isProjectChrome={isProjectChrome}
         />
+        {!isProjectChrome ? (
+          <>
+            <EuiPageHeader
+              bottomBorder
+              pageTitle={
+                <FormattedMessage
+                  id="xpack.security.management.users.usersTitle"
+                  defaultMessage="Users"
+                />
+              }
+              data-test-subj="securityUsersPageHeader"
+              rightSideItems={
+                readOnly
+                  ? undefined
+                  : [
+                      <EuiButton
+                        data-test-subj="createUserButton"
+                        {...reactRouterNavigate(this.props.history, `/create`)}
+                        fill
+                        iconType="plusInCircleFilled"
+                      >
+                        <FormattedMessage
+                          id="xpack.security.management.users.createNewUserButtonLabel"
+                          defaultMessage="Create user"
+                        />
+                      </EuiButton>,
+                    ]
+              }
+            />
 
-        <EuiSpacer size="l" />
+            <EuiSpacer size="l" />
+          </>
+        ) : null}
 
         {showDeleteConfirmation ? (
           <ConfirmDeleteUsers
