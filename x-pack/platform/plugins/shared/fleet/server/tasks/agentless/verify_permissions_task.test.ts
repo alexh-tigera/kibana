@@ -33,8 +33,14 @@ jest.mock('../../services/agent_policy', () => ({
 }));
 
 jest.mock('../../services/epm/packages', () => ({
-  getInstallation: jest.fn().mockResolvedValue({ name: 'aws', version: '2.0.0' }),
   getPackageInfo: jest.fn().mockResolvedValue({ name: 'aws', title: 'AWS', version: '2.0.0' }),
+}));
+
+jest.mock('../../services/epm/packages/install', () => ({
+  ensureInstalledPackage: jest.fn().mockResolvedValue({
+    status: 'already_installed',
+    package: { name: 'aws', version: '2.0.0' },
+  }),
 }));
 
 const mockedAgentPolicyService = agentPolicyService as jest.Mocked<typeof agentPolicyService>;

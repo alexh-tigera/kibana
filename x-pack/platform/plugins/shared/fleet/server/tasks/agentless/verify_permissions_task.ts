@@ -20,8 +20,8 @@ import {
 import type { CloudConnectorSOAttributes } from '../../types/so_attributes';
 import { appContextService } from '../../services';
 import { agentPolicyService, getAgentPolicySavedObjectType } from '../../services/agent_policy';
-import { getInstallation, getPackageInfo } from '../../services/epm/packages';
-import { FleetError } from '../../errors';
+import { getPackageInfo } from '../../services/epm/packages';
+import { ensureInstalledPackage } from '../../services/epm/packages/install';
 import { throwIfAborted } from '../utils';
 
 const TASK_TYPE = 'fleet:verify_permissions';
@@ -399,19 +399,22 @@ async function verifyConnector(
   try {
     throwIfAborted(abortController);
     const { cloudProvider } = connector.attributes;
-    const installation = await getInstallation({
+    const ensureResult = await ensureInstalledPackage({
       savedObjectsClient: soClient,
+      esClient,
       pkgName: cloudProvider,
     });
-    if (!installation) {
-      throw new FleetError(`Package '${cloudProvider}' is not installed`);
-    }
+    logger.info(
+      `${VERIFY_PERMISSIONS_TASK} Package '${cloudProvider}' ${
+        ensureResult.status === 'already_installed' ? 'already installed' : 'installed'
+      } (v${ensureResult.package.version})`
+    );
 
     throwIfAborted(abortController);
     const pkgInfo = await getPackageInfo({
       savedObjectsClient: soClient,
       pkgName: cloudProvider,
-      pkgVersion: installation.version,
+      pkgVersion: ensureResult.package.version,
       skipArchive: true,
     });
 

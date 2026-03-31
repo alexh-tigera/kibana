@@ -135,6 +135,7 @@ import {
 } from './elastic_agent_manifest';
 
 import { bulkInstallPackages, getPackageInfo } from './epm/packages';
+import { ensureInstalledPackage } from './epm/packages/install';
 import { getAgentsByKuery } from './agents';
 import {
   getPackagePolicySavedObjectType,
@@ -1965,7 +1966,7 @@ class AgentPolicyService {
             continue;
           }
           try {
-            await agentlessAgentService.createAgentlessAgent(esClient, soClient, agentPolicy);
+            // await agentlessAgentService.createAgentlessAgent(esClient, soClient, agentPolicy);
             logger.debug(
               `[Agentless API] Successfully deployed agentless deployment for single agent policy id ${agentPolicy.id}`
             );
@@ -2645,8 +2646,34 @@ class AgentPolicyService {
       { skipDeploy: true }
     );
 
+    const mappedAccountType =
+      VERIFIER_ACCOUNT_TYPE_MAP[accountType ?? 'single-account'] ?? 'single_account';
+    logger.info(
+      `${VERIFY_PERMISSIONS_TASK} Connector ${connectorId} accountType="${accountType}" mappedAccountType="${mappedAccountType}"`
+    );
+
     const credentialVars = buildVerifierCredentialVars(cloudProvider, connectorVars);
 
+    const VERIFIER_PKG_NAME = 'verifier_otel';
+    const verifierPkgResult = await ensureInstalledPackage({
+      savedObjectsClient: soClient,
+      esClient,
+      pkgName: VERIFIER_PKG_NAME,
+    });
+    const verifierPkgVersion = verifierPkgResult.package.version;
+    logger.info(
+      `${VERIFY_PERMISSIONS_TASK} Package ${VERIFIER_PKG_NAME} v${verifierPkgVersion} ` +
+        `${verifierPkgResult.status === 'already_installed' ? 'already installed' : 'installed'}`
+    );
+
+    const verifierPkgInfo = await getPackageInfo({
+      savedObjectsClient: soClient,
+      pkgName: VERIFIER_PKG_NAME,
+      pkgVersion: verifierPkgVersion,
+      prerelease: true,
+    });
+
+    const VERIFIER_DATASET = `${VERIFIER_PKG_NAME}.verifierreceiver`;
     const verifierPackagePolicy: NewPackagePolicy = {
       name: `verifier-${connectorName}-${shortId}`,
       namespace: 'default',
@@ -2654,9 +2681,9 @@ class AgentPolicyService {
       policy_ids: [agentPolicy.id],
       supports_agentless: true,
       package: {
-        name: 'verifier_otel',
-        title: 'Permission Verifier',
-        version: '0.0.0',
+        name: VERIFIER_PKG_NAME,
+        title: verifierPkgInfo.title ?? 'Permission Verifier',
+        version: verifierPkgVersion,
       },
       inputs: [
         {
@@ -2668,23 +2695,17 @@ class AgentPolicyService {
               enabled: true,
               data_stream: {
                 type: 'logs',
-                dataset: 'verifier_otel.verification',
+                dataset: VERIFIER_DATASET,
               },
               vars: {
-                'data_stream.dataset': {
-                  type: 'text',
-                  value: 'verifier_otel.verification',
-                },
-                default_region: { type: 'text', value: 'us-east-1' },
+                'data_stream.dataset': { type: 'text', value: VERIFIER_DATASET },
                 cloud_connector_id: { type: 'text', value: connectorId },
                 cloud_connector_name: { type: 'text', value: connectorName },
                 verification_id: { type: 'text', value: verificationId },
                 verification_type: { type: 'select', value: 'scheduled' },
                 provider: { type: 'text', value: cloudProvider },
-                account_type: {
-                  type: 'select',
-                  value: accountType ?? 'single-account',
-                },
+                account_type: { type: 'select', value: mappedAccountType },
+                default_region: { type: 'text', value: 'us-east-1' },
                 ...credentialVars,
                 policy_id: { type: 'text', value: agentPolicy.id },
                 policy_name: { type: 'text', value: policyName },
@@ -2712,6 +2733,8 @@ class AgentPolicyService {
         {
           bumpRevision: false,
           force: true,
+          skipEnsureInstalled: true,
+          packageInfo: verifierPkgInfo,
         }
       );
       logger.info(
@@ -2754,6 +2777,11 @@ class AgentPolicyService {
 }
 
 export const agentPolicyService = new AgentPolicyService();
+
+const VERIFIER_ACCOUNT_TYPE_MAP: Record<string, string> = {
+  'single-account': 'single_account',
+  'organization-account': 'organization',
+};
 
 function buildVerifierCredentialVars(
   provider: string,
