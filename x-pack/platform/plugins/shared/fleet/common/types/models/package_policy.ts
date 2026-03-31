@@ -5,12 +5,7 @@
  * 2.0.
  */
 
-import type {
-  RegistryRelease,
-  ExperimentalDataStreamFeature,
-  DeprecationInfo,
-  DeploymentsModes,
-} from './epm';
+import type { RegistryRelease, ExperimentalDataStreamFeature, DeprecationInfo } from './epm';
 import type { SecretReference } from './secret';
 
 export interface PackagePolicyPackage {
@@ -111,7 +106,6 @@ export interface NewPackagePolicy {
   supports_agentless?: boolean | null;
   supports_cloud_connector?: boolean | null;
   additional_datastreams_permissions?: string[];
-  deployment_modes?: DeploymentsModes;
 }
 
 export interface UpdatePackagePolicy extends NewPackagePolicy {

@@ -688,11 +688,8 @@
     "updated_at",
     "vars",
     "verification_failed_at",
-    "verification_id",
-    "verification_permissions",
     "verification_started_at",
-    "verification_status",
-    "verification_timestamp"
+    "verification_status"
   ],
   "fleet-fleet-server-host": [
     "host_urls",

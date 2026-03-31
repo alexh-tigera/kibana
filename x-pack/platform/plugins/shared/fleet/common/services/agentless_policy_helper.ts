@@ -113,11 +113,6 @@ export function isInputAllowedForDeploymentMode(
     return true;
   }
 
-  // TODO: temporary exception — remove once filelog_otel declares agentless deployment_modes
-  if (packageInfo?.name === 'filelog_otel') {
-    return true;
-  }
-
   // Check first if policy_template for input supports the deployment type
   if (
     packageInfo &&

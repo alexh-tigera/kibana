@@ -56,7 +56,7 @@ export type CloudConnectorVars =
   | AzureCloudConnectorVars
   | GcpCloudConnectorVars;
 
-export type VerificationStatus = 'pending' | 'in_progress' | 'success' | 'failed' | 'timeout';
+export type VerificationStatus = 'pending' | 'success' | 'failed';
 
 export interface CloudConnector {
   id: string;

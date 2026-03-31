@@ -83,11 +83,14 @@ import {
 import type {
   AwsCloudConnectorVars,
   AzureCloudConnectorVars,
+  CloudConnectorSecretVar,
+  CloudConnectorVar,
   CloudConnectorVars,
   DeleteAgentPolicyResponse,
   FetchAllAgentPoliciesOptions,
   FetchAllAgentPolicyIdsOptions,
   FleetServerPolicy,
+  GcpCloudConnectorVars,
   IntegrationsOutput,
   PackageInfo,
 } from '../../common/types';
@@ -2656,17 +2659,6 @@ class AgentPolicyService {
         title: 'Permission Verifier',
         version: '0.0.0',
       },
-      deployment_modes: {
-        default: {
-          enabled: true,
-        },
-        agentless: {
-          enabled: true,
-          organization: 'security',
-          division: 'engineering',
-          team: 'cloud-services',
-        },
-      },
       inputs: [
         {
           type: 'otelcol',
@@ -2692,7 +2684,7 @@ class AgentPolicyService {
                 provider: { type: 'text', value: cloudProvider },
                 account_type: {
                   type: 'select',
-                  value: accountType ?? 'single_account',
+                  value: accountType ?? 'single-account',
                 },
                 ...credentialVars,
                 policy_id: { type: 'text', value: agentPolicy.id },
@@ -2764,30 +2756,25 @@ class AgentPolicyService {
 
 export const agentPolicyService = new AgentPolicyService();
 
-interface PackagePolicyVar {
-  type: string;
-  value: string;
-}
-
 function buildVerifierCredentialVars(
   provider: string,
   connectorVars: CloudConnectorVars
-): Record<string, PackagePolicyVar> {
-  const vars: Record<string, PackagePolicyVar> = {};
+): Record<string, CloudConnectorSecretVar | CloudConnectorVar> {
+  const vars: Record<string, CloudConnectorSecretVar | CloudConnectorVar> = {};
 
   if (provider === 'aws') {
     const awsVars = connectorVars as AwsCloudConnectorVars;
-    vars.credentials_role_arn = { type: 'text', value: awsVars.role_arn?.value ?? '' };
-    vars.credentials_external_id = {
-      type: 'password',
-      value: awsVars.external_id?.value?.id ?? '',
-    };
+    vars.credentials_role_arn = awsVars.role_arn;
+    vars.credentials_external_id = awsVars.external_id;
   } else if (provider === 'azure') {
     const azureVars = connectorVars as AzureCloudConnectorVars;
-    vars.credentials_tenant_id = { type: 'text', value: azureVars.tenant_id?.value?.id ?? '' };
-    vars.credentials_client_id = { type: 'text', value: azureVars.client_id?.value?.id ?? '' };
+    vars.credentials_tenant_id = azureVars.tenant_id;
+    vars.credentials_client_id = azureVars.client_id;
+  } else if (provider === 'gcp') {
+    const gcpVars = connectorVars as GcpCloudConnectorVars;
+    vars.credentials_service_account = gcpVars.service_account;
+    vars.credentials_workload_identity_provider = gcpVars.audience;
   }
-  // GCP credential vars are not yet available in CloudConnectorVars
 
   return vars;
 }

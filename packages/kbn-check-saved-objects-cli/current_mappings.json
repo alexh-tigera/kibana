@@ -2308,20 +2308,11 @@
       "verification_failed_at": {
         "type": "date"
       },
-      "verification_id": {
-        "type": "keyword"
-      },
-      "verification_permissions": {
-        "type": "flattened"
-      },
       "verification_started_at": {
         "type": "date"
       },
       "verification_status": {
         "type": "keyword"
-      },
-      "verification_timestamp": {
-        "type": "date"
       }
     }
   },
