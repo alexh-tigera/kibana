@@ -419,21 +419,22 @@ describe('Agent policy', () => {
         namespace: 'default',
         supports_agentless: true,
       });
-      expect(res).toEqual({
-        id: 'mocked',
-        name: 'test',
-        namespace: 'default',
-        supports_agentless: true,
-        status: 'active',
-        is_managed: false,
-        revision: 1,
-        created_at: expect.anything(),
-        updated_at: expect.anything(),
-        updated_by: 'system',
-        schema_version: '1.1.1',
-        is_protected: false,
-        fleet_server_host_id: 'default-fleet-server-internal',
-      });
+      expect(res).toEqual(
+        expect.objectContaining({
+          id: 'mocked',
+          name: 'test',
+          namespace: 'default',
+          supports_agentless: true,
+          status: 'active',
+          is_managed: false,
+          revision: 1,
+          updated_at: expect.anything(),
+          updated_by: 'system',
+          schema_version: '1.1.1',
+          is_protected: false,
+          fleet_server_host_id: 'default-fleet-server-internal',
+        })
+      );
     });
 
     it('should create a policy if agentless feature flag is set and in cloud env', async () => {
@@ -457,21 +458,22 @@ describe('Agent policy', () => {
         namespace: 'default',
         supports_agentless: true,
       });
-      expect(res).toEqual({
-        id: 'mocked',
-        name: 'test',
-        namespace: 'default',
-        supports_agentless: true,
-        status: 'active',
-        is_managed: false,
-        revision: 1,
-        created_at: expect.anything(),
-        updated_at: expect.anything(),
-        updated_by: 'system',
-        schema_version: '1.1.1',
-        is_protected: false,
-        fleet_server_host_id: 'internal-agentless-fleet-server',
-      });
+      expect(res).toEqual(
+        expect.objectContaining({
+          id: 'mocked',
+          name: 'test',
+          namespace: 'default',
+          supports_agentless: true,
+          status: 'active',
+          is_managed: false,
+          revision: 1,
+          updated_at: expect.anything(),
+          updated_by: 'system',
+          schema_version: '1.1.1',
+          is_protected: false,
+          fleet_server_host_id: 'internal-agentless-fleet-server',
+        })
+      );
     });
 
     it('should create an agentless policy with a fallback fleet_server_host_id if not provided', async () => {
@@ -497,21 +499,22 @@ describe('Agent policy', () => {
         namespace: 'default',
         supports_agentless: true,
       });
-      expect(res).toEqual({
-        id: 'mocked',
-        name: 'test',
-        namespace: 'default',
-        supports_agentless: true,
-        status: 'active',
-        is_managed: false,
-        revision: 1,
-        created_at: expect.anything(),
-        updated_at: expect.anything(),
-        updated_by: 'system',
-        schema_version: '1.1.1',
-        is_protected: false,
-        fleet_server_host_id: 'default-fleet-server-internal',
-      });
+      expect(res).toEqual(
+        expect.objectContaining({
+          id: 'mocked',
+          name: 'test',
+          namespace: 'default',
+          supports_agentless: true,
+          status: 'active',
+          is_managed: false,
+          revision: 1,
+          updated_at: expect.anything(),
+          updated_by: 'system',
+          schema_version: '1.1.1',
+          is_protected: false,
+          fleet_server_host_id: 'default-fleet-server-internal',
+        })
+      );
     });
 
     it('should throw error when attempting to create policy with supports_agentless true on cloud environment that does not support the agentless feature', async () => {

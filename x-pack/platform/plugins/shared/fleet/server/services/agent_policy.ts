@@ -2591,7 +2591,6 @@ class AgentPolicyService {
       status: 'active',
       is_managed: agentPolicy.is_managed ?? false,
       revision: 1,
-      created_at: now,
       updated_at: now,
       updated_by: options?.username || 'system',
       schema_version: FLEET_AGENT_POLICIES_SCHEMA_VERSION,

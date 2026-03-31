@@ -134,7 +134,8 @@ async function runPermissionVerifierTask(abortController: AbortController) {
 
     if (activeVerifiers.items.length > 0) {
       const policy = activeVerifiers.items[0];
-      const ageMs = Date.now() - new Date(policy.updated_at).getTime();
+      const createdAt = policy.created_at ?? policy.updated_at;
+      const ageMs = Date.now() - new Date(createdAt).getTime();
       const ageSec = Math.round(ageMs / 1000);
       if (ageMs <= VERIFICATION_TTL_MS) {
         logger.debug(
@@ -251,7 +252,8 @@ async function cleanupExpiredVerifierPolicies(
 
     for (const policy of verifierPolicies.items) {
       throwIfAborted(abortController);
-      const ageMs = Date.now() - new Date(policy.updated_at).getTime();
+      const createdAt = policy.created_at ?? policy.updated_at;
+      const ageMs = Date.now() - new Date(createdAt).getTime();
 
       if (ageMs <= VERIFICATION_TTL_MS) {
         continue;

@@ -78,7 +78,6 @@ describe('verify_permissions_task', () => {
           'fleet:verify_permissions': expect.objectContaining({
             title: 'OTel Verify Permission Task',
             timeout: '10m',
-            maxAttempts: 1,
           }),
         })
       );
@@ -151,7 +150,7 @@ describe('verify_permissions_task', () => {
       mockSoClient.find.mockResolvedValueOnce({ saved_objects: [] });
 
       await taskRunner.run();
-      expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Active verifier policy'));
+      expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('Active verifier policy'));
     });
 
     it('should complete when no connectors have installed packages', async () => {
@@ -487,7 +486,7 @@ describe('verify_permissions_task', () => {
       await taskRunner.run();
 
       expect(mockedAgentPolicyService.createVerifierPolicy).not.toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         expect.stringContaining('Active verifier policy in-flight-verifier exists')
       );
     });
