@@ -77,7 +77,6 @@
 
     "genai_evals:server:ess": "npm run initialize-server:genai:trial_complete evaluations ess",
     "genai_evals:runner:ess": "npm run run-tests:genai:trial_complete evaluations ess essEnv",
-    "genai_evals:qa:serverless": "npm run run-tests:genai:trial_complete evaluations serverless qaPeriodicEnv",
 
     "genai_ad_privileges:server:serverless": "npm run initialize-server:genai:trial_complete attack_discovery/privileges serverless",
     "genai_ad_privileges:runner:serverless": "npm run run-tests:genai:trial_complete attack_discovery/privileges serverless serverlessEnv",
@@ -386,7 +385,6 @@
 
     "rule_execution_logic:frozen_indices_handling:server:ess": "npm run initialize-server:de rule_execution_logic/frozen_indices_handling ess",
     "rule_execution_logic:frozen_indices_handling:runner:ess": "npm run run-tests:de rule_execution_logic/frozen_indices_handling ess essEnv",
-    "rule_execution_logic:frozen_indices_handling:qa:serverless": "npm run run-tests:de rule_execution_logic/frozen_indices_handling serverless qaPeriodicEnv",
 
     "rule_execution_logic:general_logic:server:serverless": "npm run initialize-server:de rule_execution_logic/general_logic serverless",
     "rule_execution_logic:general_logic:runner:serverless": "npm run run-tests:de rule_execution_logic/general_logic serverless serverlessEnv",
@@ -439,14 +437,14 @@
 
     "rule_gaps:server:serverless": "npm run initialize-server:de rule_gaps serverless",
     "rule_gaps:runner:serverless": "npm run run-tests:de rule_gaps serverless serverlessEnv",
-    "rule_gaps:qa:serverless": "npm run run-tests:rm rule_gaps serverless qaPeriodicEnv",
+    "rule_gaps:qa:serverless": "npm run run-tests:de rule_gaps serverless qaPeriodicEnv",
     "rule_gaps:qa:serverless:release": "npm run run-tests:de rule_gaps serverless qaEnv",
     "rule_gaps:server:ess": "npm run initialize-server:de rule_gaps ess",
     "rule_gaps:runner:ess": "npm run run-tests:de rule_gaps ess essEnv",
 
     "rule_preview:server:serverless": "npm run initialize-server:de rule_preview serverless",
     "rule_preview:runner:serverless": "npm run run-tests:de rule_preview serverless serverlessEnv",
-    "rule_preview:qa:serverless": "npm run run-tests:rm rule_preview serverless qaPeriodicEnv",
+    "rule_preview:qa:serverless": "npm run run-tests:de rule_preview serverless qaPeriodicEnv",
 
     "rule_creation:server:serverless": "npm run initialize-server:rm rule_creation serverless",
     "rule_creation:runner:serverless": "npm run run-tests:rm rule_creation serverless serverlessEnv",
