@@ -33,7 +33,7 @@ value:
       - operation: terms
         fields:
           - machine.os.keyword
-        size: 5
+        limit: 5
         color:
           mode: categorical
           palette: default

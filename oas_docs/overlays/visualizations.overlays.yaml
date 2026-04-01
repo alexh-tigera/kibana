@@ -83,7 +83,7 @@ actions:
 
         If a request returns a `400 Bad Request`, the response body contains a validation error message. Because the request body uses a `oneOf` discriminator on the `type` field, the error may list every chart type that didn't match. Look for the branch that matches your intended `type` — the relevant error message will describe the missing or invalid field. Common causes include:
 
-        - **Missing required fields** for the chart type (for example, `metrics[0].type: "primary"` and `alignments` for metric charts)
+        - **Missing required fields** for the chart type (for example, `metrics[0].type: "primary"` and `labels` for metric charts)
         - **Setting optional fields to `null`** instead of omitting them entirely — the API rejects `null` values; omit the field instead
         - **Unrecognized `type` value** — check the chart types table above for valid values
       externalDocs:
@@ -142,7 +142,8 @@ actions:
                 "field": "bytes",
                 "format": { "type": "number", "decimals": 0, "compact": true },
                 "filter": { "query": "" },
-                "alignments": { "labels": "left", "value": "right" },
+                "labels": { "alignment": "left" },
+                "value": { "alignment": "right" },
                 "icon": { "name": "empty" }
               }]
             }'
@@ -165,7 +166,8 @@ actions:
                 "field": "bytes",
                 "format": { "type": "number", "decimals": 0, "compact": true },
                 "filter": { "query": "" },
-                "alignments": { "labels": "left", "value": "right" },
+                "labels": { "alignment": "left" },
+                "value": { "alignment": "right" },
                 "icon": { "name": "empty" }
               }]
             }
@@ -246,7 +248,8 @@ actions:
                 "field": "bytes",
                 "format": { "type": "number", "decimals": 1 },
                 "filter": { "query": "" },
-                "alignments": { "labels": "left", "value": "right" },
+                "labels": { "alignment": "left" },
+                "value": { "alignment": "right" },
                 "icon": { "name": "empty" }
               }]
             }'
@@ -269,7 +272,8 @@ actions:
                 "field": "bytes",
                 "format": { "type": "number", "decimals": 1 },
                 "filter": { "query": "" },
-                "alignments": { "labels": "left", "value": "right" },
+                "labels": { "alignment": "left" },
+                "value": { "alignment": "right" },
                 "icon": { "name": "empty" }
               }]
             }

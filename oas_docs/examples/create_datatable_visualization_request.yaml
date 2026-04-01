@@ -24,4 +24,4 @@ value:
     - operation: terms
       fields:
         - clientip
-      size: 20
+      limit: 20

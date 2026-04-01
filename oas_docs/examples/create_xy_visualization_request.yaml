@@ -45,7 +45,7 @@ value:
         operation: terms
         fields:
           - response.keyword
-        size: 5
+        limit: 5
         color:
           mode: categorical
           palette: default

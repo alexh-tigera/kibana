@@ -22,8 +22,9 @@ value:
         compact: true
       filter:
         query: ''
-      alignments:
-        labels: left
-        value: right
+      labels:
+        alignment: left
+      value:
+        alignment: right
       icon:
         name: empty
