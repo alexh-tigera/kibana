@@ -62,11 +62,21 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await PageObjects.discover.waitUntilTabIsLoaded();
     });
 
+    afterEach(async () => {
+      await PageObjects.discover.resetQueryMode();
+    });
+
     after(async () => {
       await PageObjects.timePicker.resetDefaultAbsoluteRangeViaUiSettings();
     });
 
     describe('ES|QL in Discover', () => {
+      beforeEach(async () => {
+        await PageObjects.timePicker.setDefaultAbsoluteRangeViaUiSettings();
+        await PageObjects.common.navigateToApp('discover');
+        await PageObjects.discover.waitUntilTabIsLoaded();
+      });
+
       it('should render esql view correctly', async function () {
         await PageObjects.unifiedFieldList.waitUntilSidebarHasLoaded();
 
@@ -369,13 +379,13 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
             await testSubjects.click('querySubmitButton');
             await PageObjects.discover.waitUntilTabIsLoaded();
           }
-          await inspector.open();
+          await PageObjects.discover.openInspectorFromTabMenu();
           retries = retries + 1;
           const requestNames = await inspector.getRequestNames();
           expect(requestNames).to.contain('Table');
           expect(requestNames).to.contain('Visualization');
           const request = await inspector.getRequest(1);
-          expect(request.command).to.be('POST /_query/async?drop_null_columns');
+          expect(request.command).to.be('POST /_query/async?drop_null_columns=true');
         });
       });
     });

@@ -43,6 +43,7 @@ export function getObservabilityAgentBuilderAiInsightsRouteRepository(): ServerR
 
       const connectorId = await getDefaultConnectorId({ coreStart, inference, request, logger });
       const inferenceClient = inference.getClient({ request });
+      const connector = await inference.getConnectorById(connectorId, request);
 
       const alertsClient = await ruleRegistry.getRacClientWithRequest(request);
       const alertDoc = (await alertsClient.get({ id: alertId })) as AlertDocForInsight;
@@ -53,6 +54,7 @@ export function getObservabilityAgentBuilderAiInsightsRouteRepository(): ServerR
         alertDoc,
         inferenceClient,
         connectorId,
+        connector,
         dataRegistry,
         request,
         logger,
@@ -94,6 +96,7 @@ export function getObservabilityAgentBuilderAiInsightsRouteRepository(): ServerR
 
       const connectorId = await getDefaultConnectorId({ coreStart, inference, request, logger });
       const inferenceClient = inference.getClient({ request, bindTo: { connectorId } });
+      const connector = await inference.getConnectorById(connectorId, request);
 
       const result = await generateErrorAiInsight({
         core,
@@ -103,6 +106,7 @@ export function getObservabilityAgentBuilderAiInsightsRouteRepository(): ServerR
         start,
         end,
         environment,
+        connector,
         dataRegistry,
         request,
         inferenceClient,
@@ -129,27 +133,43 @@ export function getObservabilityAgentBuilderAiInsightsRouteRepository(): ServerR
       },
     },
     params: t.type({
-      body: t.type({
+      body: t.partial({
         index: t.string,
         id: t.string,
+        fields: t.record(t.string, t.unknown),
       }),
     }),
-    handler: async ({ request, core, dataRegistry, params, response, logger, plugins }) => {
-      const { index, id } = params.body;
+    handler: async ({ request, core, params, response, logger, plugins }) => {
+      const { index, id, fields } = params.body;
+
+      const hasDocIdentity = typeof index === 'string' && typeof id === 'string';
+      // if a user is in ESQL mode, there is currently no id or index metadata
+      // unless a user specifically queries for it, so pass fields directly
+      const hasFields = fields && Object.keys(fields).length > 0;
+
+      if (!hasDocIdentity && !hasFields) {
+        return response.badRequest({
+          body: 'Must provide either {index, id} or {fields}',
+        });
+      }
 
       const [coreStart, startDeps] = await core.getStartServices();
       const { inference } = startDeps;
 
       const connectorId = await getDefaultConnectorId({ coreStart, inference, request });
       const inferenceClient = inference.getClient({ request });
+      const connector = await inference.getConnectorById(connectorId, request);
       const esClient = coreStart.elasticsearch.client.asScoped(request);
 
       const result = await getLogAiInsights({
         core,
+        plugins,
         index,
         id,
+        fields,
         inferenceClient,
         connectorId,
+        connector,
         request,
         esClient,
         logger,
