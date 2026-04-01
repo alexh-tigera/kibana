@@ -26953,6 +26953,8 @@ paths:
                               - count
                           maxItems: 1000
                           type: array
+                        created_at:
+                          type: string
                         data_output_id:
                           nullable: true
                           type: string
@@ -28066,6 +28068,8 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -28956,6 +28960,8 @@ paths:
                               - count
                           maxItems: 1000
                           type: array
+                        created_at:
+                          type: string
                         data_output_id:
                           nullable: true
                           type: string
@@ -29825,6 +29831,8 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -30937,6 +30945,8 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -31919,6 +31929,8 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
