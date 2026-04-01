@@ -54,6 +54,8 @@ import { isSpaceAwarenessEnabled } from './spaces/helpers';
 import { scheduleDeployAgentPoliciesTask } from './agent_policies/deploy_agent_policies_task';
 import { createAgentPolicyWithPackages } from './agent_policy_create';
 import { agentlessAgentService } from './agents/agentless_agent';
+import { getPackageInfo } from './epm/packages';
+import { ensureInstalledPackage } from './epm/packages/install';
 
 jest.mock('./spaces/helpers');
 
@@ -136,6 +138,8 @@ jest.mock('./agent_policies/full_agent_policy');
 jest.mock('./agent_policies/outputs_helpers');
 jest.mock('./agent_policies/deploy_agent_policies_task');
 jest.mock('./agent_policy_create');
+jest.mock('./epm/packages/install');
+jest.mock('./epm/packages');
 
 const mockedAppContextService = appContextService as jest.Mocked<typeof appContextService>;
 mockedAppContextService.getSecuritySetup.mockImplementation(() => ({
@@ -2800,6 +2804,322 @@ describe('Agent policy', () => {
         search: `\"${multiSpacesTestAgentPolicy.name}\"`,
         namespaces: multiSpacesTestAgentPolicy.space_ids,
       });
+    });
+  });
+
+  describe('createVerifierPolicy', () => {
+    const esClient = elasticsearchServiceMock.createClusterClient().asInternalUser;
+
+    const baseConnector = {
+      id: 'connector-123',
+      attributes: {
+        name: 'my-connector',
+        cloudProvider: 'aws' as const,
+        accountType: 'single-account' as const,
+        namespace: 'default',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        vars: {
+          role_arn: { type: 'text' as const, value: 'arn:aws:iam::123456:role/test' },
+          external_id: { type: 'password' as const, value: 'ext-id-secret' },
+        },
+      },
+    };
+
+    const baseVerificationInfo = {
+      policyTemplates: ['cspm'],
+      packageName: 'aws',
+      packageTitle: 'AWS',
+      packageVersion: '2.17.0',
+    };
+
+    let soClient: ReturnType<typeof createSavedObjectClientMock>;
+
+    beforeEach(() => {
+      soClient = getAgentPolicyCreateMock();
+      jest.spyOn(agentPolicyService, 'requireUniqueName').mockResolvedValue(undefined);
+      jest.spyOn(agentPolicyService, 'deployPolicy').mockResolvedValue(undefined as any);
+
+      mockedPackagePolicyService.create.mockResolvedValue({ id: 'pp-id' } as any);
+
+      jest.mocked(ensureInstalledPackage).mockResolvedValue({
+        status: 'already_installed',
+        package: { version: '0.0.0' },
+      } as any);
+      jest.mocked(getPackageInfo).mockResolvedValue({
+        name: 'verifier_otel',
+        title: 'Permission Verifier',
+        version: '0.0.0',
+      } as any);
+
+      mockedAppContextService.getCloud.mockReturnValue({
+        isCloudEnabled: true,
+      } as any);
+      mockedAppContextService.getConfig.mockReturnValue({
+        agentless: { enabled: true },
+      } as any);
+    });
+
+    it('should create a package policy with vars at the stream level (not input level)', async () => {
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        baseConnector as any,
+        baseVerificationInfo
+      );
+
+      const createCall = mockedPackagePolicyService.create.mock.calls[0];
+      const newPackagePolicy = createCall[2];
+      const input = newPackagePolicy.inputs[0];
+
+      expect(input.type).toBe('otelcol');
+      expect(input.policy_template).toBe('verifierreceiver');
+      expect(input.enabled).toBe(true);
+      expect(input.streams).toHaveLength(1);
+
+      const stream = input.streams[0];
+      expect(stream.enabled).toBe(true);
+      expect(stream.data_stream).toEqual({
+        type: 'logs',
+        dataset: 'verifier_otel.verifierreceiver',
+      });
+      expect(stream.vars).toBeDefined();
+      expect(stream.vars!['data_stream.dataset']).toEqual({
+        type: 'text',
+        value: 'verifier_otel.verifierreceiver',
+      });
+    });
+
+    it('should map account_type "single-account" to "single_account"', async () => {
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        {
+          ...baseConnector,
+          attributes: { ...baseConnector.attributes, accountType: 'single-account' as const },
+        } as any,
+        baseVerificationInfo
+      );
+
+      const { streams: s0 } = mockedPackagePolicyService.create.mock.calls[0][2].inputs[0];
+      expect(s0[0].vars!.account_type).toEqual({
+        type: 'select',
+        value: 'single_account',
+      });
+    });
+
+    it('should map account_type "organization-account" to "organization"', async () => {
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        {
+          ...baseConnector,
+          attributes: {
+            ...baseConnector.attributes,
+            accountType: 'organization-account' as const,
+          },
+        } as any,
+        baseVerificationInfo
+      );
+
+      const { streams: s1 } = mockedPackagePolicyService.create.mock.calls[0][2].inputs[0];
+      expect(s1[0].vars!.account_type).toEqual({
+        type: 'select',
+        value: 'organization',
+      });
+    });
+
+    it('should default account_type to "single_account" when accountType is undefined', async () => {
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        {
+          ...baseConnector,
+          attributes: { ...baseConnector.attributes, accountType: undefined },
+        } as any,
+        baseVerificationInfo
+      );
+
+      const { streams: s2 } = mockedPackagePolicyService.create.mock.calls[0][2].inputs[0];
+      expect(s2[0].vars!.account_type).toEqual({
+        type: 'select',
+        value: 'single_account',
+      });
+    });
+
+    it('should include all required verifier vars in the stream', async () => {
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        baseConnector as any,
+        baseVerificationInfo
+      );
+
+      const { streams: s3 } = mockedPackagePolicyService.create.mock.calls[0][2].inputs[0];
+      const vars = s3[0].vars!;
+
+      expect(vars.cloud_connector_id).toEqual({ type: 'text', value: 'connector-123' });
+      expect(vars.cloud_connector_name).toEqual({ type: 'text', value: 'my-connector' });
+      expect(vars.verification_id).toBeDefined();
+      expect(vars.verification_id.value).toBeTruthy();
+      expect(vars.verification_type).toEqual({ type: 'select', value: 'scheduled' });
+      expect(vars.provider).toEqual({ type: 'text', value: 'aws' });
+      expect(vars.policy_templates).toEqual({ type: 'text', value: ['cspm'] });
+      expect(vars.package_name).toEqual({ type: 'text', value: 'aws' });
+      expect(vars.package_title).toEqual({ type: 'text', value: 'AWS' });
+      expect(vars.package_version).toEqual({ type: 'text', value: '2.17.0' });
+      expect(vars.namespace).toEqual({ type: 'text', value: 'default' });
+      expect(vars.default_region).toEqual({ type: 'text', value: 'us-east-1' });
+    });
+
+    it('should include AWS credential vars for aws provider', async () => {
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        baseConnector as any,
+        baseVerificationInfo
+      );
+
+      const { streams: awsStreams } = mockedPackagePolicyService.create.mock.calls[0][2].inputs[0];
+      const vars = awsStreams[0].vars!;
+
+      expect(vars.credentials_role_arn).toEqual({
+        type: 'text',
+        value: 'arn:aws:iam::123456:role/test',
+      });
+      expect(vars.credentials_external_id).toEqual({
+        type: 'password',
+        value: 'ext-id-secret',
+      });
+    });
+
+    it('should include Azure credential vars for azure provider', async () => {
+      const azureConnector = {
+        ...baseConnector,
+        attributes: {
+          ...baseConnector.attributes,
+          cloudProvider: 'azure' as const,
+          vars: {
+            tenant_id: { type: 'text' as const, value: 'azure-tenant-id' },
+            client_id: { type: 'text' as const, value: 'azure-client-id' },
+          },
+        },
+      };
+
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        azureConnector as any,
+        baseVerificationInfo
+      );
+
+      const { streams: azStreams } = mockedPackagePolicyService.create.mock.calls[0][2].inputs[0];
+      const vars = azStreams[0].vars!;
+
+      expect(vars.credentials_tenant_id).toEqual({ type: 'text', value: 'azure-tenant-id' });
+      expect(vars.credentials_client_id).toEqual({ type: 'text', value: 'azure-client-id' });
+      expect(vars.credentials_role_arn).toBeUndefined();
+    });
+
+    it('should include GCP credential vars for gcp provider', async () => {
+      const gcpConnector = {
+        ...baseConnector,
+        attributes: {
+          ...baseConnector.attributes,
+          cloudProvider: 'gcp' as const,
+          vars: {
+            service_account: { type: 'text' as const, value: 'sa@project.iam.gserviceaccount.com' },
+            audience: {
+              type: 'text' as const,
+              value:
+                '//iam.googleapis.com/projects/123/locations/global/workloadIdentityPools/pool/providers/prov',
+            },
+          },
+        },
+      };
+
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        gcpConnector as any,
+        baseVerificationInfo
+      );
+
+      const { streams: gcpStreams } = mockedPackagePolicyService.create.mock.calls[0][2].inputs[0];
+      const vars = gcpStreams[0].vars!;
+
+      expect(vars.credentials_service_account).toEqual({
+        type: 'text',
+        value: 'sa@project.iam.gserviceaccount.com',
+      });
+      const expectedWifValue =
+        '//iam.googleapis.com/projects/123/locations/global/workloadIdentityPools/pool/providers/prov';
+      expect(vars.credentials_workload_identity_provider).toEqual({
+        type: 'text',
+        value: expectedWifValue,
+      });
+      expect(vars.credentials_role_arn).toBeUndefined();
+    });
+
+    it('should pass force and skipEnsureInstalled options to packagePolicyService.create', async () => {
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        baseConnector as any,
+        baseVerificationInfo
+      );
+
+      const createOptions = mockedPackagePolicyService.create.mock.calls[0][3];
+      expect(createOptions).toMatchObject({
+        bumpRevision: false,
+        force: true,
+        skipEnsureInstalled: true,
+      });
+      expect(createOptions?.packageInfo).toBeDefined();
+    });
+
+    it('should create the agent policy with is_verifier and supports_agentless flags', async () => {
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        baseConnector as any,
+        baseVerificationInfo
+      );
+
+      const createAttrs = soClient.create.mock.calls[0][1] as any;
+      expect(createAttrs.is_verifier).toBe(true);
+      expect(createAttrs.supports_agentless).toBe(true);
+      expect(createAttrs.namespace).toBe('default');
+    });
+
+    it('should call deployPolicy after successful package policy creation', async () => {
+      const deploySpy = jest.spyOn(agentPolicyService, 'deployPolicy');
+      await agentPolicyService.createVerifierPolicy(
+        soClient,
+        esClient,
+        baseConnector as any,
+        baseVerificationInfo
+      );
+
+      expect(deploySpy).toHaveBeenCalledWith(soClient, 'mocked', undefined, {
+        throwOnAgentlessError: true,
+      });
+    });
+
+    it('should throw and not deploy if package policy creation fails', async () => {
+      mockedPackagePolicyService.create.mockRejectedValueOnce(new Error('validation error'));
+      const deploySpy = jest.spyOn(agentPolicyService, 'deployPolicy');
+
+      await expect(
+        agentPolicyService.createVerifierPolicy(
+          soClient,
+          esClient,
+          baseConnector as any,
+          baseVerificationInfo
+        )
+      ).rejects.toThrow('validation error');
+
+      expect(deploySpy).not.toHaveBeenCalled();
     });
   });
 });

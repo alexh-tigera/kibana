@@ -227,7 +227,7 @@ export class CloudConnectorService implements CloudConnectorServiceInterface {
       // Validate and normalize the name, checking for duplicates
       const name = await this.validateAndNormalizeName(soClient, cloudConnector.name);
 
-      const namespace = cloudConnector.namespace ?? 'default';
+      const namespace = cloudConnector.namespace ?? '*';
 
       if (namespace) {
         await validatePolicyNamespaceForSpace({

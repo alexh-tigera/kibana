@@ -863,7 +863,7 @@ export default function (providerContext: FtrProviderContext) {
             description: 'Test',
           })
           .expect(200);
-        const { id, updated_at, version, ...newPolicy } = item;
+        const { id, updated_at, created_at, version, ...newPolicy } = item;
 
         expect(newPolicy).to.eql({
           name: 'Copied policy',
