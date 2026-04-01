@@ -293,5 +293,7 @@
     "@kbn/evals-plugin",
     "@kbn/shared-ux-column-presets",
     "@kbn/core-overlays-browser",
+    "@kbn/discoveries",
+    "@kbn/discoveries-schemas"
   ]
 }
