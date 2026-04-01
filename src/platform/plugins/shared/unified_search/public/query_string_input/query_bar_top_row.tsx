@@ -773,28 +773,38 @@ export const QueryBarTopRow = React.memo(
         const noTimeFieldNameDisabled =
           typeof isDisabled === 'object' && isDisabled.display !== undefined;
         datePicker = (
-          <DateRangePicker
-            data-test-subj={`${props.dataTestSubj}-dateRangePicker`}
-            className="kbnQueryBar__datePicker"
-            value={noTimeFieldNameDisabled ? strings.getDisabledDatePickerLabel() : dateRangeValue}
-            onChange={onDateRangeChange}
-            onInputChange={onDateRangeInputChange}
-            isInvalid={isDateRangeInvalid}
-            isLoading={props.isLoading}
-            disabled={props.isDisabled || noTimeFieldNameDisabled}
-            width="auto"
-            compressed
-            collapsed={isMobile || isQueryInputFocused}
-            showTimeWindowButtons
-            presets={commonlyUsedRanges}
-            recent={recentlyUsedRanges}
-            settings={dateRangePickerSettingsWithAutoRefresh}
-            onSettingsChange={onDateRangePickerSettingsChange}
-            onRefresh={propsOnRefreshChange ? onDateRangePickerRefresh : undefined}
-            dateFormat={uiSettings.get('dateFormat')}
-            timeZone={uiSettings.get('dateFormat:tz')}
-            prependBasePath={http?.basePath.prepend}
-          />
+          <>
+            {noTimeFieldNameDisabled && (
+              // Hidden sibling so FTR tests can detect the disabled state via
+              // testSubjects.existOrFail('kbnQueryBar-datePicker-disabled'), matching
+              // the span the legacy picker renders inside its isDisabled.display node.
+              <span data-test-subj="kbnQueryBar-datePicker-disabled" style={{ display: 'none' }} />
+            )}
+            <DateRangePicker
+              data-test-subj={`${props.dataTestSubj}-dateRangePicker`}
+              className="kbnQueryBar__datePicker"
+              value={
+                noTimeFieldNameDisabled ? strings.getDisabledDatePickerLabel() : dateRangeValue
+              }
+              onChange={onDateRangeChange}
+              onInputChange={onDateRangeInputChange}
+              isInvalid={isDateRangeInvalid}
+              isLoading={props.isLoading}
+              disabled={props.isDisabled || noTimeFieldNameDisabled}
+              width="auto"
+              compressed
+              collapsed={isMobile || isQueryInputFocused}
+              showTimeWindowButtons
+              presets={commonlyUsedRanges}
+              recent={recentlyUsedRanges}
+              settings={dateRangePickerSettingsWithAutoRefresh}
+              onSettingsChange={onDateRangePickerSettingsChange}
+              onRefresh={propsOnRefreshChange ? onDateRangePickerRefresh : undefined}
+              dateFormat={uiSettings.get('dateFormat')}
+              timeZone={uiSettings.get('dateFormat:tz')}
+              prependBasePath={http?.basePath.prepend}
+            />
+          </>
         );
       }
 
