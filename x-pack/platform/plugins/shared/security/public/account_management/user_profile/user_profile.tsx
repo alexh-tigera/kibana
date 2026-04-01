@@ -604,6 +604,12 @@ const UserRoles: FunctionComponent<UserRoleProps> = ({ user }) => {
     );
     return (
       <EuiPopover
+        aria-label={i18n.translate(
+          'xpack.security.accountManagement.userProfile.rolesPopoverAriaLabel',
+          {
+            defaultMessage: 'More roles',
+          }
+        )}
         panelPaddingSize="s"
         button={button}
         isOpen={isPopoverOpen}

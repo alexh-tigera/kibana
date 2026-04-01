@@ -128,6 +128,12 @@ export class ChangeAllPrivilegesControl extends Component<Props, State> {
     return (
       <EuiPopover
         id={'changeAllFeaturePrivilegesPopover'}
+        aria-label={i18n.translate(
+          'xpack.security.management.editRole.changeAllPrivileges.popoverAriaLabel',
+          {
+            defaultMessage: 'Bulk actions',
+          }
+        )}
         button={button}
         isOpen={this.state.isPopoverOpen}
         closePopover={this.closePopover}

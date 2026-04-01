@@ -241,6 +241,9 @@ export const EnrollmentTokenHelpPopover = () => {
 
   return (
     <EuiPopover
+      aria-label={i18n.translate('interactiveSetup.enrollmentTokenHelpPopover.ariaLabel', {
+        defaultMessage: 'Enrollment token help',
+      })}
       button={button}
       anchorPosition="rightCenter"
       isOpen={isPopoverOpen}

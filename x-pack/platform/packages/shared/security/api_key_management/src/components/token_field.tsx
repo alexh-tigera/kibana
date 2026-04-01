@@ -92,6 +92,9 @@ export const SelectableTokenField: FunctionComponent<SelectableTokenFieldProps> 
       {...rest}
       prepend={
         <EuiPopover
+          aria-label={i18n.translate('xpack.security.copyTokenField.popoverAriaLabel', {
+            defaultMessage: 'Select token format',
+          })}
           button={
             <EuiFormPrepend
               element="button"
