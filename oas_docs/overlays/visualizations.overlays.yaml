@@ -75,7 +75,7 @@ actions:
         ```
 
         > warn
-        > The create and update endpoints currently only support index/data view mode. ES|QL visualizations cannot be created or updated through this API yet.
+        > The create and update endpoints currently only support index/data view mode. ES|QL visualizations cannot be created or updated through this API yet. As a workaround, you can create ES|QL visualizations by embedding them inline as `lens` panels in a dashboard using the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards).
 
         All request examples on this page and the chart type pages use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `dataset.index` (or `dataset.id` for data views) and update `field` names in metrics and breakdowns to match your index mapping.
 
@@ -86,6 +86,10 @@ actions:
         - **Missing required fields** for the chart type (for example, `metrics[0].type: "primary"` and `labels` for metric charts)
         - **Setting optional fields to `null`** instead of omitting them entirely — the API rejects `null` values; omit the field instead
         - **Unrecognized `type` value** — check the chart types table above for valid values
+
+        ## Next steps
+
+        Once you have created a visualization, use the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards) to add it to a dashboard as a panel. You can embed it **by reference** (using the visualization ID) or **inline by value** (copying the full configuration into the dashboard panel `config`). The Dashboards API also supports ES|QL visualizations that cannot yet be created through this API.
       externalDocs:
         description: Visualizations documentation
         url: https://www.elastic.co/docs/explore-analyze/visualize/lens
