@@ -3048,7 +3048,7 @@ describe('Agent policy', () => {
       const { streams: gcpStreams } = mockedPackagePolicyService.create.mock.calls[0][2].inputs[0];
       const vars = gcpStreams[0].vars!;
 
-      expect(vars.credentials_service_account).toEqual({
+      expect(vars.credentials_service_account_email).toEqual({
         type: 'text',
         value: 'sa@project.iam.gserviceaccount.com',
       });

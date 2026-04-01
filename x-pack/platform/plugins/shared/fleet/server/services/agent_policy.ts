@@ -2680,6 +2680,9 @@ class AgentPolicyService {
       enabled: true,
       policy_ids: [agentPolicy.id],
       supports_agentless: true,
+      cloud_connector_id: connectorId,
+      cloud_connector_name: connectorName,
+      supports_cloud_connector: true,
       package: {
         name: VERIFIER_PKG_NAME,
         title: verifierPkgInfo.title ?? 'Permission Verifier',
@@ -2705,7 +2708,9 @@ class AgentPolicyService {
                 verification_type: { type: 'select', value: 'scheduled' },
                 provider: { type: 'text', value: cloudProvider },
                 account_type: { type: 'select', value: mappedAccountType },
-                default_region: { type: 'text', value: 'us-east-1' },
+                ...(cloudProvider === 'aws'
+                  ? { default_region: { type: 'text', value: 'us-east-1' } }
+                  : {}),
                 ...credentialVars,
                 policy_id: { type: 'text', value: agentPolicy.id },
                 policy_name: { type: 'text', value: policyName },
@@ -2737,8 +2742,10 @@ class AgentPolicyService {
           packageInfo: verifierPkgInfo,
         }
       );
+      const secretRefs = otelPackagePolicy.secret_references ?? [];
       logger.info(
-        `${VERIFY_PERMISSIONS_TASK} Successfully Created OTel package policy ${otelPackagePolicy.id} for verifier policy ${agentPolicy.id}`
+        `${VERIFY_PERMISSIONS_TASK} Successfully Created OTel package policy ${otelPackagePolicy.id} for verifier policy ${agentPolicy.id}, ` +
+          `secret_references: ${secretRefs.length}`
       );
     } catch (err) {
       logger.error(
@@ -2799,7 +2806,7 @@ function buildVerifierCredentialVars(
     vars.credentials_client_id = azureVars.client_id;
   } else if (provider === 'gcp') {
     const gcpVars = connectorVars as GcpCloudConnectorVars;
-    vars.credentials_service_account = gcpVars.service_account;
+    vars.credentials_service_account_email = gcpVars.service_account;
     vars.credentials_workload_identity_provider = gcpVars.audience;
   }
 
