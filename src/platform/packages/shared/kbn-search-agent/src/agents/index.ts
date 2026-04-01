@@ -7,5 +7,9 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-export { LOGSTASH } from './constants';
-export { setupFlyoutStability, teardownFlyoutStability } from './setup';
+// @generated — DO NOT EDIT DIRECTLY. Edit .elasticsearch-agent/agents and run ./build
+
+import { elasticsearchOnboardingAgent } from './elasticsearch_onboarding';
+export { elasticsearchOnboardingAgent };
+
+export const agents = [elasticsearchOnboardingAgent];
