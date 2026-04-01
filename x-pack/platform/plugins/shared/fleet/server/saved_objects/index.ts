@@ -6,7 +6,6 @@
  */
 
 import type { SavedObjectsServiceSetup, SavedObjectsType } from '@kbn/core/server';
-import { schema } from '@kbn/config-schema';
 
 import type { EncryptedSavedObjectsPluginSetup } from '@kbn/encrypted-saved-objects-plugin/server';
 
@@ -45,6 +44,10 @@ import {
   SettingsSchemaV7,
   SettingsSchemaV8,
   PackagePolicySchemaV22,
+  CloudConnectorSchemaV1,
+  CloudConnectorSchemaV2,
+  CloudConnectorSchemaV3,
+  CloudConnectorSchemaV4,
 } from '../types';
 
 import { migrateSyntheticsPackagePolicyToV8120 } from './migrations/synthetics/to_v8_12_0';
@@ -1647,18 +1650,7 @@ export const getSavedObjectTypes = (
             },
           ],
           schemas: {
-            forwardCompatibility: schema.object(
-              {
-                name: schema.string(),
-                namespace: schema.maybe(schema.string()),
-                cloudProvider: schema.string(),
-                vars: schema.any(),
-                packagePolicyCount: schema.number(),
-                created_at: schema.string(),
-                updated_at: schema.string(),
-              },
-              { unknowns: 'ignore' }
-            ),
+            forwardCompatibility: CloudConnectorSchemaV1.extends({}, { unknowns: 'ignore' }),
           },
         },
         2: {
@@ -1671,29 +1663,8 @@ export const getSavedObjectTypes = (
             },
           ],
           schemas: {
-            forwardCompatibility: schema.object(
-              {
-                name: schema.string(),
-                namespace: schema.maybe(schema.string()),
-                cloudProvider: schema.string(),
-                accountType: schema.maybe(schema.string()),
-                vars: schema.any(),
-                packagePolicyCount: schema.number(),
-                created_at: schema.string(),
-                updated_at: schema.string(),
-              },
-              { unknowns: 'ignore' }
-            ),
-            create: schema.object({
-              name: schema.string(),
-              namespace: schema.maybe(schema.string()),
-              cloudProvider: schema.string(),
-              accountType: schema.maybe(schema.string()),
-              vars: schema.any(),
-              packagePolicyCount: schema.number(),
-              created_at: schema.string(),
-              updated_at: schema.string(),
-            }),
+            forwardCompatibility: CloudConnectorSchemaV2.extends({}, { unknowns: 'ignore' }),
+            create: CloudConnectorSchemaV2,
           },
         },
         3: {
@@ -1704,27 +1675,8 @@ export const getSavedObjectTypes = (
             },
           ],
           schemas: {
-            forwardCompatibility: schema.object(
-              {
-                name: schema.string(),
-                namespace: schema.maybe(schema.string()),
-                cloudProvider: schema.string(),
-                accountType: schema.maybe(schema.string()),
-                vars: schema.any(),
-                created_at: schema.string(),
-                updated_at: schema.string(),
-              },
-              { unknowns: 'ignore' }
-            ),
-            create: schema.object({
-              name: schema.string(),
-              namespace: schema.maybe(schema.string()),
-              cloudProvider: schema.string(),
-              accountType: schema.maybe(schema.string()),
-              vars: schema.any(),
-              created_at: schema.string(),
-              updated_at: schema.string(),
-            }),
+            forwardCompatibility: CloudConnectorSchemaV3.extends({}, { unknowns: 'ignore' }),
+            create: CloudConnectorSchemaV3,
           },
         },
         4: {
@@ -1739,33 +1691,8 @@ export const getSavedObjectTypes = (
             },
           ],
           schemas: {
-            forwardCompatibility: schema.object(
-              {
-                name: schema.string(),
-                namespace: schema.maybe(schema.string()),
-                cloudProvider: schema.string(),
-                accountType: schema.maybe(schema.string()),
-                vars: schema.any(),
-                created_at: schema.string(),
-                updated_at: schema.string(),
-                verification_status: schema.maybe(schema.string()),
-                verification_started_at: schema.maybe(schema.string()),
-                verification_failed_at: schema.maybe(schema.string()),
-              },
-              { unknowns: 'ignore' }
-            ),
-            create: schema.object({
-              name: schema.string(),
-              namespace: schema.maybe(schema.string()),
-              cloudProvider: schema.string(),
-              accountType: schema.maybe(schema.string()),
-              vars: schema.any(),
-              created_at: schema.string(),
-              updated_at: schema.string(),
-              verification_status: schema.maybe(schema.string()),
-              verification_started_at: schema.maybe(schema.string()),
-              verification_failed_at: schema.maybe(schema.string()),
-            }),
+            forwardCompatibility: CloudConnectorSchemaV4.extends({}, { unknowns: 'ignore' }),
+            create: CloudConnectorSchemaV4,
           },
         },
       },

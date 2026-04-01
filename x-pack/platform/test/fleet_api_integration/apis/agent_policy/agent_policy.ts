@@ -1376,7 +1376,7 @@ export default function (providerContext: FtrProviderContext) {
           })
           .expect(200);
         createdPolicyIds.push(updatedPolicy.id);
-        const { id, updated_at, version, ...newPolicy } = updatedPolicy;
+        const { id, created_at, updated_at, version, ...newPolicy } = updatedPolicy;
 
         expect(newPolicy).to.eql({
           status: 'active',
@@ -1436,7 +1436,7 @@ export default function (providerContext: FtrProviderContext) {
           })
           .expect(200);
         createdPolicyIds.push(updatedPolicy.id);
-        const { id, updated_at, version, ...newPolicy } = updatedPolicy;
+        const { id, created_at, updated_at, version, ...newPolicy } = updatedPolicy;
 
         expect(newPolicy).to.eql({
           status: 'active',
@@ -1596,7 +1596,7 @@ export default function (providerContext: FtrProviderContext) {
             force: true,
           })
           .expect(200);
-        const { id, updated_at, version, ...newPolicy } = updatedPolicy;
+        const { id, created_at, updated_at, version, ...newPolicy } = updatedPolicy;
         createdPolicyIds.push(updatedPolicy.id);
 
         expect(newPolicy).to.eql({
@@ -1656,7 +1656,7 @@ export default function (providerContext: FtrProviderContext) {
           })
           .expect(200);
 
-        const { id, updated_at, version, ...newPolicy } = updatedPolicy;
+        const { id, created_at, updated_at, version, ...newPolicy } = updatedPolicy;
 
         expect(newPolicy).to.eql({
           status: 'active',
@@ -1773,7 +1773,7 @@ export default function (providerContext: FtrProviderContext) {
           })
           .expect(200);
 
-        const { id, updated_at, version, ...newPolicy } = updatedPolicy;
+        const { id, created_at, updated_at, version, ...newPolicy } = updatedPolicy;
 
         expect(newPolicy).to.eql({
           status: 'active',
@@ -2092,6 +2092,7 @@ export default function (providerContext: FtrProviderContext) {
         const {
           package_policies: packagePolicies,
           id,
+          created_at: createdAt,
           space_ids: spaceIds,
           updated_at: updatedAt,
           version: policyVersion,

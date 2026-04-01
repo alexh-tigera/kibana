@@ -388,6 +388,7 @@ export const AgentPolicyResponseSchema = AgentPolicySchema.extends({
       )
     )
   ),
+  created_at: schema.maybe(schema.string()),
   package_policies: schema.maybe(
     schema.oneOf([
       schema.arrayOf(schema.string(), { maxSize: 10000 }),
