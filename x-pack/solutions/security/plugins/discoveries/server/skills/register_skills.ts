@@ -5,22 +5,33 @@
  * 2.0.
  */
 
-// Placeholder — real implementation added in PR 8
 import type { Logger } from '@kbn/core/server';
 import type { AgentBuilderPluginSetup } from '@kbn/agent-builder-plugin/server';
-import type { WorkflowsManagementApi } from '@kbn/discoveries/impl/attack_discovery/generation/types';
 
 import { alertRetrievalBuilderSkill } from './alert_retrieval_builder_skill';
+import type { WorkflowFetcher } from './tools/get_workflow_health_check_tool';
+import { createWorkflowTroubleshootingSkill } from './workflow_troubleshooting_skill';
 
 interface RegisterSkillsOptions {
-  workflowFetcher?: WorkflowsManagementApi;
+  workflowFetcher?: WorkflowFetcher;
 }
 
+/**
+ * Registers all Attack Discovery agent builder skills with the agentBuilder plugin.
+ *
+ * Skills registered here become globally available in the agent builder,
+ * including from the security_solution context.
+ */
 export const registerSkills = async (
   agentBuilder: AgentBuilderPluginSetup,
   logger: Logger,
-  _options?: RegisterSkillsOptions
+  options?: RegisterSkillsOptions
 ): Promise<void> => {
   await agentBuilder.skills.register(alertRetrievalBuilderSkill);
-  logger.debug(() => 'discoveries: Skills registration complete (placeholder)');
+
+  if (options?.workflowFetcher != null) {
+    await agentBuilder.skills.register(createWorkflowTroubleshootingSkill(options.workflowFetcher));
+  }
+
+  logger.debug(() => 'discoveries: Skills registration complete');
 };
