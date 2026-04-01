@@ -154,14 +154,12 @@ export class TimePickerPageObject extends FtrService {
    */
   async setRecentlyUsedTime(option: string) {
     if (await this.isNewDateRangePicker()) {
-      await this.testSubjects.click('dateRangePickerControlButton');
-      await this.testSubjects.exists('dateRangePickerMainPanel', { timeout: 5000 });
-      await this.testSubjects.click('dateRangePickerRecentTab');
-      const panel = await this.testSubjects.find('dateRangePickerMainPanel');
-      const buttonByOptionText = await panel.findByXpath(`.//button[text()='${option}']`);
-      await buttonByOptionText?.click();
-      await this.testSubjects.missingOrFail('dateRangePickerPopoverPanel', { timeout: 5000 });
-      await this.browser.pressKeys(this.browser.keys.ESCAPE);
+      // The new picker displays recent items in its own format (different delimiter and
+      // date format from the legacy "MMM D, YYYY @ HH:mm:ss.SSS to …" text), so XPath
+      // text matching would fail. Re-apply the range by typing it directly into the
+      // input instead — the parser accepts the legacy date format.
+      const [from, to] = option.split(' to ');
+      await this.setAbsoluteRangeNewPicker(from.trim(), to.trim());
     } else {
       await this.testSubjects.exists('superDatePickerToggleQuickMenuButton', { timeout: 5000 });
       await this.testSubjects.click('superDatePickerToggleQuickMenuButton');
@@ -353,12 +351,14 @@ export class TimePickerPageObject extends FtrService {
       'aria-checked'
     );
 
-    // Close by pressing Escape
-    await this.browser.pressKeys(this.browser.keys.ESCAPE);
+    await this.closeNewPickerSettingsPanel();
 
     return {
       interval,
-      units: selectedUnit,
+      // Capitalize to match the legacy picker's unit strings (e.g. "Seconds", "Minutes").
+      units: selectedUnit
+        ? selectedUnit.charAt(0).toUpperCase() + selectedUnit.slice(1)
+        : selectedUnit,
       isPaused: toggleChecked !== 'true',
     };
   }
@@ -415,6 +415,33 @@ export class TimePickerPageObject extends FtrService {
   }
 
   /**
+   * Closes the DateRangePicker after settings-panel interactions and waits for
+   * idle state (control button visible, popover gone, tooltip dismissed).
+   *
+   * `browser.pressKeys(ESCAPE)` sends to `document.body` after focus drifts
+   * away from panel elements (WebDriver behaviour), so it never reaches
+   * `onPanelKeyDown` and the popover stays open. Fix: navigate back to the main
+   * panel via the back button, focus the text input (which is in the control,
+   * not the popover), then press Escape so `onInputKeyDown` fires and calls
+   * `setIsEditing(false)`.
+   */
+  private async closeNewPickerSettingsPanel() {
+    // Navigate back from settings sub-panel to main panel if still there.
+    if (await this.testSubjects.exists('dateRangePickerSubPanelBackButton', { timeout: 500 })) {
+      await this.testSubjects.click('dateRangePickerSubPanelBackButton');
+      await this.testSubjects.exists('dateRangePickerMainPanel', { timeout: 3000 });
+    }
+    // Focus the text input (always visible in editing mode) and press Escape.
+    // onInputKeyDown handles Escape → setIsEditing(false) → popover closes.
+    await this.testSubjects.click('dateRangePickerInput');
+    await this.browser.pressKeys(this.browser.keys.ESCAPE);
+    // Wait for popover to close and button to reappear.
+    await this.testSubjects.missingOrFail('dateRangePickerPopoverPanel', { timeout: 5000 });
+    // Blur the control button to dismiss the EuiToolTip that appears when it regains focus.
+    await this.browser.pressKeys(this.browser.keys.ESCAPE);
+  }
+
+  /**
    * Formats a raw date string from data-date-range into the legacy display
    * format so existing test assertions stay stable. Relative dateMath values
    * (e.g. `now-15m`) are returned as-is. Uses the configured `dateFormat:tz`
@@ -431,12 +458,15 @@ export class TimePickerPageObject extends FtrService {
    * time to flush state updates after external prop changes.
    */
   private async getStableDateRange(): Promise<string> {
-    let previous = '';
+    // Use undefined as the sentinel so that the very first read always triggers a
+    // retry (guards against the attribute being empty on first paint) and empty
+    // strings are also retried (component not yet rendered with a valid range).
+    let previous: string | undefined;
     return await this.retry.try(async () => {
       const current =
         (await this.testSubjects.getAttribute('dateRangePickerControlButton', 'data-date-range')) ??
         '';
-      if (current !== previous) {
+      if (!current || current !== previous) {
         previous = current;
         throw new Error('data-date-range still updating');
       }
@@ -568,8 +598,7 @@ export class TimePickerPageObject extends FtrService {
       );
     });
 
-    // Close by pressing Escape
-    await this.browser.pressKeys(this.browser.keys.ESCAPE);
+    await this.closeNewPickerSettingsPanel();
   }
 
   private async startAutoRefreshLegacy(intervalS = 3) {
@@ -606,7 +635,7 @@ export class TimePickerPageObject extends FtrService {
       if (toggleChecked === 'true') {
         await this.testSubjects.click('dateRangePickerAutoRefreshToggle');
       }
-      await this.browser.pressKeys(this.browser.keys.ESCAPE);
+      await this.closeNewPickerSettingsPanel();
     } else {
       const refreshConfig = await this.getRefreshConfig(true);
       if (!refreshConfig.isPaused) {
@@ -620,12 +649,32 @@ export class TimePickerPageObject extends FtrService {
   public async resumeAutoRefresh() {
     this.log.debug('resumeAutoRefresh');
     if (await this.isNewDateRangePicker()) {
-      // In the new picker, clicking the auto-refresh button directly resumes it
+      // The auto-refresh button is only rendered when isEnabled=true.
       const buttonExists = await this.testSubjects.exists('dateRangePickerAutoRefreshButton', {
         timeout: 1000,
       });
       if (buttonExists) {
-        await this.testSubjects.click('dateRangePickerAutoRefreshButton');
+        // Button is visible — only click it if it's in the "resume" (paused) state;
+        // if it's already showing "pause", auto-refresh is running and we do nothing.
+        const ariaLabel =
+          (await this.testSubjects.getAttribute(
+            'dateRangePickerAutoRefreshButton',
+            'aria-label'
+          )) ?? '';
+        if (ariaLabel.toLowerCase().includes('resume')) {
+          await this.testSubjects.click('dateRangePickerAutoRefreshButton');
+        }
+      } else {
+        // Auto-refresh is not enabled at all — enable it via the settings panel.
+        await this.openNewPickerSettingsPanel();
+        const toggleChecked = await this.testSubjects.getAttribute(
+          'dateRangePickerAutoRefreshToggle',
+          'aria-checked'
+        );
+        if (toggleChecked !== 'true') {
+          await this.testSubjects.click('dateRangePickerAutoRefreshToggle');
+        }
+        await this.closeNewPickerSettingsPanel();
       }
     } else {
       const refreshConfig = await this.getRefreshConfig(true);
