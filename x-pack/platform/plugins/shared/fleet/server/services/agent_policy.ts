@@ -2752,6 +2752,9 @@ class AgentPolicyService {
         `${VERIFY_PERMISSIONS_TASK} Failed to create verifier_otel package policy ` +
           `for connector ${connectorId}: ${err}`
       );
+      await this.delete(soClient, esClient, agentPolicy.id).catch(() => {
+        logger.error(`Failed to clean up orphaned verifier policy ${agentPolicy.id}`);
+      });
       throw err;
     }
 
