@@ -360,9 +360,17 @@ actions:
     description: Override summary and add code samples to update endpoint
     update:
       summary: Update a dashboard
+      description: >-
+        Creates a new dashboard with the given ID if none exists, or replaces the
+        complete state of an existing one. This is a full replacement, not a partial
+        update. To make targeted changes, retrieve the current state first with
+        GET /api/dashboards/{id}, apply your changes, and submit the full updated object.
+      responses:
+        '401':
+          description: Unauthorized
       x-codeSamples:
         - lang: cURL
-          label: Update a dashboard
+          label: Upsert dashboard
           source: |
             curl -X PUT "${KIBANA_URL}/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b" \
               -H "Authorization: ApiKey ${API_KEY}" \
