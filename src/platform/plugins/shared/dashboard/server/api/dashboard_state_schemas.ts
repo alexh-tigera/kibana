@@ -30,18 +30,18 @@ const MAX_PANELS = 100;
 
 export const panelGridSchema = schema.object(
   {
-    x: schema.number({ meta: { description: 'The x coordinate of the panel in grid units' } }),
-    y: schema.number({ meta: { description: 'The y coordinate of the panel in grid units' } }),
+    x: schema.number({ meta: { description: 'The x coordinate of the panel in grid units.' } }),
+    y: schema.number({ meta: { description: 'The y coordinate of the panel in grid units.' } }),
     w: schema.number({
       defaultValue: DEFAULT_PANEL_WIDTH,
       min: 1,
       max: DASHBOARD_GRID_COLUMN_COUNT,
-      meta: { description: 'The width of the panel in grid units' },
+      meta: { description: 'The width of the panel in grid units.' },
     }),
     h: schema.number({
       defaultValue: DEFAULT_PANEL_HEIGHT,
       min: 1,
-      meta: { description: 'The height of the panel in grid units' },
+      meta: { description: 'The height of the panel in grid units.' },
     }),
   },
   {
@@ -111,7 +111,7 @@ export function getPanelSchema(isDashboardAppRequest: boolean) {
 }
 
 const sectionGridSchema = schema.object({
-  y: schema.number({ meta: { description: 'The y coordinate of the section in grid units' } }),
+  y: schema.number({ meta: { description: 'The y coordinate of the section in grid units.' } }),
 });
 
 export function getSectionSchema(isDashboardAppRequest: boolean) {
@@ -138,7 +138,7 @@ export function getSectionSchema(isDashboardAppRequest: boolean) {
     },
     {
       meta: {
-        description: 'Collapsable section',
+        description: 'Collapsible section.',
         id: 'kbn-dashboard-section',
         title: 'section',
       },
@@ -150,7 +150,7 @@ export const optionsSchema = schema.object(
   {
     auto_apply_filters: schema.boolean({
       defaultValue: DEFAULT_DASHBOARD_OPTIONS.auto_apply_filters,
-      meta: { description: 'Auto apply control filters.' },
+      meta: { description: 'Automatically applies control filters.' },
     }),
     hide_panel_titles: schema.boolean({
       defaultValue: DEFAULT_DASHBOARD_OPTIONS.hide_panel_titles,
@@ -190,7 +190,15 @@ export const optionsSchema = schema.object(
 export const accessControlSchema = schema.maybe(
   schema.object({
     access_mode: schema.maybe(
-      schema.oneOf([schema.literal('write_restricted'), schema.literal('default')])
+      schema.oneOf(
+        [schema.literal('write_restricted'), schema.literal('default')],
+        {
+          meta: {
+            description:
+              'Controls edit access to the dashboard. Set to `write_restricted` to prevent edits by users without explicit write permission. Defaults to `default` (all viewers can edit).',
+          },
+        }
+      )
     ),
   })
 );
@@ -199,8 +207,16 @@ export function getDashboardStateSchema(isDashboardAppRequest: boolean) {
   return schema.object(
     {
       pinned_panels: getPinnedPanelsSchema(),
-      description: schema.maybe(schema.string({ meta: { description: 'A short description.' } })),
-      filters: schema.maybe(schema.arrayOf(asCodeFilterSchema, { maxSize: 500 })),
+      description: schema.maybe(schema.string({ meta: { description: 'A short description of the dashboard.' } })),
+      filters: schema.maybe(
+        schema.arrayOf(asCodeFilterSchema, {
+          maxSize: 500,
+          meta: {
+            description:
+              'KQL filters applied across all panels in the dashboard. Each filter targets a specific field and value.',
+          },
+        })
+      ),
       options: optionsSchema,
       panels: schema.arrayOf(
         schema.oneOf([
@@ -210,23 +226,32 @@ export function getDashboardStateSchema(isDashboardAppRequest: boolean) {
         {
           defaultValue: [],
           maxSize: MAX_PANELS,
+          meta: {
+            description:
+              'The panels and sections in the dashboard. Each entry is either a visualization panel (with a `type` and `config`) or a collapsible section (with a `title`, `collapsed` state, and nested `panels`).',
+          },
         }
       ),
-      project_routing: schema.maybe(schema.string()),
+      project_routing: schema.maybe(
+        schema.string({
+          meta: {
+            description: 'Routing identifier for project-scoped spaces (Serverless only).',
+          },
+        })
+      ),
       query: schema.maybe(asCodeQuerySchema),
       refresh_interval: schema.maybe(refreshIntervalSchema),
       tags: schema.maybe(
         schema.arrayOf(
-          schema.string({
-            meta: { description: 'An array of tags ids applied to this dashboard' },
-          }),
+          schema.string(),
           {
             maxSize: 100,
+            meta: { description: 'Tag IDs to associate with this dashboard.' },
           }
         )
       ),
       time_range: schema.maybe(timeRangeSchema),
-      title: schema.string({ meta: { description: 'A human-readable title for the dashboard' } }),
+      title: schema.string({ meta: { description: 'A human-readable title for the dashboard.' } }),
       access_control: accessControlSchema,
     },
     {

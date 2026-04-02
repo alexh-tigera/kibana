@@ -1,0 +1,49 @@
+summary: Get dashboard response
+description: >
+  The full dashboard state including all panels, options, and metadata.
+  The `meta.outcome` field indicates how the ID was resolved.
+value:
+  id: 3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
+  data:
+    title: Web logs overview
+    description: ''
+    panels:
+      - type: lens
+        grid:
+          x: 0
+          y: 0
+          w: 24
+          h: 10
+        uid: panel-1
+        config:
+          attributes:
+            type: metric
+            title: Average response bytes
+            dataset:
+              type: index
+              index: kibana_sample_data_logs
+              time_field: '@timestamp'
+            query:
+              query: ''
+              language: kuery
+            metrics:
+              - type: primary
+                operation: average
+                field: bytes
+                format:
+                  type: number
+                  decimals: 0
+                  compact: true
+    options:
+      hide_panel_titles: false
+      hide_panel_borders: false
+      use_margins: true
+      auto_apply_filters: true
+      sync_colors: false
+      sync_cursor: true
+      sync_tooltips: false
+  meta:
+    managed: false
+    created_at: '2025-04-01T10:30:00.000Z'
+    updated_at: '2025-04-01T10:30:00.000Z'
+    outcome: exactMatch

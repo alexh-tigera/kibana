@@ -16,14 +16,14 @@ export const searchRequestParamsSchema = schema.object({
   page: schema.maybe(
     schema.number({
       meta: {
-        description: 'The page of dashboards to return',
+        description: 'The page of dashboards to return.',
       },
     })
   ),
   per_page: schema.maybe(
     schema.number({
       meta: {
-        description: 'The number of dashboards to return per page',
+        description: 'The number of dashboards to return per page.',
       },
     })
   ),
@@ -31,7 +31,7 @@ export const searchRequestParamsSchema = schema.object({
     schema.string({
       meta: {
         description:
-          'An Elasticsearch simple_query_string query that filters the dashboards in the response by "title" and "description"',
+          'Filters the dashboards in the response by `title` and `description`. Uses Elasticsearch [`simple_query_string`](https://www.elastic.co/docs/reference/query-languages/query-dsl/simple-query-string-query) syntax.',
       },
     })
   ),

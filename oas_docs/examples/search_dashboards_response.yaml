@@ -1,0 +1,32 @@
+summary: Search dashboards response
+description: >
+  Response from searching dashboards. Returns a paginated list of dashboard summaries.
+  Each item includes the ID, basic state fields (title, description, tags, time_range), and metadata.
+value:
+  dashboards:
+    - id: 3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
+      data:
+        title: Web logs overview
+        description: ''
+        tags: []
+        time_range: null
+        access_control: null
+      meta:
+        managed: false
+        created_at: '2025-04-01T10:30:00.000Z'
+        updated_at: '2025-04-01T10:30:00.000Z'
+    - id: 7f2a1c40-e83b-11ef-a641-7d5b3f9e1c2a
+      data:
+        title: E-commerce sales
+        description: Sales and revenue metrics for the e-commerce sample dataset
+        tags: []
+        time_range:
+          from: now-30d
+          to: now
+        access_control: null
+      meta:
+        managed: false
+        created_at: '2025-03-15T08:00:00.000Z'
+        updated_at: '2025-03-28T14:22:00.000Z'
+  total: 2
+  page: 1

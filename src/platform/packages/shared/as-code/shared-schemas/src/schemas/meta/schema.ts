@@ -12,13 +12,29 @@ import { schema } from '@kbn/config-schema';
 
 export const asCodeMetaSchema = schema.object(
   {
-    created_at: schema.maybe(schema.string()),
-    created_by: schema.maybe(schema.string()),
-    managed: schema.maybe(schema.boolean()),
-    owner: schema.maybe(schema.string()),
-    updated_at: schema.maybe(schema.string()),
-    updated_by: schema.maybe(schema.string()),
-    version: schema.maybe(schema.string()),
+    created_at: schema.maybe(
+      schema.string({ meta: { description: 'Timestamp when the object was created (ISO 8601).' } })
+    ),
+    created_by: schema.maybe(
+      schema.string({ meta: { description: 'User profile ID of the user who created the object.' } })
+    ),
+    managed: schema.maybe(
+      schema.boolean({
+        meta: { description: 'When `true`, the object is managed by Kibana and cannot be edited by users.' },
+      })
+    ),
+    owner: schema.maybe(
+      schema.string({ meta: { description: 'The plugin that owns this object.' } })
+    ),
+    updated_at: schema.maybe(
+      schema.string({ meta: { description: 'Timestamp when the object was last updated (ISO 8601).' } })
+    ),
+    updated_by: schema.maybe(
+      schema.string({ meta: { description: 'User profile ID of the user who last updated the object.' } })
+    ),
+    version: schema.maybe(
+      schema.string({ meta: { description: 'The version identifier used for conflict detection on updates.' } })
+    ),
   },
   {
     meta: {

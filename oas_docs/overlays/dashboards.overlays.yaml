@@ -1,0 +1,440 @@
+overlay: 1.0.0
+info:
+  title: Overlays for the Dashboards API
+  version: 0.0.1
+actions:
+  # ──────────────────────────────────────────────
+  # Tag description
+  # ──────────────────────────────────────────────
+  - target: '$.tags[?(@.name=="Dashboards")]'
+    description: Add tag description with getting started content, externalDocs, and displayName
+    update:
+      description: |
+        Create, retrieve, update, and delete [Kibana dashboards](https://www.elastic.co/docs/explore-analyze/dashboards). Use this API to manage dashboards as code, automate their lifecycle, or build tooling around dashboard creation.
+
+        ## When to use the Dashboards API vs. the Visualizations API
+
+        - Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create and manage individual charts (bar, metric, pie, and so on) as reusable saved objects in your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library).
+        - Use the Dashboards API to create and manage dashboards, including the visualizations and panels they contain. Panels can embed saved visualizations by reference or define their configuration inline, or when you need to add ES|QL-based visualizations to a dashboard (see [ES|QL visualizations](#esql-visualizations) below).
+
+        ## Get started
+
+        > info
+        > - **Authentication:** Refer to the [Kibana API documentation > Authentication](https://www.elastic.co/docs/api/doc/kibana).
+        > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
+        > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
+
+        A dashboard is built from **panels** arranged on a grid, each embedding a visualization, Discover session results, map, or more static content such as links and images. Panels can be grouped into collapsible **sections**. **Controls** (options lists, range sliders, time sliders) add interactive filtering and can be pinned at the top of the dashboard or placed as panels anywhere in the dashboard. The `filters`, `query`, and `time_range` fields apply across all panels at once.
+
+        ### Panel types
+
+        The `type` field in each panel determines what it contains. Common types:
+
+        | Type | Content |
+        |------|---------|
+        | `lens` | Lens visualization (bar, line, metric, and so on) |
+        | `map` | Elastic Maps |
+        | `search` | Discover session |
+        | `links` | Links panel |
+        | `image` | Image panel |
+
+        Additional panel types may be available depending on which Kibana plugins are enabled in your deployment.
+
+        ### Embedding Lens visualizations
+
+        Lens panels can be embedded **by value** (inline config) or **by reference** (saved visualization ID).
+
+        **By value:** the full Lens state is stored inside the dashboard. Best for one-off visualizations or when portability across spaces matters. The Lens configuration goes inside `config.attributes`:
+
+        ```json
+        {
+          "type": "lens",
+          "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+          "config": {
+            "attributes": {
+              "type": "metric",
+              "title": "Average bytes",
+              "dataset": { "type": "index", "index": "kibana_sample_data_logs", "time_field": "timestamp" },
+              "query": { "query": "" },
+              "metrics": [{ "type": "primary", "operation": "average", "field": "bytes" }]
+            }
+          }
+        }
+        ```
+
+        **By reference:** references a saved visualization by ID. The visualization must exist before creating the dashboard. Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create it first:
+
+        ```json
+        {
+          "type": "lens",
+          "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+          "config": { "savedObjectId": "1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d" }
+        }
+        ```
+
+        ### ES|QL visualizations
+
+        The standalone [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) currently blocks ES|QL on the [create](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) and [update](https://www.elastic.co/docs/api/doc/kibana/operation/operation-updatevisualization) endpoints. However, ES|QL Lens visualizations **can** be created through the Dashboards API by embedding them inline as `lens` panels. This is currently the only way to create ES|QL visualizations through the API.
+
+        For `metric` charts, `dataset` is at the top level of `attributes` and `metrics` references columns by name:
+
+        ```json
+        {
+          "type": "lens",
+          "grid": { "x": 0, "y": 0, "w": 12, "h": 6 },
+          "config": {
+            "attributes": {
+              "type": "metric",
+              "title": "Total requests",
+              "dataset": {
+                "type": "esql",
+                "query": "FROM logs-* | STATS count = COUNT()"
+              },
+              "metrics": [{ "type": "primary", "operation": "value", "column": "count" }]
+            }
+          }
+        }
+        ```
+
+        For `xy` charts, `dataset` goes inside each layer. Use `BUCKET(@timestamp, 75, ?_tstart, ?_tend)` for time-series charts so the bucket size automatically adapts to the dashboard time range:
+
+        ```json
+        {
+          "type": "lens",
+          "grid": { "x": 0, "y": 0, "w": 48, "h": 12 },
+          "config": {
+            "attributes": {
+              "type": "xy",
+              "title": "Requests over time",
+              "layers": [{
+                "type": "line",
+                "dataset": {
+                  "type": "esql",
+                  "query": "FROM logs-* | STATS count = COUNT() BY bucket = BUCKET(@timestamp, 75, ?_tstart, ?_tend)"
+                },
+                "x": { "operation": "value", "column": "bucket" },
+                "y": [{ "operation": "value", "column": "count" }]
+              }]
+            }
+          }
+        }
+        ```
+
+        For a bar chart breaking down by a categorical field:
+
+        ```json
+        {
+          "type": "lens",
+          "grid": { "x": 0, "y": 0, "w": 24, "h": 12 },
+          "config": {
+            "attributes": {
+              "type": "xy",
+              "title": "Top hosts by bytes",
+              "layers": [{
+                "type": "bar_horizontal",
+                "dataset": {
+                  "type": "esql",
+                  "query": "FROM logs-* | STATS total_bytes = SUM(bytes) BY host.name | SORT total_bytes DESC | LIMIT 10"
+                },
+                "x": { "operation": "value", "column": "host.name" },
+                "y": [{ "operation": "value", "column": "total_bytes" }]
+              }]
+            }
+          }
+        }
+        ```
+
+        ### Dashboard-level filters
+
+        The `filters`, `query`, `time_range`, and `refresh_interval` fields apply across all panels:
+
+        ```json
+        {
+          "title": "Web logs overview",
+          "filters": [{ "meta": { "type": "phrase", "field": "response", "params": { "query": "200" } }, "query": { "match_phrase": { "response": "200" } } }],
+          "query": { "query": "extension : (\"css\" or \"js\")", "language": "kuery" },
+          "time_range": { "from": "now-7d", "to": "now" }
+        }
+        ```
+
+        ### Sections
+
+        Sections are collapsible panel groups. A section has a `title`, `collapsed` state, `grid.y` position, and a nested `panels` array. Panels inside a section use the same structure as top-level panels:
+
+        ```json
+        {
+          "title": "Performance metrics",
+          "collapsed": false,
+          "grid": { "y": 0 },
+          "panels": [
+            { "type": "lens", "grid": { "x": 0, "y": 0, "w": 24, "h": 15 }, "config": { ... } }
+          ]
+        }
+        ```
+
+        ### Controls
+
+        Controls are interactive filters that can be placed anywhere in a dashboard. Use the `pinned_panels` field to pin controls at the top of the dashboard, where they apply to all panels. Controls placed inside a section (as part of that section's `panels` array) apply only to the panels within that section.
+
+        Four control types are supported:
+
+        - **`options_list_control`**: a dropdown that filters by selected values for a field in a data view.
+        - **`range_slider_control`**: a slider that filters by a numeric range.
+        - **`time_slider_control`**: a time range slider.
+        - **`esql_control`**: a variable control driven by an ES|QL query.
+
+        Each control requires a `type`, a `config` object, and layout properties (`width`, `grow`):
+
+        ```json
+        {
+          "pinned_panels": [
+            {
+              "type": "options_list_control",
+              "width": "medium",
+              "grow": true,
+              "config": {
+                "title": "Response code",
+                "data_view_id": "90943e30-9a47-11e8-b64d-95841ca0b247",
+                "field_name": "response.keyword"
+              }
+            },
+            {
+              "type": "range_slider_control",
+              "width": "medium",
+              "grow": true,
+              "config": {
+                "title": "Bytes",
+                "data_view_id": "90943e30-9a47-11e8-b64d-95841ca0b247",
+                "field_name": "bytes"
+              }
+            }
+          ]
+        }
+        ```
+
+        ### Error handling
+
+        If a request returns a `400 Bad Request`, the response body contains a validation error message. Common causes:
+
+        - **Missing required `title`**: every dashboard requires a `title` field.
+        - **Invalid panel `type`**: must match a supported panel type for your deployment.
+        - **`null` values** instead of omitting optional fields: the API rejects `null`; omit the field instead.
+        - **`access_control` on update**: the `access_control` field is not accepted on [`PUT`](https://www.elastic.co/docs/api/doc/kibana/operation/operation-updatedashboard); use [`POST`](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createdashboard) with an explicit ID to set it.
+      externalDocs:
+        description: Dashboards documentation
+        url: https://www.elastic.co/docs/explore-analyze/dashboards
+      x-displayName: Dashboards
+
+  # ──────────────────────────────────────────────
+  # POST — summary, examples and code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/dashboards/{id}']['post']"
+    description: Override summary and add examples and code samples to create endpoint
+    update:
+      summary: Create a dashboard
+      requestBody:
+        content:
+          application/json:
+            examples:
+              createDashboardWithLensPanel:
+                $ref: '../examples/create_dashboard_request.yaml'
+      responses:
+        201:
+          content:
+            application/json:
+              examples:
+                createDashboardResponse:
+                  $ref: '../examples/create_dashboard_response.yaml'
+      x-codeSamples:
+        - lang: cURL
+          label: Create a dashboard with a metric panel
+          source: |
+            curl -X POST "${KIBANA_URL}/api/dashboards" \
+              -H "Authorization: ApiKey ${API_KEY}" \
+              -H "kbn-xsrf: true" \
+              -H "Content-Type: application/json" \
+              -d '{
+              "title": "Web logs overview",
+              "panels": [{
+                "type": "lens",
+                "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                "config": {
+                  "attributes": {
+                    "type": "metric",
+                    "title": "Average response bytes",
+                    "dataset": {
+                      "type": "index",
+                      "index": "kibana_sample_data_logs",
+                      "time_field": "timestamp"
+                    },
+                    "query": { "query": "" },
+                    "metrics": [{
+                      "type": "primary",
+                      "operation": "average",
+                      "field": "bytes",
+                      "format": { "type": "number", "decimals": 0, "compact": true }
+                    }]
+                  }
+                }
+              }]
+            }'
+        - lang: Console
+          source: |
+            POST kbn:/api/dashboards
+            {
+              "title": "Web logs overview",
+              "panels": [{
+                "type": "lens",
+                "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                "config": {
+                  "attributes": {
+                    "type": "metric",
+                    "title": "Average response bytes",
+                    "dataset": {
+                      "type": "index",
+                      "index": "kibana_sample_data_logs",
+                      "time_field": "timestamp"
+                    },
+                    "query": { "query": "" },
+                    "metrics": [{
+                      "type": "primary",
+                      "operation": "average",
+                      "field": "bytes",
+                      "format": { "type": "number", "decimals": 0, "compact": true }
+                    }]
+                  }
+                }
+              }]
+            }
+
+  # ──────────────────────────────────────────────
+  # GET /api/dashboards — examples and code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/dashboards']['get']"
+    description: Add examples and code samples to search endpoint
+    update:
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                searchDashboardsResponse:
+                  $ref: '../examples/search_dashboards_response.yaml'
+      x-codeSamples:
+        - lang: cURL
+          label: Search dashboards
+          source: |
+            curl -X GET "${KIBANA_URL}/api/dashboards?query=web+logs&per_page=10" \
+              -H "Authorization: ApiKey ${API_KEY}"
+        - lang: Console
+          source: |
+            GET kbn:/api/dashboards?query=web+logs&per_page=10
+
+  # ──────────────────────────────────────────────
+  # GET /api/dashboards/{id} — examples and code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/dashboards/{id}']['get']"
+    description: Add examples and code samples to get endpoint
+    update:
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                getDashboardResponse:
+                  $ref: '../examples/get_dashboard_response.yaml'
+      x-codeSamples:
+        - lang: cURL
+          label: Get a dashboard
+          source: |
+            curl -X GET "${KIBANA_URL}/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b" \
+              -H "Authorization: ApiKey ${API_KEY}"
+        - lang: Console
+          source: |
+            GET kbn:/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
+
+  # ──────────────────────────────────────────────
+  # PUT — summary and code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/dashboards/{id}']['put']"
+    description: Override summary and add code samples to update endpoint
+    update:
+      summary: Update a dashboard
+      x-codeSamples:
+        - lang: cURL
+          label: Update a dashboard
+          source: |
+            curl -X PUT "${KIBANA_URL}/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b" \
+              -H "Authorization: ApiKey ${API_KEY}" \
+              -H "kbn-xsrf: true" \
+              -H "Content-Type: application/json" \
+              -d '{
+              "title": "Web logs overview (updated)",
+              "panels": [{
+                "type": "lens",
+                "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                "config": {
+                  "attributes": {
+                    "type": "metric",
+                    "title": "Average response bytes",
+                    "dataset": {
+                      "type": "index",
+                      "index": "kibana_sample_data_logs",
+                      "time_field": "timestamp"
+                    },
+                    "query": { "query": "" },
+                    "metrics": [{
+                      "type": "primary",
+                      "operation": "average",
+                      "field": "bytes",
+                      "format": { "type": "number", "decimals": 1 }
+                    }]
+                  }
+                }
+              }]
+            }'
+        - lang: Console
+          source: |
+            PUT kbn:/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
+            {
+              "title": "Web logs overview (updated)",
+              "panels": [{
+                "type": "lens",
+                "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                "config": {
+                  "attributes": {
+                    "type": "metric",
+                    "title": "Average response bytes",
+                    "dataset": {
+                      "type": "index",
+                      "index": "kibana_sample_data_logs",
+                      "time_field": "timestamp"
+                    },
+                    "query": { "query": "" },
+                    "metrics": [{
+                      "type": "primary",
+                      "operation": "average",
+                      "field": "bytes",
+                      "format": { "type": "number", "decimals": 1 }
+                    }]
+                  }
+                }
+              }]
+            }
+
+  # ──────────────────────────────────────────────
+  # DELETE — code samples
+  # ──────────────────────────────────────────────
+  - target: "$.paths['/api/dashboards/{id}']['delete']"
+    description: Add code samples to delete endpoint
+    update:
+      x-codeSamples:
+        - lang: cURL
+          label: Delete a dashboard
+          source: |
+            curl -X DELETE "${KIBANA_URL}/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b" \
+              -H "Authorization: ApiKey ${API_KEY}" \
+              -H "kbn-xsrf: true"
+        - lang: Console
+          source: |
+            DELETE kbn:/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
