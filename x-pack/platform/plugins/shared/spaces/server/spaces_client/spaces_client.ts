@@ -367,7 +367,7 @@ export class SpacesClient implements ISpacesClient {
 
   private generateSpaceAttributes = (space: v1.Space) => {
     return {
-      name: space.name,
+      name: space.name.trim(),
       description: space.description,
       color: space.color,
       initials: space.initials,
