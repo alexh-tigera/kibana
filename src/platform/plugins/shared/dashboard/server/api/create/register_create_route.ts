@@ -28,6 +28,8 @@ export function registerCreateRoute(
     path: basePath,
     summary: 'Create a dashboard',
     ...routeConfig,
+    description:
+      'Creates a new dashboard. Omit the `{id}` path parameter to generate an ID automatically, or provide an ID to create the dashboard at a known identifier.',
   });
 
   // Do not call getDashboardStateSchema when registering route.
@@ -51,6 +53,9 @@ export function registerCreateRoute(
           },
           400: {
             description: 'invalid request',
+          },
+          401: {
+            description: 'Unauthorized',
           },
           403: {
             description: 'forbidden',

@@ -28,8 +28,10 @@ export function registerUpdateRoute(
   const { basePath, routeConfig, routeVersion } = getRouteConfig(isDashboardAppRequest);
   const updateRoute = router.put({
     path: `${basePath}/{id}`,
-    summary: `Upsert dashboard`,
+    summary: `Update a dashboard`,
     ...routeConfig,
+    description:
+      'Replaces the complete state of an existing dashboard. This is a full replacement, not a partial update. To make targeted changes, retrieve the current state first with GET /api/dashboards/{id}, apply your changes, and submit the full updated object.',
   });
 
   // Do not call getDashboardStateSchema when registering route.
@@ -60,6 +62,9 @@ export function registerUpdateRoute(
           },
           400: {
             description: 'invalid request',
+          },
+          401: {
+            description: 'Unauthorized',
           },
           403: {
             description: 'forbidden',

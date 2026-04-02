@@ -67,6 +67,10 @@ export const searchResponseBodySchema = schema.object({
       meta: asCodeMetaSchema,
     })
   ),
-  total: schema.number(),
-  page: schema.number(),
+  total: schema.number({
+    meta: { description: 'The total number of dashboards matching the query.' },
+  }),
+  page: schema.number({
+    meta: { description: 'The current page number.' },
+  }),
 });

@@ -24,6 +24,7 @@ export function registerDeleteRoute(
     path: `${basePath}/{id}`,
     summary: `Delete a dashboard`,
     ...routeConfig,
+    description: 'Permanently deletes a dashboard. This action cannot be undone.',
   });
 
   deleteRoute.addVersion(
@@ -34,7 +35,8 @@ export function registerDeleteRoute(
           params: schema.object({
             id: schema.string({
               meta: {
-                description: 'A unique identifier for the dashboard.',
+                description:
+                  'The dashboard ID, as returned by the create or search endpoints.',
               },
             }),
           }),
@@ -42,6 +44,9 @@ export function registerDeleteRoute(
         response: {
           200: {
             description: 'deleted',
+          },
+          401: {
+            description: 'Unauthorized',
           },
           403: {
             description: 'forbidden',

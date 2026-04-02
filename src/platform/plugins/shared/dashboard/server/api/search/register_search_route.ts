@@ -24,6 +24,8 @@ export function registerSearchRoute(
     path: `${basePath}`,
     summary: `Search dashboards`,
     ...routeConfig,
+    description:
+      'Returns a paginated list of dashboards. Use the `query` parameter to filter by title or description.',
   });
 
   searchRoute.addVersion(
@@ -37,6 +39,9 @@ export function registerSearchRoute(
           200: {
             body: () => searchResponseBodySchema,
             description: 'success',
+          },
+          401: {
+            description: 'Unauthorized',
           },
           403: {
             description: 'forbidden',
