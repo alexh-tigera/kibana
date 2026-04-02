@@ -96,14 +96,18 @@ const useNavigationItems = (): NavigationState | null => {
       })
     );
 
-    const toolSlots$ = combineLatest([chrome.next.globalSearch.get$(), helpLinks$]).pipe(
-      map(([searchConfig, helpLinks]) =>
-        buildToolSlots({
-          globalSearch: searchConfig,
-          helpLinks,
-        })
-      )
-    );
+    const emptyToolSlots: ToolSlots = { headerTools: [], footerTools: [] };
+
+    const toolSlots$ = isNextChrome
+      ? combineLatest([chrome.next.globalSearch.get$(), helpLinks$]).pipe(
+          map(([searchConfig, helpLinks]) =>
+            buildToolSlots({
+              globalSearch: searchConfig,
+              helpLinks,
+            })
+          )
+        )
+      : [emptyToolSlots];
 
     return combineLatest([navState$, toolSlots$]).pipe(
       map(([navState, toolSlots]) => ({
