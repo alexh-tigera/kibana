@@ -20,9 +20,9 @@ import {
 import type { InitializationFlowContext } from '../../types';
 import type { InitializeSecurityDataViewsProvisionContext } from './types';
 import {
-  getDefaultDataView,
-  getAlertDataView,
-  getAttackDataView,
+  getOrCreateDefaultDataView,
+  getOrCreateAlertDataView,
+  getOrCreateAttackDataView,
   initializeSecurityDataViewsFlow,
 } from '.';
 
@@ -57,10 +57,10 @@ const makeDataViewListItem = (id: string, title: string, name?: string): DataVie
   } as DataViewListItem);
 
 // ---------------------------------------------------------------------------
-// getDefaultDataView
+// getOrCreateDefaultDataView
 // ---------------------------------------------------------------------------
 
-describe('getDefaultDataView', () => {
+describe('getOrCreateDefaultDataView', () => {
   const dataViewId = `${DEFAULT_DATA_VIEW_ID}-${SPACE_ID}`;
   // ensurePatternFormat sorts patterns alphabetically, so the test data must be pre-sorted.
   const patternListFormatted = [SIGNAL_INDEX, 'auditbeat-*'];
@@ -69,7 +69,7 @@ describe('getDefaultDataView', () => {
   it('creates a new data view when none exists', async () => {
     const service = createMockDataViewsService();
 
-    const result = await getDefaultDataView({
+    const result = await getOrCreateDefaultDataView({
       dataViewsService: service,
       allDataViews: [],
       dataViewId,
@@ -101,7 +101,7 @@ describe('getDefaultDataView', () => {
       'Security solution default'
     );
 
-    const result = await getDefaultDataView({
+    const result = await getOrCreateDefaultDataView({
       dataViewsService: service,
       allDataViews: [existing],
       dataViewId,
@@ -131,7 +131,7 @@ describe('getDefaultDataView', () => {
     };
     service.get.mockResolvedValue(mockDataView as unknown as DataView);
 
-    const result = await getDefaultDataView({
+    const result = await getOrCreateDefaultDataView({
       dataViewsService: service,
       allDataViews: [existing],
       dataViewId,
@@ -152,7 +152,7 @@ describe('getDefaultDataView', () => {
     const mockDataView = { id: dataViewId, title: patternListAsTitle, name: 'Wrong name' };
     service.get.mockResolvedValue(mockDataView as unknown as DataView);
 
-    await getDefaultDataView({
+    await getOrCreateDefaultDataView({
       dataViewsService: service,
       allDataViews: [existing],
       dataViewId,
@@ -174,7 +174,7 @@ describe('getDefaultDataView', () => {
       title: patternListAsTitle,
     } as unknown as DataView);
 
-    const result = await getDefaultDataView({
+    const result = await getOrCreateDefaultDataView({
       dataViewsService: service,
       allDataViews: [],
       dataViewId,
@@ -188,16 +188,16 @@ describe('getDefaultDataView', () => {
 });
 
 // ---------------------------------------------------------------------------
-// getAlertDataView
+// getOrCreateAlertDataView
 // ---------------------------------------------------------------------------
 
-describe('getAlertDataView', () => {
+describe('getOrCreateAlertDataView', () => {
   const dataViewId = `${DEFAULT_ALERT_DATA_VIEW_ID}-${SPACE_ID}`;
 
   it('creates a new alert data view when none exists', async () => {
     const service = createMockDataViewsService();
 
-    const result = await getAlertDataView({
+    const result = await getOrCreateAlertDataView({
       dataViewsService: service,
       allDataViews: [],
       dataViewId,
@@ -221,7 +221,7 @@ describe('getAlertDataView', () => {
     const service = createMockDataViewsService();
     const existing = makeDataViewListItem(dataViewId, SIGNAL_INDEX, 'Security solution alerts');
 
-    const result = await getAlertDataView({
+    const result = await getOrCreateAlertDataView({
       dataViewsService: service,
       allDataViews: [existing],
       dataViewId,
@@ -243,7 +243,7 @@ describe('getAlertDataView', () => {
     const mockDataView = { id: dataViewId, title: SIGNAL_INDEX, name: 'Wrong alert name' };
     service.get.mockResolvedValue(mockDataView as unknown as DataView);
 
-    await getAlertDataView({
+    await getOrCreateAlertDataView({
       dataViewsService: service,
       allDataViews: [existing],
       dataViewId,
@@ -265,7 +265,7 @@ describe('getAlertDataView', () => {
       title: SIGNAL_INDEX,
     } as unknown as DataView);
 
-    const result = await getAlertDataView({
+    const result = await getOrCreateAlertDataView({
       dataViewsService: service,
       allDataViews: [],
       dataViewId,
@@ -278,17 +278,17 @@ describe('getAlertDataView', () => {
 });
 
 // ---------------------------------------------------------------------------
-// getAttackDataView
+// getOrCreateAttackDataView
 // ---------------------------------------------------------------------------
 
-describe('getAttackDataView', () => {
+describe('getOrCreateAttackDataView', () => {
   const dataViewId = `${DEFAULT_ATTACK_DATA_VIEW_ID}-${SPACE_ID}`;
   const patternList = ['.attack-discovery-default', SIGNAL_INDEX];
 
   it('creates a new attack data view when none exists', async () => {
     const service = createMockDataViewsService();
 
-    const result = await getAttackDataView({
+    const result = await getOrCreateAttackDataView({
       dataViewsService: service,
       allDataViews: [],
       dataViewId,
@@ -312,7 +312,7 @@ describe('getAttackDataView', () => {
     const existingTitle = patternList.join();
     const existing = makeDataViewListItem(dataViewId, existingTitle, 'Security solution attacks');
 
-    const result = await getAttackDataView({
+    const result = await getOrCreateAttackDataView({
       dataViewsService: service,
       allDataViews: [existing],
       dataViewId,
@@ -333,7 +333,7 @@ describe('getAttackDataView', () => {
       title: patternList.join(),
     } as unknown as DataView);
 
-    const result = await getAttackDataView({
+    const result = await getOrCreateAttackDataView({
       dataViewsService: service,
       allDataViews: [],
       dataViewId,

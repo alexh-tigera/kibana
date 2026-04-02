@@ -71,9 +71,6 @@ export const createDefaultDataView = async ({
       );
     }
 
-    // Validate the flow result against the generated per-flow schema.
-    // Called directly instead of useSecuritySolutionInitialization because this
-    // runs inside a Redux listener (non-React context).
     const schema = InitializationFlowsResult.shape[INITIALIZATION_FLOW_SECURITY_DATA_VIEWS];
     const parsed = schema.parse(flowResult);
     const payload = (parsed as SecurityDataViewsReadyResult).payload;

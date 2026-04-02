@@ -34,7 +34,7 @@ const DEFAULT_SECURITY_ATTACK_DATA_VIEW_NAME = 'Security solution attacks';
 
 const DEFAULT_TIME_FIELD = '@timestamp';
 
-export const getDefaultDataView = async ({
+export const getOrCreateDefaultDataView = async ({
   dataViewsService,
   allDataViews,
   dataViewId,
@@ -80,9 +80,9 @@ export const getDefaultDataView = async ({
       if (arePatternsDifferent) {
         dataView.title = patternListAsTitle;
       }
-      if (!isCorrectName) {
-        dataView.name = DEFAULT_SECURITY_DATA_VIEW_NAME;
-      }
+      dataView.title = arePatternsDifferent ? patternListAsTitle : dataView.title;
+      dataView.name = DEFAULT_SECURITY_DATA_VIEW_NAME;
+
       await dataViewsService.updateSavedObject(dataView);
     } else {
       return {
@@ -100,7 +100,7 @@ export const getDefaultDataView = async ({
   };
 };
 
-export const getAlertDataView = async ({
+export const getOrCreateAlertDataView = async ({
   dataViewsService,
   allDataViews,
   dataViewId,
@@ -155,7 +155,7 @@ export const getAlertDataView = async ({
   };
 };
 
-export const getAttackDataView = async ({
+export const getOrCreateAttackDataView = async ({
   dataViewsService,
   allDataViews,
   dataViewId,
@@ -247,7 +247,7 @@ export const initializeSecurityDataViewsFlow: InitializationFlowDefinition<Initi
       const alertDataViewId = `${DEFAULT_ALERT_DATA_VIEW_ID}-${spaceId}`;
       const attackDataViewId = `${DEFAULT_ATTACK_DATA_VIEW_ID}-${spaceId}`;
 
-      const defaultDataView = await getDefaultDataView({
+      const defaultDataView = await getOrCreateDefaultDataView({
         allDataViews,
         dataViewId: defaultDataViewId,
         dataViewsService,
@@ -255,7 +255,7 @@ export const initializeSecurityDataViewsFlow: InitializationFlowDefinition<Initi
         patternListFormatted,
       });
 
-      const alertDataView = await getAlertDataView({
+      const alertDataView = await getOrCreateAlertDataView({
         allDataViews,
         dataViewId: alertDataViewId,
         dataViewsService,
@@ -264,7 +264,7 @@ export const initializeSecurityDataViewsFlow: InitializationFlowDefinition<Initi
 
       let attackDataView: DataViewPayload | undefined;
       if (enableAttackDataView) {
-        attackDataView = await getAttackDataView({
+        attackDataView = await getOrCreateAttackDataView({
           allDataViews,
           dataViewId: attackDataViewId,
           dataViewsService,
