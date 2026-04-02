@@ -10970,7 +10970,7 @@
         "timepicker:useDateRangePicker": {
           "type": "boolean",
           "_meta": {
-            "description": "Non-default value of setting."
+            "description": "Enables a new time picker in Discover and Dashboards."
           }
         },
         "theme:version": {
