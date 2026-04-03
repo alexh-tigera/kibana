@@ -954,7 +954,7 @@ describe('#update', () => {
     const mockCallWithRequestRepository = savedObjectsRepositoryMock.create();
     mockCallWithRequestRepository.get.mockResolvedValue({
       ...savedObject,
-      attributes: { ...savedObject.attributes, name: '  foo-name  ' },
+      attributes: { ...(savedObject.attributes as object), name: '  foo-name  ' },
     });
 
     const client = new SpacesClient(
