@@ -62,7 +62,9 @@ export function getDrilldownRegistry() {
             },
             {
               meta: {
-                title: type,
+                title: type
+                  .replace(/_/g, ' ')
+                  .replace(/^./, (c) => c.toUpperCase()),
               },
             }
           )

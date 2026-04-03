@@ -90,7 +90,11 @@ export function getPanelSchema(isDashboardAppRequest: boolean) {
         {
           meta: {
             id: `kbn-dashboard-panel-type-${type}`,
-            title: type,
+            title: type
+              .replace(/_/g, ' ')
+              .replace(/\besql\b/i, 'ES|QL')
+              .replace(/\bslo\b/i, 'SLO')
+              .replace(/^./, (c) => c.toUpperCase()),
           },
         }
       )
@@ -140,7 +144,7 @@ export function getSectionSchema(isDashboardAppRequest: boolean) {
       meta: {
         description: 'Collapsible section.',
         id: 'kbn-dashboard-section',
-        title: 'section',
+        title: 'Section',
       },
     }
   );
