@@ -145,6 +145,9 @@ export class Home extends Component<HomeProps, State> {
         pageHeader={{
           bottomBorder: false,
           pageTitle: <FormattedMessage id="home.header.title" defaultMessage="Welcome home" />,
+          pageTitleProps: {
+            css: { color: 'rgba(252, 46, 255, 1)' },
+          },
         }}
         panelled={false}
       >
