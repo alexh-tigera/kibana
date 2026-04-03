@@ -235,6 +235,118 @@ actions:
       x-displayName: Dashboards
 
   # ──────────────────────────────────────────────
+  # Schema title overrides — human-readable labels for oneOf/anyOf tabs
+  # ──────────────────────────────────────────────
+  - target: "$.components.schemas['kbn-as-code-filters-schema_asCodeConditionFilterSchema']"
+    description: Friendly title for condition filter schema
+    update:
+      title: Condition filter
+  - target: "$.components.schemas['kbn-as-code-filters-schema_asCodeDSLFilterSchema']"
+    description: Friendly title for DSL filter schema
+    update:
+      title: DSL filter
+  - target: "$.components.schemas['kbn-as-code-filters-schema_asCodeGroupFilterSchema']"
+    description: Friendly title for group filter schema
+    update:
+      title: Group filter
+  - target: "$.components.schemas['kbn-as-code-filters-schema_asCodeSpatialFilterSchema']"
+    description: Friendly title for spatial filter schema
+    update:
+      title: Spatial filter
+  - target: "$.components.schemas['kbn-as-code-filters-schema_condition_exists']"
+    description: Friendly title for condition exists
+    update:
+      title: "Condition: exists"
+  - target: "$.components.schemas['kbn-as-code-filters-schema_condition_is']"
+    description: Friendly title for condition is
+    update:
+      title: "Condition: is"
+  - target: "$.components.schemas['kbn-as-code-filters-schema_condition_is_one_of']"
+    description: Friendly title for condition is one of
+    update:
+      title: "Condition: is one of"
+  - target: "$.components.schemas['kbn-as-code-filters-schema_condition_range']"
+    description: Friendly title for condition range
+    update:
+      title: "Condition: range"
+  - target: "$.components.schemas['kbn-as-code-filters-schema_groupFilter']"
+    description: Friendly title for group filter item
+    update:
+      title: Condition or group
+  - target: "$.components.schemas['kbn-as-code-meta']"
+    description: Friendly title for meta schema
+    update:
+      title: Metadata
+  - target: "$.components.schemas['kbn-content-management-utils-referenceSchema']"
+    description: Friendly title for reference schema
+    update:
+      title: Reference
+  - target: "$.components.schemas['kbn-data-service-server-refreshIntervalSchema']"
+    description: Friendly title for refresh interval schema
+    update:
+      title: Refresh interval
+  - target: "$.components.schemas['kbn-es-query-server-querySchema']"
+    description: Friendly title for query schema
+    update:
+      title: Query
+  - target: "$.components.schemas['kbn-es-query-server-timeRangeSchema']"
+    description: Friendly title for time range schema
+    update:
+      title: Time range
+  - target: "$.components.schemas['kbn-dashboard-panel-lens']"
+    description: Friendly title for Lens panel
+    update:
+      title: Lens panel
+  - target: "$.components.schemas['kbn-dashboard-panel-image']"
+    description: Friendly title for image panel
+    update:
+      title: Image panel
+  - target: "$.components.schemas['kbn-dashboard-panel-markdown']"
+    description: Friendly title for Markdown panel
+    update:
+      title: Markdown panel
+  - target: "$.components.schemas['kbn-dashboard-panel-esql_control']"
+    description: Friendly title for ES|QL control
+    update:
+      title: ES|QL control
+  - target: "$.components.schemas['kbn-dashboard-panel-options_list_control']"
+    description: Friendly title for options list control
+    update:
+      title: Options list control
+  - target: "$.components.schemas['kbn-dashboard-panel-range_slider_control']"
+    description: Friendly title for range slider control
+    update:
+      title: Range slider control
+  - target: "$.components.schemas['kbn-dashboard-panel-time_slider_control']"
+    description: Friendly title for time slider control
+    update:
+      title: Time slider control
+  - target: "$.components.schemas['kbn-dashboard-panel-slo_alerts']"
+    description: Friendly title for SLO alerts panel
+    update:
+      title: SLO alerts panel
+  - target: "$.components.schemas['kbn-dashboard-panel-slo_burn_rate']"
+    description: Friendly title for SLO burn rate panel
+    update:
+      title: SLO burn rate panel
+  - target: "$.components.schemas['kbn-dashboard-panel-slo_error_budget']"
+    description: Friendly title for SLO error budget panel
+    update:
+      title: SLO error budget panel
+  - target: "$.components.schemas['kbn-dashboard-panel-slo_overview']"
+    description: Friendly title for SLO overview panel
+    update:
+      title: SLO overview panel
+  - target: "$.components.schemas['kbn-dashboard-panel-synthetics_monitors']"
+    description: Friendly title for Synthetics monitors panel
+    update:
+      title: Synthetics monitors panel
+  - target: "$.components.schemas['kbn-dashboard-panel-synthetics_stats_overview']"
+    description: Friendly title for Synthetics stats panel
+    update:
+      title: Synthetics stats panel
+
+  # ──────────────────────────────────────────────
   # POST — summary, examples and code samples
   # ──────────────────────────────────────────────
   - target: "$.paths['/api/dashboards/{id}']['post']"
