@@ -114,6 +114,64 @@ actions:
       x-displayName: Visualizations
 
   # ──────────────────────────────────────────────
+  # Schema title overrides — human-readable labels for oneOf/anyOf tabs
+  # ──────────────────────────────────────────────
+  - target: "$.components.schemas['Kibana_HTTP_APIs_collapseBy']"
+    update:
+      title: Collapse function
+  - target: "$.components.schemas['Kibana_HTTP_APIs_datatableDensity']"
+    update:
+      title: Table density
+  - target: "$.components.schemas['Kibana_HTTP_APIs_lensPanelFilters']"
+    update:
+      title: Panel filters
+  - target: "$.components.schemas['Kibana_HTTP_APIs_termsRankByAlphabeticalDirection']"
+    update:
+      title: Direction
+  - target: "$.components.schemas['Kibana_HTTP_APIs_termsRankByColumnDirection']"
+    update:
+      title: Direction
+  - target: "$.components.schemas['Kibana_HTTP_APIs_termsRankByCustomDirection']"
+    update:
+      title: Direction
+  - target: "$.components.schemas['Kibana_HTTP_APIs_unassignedColorSchema']"
+    update:
+      title: Unassigned color
+  - target: "$.components.schemas['Kibana_HTTP_APIs_valueDisplay']"
+    update:
+      title: Value display
+  - target: "$.components.schemas['Kibana_HTTP_APIs_vis_api_direction']"
+    update:
+      title: Direction
+  - target: "$.components.schemas['Kibana_HTTP_APIs_vis_api_orientation']"
+    update:
+      title: Orientation
+  - target: "$.components.schemas['Kibana_HTTP_APIs_vis_api_simple_orientation']"
+    update:
+      title: Orientation
+  - target: "$.components.schemas['Kibana_HTTP_APIs_xyAnnotationByRefLayer']"
+    update:
+      title: Annotation layer (by reference)
+  - target: "$.components.schemas['Kibana_HTTP_APIs_xyAnnotationLayer']"
+    update:
+      title: Annotation layer
+  - target: "$.components.schemas['Kibana_HTTP_APIs_xyAnnotationManualEvent']"
+    update:
+      title: Manual event annotation
+  - target: "$.components.schemas['Kibana_HTTP_APIs_xyAnnotationManualRange']"
+    update:
+      title: Manual range annotation
+  - target: "$.components.schemas['Kibana_HTTP_APIs_xyAnnotationQuery']"
+    update:
+      title: Query annotation
+  - target: "$.components.schemas['Kibana_HTTP_APIs_xyDecorations']"
+    update:
+      title: Decorations
+  - target: "$.components.schemas['Kibana_HTTP_APIs_xyFitting']"
+    update:
+      title: Line fitting
+
+  # ──────────────────────────────────────────────
   # POST — examples and code samples
   # ──────────────────────────────────────────────
   - target: "$.paths['/api/visualizations']['post']"
