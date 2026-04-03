@@ -534,7 +534,9 @@ export const metricStateSchemaNoESQL = schema.object(
      * Primary value configuration, must define operation.
      */
     metrics: schema.arrayOf(
-      schema.oneOf([primaryMetricSchemaNoESQL, secondaryMetricSchemaNoESQL]),
+      schema.oneOf([primaryMetricSchemaNoESQL, secondaryMetricSchemaNoESQL], {
+        meta: { description: 'Primary or secondary metric configuration.' },
+      }),
       {
         minSize: 1,
         maxSize: 2,
@@ -584,11 +586,16 @@ export const esqlMetricState = schema.object(
     /**
      * Primary value configuration, must define operation.
      */
-    metrics: schema.arrayOf(schema.oneOf([primaryMetricESQL, secondaryMetricESQL]), {
-      minSize: 1,
-      maxSize: 2,
-      validate: validateMetrics,
-    }),
+    metrics: schema.arrayOf(
+      schema.oneOf([primaryMetricESQL, secondaryMetricESQL], {
+        meta: { description: 'Primary or secondary metric configuration.' },
+      }),
+      {
+        minSize: 1,
+        maxSize: 2,
+        validate: validateMetrics,
+      }
+    ),
     /**
      * Configure how to break down the metric (e.g. show one metric per term).
      */

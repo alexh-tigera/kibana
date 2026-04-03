@@ -253,50 +253,61 @@ export const bucketTermsOperationSchema = schema.object(
      */
     rank_by: schema.maybe(
       schema.oneOf([
-        schema.object({
-          type: schema.literal('alphabetical'),
-          /**
-           * Direction of the alphabetical order
-           */
-          direction: builderEnums.direction({
-            meta: {
-              id: 'termsRankByAlphabeticalDirection',
-              description: 'Sort direction for alphabetical ranking',
-            },
-          }),
-        }),
-        schema.object({
-          type: schema.literal('rare'),
-          /**
-           * Maximum number of rare terms
-           */
-          max: schema.number({
-            meta: {
-              description: 'Maximum number of rare terms',
-            },
-          }),
-        }),
-        schema.object({
-          type: schema.literal('significant'),
-        }),
-        schema.object({
-          type: schema.literal('metric'),
-          metric_index: schema.number({
-            defaultValue: 0,
-            min: 0,
-            meta: {
-              description:
-                "0-based index into the metrics array (layer's metrics array if XY chart) identifying which metric to rank by. Defaults to 0 (first metric).",
-            },
-          }),
-
-          direction: builderEnums.direction({
-            meta: {
-              id: 'termsRankByMetricDirection',
-              description: 'Sort direction for metric-based ranking',
-            },
-          }),
-        }),
+        schema.object(
+          {
+            type: schema.literal('alphabetical'),
+            /**
+             * Direction of the alphabetical order
+             */
+            direction: builderEnums.direction({
+              meta: {
+                id: 'termsRankByAlphabeticalDirection',
+                description: 'Sort direction for alphabetical ranking',
+              },
+            }),
+          },
+          { meta: { title: 'Alphabetical' } }
+        ),
+        schema.object(
+          {
+            type: schema.literal('rare'),
+            /**
+             * Maximum number of rare terms
+             */
+            max: schema.number({
+              meta: {
+                description: 'Maximum number of rare terms',
+              },
+            }),
+          },
+          { meta: { title: 'Rare terms' } }
+        ),
+        schema.object(
+          {
+            type: schema.literal('significant'),
+          },
+          { meta: { title: 'Significant terms' } }
+        ),
+        schema.object(
+          {
+            type: schema.literal('metric'),
+            metric_index: schema.number({
+              defaultValue: 0,
+              min: 0,
+              meta: {
+                description:
+                  "0-based index into the metrics array (layer's metrics array if XY chart) identifying which metric to rank by. Defaults to 0 (first metric).",
+              },
+            }),
+            direction: builderEnums.direction({
+              meta: {
+                id: 'termsRankByMetricDirection',
+                description: 'Sort direction for metric-based ranking',
+              },
+            }),
+          },
+          { meta: { title: 'Metric' } }
+        ),
         bucketTermsRankByCustomBaseSchema,
         bucketTermsRankByPercentileOperationSchema,
         bucketTermsRankByPercentileRankOperationSchema,
