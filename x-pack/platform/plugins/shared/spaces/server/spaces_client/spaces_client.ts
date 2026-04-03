@@ -208,7 +208,7 @@ export class SpacesClient implements ISpacesClient {
     this.debugLogger(`SpacesClient.create(), using RBAC. Attempting to create space`);
 
     const id = space.id;
-    const attributes = this.generateSpaceAttributes(space);
+    const attributes = this.generateSpaceAttributes({ ...space, name: space.name.trim() });
 
     const createdSavedObject = await this.repository.create('space', attributes, { id });
 
@@ -367,7 +367,7 @@ export class SpacesClient implements ISpacesClient {
 
   private generateSpaceAttributes = (space: v1.Space) => {
     return {
-      name: space.name.trim(),
+      name: space.name,
       description: space.description,
       color: space.color,
       initials: space.initials,

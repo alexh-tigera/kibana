@@ -948,7 +948,7 @@ describe('#update', () => {
     expect(mockCallWithRequestRepository.get).toHaveBeenCalledWith('space', id);
   });
 
-  test(`trims whitespace from name when updating a space`, async () => {
+  test(`preserves leading/trailing whitespace in name when updating a space`, async () => {
     const mockDebugLogger = createMockDebugLogger();
     const mockConfig = createMockConfig();
     const mockCallWithRequestRepository = savedObjectsRepositoryMock.create();
@@ -969,7 +969,7 @@ describe('#update', () => {
     expect(mockCallWithRequestRepository.update).toHaveBeenCalledWith(
       'space',
       id,
-      expect.objectContaining({ name: 'foo-name' })
+      expect.objectContaining({ name: '  foo-name  ' })
     );
   });
 
