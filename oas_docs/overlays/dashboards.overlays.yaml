@@ -23,7 +23,11 @@ actions:
         > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
         > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
 
+        For general guidance on building dashboards in Kibana, see the [Dashboards documentation](https://www.elastic.co/docs/explore-analyze/dashboards).
+
         A dashboard is built from **panels** arranged on a grid, each embedding a visualization, Discover session results, map, or more static content such as links and images. Panels can be grouped into collapsible **sections**. **Controls** (options lists, range sliders, time sliders) add interactive filtering and can be pinned at the top of the dashboard or placed as panels anywhere in the dashboard. The `filters`, `query`, and `time_range` fields apply across all panels at once.
+
+        You can also create and modify dashboards using natural language through the [dashboards agent skill](https://github.com/elastic/elastic-agent-skills) or the [Agent Builder dashboard tools](https://www.elastic.co/docs/explore-analyze/ai-assistant/agent-builder).
 
         All request examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `dataset.index` and field names to match your index mapping.
 
