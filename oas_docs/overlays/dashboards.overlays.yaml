@@ -26,6 +26,8 @@ actions:
 
         A dashboard is built from **panels** arranged on a grid, each embedding a visualization, Discover session results, map, or more static content such as links and images. Panels can be grouped into collapsible **sections**. **Controls** (options lists, range sliders, time sliders) add interactive filtering and can be pinned at the top of the dashboard or placed as panels anywhere in the dashboard. The `filters`, `query`, and `time_range` fields apply across all panels at once.
 
+        All request examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `dataset.index` and field names to match your index mapping.
+
         ### Panel types
 
         The `type` field in each panel determines what it contains. Common types:
@@ -220,6 +222,10 @@ actions:
         - **Invalid panel `type`**: must match a supported panel type for your deployment.
         - **`null` values** instead of omitting optional fields: the API rejects `null`; omit the field instead.
         - **`access_control` on update**: the `access_control` field is not accepted on [`PUT`](https://www.elastic.co/docs/api/doc/kibana/operation/operation-updatedashboard); use [`POST`](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createdashboard) with an explicit ID to set it.
+
+        ## Next steps
+
+        Once you have created a dashboard, you can manage individual visualizations as reusable saved objects using the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) and embed them in dashboards by reference. For chart-specific configuration options, see the [chart type documentation](https://www.elastic.co/docs/explore-analyze/visualize/charts).
       externalDocs:
         description: Dashboards documentation
         url: https://www.elastic.co/docs/explore-analyze/dashboards
