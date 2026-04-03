@@ -344,24 +344,21 @@ export const QueryBarTopRow = React.memo(
         timePrecision: 'none',
       }
     );
-    // SuperDatePicker uses a single `isPaused` boolean (pause = off).
-    // DateRangePicker splits this into two: `isEnabled` (feature on/off via Settings)
-    // and `isPaused` (play/pause toggle while enabled). `isPaused` is local-only
-    // and has no equivalent in the legacy path.
+    const isAutoRefreshEnabled = props.isRefreshPaused === false;
     const [autoRefresh, setAutoRefresh] = useState<AutoRefreshSettings>(() => ({
-      isEnabled: props.isRefreshPaused === false,
+      isEnabled: isAutoRefreshEnabled,
       isPaused: false,
-      interval: props.refreshInterval ?? 10000,
-      intervalUnit: 's',
+      intervalMs: props.refreshInterval ?? 10000,
+      intervalDisplayUnit: 's',
     }));
 
     useEffect(() => {
       setAutoRefresh((prev) => ({
         ...prev,
-        ...(props.refreshInterval != null ? { interval: props.refreshInterval } : {}),
-        isEnabled: props.isRefreshPaused === false,
+        ...(props.refreshInterval != null ? { intervalMs: props.refreshInterval } : {}),
+        isEnabled: isAutoRefreshEnabled,
       }));
-    }, [props.refreshInterval, props.isRefreshPaused]);
+    }, [props.refreshInterval, isAutoRefreshEnabled]);
 
     const kibana = useKibana<IUnifiedSearchPluginServices>();
 
@@ -603,12 +600,12 @@ export const QueryBarTopRow = React.memo(
         if (nextAutoRefresh) {
           setAutoRefresh((prev) => {
             const isEnabledChanged = prev.isEnabled !== nextAutoRefresh.isEnabled;
-            const intervalChanged = prev.interval !== nextAutoRefresh.interval;
+            const intervalChanged = prev.intervalMs !== nextAutoRefresh.intervalMs;
 
             if (isEnabledChanged || intervalChanged) {
               propsOnRefreshChange?.({
                 isPaused: !nextAutoRefresh.isEnabled,
-                refreshInterval: nextAutoRefresh.interval,
+                refreshInterval: nextAutoRefresh.intervalMs,
               });
             }
 
