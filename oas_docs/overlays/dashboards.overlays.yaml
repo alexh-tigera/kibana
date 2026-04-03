@@ -79,7 +79,7 @@ actions:
 
         ### ES|QL visualizations
 
-        The standalone [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) currently blocks ES|QL on the [create](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) and [update](https://www.elastic.co/docs/api/doc/kibana/operation/operation-updatevisualization) endpoints. However, ES|QL Lens visualizations **can** be created through the Dashboards API by embedding them inline as `lens` panels. This is currently the only way to create ES|QL visualizations through the API.
+        ES|QL-based Lens visualizations can be created by embedding them inline as `lens` panels in a dashboard. This is the way to create ES|QL visualizations through the API. The [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) supports index/data view mode only; for ES|QL, use the Dashboards API.
 
         For `metric` charts, `dataset` is at the top level of `attributes` and `metrics` references columns by name:
 
