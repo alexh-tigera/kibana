@@ -255,7 +255,7 @@ export function DateRangePickerProvider({
 
   const { secondsRemaining: autoRefreshSecondsRemaining } = useAutoRefresh({
     isPaused: refreshTimerPaused,
-    intervalMs: settings.autoRefresh?.isEnabled ? settings.autoRefresh.interval : 0,
+    intervalMs: settings.autoRefresh?.isEnabled ? settings.autoRefresh.intervalMs : 0,
     onRefresh,
   });
 
