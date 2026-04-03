@@ -150,7 +150,7 @@ const singleConditionSchema = baseConditionSchema.extends(
   {
     meta: {
       description: 'Condition: is',
-      title: ASCODE_FILTER_OPERATOR.IS,
+      title: 'Condition: is',
       id: 'kbn-as-code-filters-schema_condition_is',
     },
   }
@@ -174,7 +174,7 @@ const oneOfConditionSchema = baseConditionSchema.extends(
   {
     meta: {
       description: 'Condition: is one of',
-      title: ASCODE_FILTER_OPERATOR.IS_ONE_OF,
+      title: 'Condition: is one of',
       id: 'kbn-as-code-filters-schema_condition_is_one_of',
     },
   }
@@ -191,7 +191,7 @@ const rangeConditionSchema = baseConditionSchema.extends(
   {
     meta: {
       description: 'Condition: range',
-      title: ASCODE_FILTER_OPERATOR.RANGE,
+      title: 'Condition: range',
       id: 'kbn-as-code-filters-schema_condition_range',
     },
   }
@@ -208,7 +208,7 @@ const existsConditionSchema = baseConditionSchema.extends(
   {
     meta: {
       description: 'Condition: exists',
-      title: ASCODE_FILTER_OPERATOR.EXISTS,
+      title: 'Condition: exists',
       id: 'kbn-as-code-filters-schema_condition_exists',
     },
   }
@@ -250,7 +250,7 @@ export const asCodeConditionFilterSchema = commonBasePropertiesSchema.extends(
   {
     meta: {
       description: 'Condition filter',
-      title: ASCODE_FILTER_TYPE.CONDITION,
+      title: 'Condition filter',
       id: 'kbn-as-code-filters-schema_asCodeConditionFilterSchema',
     },
   }
@@ -288,7 +288,7 @@ export const asCodeGroupFilterSchema = commonBasePropertiesSchema.extends(
   {
     meta: {
       description: 'Grouped condition filter',
-      title: ASCODE_FILTER_TYPE.GROUP,
+      title: 'Group filter',
       id: 'kbn-as-code-filters-schema_asCodeGroupFilterSchema',
     },
   }
@@ -324,7 +324,7 @@ export const asCodeDSLFilterSchema = commonBasePropertiesSchema.extends(
   {
     meta: {
       description: 'DSL filter',
-      title: ASCODE_FILTER_TYPE.DSL,
+      title: 'DSL filter',
       id: 'kbn-as-code-filters-schema_asCodeDSLFilterSchema',
     },
   }
@@ -344,7 +344,7 @@ export const asCodeSpatialFilterSchema = commonBasePropertiesSchema.extends(
   {
     meta: {
       description: 'Spatial filter',
-      title: ASCODE_FILTER_TYPE.SPATIAL,
+      title: 'Spatial filter',
       id: 'kbn-as-code-filters-schema_asCodeSpatialFilterSchema',
     },
   }

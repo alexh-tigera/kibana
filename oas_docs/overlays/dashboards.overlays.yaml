@@ -239,39 +239,6 @@ actions:
       x-displayName: Dashboards
 
   # ──────────────────────────────────────────────
-  # Schema title overrides — human-readable labels for oneOf/anyOf tabs
-  # Targets use description-based filters because bump-cli JSONPath
-  # does not support bracket notation with hyphens in schema names.
-  # ──────────────────────────────────────────────
-  - target: '$.components.schemas[?(@.description=="Condition filter")]'
-    update:
-      title: Condition filter
-  - target: '$.components.schemas[?(@.description=="DSL filter")]'
-    update:
-      title: DSL filter
-  - target: '$.components.schemas[?(@.description=="Grouped condition filter")]'
-    update:
-      title: Group filter
-  - target: '$.components.schemas[?(@.description=="Spatial filter")]'
-    update:
-      title: Spatial filter
-  - target: '$.components.schemas[?(@.description=="Condition: exists")]'
-    update:
-      title: "Condition: exists"
-  - target: '$.components.schemas[?(@.description=="Condition: is")]'
-    update:
-      title: "Condition: is"
-  - target: '$.components.schemas[?(@.description=="Condition: is one of")]'
-    update:
-      title: "Condition: is one of"
-  - target: '$.components.schemas[?(@.description=="Condition: range")]'
-    update:
-      title: "Condition: range"
-  - target: '$.components.schemas[?(@.description=="Condition or nested group filter")]'
-    update:
-      title: Condition or group
-
-  # ──────────────────────────────────────────────
   # POST — summary, examples and code samples
   # ──────────────────────────────────────────────
   - target: "$.paths['/api/dashboards/{id}']['post']"
