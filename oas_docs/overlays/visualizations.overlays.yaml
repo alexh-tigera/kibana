@@ -14,12 +14,21 @@ actions:
 
         Visualizations created through this API can be added to dashboards using the Kibana UI or the Dashboards API.
 
+        ## When to use the Visualizations API vs. the Dashboards API
+
+        - Use the Visualizations API to create and manage individual charts (bar, metric, pie, and so on) as reusable saved objects in your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library).
+        - Use the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards) to create and manage dashboards and the panels they contain. The Dashboards API also supports creating ES|QL-based visualizations inline, which this API does not yet support (see [Data source modes](#data-source-modes)).
+
         ## Get started
 
         > info
-        > **Authentication:** Refer to the [Kibana API documentation](https://www.elastic.co/docs/api/doc/kibana). **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header. **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
+        > - **Authentication:** Refer to the [Kibana API documentation > Authentication](https://www.elastic.co/docs/api/doc/kibana).
+        > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
+        > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
 
-        ## Chart types
+        Each visualization has a `type` field that determines the chart to render and a `dataset` field that controls how data is fetched. The sections below cover the available chart types and data source modes.
+
+        ### Chart types
 
         The `type` field in the request body determines the chart type:
 
@@ -39,11 +48,11 @@ actions:
 
         All chart types require `type`, `title`, `dataset`, and `query`. Chart-specific fields (metrics, layers, group_by, etc.) vary by type.
 
-        ## Data source modes
+        ### Data source modes
 
-        Each chart type supports two data source modes, selected by setting `dataset.type`.
+        Set `dataset.type` to choose how the visualization fetches data. Each mode has a different structure for defining metrics and breakdowns.
 
-        **Index/data view mode** (`dataset.type: "dataView"` or `"index"`) — Kibana runs the aggregations for you. Define metrics with operations like `count`, `average`, `sum` and breakdowns with `terms`, `date_histogram`, etc. Requires a `query` field for KQL or Lucene filtering.
+        **Index/data view mode** (`dataset.type: "dataView"` or `"index"`) uses Kibana aggregations. Define metrics with operations like `count`, `average`, `sum` and breakdowns with `terms`, `date_histogram`, etc. Requires a `query` field for KQL or Lucene filtering.
 
         Use `"type": "index"` with an index pattern and time field for ad-hoc access:
 
@@ -63,7 +72,7 @@ actions:
         }
         ```
 
-        **ES|QL mode** (`dataset.type: "esql"`) — You write an ES|QL query and reference result columns directly using `operation: "value"` with a `column` name. Best for complex transformations or when you prefer a query-first workflow.
+        **ES|QL mode** (`dataset.type: "esql"`) lets you write an ES|QL query and reference result columns directly using `operation: "value"` with a `column` name. Best for complex transformations or when you prefer a query-first workflow.
 
         ```json
         {
@@ -79,7 +88,7 @@ actions:
 
         All request examples on this page and the chart type pages use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `dataset.index` (or `dataset.id` for data views) and update `field` names in metrics and breakdowns to match your index mapping.
 
-        ## Error handling
+        ### Error handling
 
         If a request returns a `400 Bad Request`, the response body contains a validation error message. Because the request body uses a `oneOf` discriminator on the `type` field, the error may list every chart type that didn't match. Look for the branch that matches your intended `type` — the relevant error message will describe the missing or invalid field. Common causes include:
 
