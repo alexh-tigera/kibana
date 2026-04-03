@@ -140,7 +140,7 @@ actions:
                   $ref: '../examples/create_pie_visualization_response.yaml'
       x-codeSamples:
         - lang: cURL
-          label: Create a metric visualization
+          label: Create a metric visualization - cURL
           source: |
             curl -X POST "${KIBANA_URL}/api/visualizations" \
               -H "Authorization: ApiKey ${API_KEY}" \
@@ -168,6 +168,7 @@ actions:
               }]
             }'
         - lang: Console
+          label: Create a metric visualization - Console
           source: |
             POST kbn:/api/visualizations
             {
@@ -207,11 +208,12 @@ actions:
                   $ref: '../examples/search_visualizations_response.yaml'
       x-codeSamples:
         - lang: cURL
-          label: Search visualizations
+          label: Search visualizations - cURL
           source: |
             curl -X GET "${KIBANA_URL}/api/visualizations?query=response+time&per_page=10" \
               -H "Authorization: ApiKey ${API_KEY}"
         - lang: Console
+          label: Search visualizations - Console
           source: |
             GET kbn:/api/visualizations?query=response+time&per_page=10
 
@@ -230,11 +232,12 @@ actions:
                   $ref: '../examples/get_visualization_response.yaml'
       x-codeSamples:
         - lang: cURL
-          label: Get a visualization
+          label: Get a visualization - cURL
           source: |
             curl -X GET "${KIBANA_URL}/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d" \
               -H "Authorization: ApiKey ${API_KEY}"
         - lang: Console
+          label: Get a visualization - Console
           source: |
             GET kbn:/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d
 
@@ -246,7 +249,7 @@ actions:
     update:
       x-codeSamples:
         - lang: cURL
-          label: Update a visualization
+          label: Create or update a visualization - cURL
           source: |
             curl -X PUT "${KIBANA_URL}/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d" \
               -H "Authorization: ApiKey ${API_KEY}" \
@@ -274,6 +277,7 @@ actions:
               }]
             }'
         - lang: Console
+          label: Create or update a visualization - Console
           source: |
             PUT kbn:/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d
             {
@@ -306,11 +310,12 @@ actions:
     update:
       x-codeSamples:
         - lang: cURL
-          label: Delete a visualization
+          label: Delete a visualization - cURL
           source: |
             curl -X DELETE "${KIBANA_URL}/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d" \
               -H "Authorization: ApiKey ${API_KEY}" \
               -H "kbn-xsrf: true"
         - lang: Console
+          label: Delete a visualization - Console
           source: |
             DELETE kbn:/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d
