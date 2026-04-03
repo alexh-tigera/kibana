@@ -52,27 +52,35 @@ actions:
 
         Set `dataset.type` to choose how the visualization fetches data. Each mode has a different structure for defining metrics and breakdowns.
 
-        **Index/data view mode** (`dataset.type: "dataView"` or `"index"`) uses Kibana aggregations. Define metrics with operations like `count`, `average`, `sum` and breakdowns with `terms`, `date_histogram`, etc. Requires a `query` field for KQL or Lucene filtering.
+        #### Index/data view mode
 
-        Use `"type": "index"` with an index pattern and time field for ad-hoc access:
+        `dataset.type: "dataView"` or `"index"`
 
-        ```json
-        {
-          "dataset": { "type": "index", "index": "logs-*", "time_field": "@timestamp" },
-          "query": { "query": "status: 200" }
-        }
-        ```
+        Uses Kibana aggregations. Define metrics with operations like `count`, `average`, `sum` and breakdowns with `terms`, `date_histogram`, etc. Requires a `query` field for KQL or Lucene filtering.
 
-        Or use `"type": "dataView"` with the ID of an existing Kibana data view:
+        - **`"type": "index"`** — use with an index pattern and time field for ad-hoc access:
 
-        ```json
-        {
-          "dataset": { "type": "dataView", "id": "90943e30-9a47-11e8-b64d-95841ca0b247" },
-          "query": { "query": "status: 200" }
-        }
-        ```
+          ```json
+          {
+            "dataset": { "type": "index", "index": "logs-*", "time_field": "@timestamp" },
+            "query": { "query": "status: 200" }
+          }
+          ```
 
-        **ES|QL mode** (`dataset.type: "esql"`) lets you write an ES|QL query and reference result columns directly using `operation: "value"` with a `column` name. Best for complex transformations or when you prefer a query-first workflow.
+        - **`"type": "dataView"`** — use with the ID of an existing Kibana data view:
+
+          ```json
+          {
+            "dataset": { "type": "dataView", "id": "90943e30-9a47-11e8-b64d-95841ca0b247" },
+            "query": { "query": "status: 200" }
+          }
+          ```
+
+        #### ES|QL mode
+
+        `dataset.type: "esql"`
+
+        Lets you write an ES|QL query and reference result columns directly using `operation: "value"` with a `column` name. Best for complex transformations or when you prefer a query-first workflow.
 
         ```json
         {
