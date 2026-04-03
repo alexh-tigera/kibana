@@ -25,6 +25,8 @@ actions:
         > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
         > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
 
+        For general guidance on building visualizations in Kibana, see the [Lens documentation](https://www.elastic.co/docs/explore-analyze/visualize/lens) and the [chart type reference](https://www.elastic.co/docs/explore-analyze/visualize/charts).
+
         Each visualization has a `type` field that determines the chart to render and a `dataset` field that controls how data is fetched. The sections below cover the available chart types and data source modes.
 
         ### Chart types
