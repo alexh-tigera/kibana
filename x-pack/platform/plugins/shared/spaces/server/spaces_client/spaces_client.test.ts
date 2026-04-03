@@ -948,11 +948,14 @@ describe('#update', () => {
     expect(mockCallWithRequestRepository.get).toHaveBeenCalledWith('space', id);
   });
 
-  test(`preserves leading/trailing whitespace in name when updating a space`, async () => {
+  test(`preserves existing leading/trailing whitespace in name when updating a space with the same name`, async () => {
     const mockDebugLogger = createMockDebugLogger();
     const mockConfig = createMockConfig();
     const mockCallWithRequestRepository = savedObjectsRepositoryMock.create();
-    mockCallWithRequestRepository.get.mockResolvedValue(savedObject);
+    mockCallWithRequestRepository.get.mockResolvedValue({
+      ...savedObject,
+      attributes: { ...savedObject.attributes, name: '  foo-name  ' },
+    });
 
     const client = new SpacesClient(
       mockDebugLogger,
@@ -970,6 +973,31 @@ describe('#update', () => {
       'space',
       id,
       expect.objectContaining({ name: '  foo-name  ' })
+    );
+  });
+
+  test(`trims leading/trailing whitespace from name when updating a space with a new name`, async () => {
+    const mockDebugLogger = createMockDebugLogger();
+    const mockConfig = createMockConfig();
+    const mockCallWithRequestRepository = savedObjectsRepositoryMock.create();
+    mockCallWithRequestRepository.get.mockResolvedValue(savedObject);
+
+    const client = new SpacesClient(
+      mockDebugLogger,
+      mockConfig,
+      mockCallWithRequestRepository,
+      [],
+      'traditional',
+      featuresStart,
+      undefined
+    );
+    const id = savedObject.id;
+    await client.update(id, { ...spaceToUpdate, name: '  new-name  ' });
+
+    expect(mockCallWithRequestRepository.update).toHaveBeenCalledWith(
+      'space',
+      id,
+      expect.objectContaining({ name: 'new-name' })
     );
   });
 

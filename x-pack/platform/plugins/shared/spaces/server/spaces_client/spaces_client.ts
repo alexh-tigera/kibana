@@ -282,7 +282,11 @@ export class SpacesClient implements ISpacesClient {
       ? { ...space, disabledFeatures: existingSpaceDisabledFeatures }
       : space;
 
-    const attributes = this.generateSpaceAttributes(spaceToPersist);
+    // Preserve existing leading/trailing whitespace (backwards compatibility for legacy spaces),
+    // but trim if a new name is being set to prevent introducing new whitespace.
+    const existingName = existingSpaceSavedObject.attributes.name as string;
+    const resolvedName = space.name === existingName ? space.name : space.name.trim();
+    const attributes = this.generateSpaceAttributes({ ...spaceToPersist, name: resolvedName });
     await this.repository.update('space', id, attributes);
     const updatedSpace = this.transformSavedObjectToSpace({
       id,
