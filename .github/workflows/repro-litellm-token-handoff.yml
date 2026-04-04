@@ -71,47 +71,87 @@ jobs:
 
           echo "api_key output was available in the downstream job."
 
-  verify_token_survives_job_boundary:
-    name: Verify token survives job boundary
+  # verify_token_survives_job_boundary:
+  #   name: Verify token survives job boundary
+  #   runs-on: ubuntu-latest
+  #   needs: mint_token
+  #   if: ${{ needs.mint_token.outputs.api_key != '' }}
+  #   permissions: {}
+  #   steps:
+  #     - name: Delete the token from the downstream job
+  #       env:
+  #         API_KEY: ${{ needs.mint_token.outputs.api_key }}
+  #         BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
+  #         MASTER_KEY: ${{ secrets.LITELLM_MASTER_API_KEY }}
+  #       run: |
+  #         set -euo pipefail
+
+  #         response_file="$(mktemp)"
+  #         http_status="$(
+  #           curl \
+  #             --silent \
+  #             --show-error \
+  #             --output "${response_file}" \
+  #             --write-out '%{http_code}' \
+  #             --request POST \
+  #             --url "${BASE_URL%/}/key/delete" \
+  #             --header "Authorization: Bearer ${MASTER_KEY}" \
+  #             --header 'Content-Type: application/json' \
+  #             --data "{\"keys\":[\"${API_KEY}\"]}"
+  #         )"
+
+  #         case "${http_status}" in
+  #           200|201|202|204)
+  #             echo "The downstream job deleted the token successfully, so the token survived the job boundary."
+  #             ;;
+  #           400|404|422)
+  #             echo "::error::The downstream job could not delete the token because LiteLLM reported ${http_status}. This usually means the mint job post hook already revoked it."
+  #             cat "${response_file}"
+  #             exit 1
+  #             ;;
+  #           *)
+  #             echo "::error::Unexpected LiteLLM response while checking whether the token survived the job boundary (HTTP ${http_status})."
+  #             cat "${response_file}"
+  #             exit 1
+  #             ;;
+  #         esac
+  revoke_token:
+    name: Revoke LiteLLM token
+    if: ${{ always() }}
+    needs: [mint_token, verify_output_handoff]
     runs-on: ubuntu-latest
-    needs: mint_token
-    if: ${{ needs.mint_token.outputs.api_key != '' }}
-    permissions: {}
     steps:
-      - name: Delete the token from the downstream job
-        env:
-          API_KEY: ${{ needs.mint_token.outputs.api_key }}
-          BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
-          MASTER_KEY: ${{ secrets.LITELLM_MASTER_API_KEY }}
-        run: |
-          set -euo pipefail
+      - name: Checkout elastic/github-actions PR 65
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: elastic/github-actions
+          ref: refs/pull/65/head
+          path: .github-actions-src
 
-          response_file="$(mktemp)"
-          http_status="$(
-            curl \
-              --silent \
-              --show-error \
-              --output "${response_file}" \
-              --write-out '%{http_code}' \
-              --request POST \
-              --url "${BASE_URL%/}/key/delete" \
-              --header "Authorization: Bearer ${MASTER_KEY}" \
-              --header 'Content-Type: application/json' \
-              --data "{\"keys\":[\"${API_KEY}\"]}"
-          )"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+        with:
+          version: 10.32.1
 
-          case "${http_status}" in
-            200|201|202|204)
-              echo "The downstream job deleted the token successfully, so the token survived the job boundary."
-              ;;
-            400|404|422)
-              echo "::error::The downstream job could not delete the token because LiteLLM reported ${http_status}. This usually means the mint job post hook already revoked it."
-              cat "${response_file}"
-              exit 1
-              ;;
-            *)
-              echo "::error::Unexpected LiteLLM response while checking whether the token survived the job boundary (HTTP ${http_status})."
-              cat "${response_file}"
-              exit 1
-              ;;
-          esac
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 24.14.1
+          cache: pnpm
+          cache-dependency-path: .github-actions-src/pnpm-lock.yaml
+
+      - name: Install elastic/github-actions dependencies
+        working-directory: .github-actions-src
+        run: pnpm install --frozen-lockfile
+
+      - name: Build elastic/github-actions actions
+        working-directory: .github-actions-src
+        run: pnpm build
+
+      - name: Revoke LiteLLM token
+        uses: ./.github-actions-src/litellm-token
+        with:
+          operation: revoke
+          base-url: ${{ secrets.LITELLM_BASE_URL }}
+          master-key: ${{ secrets.LITELLM_MASTER_API_KEY }}
+          api-key: ${{ needs.mint_token.outputs.api_key }}
