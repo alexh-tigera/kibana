@@ -71,50 +71,6 @@ jobs:
 
           echo "api_key output was available in the downstream job."
 
-  # verify_token_survives_job_boundary:
-  #   name: Verify token survives job boundary
-  #   runs-on: ubuntu-latest
-  #   needs: mint_token
-  #   if: ${{ needs.mint_token.outputs.api_key != '' }}
-  #   permissions: {}
-  #   steps:
-  #     - name: Delete the token from the downstream job
-  #       env:
-  #         API_KEY: ${{ needs.mint_token.outputs.api_key }}
-  #         BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
-  #         MASTER_KEY: ${{ secrets.LITELLM_MASTER_API_KEY }}
-  #       run: |
-  #         set -euo pipefail
-
-  #         response_file="$(mktemp)"
-  #         http_status="$(
-  #           curl \
-  #             --silent \
-  #             --show-error \
-  #             --output "${response_file}" \
-  #             --write-out '%{http_code}' \
-  #             --request POST \
-  #             --url "${BASE_URL%/}/key/delete" \
-  #             --header "Authorization: Bearer ${MASTER_KEY}" \
-  #             --header 'Content-Type: application/json' \
-  #             --data "{\"keys\":[\"${API_KEY}\"]}"
-  #         )"
-
-  #         case "${http_status}" in
-  #           200|201|202|204)
-  #             echo "The downstream job deleted the token successfully, so the token survived the job boundary."
-  #             ;;
-  #           400|404|422)
-  #             echo "::error::The downstream job could not delete the token because LiteLLM reported ${http_status}. This usually means the mint job post hook already revoked it."
-  #             cat "${response_file}"
-  #             exit 1
-  #             ;;
-  #           *)
-  #             echo "::error::Unexpected LiteLLM response while checking whether the token survived the job boundary (HTTP ${http_status})."
-  #             cat "${response_file}"
-  #             exit 1
-  #             ;;
-  #         esac
   revoke_token:
     name: Revoke LiteLLM token
     if: ${{ always() }}
@@ -155,3 +111,47 @@ jobs:
           base-url: ${{ secrets.LITELLM_BASE_URL }}
           master-key: ${{ secrets.LITELLM_MASTER_API_KEY }}
           api-key: ${{ needs.mint_token.outputs.api_key }}
+
+  verify_token_revoked:
+    name: Verify token is already revoked downstream
+    runs-on: ubuntu-latest
+    needs: [mint_token, revoke_token]
+    permissions: {}
+    steps:
+      - name: Confirm the token is already revoked downstream
+        env:
+          API_KEY: ${{ needs.mint_token.outputs.api_key }}
+          BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
+          MASTER_KEY: ${{ secrets.LITELLM_MASTER_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          response_file="$(mktemp)"
+          http_status="$(
+            curl \
+              --silent \
+              --show-error \
+              --output "${response_file}" \
+              --write-out '%{http_code}' \
+              --request POST \
+              --url "${BASE_URL%/}/key/delete" \
+              --header "Authorization: Bearer ${MASTER_KEY}" \
+              --header 'Content-Type: application/json' \
+              --data "{\"keys\":[\"${API_KEY}\"]}"
+          )"
+
+          case "${http_status}" in
+            200|201|202|204)
+              echo "::error::The downstream job deleted the token successfully, which means the token survived the job boundary instead of being revoked earlier."
+              cat "${response_file}"
+              exit 1
+              ;;
+            400|404|422)
+              echo "LiteLLM reported ${http_status} when the downstream job tried to delete the token, which confirms the token had already been revoked."
+              ;;
+            *)
+              echo "::error::Unexpected LiteLLM response while verifying that the token was already revoked before the downstream job ran (HTTP ${http_status})."
+              cat "${response_file}"
+              exit 1
+              ;;
+          esac
