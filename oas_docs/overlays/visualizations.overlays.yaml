@@ -107,7 +107,7 @@ actions:
 
         ## Next steps
 
-        Once you have created a visualization, use the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards) to add it to a dashboard as a panel. You can embed it **linked** (using the visualization ID) or **inline** (copying the full configuration into the dashboard panel `config`). The Dashboards API also supports building ES|QL visualizations inline.
+        Once you have created a visualization, use the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards) to add it to a dashboard as a panel. You can embed it **linked from library** (using the visualization ID) or **inline** (copying the full configuration into the dashboard panel `config`). The Dashboards API also supports building ES|QL visualizations inline.
       externalDocs:
         description: Visualizations documentation
         url: https://www.elastic.co/docs/explore-analyze/visualize/lens
