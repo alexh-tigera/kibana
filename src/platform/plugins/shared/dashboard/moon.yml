@@ -122,10 +122,10 @@ dependsOn:
   - '@kbn/monaco'
   - '@kbn/code-editor'
   - '@kbn/as-code-shared-schemas'
-  - '@kbn/core-chrome-browser'
   - '@kbn/core-http-common'
   - '@kbn/core-http-server-mocks'
   - '@kbn/core-http-browser'
+  - '@kbn/core-chrome-browser'
 tags:
   - plugin
   - prod

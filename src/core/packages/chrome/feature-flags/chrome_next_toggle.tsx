@@ -18,7 +18,7 @@ const badgeStyles = css`
 `;
 
 interface ChromeNextToggleProps {
-  featureFlags: FeatureFlagsStart;
+  featureFlags: Pick<FeatureFlagsStart, 'getBooleanValue'>;
 }
 
 export const ChromeNextToggle: React.FC<ChromeNextToggleProps> = ({ featureFlags }) => {
