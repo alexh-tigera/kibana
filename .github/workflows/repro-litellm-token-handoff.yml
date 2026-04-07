@@ -46,7 +46,7 @@ jobs:
         with:
           anthropic_api_key: ${{ needs.mint-token.outputs.api_key }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: '/review-pr REPO: ${{ github.repository }} PR_NUMBER: ${{ github.event.pull_request.number }}'
+          prompt: '/review-pr REPO: ${{ github.repository }} PR_NUMBER: ${{ github.event.pull_request.number }} Look for any security issues and if none are found simply provide a comment saying "No security issues found."'
           claude_args: |
             --max-turns 5
         env:
