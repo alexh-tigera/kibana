@@ -54,7 +54,7 @@ jobs:
 
   revoke-token:
     if: ${{ always() }}
-    needs: [mint-token, claude-review, claude-review-comment]
+    needs: [mint-token, claude-review]
     runs-on: ubuntu-latest
     permissions: {}
     steps:
