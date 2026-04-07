@@ -151,7 +151,7 @@ actions:
       title: Orientation
   - target: "$.components.schemas['Kibana_HTTP_APIs_xyAnnotationByRefLayer']"
     update:
-      title: Annotation layer (by reference)
+      title: Annotation layer (linked)
   - target: "$.components.schemas['Kibana_HTTP_APIs_xyAnnotationLayer']"
     update:
       title: Annotation layer
