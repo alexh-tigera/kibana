@@ -102,9 +102,7 @@ export const useWatchlistCsvUpload = ({
           const reader = new FileReader();
           reader.onload = () => {
             const text = reader.result as string;
-            const rowCount = text
-              .split('\n')
-              .filter((line) => line.trim().length > 0).length - 1; // subtract header
+            const rowCount = text.split('\n').filter((line) => line.trim().length > 0).length - 1; // subtract header
 
             if (rowCount <= 0) {
               setStatus('error');
