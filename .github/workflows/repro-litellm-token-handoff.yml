@@ -7,151 +7,62 @@ on:
     branches:
       - gh-claude-review
 
+env:
+  CLAUDE_MODEL: llm-gateway/claude-opus-4-5
+
 jobs:
-  mint_token:
+  mint-token:
     name: Mint token
     runs-on: ubuntu-latest
     permissions: {}
     outputs:
       api_key: ${{ steps.mint.outputs.api_key }}
     steps:
-      - name: Checkout elastic/github-actions PR 65
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          repository: elastic/github-actions
-          ref: refs/pull/65/head
-          path: .github-actions-src
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
-        with:
-          version: 10.32.1
-
-      - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
-        with:
-          node-version: 24.14.1
-          cache: pnpm
-          cache-dependency-path: .github-actions-src/pnpm-lock.yaml
-
-      - name: Install elastic/github-actions dependencies
-        working-directory: .github-actions-src
-        run: pnpm install --frozen-lockfile
-
-      - name: Build elastic/github-actions actions
-        working-directory: .github-actions-src
-        run: pnpm build
-
-      - name: Mint LiteLLM token from elastic/github-actions
+      - name: Mint LiteLLM token
         id: mint
-        uses: ./.github-actions-src/litellm-token
+        uses: elastic/github-actions/litellm-token@cd6ed0cb2ac3e8c6d84a5ffed58eda02f4165faa # v3.0.0
         with:
           base-url: ${{ secrets.LITELLM_BASE_URL }}
           master-key: ${{ secrets.LITELLM_MASTER_API_KEY }}
-          models: llm-gateway/gpt-5.4
+          models: ${{ env.CLAUDE_MODEL }}
           key-ttl: 15m
           max-budget: '5'
 
-  verify_output_handoff:
-    name: Verify downstream output handoff
+  claude-review:
+    needs: mint-token
     runs-on: ubuntu-latest
-    needs: mint_token
-    permissions: {}
+    permissions:
+      contents: read # needed to checkout repo
+      issues: read # needed to read PR description, conversation, comments, and labels
+      pull-requests: write # needed to post review comments and inline comments on the diff
     steps:
-      - name: Fail if the api_key output was redacted or skipped
-        env:
-          API_KEY: ${{ needs.mint_token.outputs.api_key }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${API_KEY}" ]; then
-            echo "::error::mint_token.outputs.api_key is empty in the downstream job. This usually means the action masked the token before setting it as an output."
-            exit 1
-          fi
-
-          echo "api_key output was available in the downstream job."
-
-  revoke_token:
-    name: Revoke LiteLLM token
-    if: ${{ always() }}
-    needs: [mint_token, verify_output_handoff]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout elastic/github-actions PR 65
+      - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          repository: elastic/github-actions
-          ref: refs/pull/65/head
-          path: .github-actions-src
+          persist-credentials: false
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+      - name: Run Claude PR Review
+        uses: anthropics/claude-code-action@64c7a0ef71df67b14cb4471f4d9c8565c61042bf # v1.0.66
         with:
-          version: 10.32.1
+          anthropic_api_key: ${{ needs.mint-token.outputs.api_key }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: '/review'
+          claude_args: '--max-turns 5'
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
+          ANTHROPIC_MODEL: ${{ env.CLAUDE_MODEL }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
-        with:
-          node-version: 24.14.1
-          cache: pnpm
-          cache-dependency-path: .github-actions-src/pnpm-lock.yaml
-
-      - name: Install elastic/github-actions dependencies
-        working-directory: .github-actions-src
-        run: pnpm install --frozen-lockfile
-
-      - name: Build elastic/github-actions actions
-        working-directory: .github-actions-src
-        run: pnpm build
-
+  revoke-token:
+    if: ${{ always() }}
+    needs: [mint-token, claude-review, claude-review-comment]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
       - name: Revoke LiteLLM token
-        uses: ./.github-actions-src/litellm-token
+        id: revoke
+        uses: elastic/github-actions/litellm-token@cd6ed0cb2ac3e8c6d84a5ffed58eda02f4165faa # v3.0.0
         with:
           operation: revoke
           base-url: ${{ secrets.LITELLM_BASE_URL }}
           master-key: ${{ secrets.LITELLM_MASTER_API_KEY }}
-          api-key: ${{ needs.mint_token.outputs.api_key }}
-
-  verify_token_revoked:
-    name: Verify token is already revoked downstream
-    runs-on: ubuntu-latest
-    needs: [mint_token, revoke_token]
-    permissions: {}
-    steps:
-      - name: Confirm the token is already revoked downstream
-        env:
-          API_KEY: ${{ needs.mint_token.outputs.api_key }}
-          BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
-          MASTER_KEY: ${{ secrets.LITELLM_MASTER_API_KEY }}
-        run: |
-          set -euo pipefail
-
-          response_file="$(mktemp)"
-          http_status="$(
-            curl \
-              --silent \
-              --show-error \
-              --output "${response_file}" \
-              --write-out '%{http_code}' \
-              --request POST \
-              --url "${BASE_URL%/}/key/delete" \
-              --header "Authorization: Bearer ${MASTER_KEY}" \
-              --header 'Content-Type: application/json' \
-              --data "{\"keys\":[\"${API_KEY}\"]}"
-          )"
-
-          case "${http_status}" in
-            200|201|202|204)
-              echo "::error::The downstream job deleted the token successfully, which means the token survived the job boundary instead of being revoked earlier."
-              cat "${response_file}"
-              exit 1
-              ;;
-            400|404|422)
-              echo "LiteLLM reported ${http_status} when the downstream job tried to delete the token, which confirms the token had already been revoked."
-              ;;
-            *)
-              echo "::error::Unexpected LiteLLM response while verifying that the token was already revoked before the downstream job ran (HTTP ${http_status})."
-              cat "${response_file}"
-              exit 1
-              ;;
-          esac
+          api-key: ${{ needs.mint-token.outputs.api_key }}
