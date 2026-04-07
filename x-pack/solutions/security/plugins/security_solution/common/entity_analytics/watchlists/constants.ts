@@ -16,6 +16,7 @@ export const WATCHLISTS_INDICES_URL = `${WATCHLISTS_URL}/indices` as const;
 export const WATCHLISTS_CSV_UPLOAD_URL = `${WATCHLISTS_URL}/{watchlist_id}/csv_upload` as const;
 
 export const PRIVILEGED_USER_WATCHLIST_ID = 'privileged-user-monitoring-watchlist-id';
+export const PRIVILEGED_USER_WATCHLIST_NAME = 'Privileged Users';
 
 export const PREBUILT_WATCHLIST_NAMES: Record<string, string> = {
   [PRIVILEGED_USER_WATCHLIST_ID]: i18n.translate(

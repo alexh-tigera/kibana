@@ -439,7 +439,7 @@ paths:
 
         Refer to [Spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces) for more information.
 
-        Handles the OAuth 2.0 authorization code callback from external providers. Exchanges the authorization code for access and refresh tokens.
+        Handles the OAuth 2.0 authorization code callback from external providers. Exchanges the authorization code for access and refresh tokens.<br/><br/>[Required authorization] Route required privileges: actions:oauth.
       operationId: get-actions-connector-oauth-callback
       parameters:
         - description: The authorization code returned by the OAuth provider.
@@ -632,6 +632,8 @@ paths:
           name: id
           required: true
           schema:
+            maxLength: 36
+            minLength: 1
             type: string
       requestBody:
         content:
@@ -18862,23 +18864,25 @@ paths:
                 agent_type:
                   $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
                 alert_ids:
-                  description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+                  description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
                   example:
                     - alert-id-1
                     - alert-id-2
                   items:
                     minLength: 1
                     type: string
+                  maxItems: 50
                   minItems: 1
                   type: array
                 case_ids:
-                  description: The IDs of cases where the action taken will be logged.
+                  description: The IDs of cases where the action taken will be logged. Max of 50.
                   example:
                     - case-id-1
                     - case-id-2
                   items:
                     minLength: 1
                     type: string
+                  maxItems: 50
                   minItems: 1
                   type: array
                 comment:
@@ -19209,23 +19213,25 @@ paths:
                 agent_type:
                   $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
                 alert_ids:
-                  description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+                  description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
                   example:
                     - alert-id-1
                     - alert-id-2
                   items:
                     minLength: 1
                     type: string
+                  maxItems: 50
                   minItems: 1
                   type: array
                 case_ids:
-                  description: The IDs of cases where the action taken will be logged.
+                  description: The IDs of cases where the action taken will be logged. Max of 50.
                   example:
                     - case-id-1
                     - case-id-2
                   items:
                     minLength: 1
                     type: string
+                  maxItems: 50
                   minItems: 1
                   type: array
                 comment:
@@ -24489,6 +24495,8 @@ paths:
                               - count
                           maxItems: 1000
                           type: array
+                        created_at:
+                          type: string
                         data_output_id:
                           nullable: true
                           type: string
@@ -24539,6 +24547,9 @@ paths:
                           type: boolean
                         is_protected:
                           description: Indicates whether the agent policy has tamper protection enabled. Default false.
+                          type: boolean
+                        is_verifier:
+                          description: Indicates this is a short-lived verifier policy used for OTel permission verification.
                           type: boolean
                         keep_monitoring_alive:
                           default: false
@@ -25389,6 +25400,9 @@ paths:
                   type: boolean
                 is_protected:
                   type: boolean
+                is_verifier:
+                  description: Indicates this is a short-lived verifier policy used for OTel permission verification.
+                  type: boolean
                 keep_monitoring_alive:
                   default: false
                   description: When set to true, monitoring will be enabled but logs/metrics collection will be disabled
@@ -25596,6 +25610,8 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -25646,6 +25662,9 @@ paths:
                         type: boolean
                       is_protected:
                         description: Indicates whether the agent policy has tamper protection enabled. Default false.
+                        type: boolean
+                      is_verifier:
+                        description: Indicates this is a short-lived verifier policy used for OTel permission verification.
                         type: boolean
                       keep_monitoring_alive:
                         default: false
@@ -26483,6 +26502,8 @@ paths:
                               - count
                           maxItems: 1000
                           type: array
+                        created_at:
+                          type: string
                         data_output_id:
                           nullable: true
                           type: string
@@ -26533,6 +26554,9 @@ paths:
                           type: boolean
                         is_protected:
                           description: Indicates whether the agent policy has tamper protection enabled. Default false.
+                          type: boolean
+                        is_verifier:
+                          description: Indicates this is a short-lived verifier policy used for OTel permission verification.
                           type: boolean
                         keep_monitoring_alive:
                           default: false
@@ -27349,6 +27373,8 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -27399,6 +27425,9 @@ paths:
                         type: boolean
                       is_protected:
                         description: Indicates whether the agent policy has tamper protection enabled. Default false.
+                        type: boolean
+                      is_verifier:
+                        description: Indicates this is a short-lived verifier policy used for OTel permission verification.
                         type: boolean
                       keep_monitoring_alive:
                         default: false
@@ -28248,6 +28277,9 @@ paths:
                   type: boolean
                 is_protected:
                   type: boolean
+                is_verifier:
+                  description: Indicates this is a short-lived verifier policy used for OTel permission verification.
+                  type: boolean
                 keep_monitoring_alive:
                   default: false
                   description: When set to true, monitoring will be enabled but logs/metrics collection will be disabled
@@ -28455,6 +28487,8 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -28505,6 +28539,9 @@ paths:
                         type: boolean
                       is_protected:
                         description: Indicates whether the agent policy has tamper protection enabled. Default false.
+                        type: boolean
+                      is_verifier:
+                        description: Indicates this is a short-lived verifier policy used for OTel permission verification.
                         type: boolean
                       keep_monitoring_alive:
                         default: false
@@ -29434,6 +29471,8 @@ paths:
                             - count
                         maxItems: 1000
                         type: array
+                      created_at:
+                        type: string
                       data_output_id:
                         nullable: true
                         type: string
@@ -29484,6 +29523,9 @@ paths:
                         type: boolean
                       is_protected:
                         description: Indicates whether the agent policy has tamper protection enabled. Default false.
+                        type: boolean
+                      is_verifier:
+                        description: Indicates this is a short-lived verifier policy used for OTel permission verification.
                         type: boolean
                       keep_monitoring_alive:
                         default: false
@@ -36452,6 +36494,12 @@ paths:
                         vars:
                           additionalProperties: {}
                           type: object
+                        verification_failed_at:
+                          type: string
+                        verification_started_at:
+                          type: string
+                        verification_status:
+                          type: string
                       required:
                         - id
                         - name
@@ -36605,6 +36653,12 @@ paths:
                       vars:
                         additionalProperties: {}
                         type: object
+                      verification_failed_at:
+                        type: string
+                      verification_started_at:
+                        type: string
+                      verification_status:
+                        type: string
                     required:
                       - id
                       - name
@@ -36764,6 +36818,12 @@ paths:
                       vars:
                         additionalProperties: {}
                         type: object
+                      verification_failed_at:
+                        type: string
+                      verification_started_at:
+                        type: string
+                      verification_status:
+                        type: string
                     required:
                       - id
                       - name
@@ -36910,6 +36970,12 @@ paths:
                       vars:
                         additionalProperties: {}
                         type: object
+                      verification_failed_at:
+                        type: string
+                      verification_started_at:
+                        type: string
+                      verification_status:
+                        type: string
                     required:
                       - id
                       - name
@@ -76392,6 +76458,7 @@ components:
         - THRESHOLD_RULE_TYPE_IN_SUPPRESSION
         - UNSUPPORTED_RULE_IN_SUPPRESSION_FOR_THRESHOLD
         - RULE_FILL_GAPS_DISABLED_RULE
+        - USER_INSUFFICIENT_RULE_PRIVILEGES
       type: string
     Security_Detections_API_BulkActionSkipResult:
       type: object
@@ -82783,7 +82850,7 @@ components:
       description: Agent ID
       type: string
     Security_Endpoint_Management_API_AgentIds:
-      description: A list of agent IDs. Max of 50.
+      description: A list of agent IDs. Max of 250.
       example:
         - agent-id-1
         - agent-id-2
@@ -82792,7 +82859,7 @@ components:
         - items:
             minLength: 1
             type: string
-          maxItems: 50
+          maxItems: 250
           minItems: 1
           type: array
         - minLength: 1
@@ -82834,23 +82901,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -82916,6 +82985,7 @@ components:
         - unisolate
       items:
         $ref: '#/components/schemas/Security_Endpoint_Management_API_Command'
+      maxItems: 50
       type: array
     Security_Endpoint_Management_API_Comment:
       description: Optional comment
@@ -82936,13 +83006,14 @@ components:
       example: '2023-10-31T23:59:59.999Z'
       type: string
     Security_Endpoint_Management_API_EndpointIds:
-      description: List of endpoint IDs (cannot contain empty strings)
+      description: List of endpoint IDs (cannot contain empty strings). Max of 250.
       example:
         - endpoint-id-1
         - endpoint-id-2
       items:
         minLength: 1
         type: string
+      maxItems: 250
       minItems: 1
       type: array
     Security_Endpoint_Management_API_EndpointMetadataResponse:
@@ -83080,23 +83151,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -83261,23 +83334,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -83340,23 +83415,25 @@ components:
         agent_type:
           $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
         alert_ids:
-          description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+          description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
           example:
             - alert-id-1
             - alert-id-2
           items:
             minLength: 1
             type: string
+          maxItems: 50
           minItems: 1
           type: array
         case_ids:
-          description: The IDs of cases where the action taken will be logged.
+          description: The IDs of cases where the action taken will be logged. Max of 50.
           example:
             - case-id-1
             - case-id-2
           items:
             minLength: 1
             type: string
+          maxItems: 50
           minItems: 1
           type: array
         comment:
@@ -83421,6 +83498,7 @@ components:
           - inactive
           - unenrolled
         type: string
+      maxItems: 20
       type: array
     Security_Endpoint_Management_API_Isolate:
       allOf:
@@ -83515,23 +83593,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -83700,23 +83780,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -84227,23 +84309,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -84294,23 +84378,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -84465,23 +84551,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -84630,23 +84718,25 @@ components:
             agent_type:
               $ref: '#/components/schemas/Security_Endpoint_Management_API_AgentTypes'
             alert_ids:
-              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts.
+              description: If this action is associated with any alerts, they can be specified here. The action will be logged in any cases associated with the specified alerts. Max of 50.
               example:
                 - alert-id-1
                 - alert-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             case_ids:
-              description: The IDs of cases where the action taken will be logged.
+              description: The IDs of cases where the action taken will be logged. Max of 50.
               example:
                 - case-id-1
                 - case-id-2
               items:
                 minLength: 1
                 type: string
+              maxItems: 50
               minItems: 1
               type: array
             comment:
@@ -84710,7 +84800,7 @@ components:
       type: object
       properties: {}
     Security_Endpoint_Management_API_UserIds:
-      description: A list of user IDs.
+      description: A list of user IDs. Max of 50.
       example:
         - user-id-1
         - user-id-2
@@ -84718,12 +84808,13 @@ components:
         - items:
             minLength: 1
             type: string
+          maxItems: 50
           minItems: 1
           type: array
         - minLength: 1
           type: string
     Security_Endpoint_Management_API_WithOutputs:
-      description: A list of action IDs that should include the complete output of the action.
+      description: A list of action IDs that should include the complete output of the action. Max of 50.
       example:
         - action-id-1
         - action-id-2
@@ -84731,6 +84822,7 @@ components:
         - items:
             minLength: 1
             type: string
+          maxItems: 50
           minItems: 1
           type: array
         - minLength: 1
@@ -85341,6 +85433,15 @@ components:
         notes:
           items:
             type: string
+          type: array
+        related_entities:
+          items:
+            type: object
+            properties:
+              entity_id:
+                type: string
+              relationship_type:
+                type: string
           type: array
         score_type:
           description: Distinguishes base, propagated, and resolution scores.
@@ -86017,6 +86118,9 @@ components:
         description:
           description: Description of the watchlist
           type: string
+        entityCount:
+          description: Number of entities in the watchlist
+          type: number
         entitySourceIds:
           description: List of entity source IDs associated with the watchlist
           items:
