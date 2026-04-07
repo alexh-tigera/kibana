@@ -25,8 +25,7 @@ export default function endpointExceptionsPerPolicyOptInTests({ getService }: Ft
   const endpointArtifactTestResources = getService('endpointArtifactTestResources');
 
   const isServerless = config.get('serverless');
-  // In serverless, usernames of Cloud users are purely numeric.
-  const username = isServerless ? '1954128031' : 'elastic';
+  const username = isServerless ? 'elastic_admin' : 'elastic';
   const superuserRole = isServerless ? 'admin' : 'elastic';
 
   const IS_ENDPOINT_EXCEPTION_MOVE_FF_ENABLED = (
