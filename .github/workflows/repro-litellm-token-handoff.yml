@@ -34,7 +34,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read # needed to checkout repo
-      issues: read # needed to read PR description, conversation, comments, and labels
       pull-requests: write # needed to post review comments and inline comments on the diff
     steps:
       - name: Checkout repository
@@ -47,8 +46,10 @@ jobs:
         with:
           anthropic_api_key: ${{ needs.mint-token.outputs.api_key }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: '/review'
-          claude_args: '--max-turns 5'
+          prompt: "/review-pr REPO: ${{ github.repository }} PR_NUMBER: ${{ github.event.pull_request.number }}"
+          claude_args: |
+            --max-turns 5
+            --allowedTools "mcp__github_inline_comment__create_inline_comment"
         env:
           ANTHROPIC_BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
           ANTHROPIC_MODEL: ${{ env.CLAUDE_MODEL }}
