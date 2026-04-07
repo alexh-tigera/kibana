@@ -47,11 +47,11 @@ actions:
 
         ### Embedding Lens visualizations
 
-        Lens panels can be embedded **by value** (inline config) or **by reference** (saved visualization ID).
+        Lens panels can be embedded **inline** (full config in the dashboard) or **linked** (reference to a saved visualization).
 
-        #### By value
+        #### Inline
 
-        The full Lens state is stored inside the dashboard. Best for one-off visualizations or when portability across spaces matters. The Lens configuration goes inside `config.attributes`:
+        The full Lens configuration is stored inside the dashboard. Best for one-off visualizations or when portability across spaces matters. The Lens configuration goes inside `config.attributes`:
 
         ```json
         {
@@ -69,7 +69,7 @@ actions:
         }
         ```
 
-        #### By reference
+        #### Linked
 
         References a saved visualization by ID. The visualization must exist before creating the dashboard. Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create it first:
 
