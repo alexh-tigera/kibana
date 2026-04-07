@@ -19,7 +19,13 @@ import { z } from '@kbn/zod/v4';
 export type WatchlistCsvUploadResponseItem = z.infer<typeof WatchlistCsvUploadResponseItem>;
 export const WatchlistCsvUploadResponseItem = z.object({
   status: z.enum(['success', 'failure', 'unmatched']),
+  /**
+   * Number of entities matched for this row
+   */
   matchedEntities: z.number().int(),
+  /**
+   * Error message if the row failed to process
+   */
   error: z.string().optional(),
 });
 
@@ -34,9 +40,21 @@ export type UploadWatchlistCsvRequestParamsInput = z.input<typeof UploadWatchlis
 
 export type UploadWatchlistCsvResponse = z.infer<typeof UploadWatchlistCsvResponse>;
 export const UploadWatchlistCsvResponse = z.object({
+  /**
+   * Number of rows that matched at least one entity
+   */
   successful: z.number().int(),
+  /**
+   * Number of rows that failed to process
+   */
   failed: z.number().int(),
+  /**
+   * Total number of rows processed
+   */
   total: z.number().int(),
+  /**
+   * Number of rows that matched no entities
+   */
   unmatched: z.number().int(),
   items: z.array(WatchlistCsvUploadResponseItem),
 });
