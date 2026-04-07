@@ -8,7 +8,6 @@
 import type { SortOrder } from '../../../../common/api/detection_engine';
 import type {
   GetRuleExecutionEventsResponse,
-  GetRuleExecutionResultsResponse,
   GetRuleHealthRequestBody,
   GetRuleHealthResponse,
   GetSpaceHealthRequestBody,
@@ -16,8 +15,6 @@ import type {
   LogLevel,
   ReadRuleExecutionResultsResponse,
   RuleExecutionEventType,
-  RuleExecutionResult,
-  RuleExecutionStatus,
   RuleRunType,
   UnifiedExecutionResultSortField,
   UnifiedExecutionStatus,
@@ -37,14 +34,6 @@ export interface IRuleMonitoringApiClient {
   fetchRuleExecutionEvents(
     args: FetchRuleExecutionEventsArgs
   ): Promise<GetRuleExecutionEventsResponse>;
-
-  /**
-   * Fetches aggregated rule execution results (events grouped by execution UUID) from Event Log.
-   * @throws An error if response is not OK.
-   */
-  fetchRuleExecutionResults(
-    args: FetchRuleExecutionResultsArgs
-  ): Promise<GetRuleExecutionResultsResponse>;
 
   /**
    * Fetches unified rule execution results.
@@ -137,59 +126,6 @@ export interface FetchRuleExecutionEventsArgs extends RuleMonitoringApiCallArgs 
    * Number of results to fetch per page.
    */
   perPage?: number;
-}
-
-export interface FetchRuleExecutionResultsArgs extends RuleMonitoringApiCallArgs {
-  /**
-   * Saved Object ID of the rule (`rule.id`, not static `rule.rule_id`).
-   */
-  ruleId: string;
-
-  /**
-   * Start daterange either in UTC ISO8601 or as datemath string (e.g. `2021-12-29T02:44:41.653Z` or `now-30`).
-   */
-  start: string;
-
-  /**
-   * End daterange either in UTC ISO8601 or as datemath string (e.g. `2021-12-29T02:44:41.653Z` or `now/w`).
-   */
-  end: string;
-
-  /**
-   * Search string in querystring format, e.g.
-   * `event.duration > 1000 OR kibana.alert.rule.execution.metrics.execution_gap_duration_s > 100`.
-   */
-  queryText?: string;
-
-  /**
-   * Array of `statusFilters` (e.g. `succeeded,failed,partial failure`).
-   */
-  statusFilters?: RuleExecutionStatus[];
-
-  /**
-   * Keyof AggregateRuleExecutionEvent field to sort by.
-   */
-  sortField?: keyof RuleExecutionResult;
-
-  /**
-   * What order to sort by (e.g. `asc` or `desc`).
-   */
-  sortOrder?: SortOrder;
-
-  /**
-   * Current page to fetch.
-   */
-  page?: number;
-
-  /**
-   * Number of results to fetch per page.
-   */
-  perPage?: number;
-
-  /**
-   * Array of `runTypeFilters` (e.g. `manual,scheduled`)
-   */
-  runTypeFilters?: RuleRunType[];
 }
 
 export interface ReadRuleExecutionResultsRequestArgs {

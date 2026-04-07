@@ -12,7 +12,6 @@ import { KibanaServices } from '../../../common/lib/kibana';
 
 import type {
   GetRuleExecutionEventsResponse,
-  GetRuleExecutionResultsResponse,
   GetRuleHealthRequestBody,
   GetRuleHealthResponse,
   GetSpaceHealthRequestBody,
@@ -23,14 +22,12 @@ import {
   GET_RULE_HEALTH_URL,
   GET_SPACE_HEALTH_URL,
   getRuleExecutionEventsUrl,
-  getRuleExecutionResultsUrl,
   readRuleExecutionResultsUrl,
   SETUP_HEALTH_URL,
 } from '../../../../common/api/detection_engine/rule_monitoring';
 
 import type {
   FetchRuleExecutionEventsArgs,
-  FetchRuleExecutionResultsArgs,
   IRuleMonitoringApiClient,
   ReadRuleExecutionResultsArgs,
 } from './api_client_interface';
@@ -78,45 +75,6 @@ export const api: IRuleMonitoringApiClient = {
         },
         isUndefined
       ),
-      signal,
-    });
-  },
-
-  fetchRuleExecutionResults: (
-    args: FetchRuleExecutionResultsArgs
-  ): Promise<GetRuleExecutionResultsResponse> => {
-    const {
-      ruleId,
-      start,
-      end,
-      queryText,
-      statusFilters,
-      page,
-      perPage,
-      sortField,
-      sortOrder,
-      signal,
-      runTypeFilters,
-    } = args;
-
-    const url = getRuleExecutionResultsUrl(ruleId);
-    const startDate = dateMath.parse(start);
-    const endDate = dateMath.parse(end, { roundUp: true });
-
-    return http().fetch<GetRuleExecutionResultsResponse>(url, {
-      method: 'GET',
-      version: '1',
-      query: {
-        start: startDate?.utc().toISOString(),
-        end: endDate?.utc().toISOString(),
-        query_text: queryText,
-        status_filters: statusFilters?.sort()?.join(','),
-        sort_field: sortField,
-        sort_order: sortOrder,
-        page,
-        per_page: perPage,
-        run_type_filters: runTypeFilters?.sort()?.join(','),
-      },
       signal,
     });
   },
