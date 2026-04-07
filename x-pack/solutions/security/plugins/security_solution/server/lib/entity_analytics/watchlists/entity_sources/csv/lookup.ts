@@ -49,7 +49,8 @@ const paginateEntityStore = async (
   const entities: MatchedEntity[] = [];
   let searchAfter: Array<string | number> | undefined;
 
-  for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
+  let iter = 0;
+  for (; iter < MAX_ITERATIONS; iter++) {
     const { entities: page, nextSearchAfter } = await entityStoreClient.listEntities({
       filter: filters,
       size: LIST_PAGE_SIZE,
@@ -69,7 +70,7 @@ const paginateEntityStore = async (
     if (!searchAfter || page.length < LIST_PAGE_SIZE) break;
   }
 
-  if (entities.length >= MAX_ITERATIONS * LIST_PAGE_SIZE) {
+  if (iter === MAX_ITERATIONS) {
     logger.warn(
       `[WatchlistCsvUpload] Max iterations reached for row ${rowIndex}. ` +
         `${MAX_ITERATIONS * LIST_PAGE_SIZE} entities will be processed.`
