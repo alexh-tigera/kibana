@@ -15,7 +15,7 @@ actions:
         ## When to use the Dashboards API vs. the Visualizations API
 
         - Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create and manage individual charts (bar, metric, pie, and so on) as reusable saved objects in your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library).
-        - Use the Dashboards API to create and manage dashboards, including the visualizations and panels they contain. Panels can embed saved visualizations by reference or define their configuration inline, or when you need to add ES|QL-based visualizations to a dashboard (see [ES|QL visualizations](#esql-visualizations) below).
+        - Use the Dashboards API to create and manage dashboards, including the visualizations and panels they contain. Panels can embed saved visualizations as linked panels or define their configuration inline, or when you need to add ES|QL-based visualizations to a dashboard (see [ES|QL visualizations](#esql-visualizations) below).
 
         ## Get started
         > info
@@ -232,7 +232,7 @@ actions:
 
         ## Next steps
 
-        Once you have created a dashboard, you can manage individual visualizations as reusable saved objects using the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) and embed them in dashboards by reference. For chart-specific configuration options, see the [chart type documentation](https://www.elastic.co/docs/explore-analyze/visualize/charts).
+        Once you have created a dashboard, you can manage individual visualizations as reusable saved objects using the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) and embed them as linked panels. For chart-specific configuration options, see the [chart type documentation](https://www.elastic.co/docs/explore-analyze/visualize/charts).
       externalDocs:
         description: Dashboards documentation
         url: https://www.elastic.co/docs/explore-analyze/dashboards
