@@ -22,7 +22,7 @@ value:
           type: number
           decimals: 0
         filter:
-          query: ''
+          expression: ''
     rows:
       - operation: terms
         fields:

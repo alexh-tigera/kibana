@@ -21,7 +21,7 @@ value:
         decimals: 0
         compact: true
       filter:
-        query: ''
+        expression: ''
       labels:
         alignment: left
       value:

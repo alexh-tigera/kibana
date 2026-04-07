@@ -40,7 +40,7 @@ value:
             type: number
             decimals: 0
           filter:
-            query: ''
+            expression: ''
       breakdown_by:
         operation: terms
         fields:

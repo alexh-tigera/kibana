@@ -25,7 +25,7 @@ value:
               decimals: 0
               compact: true
             filter:
-              query: ''
+              expression: ''
             labels:
               alignment: left
             value:
@@ -67,7 +67,7 @@ value:
                   type: number
                   decimals: 0
                 filter:
-                  query: ''
+                  expression: ''
       meta:
         type: lens
         created_at: '2025-03-20T10:35:00.000Z'

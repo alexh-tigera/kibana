@@ -221,7 +221,7 @@ actions:
                 "operation": "average",
                 "field": "bytes",
                 "format": { "type": "number", "decimals": 0, "compact": true },
-                "filter": { "query": "" },
+                "filter": { "expression": "" },
                 "labels": { "alignment": "left" },
                 "value": { "alignment": "right" },
                 "icon": { "name": "empty" }
@@ -246,7 +246,7 @@ actions:
                 "operation": "average",
                 "field": "bytes",
                 "format": { "type": "number", "decimals": 0, "compact": true },
-                "filter": { "query": "" },
+                "filter": { "expression": "" },
                 "labels": { "alignment": "left" },
                 "value": { "alignment": "right" },
                 "icon": { "name": "empty" }
@@ -330,7 +330,7 @@ actions:
                 "operation": "average",
                 "field": "bytes",
                 "format": { "type": "number", "decimals": 1 },
-                "filter": { "query": "" },
+                "filter": { "expression": "" },
                 "labels": { "alignment": "left" },
                 "value": { "alignment": "right" },
                 "icon": { "name": "empty" }
@@ -355,7 +355,7 @@ actions:
                 "operation": "average",
                 "field": "bytes",
                 "format": { "type": "number", "decimals": 1 },
-                "filter": { "query": "" },
+                "filter": { "expression": "" },
                 "labels": { "alignment": "left" },
                 "value": { "alignment": "right" },
                 "icon": { "name": "empty" }
