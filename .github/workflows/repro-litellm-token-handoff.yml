@@ -51,6 +51,7 @@ jobs:
           prompt: '/review REPO: ${{ github.repository }} PR_NUMBER: ${{ github.event.pull_request.number }} Look for any security issues and if none are found simply provide a comment saying "No security issues found."'
           claude_args: |
             --max-turns 5
+            --allowedTools "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),mcp__github_inline_comment__create_inline_comment"
         env:
           ANTHROPIC_BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
           ANTHROPIC_MODEL: ${{ env.CLAUDE_MODEL }}
