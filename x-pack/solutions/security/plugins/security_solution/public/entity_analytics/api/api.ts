@@ -91,7 +91,9 @@ import {
 import {
   WATCHLISTS_URL,
   WATCHLISTS_INDICES_URL,
+  WATCHLISTS_CSV_UPLOAD_URL,
 } from '../../../common/entity_analytics/watchlists/constants';
+import type { UploadWatchlistCsvResponse } from '../../../common/api/entity_analytics/watchlists/csv_upload/csv_upload.gen';
 import {
   GENERATE_LEADS_URL,
   GET_LEADS_URL,
@@ -789,6 +791,25 @@ export const useEntityAnalyticsRoutes = () => {
         signal: params.signal,
       });
 
+    const uploadWatchlistCsv = async (
+      watchlistId: string,
+      file: File
+    ): Promise<UploadWatchlistCsvResponse> => {
+      const body = new FormData();
+      body.append('file', file);
+      return http.fetch<UploadWatchlistCsvResponse>(
+        WATCHLISTS_CSV_UPLOAD_URL.replace('{watchlist_id}', encodeURIComponent(watchlistId)),
+        {
+          version: API_VERSIONS.public.v1,
+          method: 'POST',
+          headers: {
+            'Content-Type': undefined, // Lets the browser set the appropriate content type
+          },
+          body,
+        }
+      );
+    };
+
     const fetchLeads = ({
       signal,
       params,
@@ -902,6 +923,7 @@ export const useEntityAnalyticsRoutes = () => {
       listWatchlistEntitySources,
       updateWatchlistEntitySource,
       searchWatchlistIndices,
+      uploadWatchlistCsv,
       fetchRiskEngineSettings,
       calculateEntityRiskScore,
       cleanUpRiskEngine,

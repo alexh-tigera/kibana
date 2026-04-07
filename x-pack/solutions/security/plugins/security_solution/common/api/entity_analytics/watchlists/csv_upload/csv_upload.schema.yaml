@@ -27,6 +27,7 @@ paths:
           schema:
             type: string
           description: The ID of the watchlist to add entities to
+          example: 'high-risk-vendors'
       requestBody:
         required: true
         content:
@@ -47,28 +48,23 @@ paths:
             application/json:
               schema:
                 type: object
-                example:
-                  successful: 1
-                  failed: 1
-                  unmatched: 1
-                  total: 3
-                  items:
-                    - status: "success"
-                      matchedEntities: 1
-                    - status: "failure"
-                      matchedEntities: 0
-                      error: "Invalid entity type"
-                    - status: "unmatched"
-                      matchedEntities: 0
                 properties:
                   successful:
                     type: integer
+                    description: Number of rows that matched at least one entity
+                    example: 1
                   failed:
                     type: integer
+                    description: Number of rows that failed to process
+                    example: 1
                   total:
                     type: integer
+                    description: Total number of rows processed
+                    example: 3
                   unmatched:
                     type: integer
+                    description: Number of rows that matched no entities
+                    example: 1
                   items:
                     type: array
                     items:
@@ -79,6 +75,22 @@ paths:
                   - total
                   - unmatched
                   - items
+              examples:
+                CsvUploadResponse:
+                  summary: CSV upload response with mixed results
+                  value:
+                    successful: 1
+                    failed: 1
+                    unmatched: 1
+                    total: 3
+                    items:
+                      - status: "success"
+                        matchedEntities: 1
+                      - status: "failure"
+                        matchedEntities: 0
+                        error: "Invalid entity type"
+                      - status: "unmatched"
+                        matchedEntities: 0
         "413":
           description: File too large
 
@@ -86,6 +98,9 @@ components:
   schemas:
     WatchlistCsvUploadResponseItem:
       type: object
+      example:
+        status: "success"
+        matchedEntities: 1
       properties:
         status:
           type: string
@@ -93,10 +108,15 @@ components:
             - success
             - failure
             - unmatched
+          example: "success"
         matchedEntities:
           type: integer
+          description: Number of entities matched for this row
+          example: 1
         error:
           type: string
+          description: Error message if the row failed to process
+          example: "Invalid entity type"
       required:
         - status
         - matchedEntities
