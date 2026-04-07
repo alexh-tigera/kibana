@@ -900,6 +900,7 @@ paths:
       operationId: UploadWatchlistCsv
       parameters:
         - description: The ID of the watchlist to add entities to
+          example: high-risk-vendors
           in: path
           name: watchlist_id
           required: true
@@ -922,33 +923,44 @@ paths:
         '200':
           content:
             application/json:
+              examples:
+                CsvUploadResponse:
+                  summary: CSV upload response with mixed results
+                  value:
+                    failed: 1
+                    items:
+                      - matchedEntities: 1
+                        status: success
+                      - error: Invalid entity type
+                        matchedEntities: 0
+                        status: failure
+                      - matchedEntities: 0
+                        status: unmatched
+                    successful: 1
+                    total: 3
+                    unmatched: 1
               schema:
-                example:
-                  failed: 1
-                  items:
-                    - matchedEntities: 1
-                      status: success
-                    - error: Invalid entity type
-                      matchedEntities: 0
-                      status: failure
-                    - matchedEntities: 0
-                      status: unmatched
-                  successful: 1
-                  total: 3
-                  unmatched: 1
                 type: object
                 properties:
                   failed:
+                    description: Number of rows that failed to process
+                    example: 1
                     type: integer
                   items:
                     items:
                       $ref: '#/components/schemas/WatchlistCsvUploadResponseItem'
                     type: array
                   successful:
+                    description: Number of rows that matched at least one entity
+                    example: 1
                     type: integer
                   total:
+                    description: Total number of rows processed
+                    example: 3
                     type: integer
                   unmatched:
+                    description: Number of rows that matched no entities
+                    example: 1
                     type: integer
                 required:
                   - successful
@@ -3067,17 +3079,25 @@ components:
               description: The name of the user.
               type: string
     WatchlistCsvUploadResponseItem:
+      example:
+        matchedEntities: 1
+        status: success
       type: object
       properties:
         error:
+          description: Error message if the row failed to process
+          example: Invalid entity type
           type: string
         matchedEntities:
+          description: Number of entities matched for this row
+          example: 1
           type: integer
         status:
           enum:
             - success
             - failure
             - unmatched
+          example: success
           type: string
       required:
         - status
