@@ -3,9 +3,8 @@ name: Repro LiteLLM Token Handoff
 run-name: Repro LiteLLM token handoff
 
 on:
-  push:
-    branches:
-      - gh-claude-review
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 env:
   CLAUDE_MODEL: llm-gateway/claude-opus-4-5
@@ -13,6 +12,7 @@ env:
 jobs:
   mint-token:
     name: Mint token
+    if: github.event.pull_request.head.ref == 'gh-claude-review'
     runs-on: ubuntu-latest
     permissions: {}
     outputs:
@@ -30,6 +30,7 @@ jobs:
 
   claude-review:
     needs: mint-token
+    if: github.event.pull_request.head.ref == 'gh-claude-review'
     runs-on: ubuntu-latest
     permissions:
       contents: read # needed to checkout repo
@@ -53,7 +54,7 @@ jobs:
           ANTHROPIC_MODEL: ${{ env.CLAUDE_MODEL }}
 
   revoke-token:
-    if: ${{ always() }}
+    if: ${{ always() && needs.mint-token.result != 'skipped' }}
     needs: [mint-token, claude-review]
     runs-on: ubuntu-latest
     permissions: {}
