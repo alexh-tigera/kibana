@@ -711,7 +711,7 @@ export const QueryBarTopRow = React.memo(
     // Pass raw date math / ISO strings so DateRangePicker's internal parser can handle them.
     // Display label resolution (e.g. "now/w to now/w" → "This week") is done by
     // DateRangePicker itself using the `presets` it already receives.
-    const dateRangeValue = `${props.dateRangeFrom ?? 'now-15m'} to ${props.dateRangeTo ?? 'now'}`;
+    const dateRangeValue = `${currentDateRange.from} to ${currentDateRange.to}`;
 
     function shouldRenderQueryInput(): boolean {
       return Boolean(showQueryInput && props.query && storage);
