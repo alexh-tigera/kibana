@@ -116,7 +116,6 @@ import {
   RuleStatusFailedCallOut,
   ruleStatusI18n,
 } from '../../../common/components/rule_execution_status';
-import { ExecutionEventsTable } from '../../../rule_monitoring';
 import { ExecutionResultsTable } from './execution_results/execution_results_table';
 import { RuleBackfillsInfo } from '../../../rule_gaps/components/rule_backfills_info';
 import { RuleGaps } from '../../../rule_gaps/components/rule_gaps';
@@ -945,9 +944,6 @@ export const RuleDetailsPage = connector(
                       <EuiSpacer size="xl" />
                       <RuleBackfillsInfo ruleId={ruleId} />
                     </>
-                  </Route>
-                  <Route path={`/rules/id/:detailName/:tabName(${RuleDetailTabs.executionEvents})`}>
-                    <ExecutionEventsTable ruleId={ruleId} />
                   </Route>
                 </Routes>
               </div>
