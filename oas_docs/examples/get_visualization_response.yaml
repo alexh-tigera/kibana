@@ -7,9 +7,9 @@ value:
   data:
     type: metric
     title: Average response time
-    dataset:
-      type: index
-      index: kibana_sample_data_logs
+    data_source:
+      type: data_view_spec
+      index_pattern: kibana_sample_data_logs
       time_field: timestamp
     filters: []
     query:

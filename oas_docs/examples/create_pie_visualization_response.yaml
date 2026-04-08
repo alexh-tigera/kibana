@@ -9,9 +9,9 @@ value:
     title: Traffic by operating system
     donut_hole: medium
     filters: []
-    dataset:
-      type: index
-      index: kibana_sample_data_logs
+    data_source:
+      type: data_view_spec
+      index_pattern: kibana_sample_data_logs
       time_field: timestamp
     query:
       query: ''

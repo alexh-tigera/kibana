@@ -27,7 +27,7 @@ actions:
 
         For general guidance on building visualizations in Kibana, see the [Lens documentation](https://www.elastic.co/docs/explore-analyze/visualize/lens) and the [chart type reference](https://www.elastic.co/docs/explore-analyze/visualize/charts).
 
-        Each visualization has a `type` field that determines the chart to render and a `dataset` field that controls how data is fetched. The sections below cover the available chart types and data source modes.
+        Each visualization has a `type` field that determines the chart to render and a `data_source` field that controls how data is fetched. The sections below cover the available chart types and data source modes.
 
         ### Chart types
 
@@ -47,45 +47,45 @@ actions:
         | `mosaic` | Mosaic | [Mosaic](https://www.elastic.co/docs/explore-analyze/visualize/charts/mosaic-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/mosaic-charts#mosaic-chart-examples) |
         | `region_map` | Region map (choropleth) | [Region map](https://www.elastic.co/docs/explore-analyze/visualize/charts/region-map-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/region-map-charts#region-map-chart-examples) |
 
-        All chart types require `type`, `title`, `dataset`, and `query`. Chart-specific fields (metrics, layers, group_by, etc.) vary by type.
+        All chart types require `type`, `title`, `data_source`, and `query`. Chart-specific fields (metrics, layers, group_by, etc.) vary by type.
 
         ### Data source modes
 
-        Set `dataset.type` to choose how the visualization fetches data. Each mode has a different structure for defining metrics and breakdowns.
+        Set `data_source.type` to choose how the visualization fetches data. Each mode has a different structure for defining metrics and breakdowns.
 
         #### Index/data view mode
 
-        `dataset.type: "dataView"` or `"index"`
+        `data_source.type: "data_view_reference"` or `"data_view_spec"`
 
         Uses Kibana aggregations. Define metrics with operations like `count`, `average`, `sum` and breakdowns with `terms`, `date_histogram`, etc. Requires a `query` field for KQL or Lucene filtering.
 
-        - **`"type": "index"`** — use with an index pattern and time field for ad-hoc access:
+        - **`"type": "data_view_spec"`** — use with an index pattern and time field for ad-hoc access:
 
           ```json
           {
-            "dataset": { "type": "index", "index": "logs-*", "time_field": "@timestamp" },
+            "data_source": { "type": "data_view_spec", "index_pattern": "logs-*", "time_field": "@timestamp" },
             "query": { "query": "status: 200" }
           }
           ```
 
-        - **`"type": "dataView"`** — use with the ID of an existing Kibana data view:
+        - **`"type": "data_view_reference"`** — use with the ID of an existing Kibana data view:
 
           ```json
           {
-            "dataset": { "type": "dataView", "id": "90943e30-9a47-11e8-b64d-95841ca0b247" },
+            "data_source": { "type": "data_view_reference", "ref_id": "90943e30-9a47-11e8-b64d-95841ca0b247" },
             "query": { "query": "status: 200" }
           }
           ```
 
         #### ES|QL mode
 
-        `dataset.type: "esql"`
+        `data_source.type: "esql"`
 
         Lets you write an ES|QL query and reference result columns directly using `operation: "value"` with a `column` name. Best for complex transformations or when you prefer a query-first workflow.
 
         ```json
         {
-          "dataset": {
+          "data_source": {
             "type": "esql",
             "query": "FROM logs-* | STATS avg_bytes = AVG(bytes) BY host.name | SORT avg_bytes DESC"
           }
@@ -95,7 +95,7 @@ actions:
         > info
         > ES|QL mode is available when building visualizations inline through the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards). The Visualizations API endpoints support index/data view mode only.
 
-        All request examples on this page and the chart type pages use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `dataset.index` (or `dataset.id` for data views) and update `field` names in metrics and breakdowns to match your index mapping.
+        All request examples on this page and the chart type pages use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `data_source.index_pattern` (or `data_source.ref_id` for data views) and update `field` names in metrics and breakdowns to match your index mapping.
 
         ### Error handling
 
@@ -209,9 +209,9 @@ actions:
               -d '{
               "type": "metric",
               "title": "Average response time",
-              "dataset": {
-                "type": "index",
-                "index": "kibana_sample_data_logs",
+              "data_source": {
+                "type": "data_view_spec",
+                "index_pattern": "kibana_sample_data_logs",
                 "time_field": "timestamp"
               },
               "filters": [],
@@ -234,9 +234,9 @@ actions:
             {
               "type": "metric",
               "title": "Average response time",
-              "dataset": {
-                "type": "index",
-                "index": "kibana_sample_data_logs",
+              "data_source": {
+                "type": "data_view_spec",
+                "index_pattern": "kibana_sample_data_logs",
                 "time_field": "timestamp"
               },
               "filters": [],
@@ -318,9 +318,9 @@ actions:
               -d '{
               "type": "metric",
               "title": "Average response time (updated)",
-              "dataset": {
-                "type": "index",
-                "index": "kibana_sample_data_logs",
+              "data_source": {
+                "type": "data_view_spec",
+                "index_pattern": "kibana_sample_data_logs",
                 "time_field": "timestamp"
               },
               "filters": [],
@@ -343,9 +343,9 @@ actions:
             {
               "type": "metric",
               "title": "Average response time (updated)",
-              "dataset": {
-                "type": "index",
-                "index": "kibana_sample_data_logs",
+              "data_source": {
+                "type": "data_view_spec",
+                "index_pattern": "kibana_sample_data_logs",
                 "time_field": "timestamp"
               },
               "filters": [],
