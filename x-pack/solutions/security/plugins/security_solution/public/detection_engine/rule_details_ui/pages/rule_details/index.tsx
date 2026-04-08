@@ -237,9 +237,6 @@ export const RuleDetailsPage = connector(
     clearSelected,
   }: DetectionEngineComponentProps) {
     const {
-      analytics,
-      i18n: i18nStart,
-      theme,
       application,
       cps,
       timelines: timelinesUi,
