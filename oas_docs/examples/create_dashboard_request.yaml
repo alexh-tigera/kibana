@@ -1,12 +1,12 @@
-summary: Create a dashboard with a Lens metric panel
+summary: Create a dashboard with a metric visualization panel
 description: >
-  Creates a dashboard named "Web logs overview" with a single Lens metric panel showing
+  Creates a dashboard named "Web logs overview" with a single metric visualization panel showing
   average response bytes. Uses the Kibana sample web logs dataset (`kibana_sample_data_logs`).
-  Lens panel configuration is nested under `config.attributes`.
+  Visualization panel configuration is nested under `config.attributes`.
 value:
   title: Web logs overview
   panels:
-    - type: lens
+    - type: vis
       grid:
         x: 0
         y: 0
