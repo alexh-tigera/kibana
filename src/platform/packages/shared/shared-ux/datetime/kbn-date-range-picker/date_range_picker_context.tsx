@@ -130,6 +130,8 @@ interface DateRangePickerInternalContextValue extends DateRangePickerContextValu
   hasAutoRefresh: boolean;
   /** Prepends the Kibana server basePath to a URL path. Identity function when not provided. */
   prependBasePath: (path: string) => string;
+  /** Whether the current user can access the Advanced Settings management page. */
+  canAccessAdvancedSettings: boolean;
 }
 
 const DateRangePickerContext = createContext<DateRangePickerInternalContextValue | null>(null);
@@ -173,6 +175,7 @@ export function DateRangePickerProvider({
   timeZone,
   onRefresh,
   prependBasePath: prependBasePathProp,
+  canAccessAdvancedSettings = true,
 }: PropsWithChildren<DateRangePickerProps>) {
   const prependBasePath = useCallback(
     (path: string) => (prependBasePathProp ? prependBasePathProp(path) : path),
@@ -342,6 +345,7 @@ export function DateRangePickerProvider({
       toggleAutoRefresh,
       hasAutoRefresh,
       prependBasePath,
+      canAccessAdvancedSettings,
     }),
     [
       text,
@@ -373,6 +377,7 @@ export function DateRangePickerProvider({
       toggleAutoRefresh,
       hasAutoRefresh,
       prependBasePath,
+      canAccessAdvancedSettings,
     ]
   );
 
