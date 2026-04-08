@@ -21,13 +21,6 @@ export const TABLE_SUBTITLE = i18n.translate(
   }
 );
 
-export const TABLE_CAPTION = i18n.translate(
-  'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.tableCaption',
-  {
-    defaultMessage: 'Execution results',
-  }
-);
-
 export const STATUS = i18n.translate(
   'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.status',
   {
@@ -370,35 +363,35 @@ export const FLYOUT_TOOLTIP_FROZEN_INDICES_QUERIED = i18n.translate(
 );
 
 export const ACTIONS_SEARCH_FILTERS_HAVE_BEEN_UPDATED_TITLE = i18n.translate(
-  'xpack.securitySolution.detectionEngine.ruleDetails.ruleExecutionLog.actionSearchFiltersUpdatedTitle',
+  'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.actionSearchFiltersUpdatedTitle',
   {
     defaultMessage: 'Global search filters have been updated',
   }
 );
 
 export const ACTIONS_SEARCH_FILTERS_HAVE_BEEN_UPDATED_DESCRIPTION = i18n.translate(
-  'xpack.securitySolution.detectionEngine.ruleDetails.ruleExecutionLog.actionSearchFiltersUpdatedDescription',
+  'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.actionSearchFiltersUpdatedDescription',
   {
     defaultMessage: 'Search filters have been updated to show alerts from selected rule execution',
   }
 );
 
 export const ACTIONS_SEARCH_FILTERS_HAVE_BEEN_UPDATED_RESTORE_BUTTON = i18n.translate(
-  'xpack.securitySolution.detectionEngine.ruleDetails.ruleExecutionLog.actionSearchFiltersUpdatedRestoreButtonTitle',
+  'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.actionSearchFiltersUpdatedRestoreButtonTitle',
   {
     defaultMessage: 'Restore previous filters',
   }
 );
 
 export const ACTIONS_FIELD_NOT_FOUND_ERROR_TITLE = i18n.translate(
-  'xpack.securitySolution.detectionEngine.ruleDetails.ruleExecutionLog.actionFieldNotFoundErrorTitle',
+  'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.actionFieldNotFoundErrorTitle',
   {
     defaultMessage: 'Unable to filter alerts',
   }
 );
 
 export const ACTIONS_FIELD_NOT_FOUND_ERROR = i18n.translate(
-  'xpack.securitySolution.detectionEngine.ruleDetails.ruleExecutionLog.actionFieldNotFoundErrorDescription',
+  'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.actionFieldNotFoundErrorDescription',
   {
     defaultMessage: "Cannot find field 'kibana.alert.rule.execution.uuid' in alerts index.",
   }

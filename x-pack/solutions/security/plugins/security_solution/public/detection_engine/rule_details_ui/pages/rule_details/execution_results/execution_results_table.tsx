@@ -184,7 +184,7 @@ export const ExecutionResultsTable: React.FC<ExecutionResultsTableProps> = ({
 
       <EuiBasicTable
         data-test-subj="executionResultsTable"
-        tableCaption={i18n.TABLE_CAPTION}
+        tableCaption={i18n.TABLE_SUBTITLE}
         items={tableItems}
         columns={columns}
         pagination={pagination}
