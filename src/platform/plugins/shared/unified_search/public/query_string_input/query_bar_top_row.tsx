@@ -349,18 +349,24 @@ export const QueryBarTopRow = React.memo(
       }
     );
     const isAutoRefreshEnabled = props.isRefreshPaused === false;
-    const [autoRefresh, setAutoRefresh] = useState<AutoRefreshSettings>(() => ({
-      isEnabled: isAutoRefreshEnabled,
-      isPaused: false,
-      intervalMs: props.refreshInterval ?? 10000,
-      intervalDisplayUnit: 's',
-    }));
+
+    const [autoRefresh, setAutoRefresh] = useState<AutoRefreshSettings>(() => {
+      const isConfigured = props.refreshInterval != null && props.refreshInterval > 0;
+      return {
+        isEnabled: isConfigured,
+        isPaused: isConfigured && (props.isRefreshPaused ?? false),
+        intervalMs: isConfigured ? props.refreshInterval! : 60_000,
+        intervalDisplayUnit: 's',
+      };
+    });
 
     useEffect(() => {
       setAutoRefresh((prev) => ({
         ...prev,
-        ...(props.refreshInterval != null ? { intervalMs: props.refreshInterval } : {}),
-        isEnabled: isAutoRefreshEnabled,
+        ...(props.refreshInterval != null && props.refreshInterval > 0
+          ? { intervalMs: props.refreshInterval }
+          : {}),
+        isPaused: !isAutoRefreshEnabled,
       }));
     }, [props.refreshInterval, isAutoRefreshEnabled]);
 
@@ -589,6 +595,23 @@ export const QueryBarTopRow = React.memo(
       }
     }, [propsOnRefresh]);
 
+    // Subscribe to the Kibana timefilter's actual refresh loop so the DateRangePicker countdown
+    // stays in sync with real query cadence. The timefilter drives data fetches in consumers like
+    // Discover and Dashboard; without this the two independent timers drift apart over time.
+    const [autoRefreshEpoch, setAutoRefreshEpoch] = useState<number | undefined>(undefined);
+    useEffect(() => {
+      if (shouldUseLegacyTimePicker || !propsOnRefreshChange) return;
+
+      const subscription = data.query.timefilter.timefilter
+        .getAutoRefreshFetch$()
+        .subscribe((done) => {
+          setAutoRefreshEpoch((prev) => (prev ?? 0) + 1);
+          done(); // release the loop immediately — we are only resetting the UI countdown
+        });
+
+      return () => subscription.unsubscribe();
+    }, [shouldUseLegacyTimePicker, propsOnRefreshChange, data.query.timefilter.timefilter]);
+
     const dateRangePickerSettingsWithAutoRefresh = useMemo<DateRangePickerSettings>(
       () =>
         propsOnRefreshChange
@@ -607,11 +630,15 @@ export const QueryBarTopRow = React.memo(
           setAutoRefresh((prev) => {
             const isEnabledChanged = prev.isEnabled !== nextAutoRefresh.isEnabled;
             const intervalChanged = prev.intervalMs !== nextAutoRefresh.intervalMs;
+            const isPausedChanged = prev.isPaused !== nextAutoRefresh.isPaused;
 
-            if (isEnabledChanged || intervalChanged) {
+            if (isEnabledChanged || intervalChanged || isPausedChanged) {
               propsOnRefreshChange?.({
-                isPaused: !nextAutoRefresh.isEnabled,
-                refreshInterval: nextAutoRefresh.intervalMs,
+                isPaused: !nextAutoRefresh.isEnabled || nextAutoRefresh.isPaused,
+                // refreshInterval=0 encodes "feature disabled" in the URL state, matching the
+                // EuiSuperDatePicker convention. This lets the initial state correctly set
+                // isEnabled=false on page reload (interval=0 → isConfigured=false → isEnabled=false).
+                refreshInterval: nextAutoRefresh.isEnabled ? nextAutoRefresh.intervalMs : 0,
               });
             }
 
@@ -802,6 +829,7 @@ export const QueryBarTopRow = React.memo(
               settings={dateRangePickerSettingsWithAutoRefresh}
               onSettingsChange={onDateRangePickerSettingsChange}
               onRefresh={propsOnRefreshChange ? onDateRangePickerRefresh : undefined}
+              refreshEpoch={autoRefreshEpoch}
               dateFormat={uiSettings.get('dateFormat')}
               timeZone={uiSettings.get('dateFormat:tz')}
               prependBasePath={http?.basePath.prepend}
