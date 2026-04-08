@@ -10,7 +10,7 @@ import { lensApiStateSchema } from '@kbn/lens-embeddable-utils';
 import { asCodeMetaSchema } from '@kbn/as-code-shared-schemas';
 
 /**
- * The Lens item meta returned from the server.
+ * The visualization item meta returned from the server.
  *
  * These fields are defined inline (rather than referencing savedObjectProps from
  * kbn-content-management-utils) so that meta.description values appear in the
