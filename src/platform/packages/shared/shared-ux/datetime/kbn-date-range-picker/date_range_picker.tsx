@@ -156,8 +156,8 @@ export interface DateRangePickerProps {
   /**
    * Whether the current user can access the Advanced Settings management page.
    * When `false`, links to Advanced Settings are hidden in the settings panel.
-   * Typically derived from `capabilities.advancedSettings.show`.
-   * @default true
+   * Typically derived from `capabilities.advancedSettings.save`.
+   * @default false
    */
   canAccessAdvancedSettings?: boolean;
 }
