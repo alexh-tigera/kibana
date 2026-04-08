@@ -72,6 +72,9 @@ import { shallowEqual } from '../utils/shallow_equal';
 import { FilterBarToggleButton } from '../filter_bar/filter_bar_toggle_button';
 import { FilterBarContextProvider } from '../filter_bar/filter_bar_context';
 
+/** Feature flag key for the new DateRangePicker. Falls back to `false` (legacy picker). */
+const DATE_RANGE_PICKER_FEATURE_FLAG = 'unifiedSearch.newDateRangePickerEnabled';
+
 const BUTTON_MIN_WIDTH = 108;
 
 const SuperDatePicker = React.memo(
@@ -250,9 +253,10 @@ export interface QueryBarTopRowProps<QT extends Query | AggregateQuery = Query> 
   enableResourceBrowser?: ESQLEditorProps['enableResourceBrowser'];
   useBackgroundSearchButton?: boolean;
   /**
-   * Opt-in to the new DateRangePicker. When `true` AND the
-   * `timepicker:useDateRangePicker` UI setting is enabled, the new picker
-   * replaces the legacy EuiSuperDatePicker. Currently used by Discover and Dashboard.
+   * Opt-in to the new DateRangePicker. The new picker is shown only when both
+   * this prop is `true` and the `unifiedSearch.newDateRangePickerEnabled` feature
+   * flag is enabled. When the feature flag is disabled, the legacy
+   * EuiSuperDatePicker is always used regardless of this prop.
    */
   enableDateRangePicker?: boolean;
 }
@@ -377,7 +381,8 @@ export const QueryBarTopRow = React.memo(
     } = kibana.services;
 
     const shouldUseLegacyTimePicker =
-      !props.enableDateRangePicker || !uiSettings.get(UI_SETTINGS.TIMEPICKER_USE_DATE_RANGE_PICKER);
+      !props.enableDateRangePicker ||
+      !kibana.services.featureFlags?.getBooleanValue(DATE_RANGE_PICKER_FEATURE_FLAG, false);
 
     const isQueryLangSelected = props.query && !isOfQueryType(props.query);
 

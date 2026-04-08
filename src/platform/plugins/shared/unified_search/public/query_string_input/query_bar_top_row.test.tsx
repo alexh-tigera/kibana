@@ -46,7 +46,7 @@ const mockTimeHistory = {
   get$: () => EMPTY,
 };
 
-let useDateRangePickerSetting = true;
+let useNewDateRangePickerFlag = true;
 
 startMock.uiSettings.get.mockImplementation((key: string) => {
   switch (key) {
@@ -69,11 +69,16 @@ startMock.uiSettings.get.mockImplementation((key: string) => {
         from: 'now-15m',
         to: 'now',
       };
-    case UI_SETTINGS.TIMEPICKER_USE_DATE_RANGE_PICKER:
-      return useDateRangePickerSetting;
     default:
       throw new Error(`Unexpected config key: ${key}`);
   }
+});
+
+startMock.featureFlags.getBooleanValue.mockImplementation((key: string, fallback: boolean) => {
+  if (key === 'unifiedSearch.newDateRangePickerEnabled') {
+    return useNewDateRangePickerFlag;
+  }
+  return fallback;
 });
 
 const noop = () => {
@@ -592,7 +597,7 @@ describe('QueryBarTopRowTopRow', () => {
     },
   ])('with $pickerMode', ({ useNewPicker, pickerButtonTestSubj }) => {
     beforeEach(() => {
-      useDateRangePickerSetting = useNewPicker;
+      useNewDateRangePickerFlag = useNewPicker;
     });
 
     const wrapWithPicker = (props: any, opts?: any) =>
