@@ -67,7 +67,7 @@ export class DatePicker {
     const getLocator = (selector: string) =>
       containerLocator ? containerLocator.locator(selector) : this.page.locator(selector);
 
-    await getTestSubjLocator('superDatePickerToggleQuickMenuButton').waitFor();
+    await getTestSubjLocator('superDatePickerToggleQuickMenuButton').waitFor({ state: 'visible' });
 
     // Close any open suggestion lists that might block the date picker button
     const isSuggestionListVisible = await getLocator('div.kbnTypeahead').isVisible();
@@ -76,30 +76,9 @@ export class DatePicker {
       await getLocator('div.kbnTypeahead').waitFor({ state: 'hidden' });
     }
 
-    // Initial check if show/end buttons are visible
     const showBtn = getTestSubjLocator('superDatePickerShowDatesButton');
-    const endBtn = getTestSubjLocator('superDatePickerendDatePopoverButton');
 
-    if (
-      !((await showBtn.isVisible({ timeout: 2000 })) || (await endBtn.isVisible({ timeout: 2000 })))
-    ) {
-      // Reload loop only if initial fails
-      await expect
-        .poll(
-          async () => {
-            await this.page.reload();
-            await getTestSubjLocator('superDatePickerToggleQuickMenuButton').waitFor();
-            return (await showBtn.isVisible()) || (await endBtn.isVisible());
-          },
-          {
-            timeout: 20000,
-            intervals: [500], // Retry every 0.5s
-          }
-        )
-        .toBe(true);
-    }
-
-    if (await showBtn.isVisible()) {
+    if (await showBtn.isVisible({ timeout: 2000 })) {
       // Click to show start/end time pickers
       await showBtn.click();
       await this.page.testSubj.locator('superDatePickerAbsoluteTab').waitFor();
@@ -110,6 +89,7 @@ export class DatePicker {
   }
 
   private async openAbsoluteTab() {
+    // Usually 2 matching elements exist: one visible in the popover and one hidden in the DOM.
     const absoluteTab = this.page.testSubj
       .locator('superDatePickerAbsoluteTab')
       .filter({ visible: true });
@@ -168,29 +148,13 @@ export class DatePicker {
 
   private async ensurePickerVisible(containerLocator?: Locator) {
     const controlButton = this.getTestSubjLocator('dateRangePickerControlButton', containerLocator);
-    await controlButton.waitFor();
+    await controlButton.waitFor({ state: 'visible' });
 
     // Close any open suggestion lists that might block the date picker button
     const isSuggestionListVisible = await this.page.locator('div.kbnTypeahead').isVisible();
     if (isSuggestionListVisible) {
       await this.getTestSubjLocator('unifiedTabs_tabsBar').click();
       await this.page.locator('div.kbnTypeahead').waitFor({ state: 'hidden' });
-    }
-
-    if (!(await controlButton.isVisible({ timeout: 2000 }))) {
-      await expect
-        .poll(
-          async () => {
-            await this.page.reload();
-            await this.getTestSubjLocator(
-              'dateRangePickerControlButton',
-              containerLocator
-            ).waitFor();
-            return controlButton.isVisible();
-          },
-          { timeout: 20000, intervals: [500] }
-        )
-        .toBe(true);
     }
   }
 

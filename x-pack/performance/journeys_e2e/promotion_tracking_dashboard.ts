@@ -45,11 +45,13 @@ export const journey = new Journey({
   })
 
   .step('Change time range', async ({ page }) => {
-    // Wait for either picker variant to appear before deciding which path to take.
-    const control = await Promise.race([
-      page.waitForSelector(subj('dateRangePickerControlButton'), { timeout: 30000 }),
-      page.waitForSelector(subj('superDatePickerToggleQuickMenuButton'), { timeout: 30000 }),
-    ]);
+    // Either picker variant may be present depending on the feature flag state.
+    const control = page
+      .locator(
+        `[data-test-subj="dateRangePickerControlButton"], [data-test-subj="superDatePickerToggleQuickMenuButton"]`
+      )
+      .first();
+    await control.waitFor({ timeout: 10000 });
     const testSubj = await control.getAttribute('data-test-subj');
     if (testSubj === 'dateRangePickerControlButton') {
       await control.click();
