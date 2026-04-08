@@ -373,6 +373,7 @@ export const QueryBarTopRow = React.memo(
       docLinks,
       http,
       dataViews,
+      application,
     } = kibana.services;
 
     const shouldUseLegacyTimePicker =
@@ -799,6 +800,9 @@ export const QueryBarTopRow = React.memo(
               dateFormat={uiSettings.get('dateFormat')}
               timeZone={uiSettings.get('dateFormat:tz')}
               prependBasePath={http?.basePath.prepend}
+              canAccessAdvancedSettings={
+                (application?.capabilities.advancedSettings?.show as boolean | undefined) ?? true
+              }
             />
           </>
         );
