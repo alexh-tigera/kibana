@@ -175,7 +175,7 @@ export function DateRangePickerProvider({
   timeZone,
   onRefresh,
   prependBasePath: prependBasePathProp,
-  canAccessAdvancedSettings = true,
+  canAccessAdvancedSettings = false,
 }: PropsWithChildren<DateRangePickerProps>) {
   const prependBasePath = useCallback(
     (path: string) => (prependBasePathProp ? prependBasePathProp(path) : path),
