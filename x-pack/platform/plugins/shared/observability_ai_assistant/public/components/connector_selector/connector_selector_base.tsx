@@ -87,10 +87,16 @@ export function ConnectorSelectorBase(props: ConnectorSelectorBaseProps) {
     >
       <EuiFlexItem grow>
         <EuiSuperSelect
+          aria-label={i18n.translate(
+            'xpack.observabilityAiAssistant.connectorSelector.connectorSelectAriaLabel',
+            {
+              defaultMessage: 'Connector',
+            }
+          )}
           compressed
           valueOfSelected={props.selectedConnector}
           options={props.connectors.map((connector) => ({
-            value: connector.id,
+            value: connector.connectorId,
             inputDisplay: (
               <EuiFlexGroup direction="row" gutterSize="s" alignItems="center">
                 <EuiFlexItem grow={false}>

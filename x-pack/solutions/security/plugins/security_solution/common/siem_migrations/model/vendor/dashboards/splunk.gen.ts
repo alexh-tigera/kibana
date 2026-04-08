@@ -14,7 +14,7 @@
  *   version: not applicable
  */
 
-import { z } from '@kbn/zod';
+import { z } from '@kbn/zod/v4';
 
 /**
  * Properties of the original dashboard
@@ -59,6 +59,10 @@ export const SplunkOriginalDashboardExportProperties = z.object({
    * The last updated timestamp of the dashboard
    */
   updated: z.string().optional(),
+  /**
+   * The version of the dashboard
+   */
+  version: z.string().optional(),
 });
 
 /**

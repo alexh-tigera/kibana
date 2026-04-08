@@ -5,18 +5,18 @@
  * 2.0.
  */
 
+import type { QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
 import { EuiFlexGroup, EuiFlexItem, EuiProgress } from '@elastic/eui';
 import type { Alert } from '@kbn/alerting-types';
 import { AlertsTable as DefaultAlertsTable } from '@kbn/response-ops-alerts-table';
 import { SECURITY_SOLUTION_RULE_TYPE_IDS } from '@kbn/securitysolution-rules';
 import React, { useCallback, useMemo, type ComponentType } from 'react';
 import type { SetRequired } from 'type-fest';
-import type { CaseViewAlertsTableProps, CaseUI } from '../../../../common';
+import type { CaseUI } from '../../../../common';
 import { SECURITY_SOLUTION_OWNER } from '../../../../common/constants';
-import { CASE_VIEW_PAGE_TABS } from '../../../../common/types';
 import { useKibana } from '../../../common/lib/kibana';
 import { useGetFeatureIds } from '../../../containers/use_get_feature_ids';
-import { CaseViewTabs } from '../case_view_tabs';
+import type { CaseViewAlertsTableProps } from '../types';
 import { CaseViewAlertsEmpty } from './case_view_alerts_empty';
 import { getManualAlertIds } from './helpers';
 
@@ -36,7 +36,7 @@ export const CaseViewAlerts = ({
     services as SetRequired<typeof services, 'licensing'>;
   const alertIds = getManualAlertIds(caseData.comments);
   const alertIdsQuery = useMemo(
-    () => ({
+    (): NonNullable<QueryDslQueryContainer> => ({
       ids: {
         values: alertIds,
       },
@@ -54,11 +54,10 @@ export const CaseViewAlerts = ({
     [onAlertsTableLoaded]
   );
 
-  if (alertIdsQuery.ids.values.length === 0) {
+  if (alertIdsQuery.ids?.values?.length === 0) {
     return (
       <EuiFlexGroup>
         <EuiFlexItem>
-          <CaseViewTabs caseData={caseData} activeTab={CASE_VIEW_PAGE_TABS.ALERTS} />
           <CaseViewAlertsEmpty />
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -77,7 +76,6 @@ export const CaseViewAlerts = ({
     </EuiFlexGroup>
   ) : (
     <EuiFlexItem data-test-subj="case-view-alerts">
-      <CaseViewTabs caseData={caseData} activeTab={CASE_VIEW_PAGE_TABS.ALERTS} />
       <AlertsTable
         id={`case-details-alerts-${caseData.owner}`}
         ruleTypeIds={
@@ -89,7 +87,6 @@ export const CaseViewAlerts = ({
         query={alertIdsQuery}
         showAlertStatusWithFlapping={caseData.owner !== SECURITY_SOLUTION_OWNER}
         onLoaded={onLoaded}
-        caseData={caseData}
         // Only provide the services to the default alerts table.
         // Spreading from object to avoid incorrectly overriding
         // services to `undefined` in custom solution tables

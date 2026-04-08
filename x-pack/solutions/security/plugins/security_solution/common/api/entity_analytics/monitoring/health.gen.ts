@@ -14,7 +14,7 @@
  *   version: 2023-10-31
  */
 
-import { z } from '@kbn/zod';
+import { z } from '@kbn/zod/v4';
 
 import { PrivilegeMonitoringEngineStatus } from './common.gen';
 
@@ -24,6 +24,21 @@ export const PrivMonHealthResponse = z.object({
   error: z
     .object({
       message: z.string().optional(),
+    })
+    .optional(),
+  /**
+   * User statistics for privilege monitoring
+   */
+  users: z
+    .object({
+      /**
+       * Current number of privileged users being monitored
+       */
+      current_count: z.number().int(),
+      /**
+       * Maximum number of privileged users allowed to be monitored
+       */
+      max_allowed: z.number().int(),
     })
     .optional(),
 });

@@ -30,13 +30,14 @@ export const testContentPackEntry = ({
     ...emptyAssets,
     queries,
     stream: {
+      type: 'wired' as const,
       description: '',
       ingest: {
-        processing: {
-          steps: [],
-        },
+        processing: { steps: [] },
         lifecycle: { inherit: {} },
         wired: { routing, fields },
+        settings: {},
+        failure_store: { inherit: {} },
       },
     },
   },

@@ -13,6 +13,7 @@ import {
   loggingSystemMock,
   savedObjectsRepositoryMock,
   uiSettingsServiceMock,
+  coreFeatureFlagsMock,
 } from '@kbn/core/server/mocks';
 import { taskManagerMock } from '@kbn/task-manager-plugin/server/mocks';
 import { ruleTypeRegistryMock } from '../../../../rule_type_registry.mock';
@@ -28,6 +29,8 @@ import { bulkMarkApiKeysForInvalidation } from '../../../../invalidate_pending_a
 import { ConnectorAdapterRegistry } from '../../../../connector_adapters/connector_adapter_registry';
 import { RULE_SAVED_OBJECT_TYPE } from '../../../../saved_objects';
 import { backfillClientMock } from '../../../../backfill_client/backfill_client.mock';
+import { toKqlExpression } from '@kbn/es-query';
+import { createMockConnector } from '@kbn/actions-plugin/server/application/connector/mocks';
 
 jest.mock('uuid', () => {
   let uuid = 100;
@@ -79,6 +82,8 @@ const rulesClientParams: jest.Mocked<ConstructorOptions> = {
   alertsService: null,
   backfillClient: backfillClientMock.create(),
   uiSettings: uiSettingsServiceMock.createStartContract(),
+  featureFlags: coreFeatureFlagsMock.createStart(),
+  isServerless: false,
 };
 
 const MOCK_API_KEY = Buffer.from('123:abc').toString('base64');
@@ -165,7 +170,7 @@ describe('bulkEditRuleParamsWithReadAuth()', () => {
     actionsClient = (await rulesClientParams.getActionsClient()) as jest.Mocked<ActionsClient>;
     actionsClient.getBulk.mockReset();
     actionsClient.getBulk.mockResolvedValue([
-      {
+      createMockConnector({
         id: '1',
         actionTypeId: 'test',
         config: {
@@ -176,12 +181,8 @@ describe('bulkEditRuleParamsWithReadAuth()', () => {
           secure: null,
           service: null,
         },
-        isMissingSecrets: false,
         name: 'email connector',
-        isPreconfigured: false,
-        isSystemAction: false,
-        isDeprecated: false,
-      },
+      }),
     ]);
     actionsClient.listTypes.mockReset();
     actionsClient.listTypes.mockResolvedValue([]);
@@ -680,6 +681,54 @@ describe('bulkEditRuleParamsWithReadAuth()', () => {
           }),
         ],
         { overwrite: true }
+      );
+    });
+  });
+
+  describe('internally managed rule types', () => {
+    beforeEach(() => {
+      ruleTypeRegistry.list.mockReturnValue(
+        // @ts-expect-error: not all args are required for this test
+        new Map([
+          ['test.internal-rule-type', { id: 'test.internal-rule-type', internallyManaged: true }],
+          [
+            'test.internal-rule-type-2',
+            { id: 'test.internal-rule-type-2', internallyManaged: true },
+          ],
+        ])
+      );
+    });
+
+    it('should ignore updates to internally managed rule types by default and combine all filters correctly', async () => {
+      await rulesClient.bulkEditRuleParamsWithReadAuth({
+        operations: [
+          {
+            field: 'exceptionsList',
+            operation: 'set',
+            value: [
+              {
+                id: 'exception-list-id',
+                list_id: 'exception-list',
+                type: 'detection',
+                namespace_type: 'single',
+              },
+            ],
+          },
+        ],
+      });
+
+      const findFilter = unsecuredSavedObjectsClient.find.mock.calls[0][0].filter;
+
+      const encryptedFindFilter =
+        encryptedSavedObjects.createPointInTimeFinderDecryptedAsInternalUser.mock.calls[0][0]
+          .filter;
+
+      expect(toKqlExpression(findFilter)).toMatchInlineSnapshot(
+        `"NOT (alert.attributes.alertTypeId: test.internal-rule-type OR alert.attributes.alertTypeId: test.internal-rule-type-2)"`
+      );
+
+      expect(toKqlExpression(encryptedFindFilter)).toMatchInlineSnapshot(
+        `"NOT (alert.attributes.alertTypeId: test.internal-rule-type OR alert.attributes.alertTypeId: test.internal-rule-type-2)"`
       );
     });
   });

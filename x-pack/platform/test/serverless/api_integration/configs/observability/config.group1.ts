@@ -27,7 +27,6 @@ export default createTestConfig({
     require.resolve('../../test_suites/reporting'),
     require.resolve('../../test_suites/grok_debugger'),
     require.resolve('../../test_suites/painless_lab'),
-    require.resolve('../../test_suites/console'),
     require.resolve('../../test_suites/saved_objects_management'),
     require.resolve('../../test_suites/telemetry'),
     require.resolve('../../test_suites/data_usage'),
@@ -52,5 +51,6 @@ export default createTestConfig({
     '--xpack.dataUsage.autoops.api.url=http://localhost:9000',
     `--xpack.dataUsage.autoops.api.tls.certificate=${KBN_CERT_PATH}`,
     `--xpack.dataUsage.autoops.api.tls.key=${KBN_KEY_PATH}`,
+    `--xpack.reporting.queue.timeout="10m"`,
   ],
 });

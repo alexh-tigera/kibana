@@ -40,6 +40,7 @@ export default function ({ getService }: FtrProviderContext) {
     const params: Record<string, string> = {};
 
     before(async () => {
+      await testPrivateLocations.cleanupFleetPolicies();
       await kServer.savedObjects.cleanStandardList();
       await testPrivateLocations.installSyntheticsPackage();
       _browserMonitorJson = getFixtureJson('browser_monitor');
@@ -53,7 +54,7 @@ export default function ({ getService }: FtrProviderContext) {
       const data = await monitorTestService.addsNewSpace();
       spaceId = data.SPACE_ID;
       locWithSpace = await testPrivateLocations.createPrivateLocation({
-        spaceId,
+        spaces: ['default', spaceId],
         label: 'Test private location 1',
       });
       loc2WithSpace = await testPrivateLocations.createPrivateLocation({
@@ -105,7 +106,6 @@ export default function ({ getService }: FtrProviderContext) {
 
     it('added an integration for previously added monitor', async () => {
       const packagePolicy = await testPrivateLocations.getPackagePolicy({
-        spaceId,
         monitorId: newBrowserMonitorId,
         locId: locWithSpace.id,
       });
@@ -119,6 +119,8 @@ export default function ({ getService }: FtrProviderContext) {
           id: newBrowserMonitorId,
           isBrowser: true,
           location: { id: locWithSpace.agentPolicyId },
+          packageVersion: testPrivateLocations.installedVersion,
+          spaceIds: [spaceId, 'default'],
         })
       );
     });
@@ -153,10 +155,13 @@ export default function ({ getService }: FtrProviderContext) {
         packagePolicy = await testPrivateLocations.getPackagePolicy({
           monitorId: newBrowserMonitorId,
           locId: locWithSpace.id,
-          spaceId,
         });
+        const enabledInput = packagePolicy.inputs.find(
+          (input: { enabled: boolean }) => input.enabled === true
+        );
+
         expect(packagePolicy.policy_id).eql(locWithSpace.agentPolicyId);
-        expect(packagePolicy.inputs[0].streams[0].compiled_stream.params).eql(params);
+        expect(enabledInput.streams[0].compiled_stream.params).eql(params);
       });
 
       comparePolicies(
@@ -166,6 +171,8 @@ export default function ({ getService }: FtrProviderContext) {
           id: newBrowserMonitorId,
           isBrowser: true,
           location: { id: locWithSpace.agentPolicyId },
+          packageVersion: testPrivateLocations.installedVersion,
+          spaceIds: [spaceId, 'default'],
         })
       );
     });
@@ -198,7 +205,6 @@ export default function ({ getService }: FtrProviderContext) {
       const packagePolicy = await testPrivateLocations.getPackagePolicy({
         monitorId: newBrowserMonitorId,
         locId: locWithSpace.id,
-        spaceId,
       });
 
       expect(packagePolicy.policy_id).eql(locWithSpace.agentPolicyId);
@@ -210,6 +216,8 @@ export default function ({ getService }: FtrProviderContext) {
           id: newBrowserMonitorId,
           isBrowser: true,
           location: { id: locWithSpace.id },
+          packageVersion: testPrivateLocations.installedVersion,
+          spaceIds: [spaceId, 'default'],
         })
       );
     });
@@ -220,10 +228,12 @@ export default function ({ getService }: FtrProviderContext) {
         packagePolicy = await testPrivateLocations.getPackagePolicy({
           monitorId: newBrowserMonitorId,
           locId: locWithSpace.id,
-          spaceId,
         });
+        const enabledInput = packagePolicy.inputs.find(
+          (input: { enabled: boolean }) => input.enabled === true
+        );
         expect(packagePolicy.policy_id).eql(locWithSpace.agentPolicyId);
-        expect(packagePolicy.inputs[0].streams[0].compiled_stream.params).eql(undefined);
+        expect(enabledInput.streams[0].compiled_stream.params).eql(undefined);
       });
 
       comparePolicies(
@@ -233,6 +243,8 @@ export default function ({ getService }: FtrProviderContext) {
           id: newBrowserMonitorId,
           isBrowser: true,
           location: { id: locWithSpace.id },
+          packageVersion: testPrivateLocations.installedVersion,
+          spaceIds: [spaceId, 'default'],
         })
       );
     });

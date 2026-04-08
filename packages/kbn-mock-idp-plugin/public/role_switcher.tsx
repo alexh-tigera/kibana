@@ -93,7 +93,7 @@ export const RoleSwitcher = () => {
         <EuiButton
           color="text"
           size="s"
-          iconType="arrowDown"
+          iconType="chevronSingleDown"
           iconSide="right"
           minWidth={false}
           onClick={() => setIsOpen((toggle) => !toggle)}
@@ -125,6 +125,7 @@ export const RoleSwitcher = () => {
                   full_name: currentUserState.value!.full_name,
                   email: currentUserState.value!.email,
                   roles: [role],
+                  url: window.location.href,
                 });
                 setIsOpen(false);
               },

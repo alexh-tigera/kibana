@@ -9,9 +9,9 @@
 
 import type { EsWorkflowExecution, EsWorkflowStepExecution } from '@kbn/workflows';
 import { ExecutionStatus } from '@kbn/workflows';
-import { WorkflowExecutionState } from '../workflow_execution_state';
-import type { WorkflowExecutionRepository } from '../../repositories/workflow_execution_repository';
 import type { StepExecutionRepository } from '../../repositories/step_execution_repository';
+import type { WorkflowExecutionRepository } from '../../repositories/workflow_execution_repository';
+import { WorkflowExecutionState } from '../workflow_execution_state';
 
 describe('WorkflowExecutionState', () => {
   let underTest: WorkflowExecutionState;
@@ -24,16 +24,15 @@ describe('WorkflowExecutionState', () => {
     workflowExecutionRepository.updateWorkflowExecution = jest.fn();
 
     stepExecutionRepository = {} as unknown as StepExecutionRepository;
-    stepExecutionRepository.createStepExecution = jest.fn();
-    stepExecutionRepository.updateStepExecution = jest.fn();
-    stepExecutionRepository.updateStepExecutions = jest.fn();
-    stepExecutionRepository.searchStepExecutionsByExecutionId = jest.fn();
+    stepExecutionRepository.bulkUpsert = jest.fn();
+    stepExecutionRepository.getStepExecutionsByIds = jest.fn();
 
     const fakeWorkflowExecution = {
       id: 'test-workflow-execution-id',
       workflowId: 'test-workflow-id',
       status: ExecutionStatus.RUNNING,
       startedAt: '2025-08-05T20:00:00.000Z',
+      isTestRun: false,
     } as EsWorkflowExecution;
     underTest = new WorkflowExecutionState(
       fakeWorkflowExecution,
@@ -49,6 +48,7 @@ describe('WorkflowExecutionState', () => {
       workflowId: 'test-workflow-id',
       status: ExecutionStatus.RUNNING,
       startedAt: '2025-08-05T20:00:00.000Z',
+      isTestRun: false,
     } as EsWorkflowExecution);
   });
 
@@ -58,6 +58,7 @@ describe('WorkflowExecutionState', () => {
       workflowId: 'test-workflow-id',
       status: ExecutionStatus.COMPLETED,
       startedAt: '2025-08-05T20:00:00.000Z',
+      isTestRun: false,
     } as EsWorkflowExecution;
 
     underTest.updateWorkflowExecution(updatedWorkflowExecution);
@@ -100,9 +101,42 @@ describe('WorkflowExecutionState', () => {
       stepId: 'test-step-execution-id',
       status: ExecutionStatus.RUNNING,
       startedAt: '2025-08-05T20:00:00.000Z',
-      executionIndex: 0,
+      stepExecutionIndex: 0,
+      globalExecutionIndex: 0,
+      isTestRun: false,
     } as EsWorkflowStepExecution);
-    expect(stepExecutionRepository.createStepExecution).not.toHaveBeenCalled();
+    expect(stepExecutionRepository.bulkUpsert).not.toHaveBeenCalled();
+  });
+
+  it('should set isTestRun on step execution from workflow execution', () => {
+    const workflowExecutionWithTestRun = {
+      id: 'test-workflow-execution-id',
+      workflowId: 'test-workflow-id',
+      status: ExecutionStatus.RUNNING,
+      startedAt: '2025-08-05T20:00:00.000Z',
+      isTestRun: true,
+    } as EsWorkflowExecution;
+    const stateWithTestRun = new WorkflowExecutionState(
+      workflowExecutionWithTestRun,
+      workflowExecutionRepository,
+      stepExecutionRepository
+    );
+
+    stateWithTestRun.upsertStep({
+      id: 'fake-id',
+      stepId: 'test-step',
+      status: ExecutionStatus.RUNNING,
+      startedAt: '2025-08-05T20:00:00.000Z',
+    } as EsWorkflowStepExecution);
+
+    expect(stateWithTestRun.getLatestStepExecution('test-step')).toEqual(
+      expect.objectContaining({
+        id: 'fake-id',
+        workflowRunId: 'test-workflow-execution-id',
+        workflowId: 'test-workflow-id',
+        isTestRun: true,
+      })
+    );
   });
 
   it('should create step execution with executionIndex', () => {
@@ -121,10 +155,32 @@ describe('WorkflowExecutionState', () => {
 
     expect(underTest.getLatestStepExecution('test-step-execution-id')).toEqual(
       expect.objectContaining({
-        executionIndex: 2,
+        stepExecutionIndex: 2,
       } as EsWorkflowStepExecution)
     );
-    expect(stepExecutionRepository.createStepExecution).not.toHaveBeenCalled();
+    expect(stepExecutionRepository.bulkUpsert).not.toHaveBeenCalled();
+  });
+
+  it('should create step execution with globalExecutionIndex', () => {
+    underTest.upsertStep({
+      id: 'fake-id-1',
+      stepId: 'test-step-execution-id',
+    });
+    underTest.upsertStep({
+      id: 'fake-id-2',
+      stepId: 'test-step-execution-id-2',
+    });
+    underTest.upsertStep({
+      id: 'fake-id-3',
+      stepId: 'test-step-execution-id-3',
+    });
+
+    expect(underTest.getLatestStepExecution('test-step-execution-id-3')).toEqual(
+      expect.objectContaining({
+        globalExecutionIndex: 2,
+      } as EsWorkflowStepExecution)
+    );
+    expect(stepExecutionRepository.bulkUpsert).not.toHaveBeenCalled();
   });
 
   it('should update step execution only in local state', () => {
@@ -141,7 +197,7 @@ describe('WorkflowExecutionState', () => {
       id: 'fake-id',
       stepId: 'test-step-execution-id',
       status: ExecutionStatus.COMPLETED,
-      completedAt: '2025-08-05T20:01:00.000Z',
+      finishedAt: '2025-08-05T20:01:00.000Z',
       executionTimeMs: 60000,
     } as EsWorkflowStepExecution);
 
@@ -149,12 +205,11 @@ describe('WorkflowExecutionState', () => {
       expect.objectContaining({
         id: 'fake-id',
         status: ExecutionStatus.COMPLETED,
-        completedAt: '2025-08-05T20:01:00.000Z',
+        finishedAt: '2025-08-05T20:01:00.000Z',
         executionTimeMs: 60000,
       })
     );
-    expect(stepExecutionRepository.updateStepExecution).not.toHaveBeenCalled();
-    expect(stepExecutionRepository.updateStepExecutions).not.toHaveBeenCalled();
+    expect(stepExecutionRepository.bulkUpsert).not.toHaveBeenCalled();
   });
 
   describe('flush', () => {
@@ -208,14 +263,15 @@ describe('WorkflowExecutionState', () => {
 
       await underTest.flush();
 
-      expect(stepExecutionRepository.createStepExecution).toHaveBeenCalledWith(
+      expect(stepExecutionRepository.bulkUpsert).toHaveBeenCalledWith([
         expect.objectContaining({
           id: 'fake-uuid',
           stepId: 'test-step-execution-id',
           status: ExecutionStatus.RUNNING,
           startedAt: '2025-08-05T20:00:00.000Z',
-        } as EsWorkflowStepExecution)
-      );
+          isTestRun: false,
+        } as EsWorkflowStepExecution),
+      ]);
     });
 
     it('should flush updates to changed step executions', async () => {
@@ -233,18 +289,18 @@ describe('WorkflowExecutionState', () => {
         id: 'fake-uuid-1',
         stepId: 'test-step-execution-id',
         status: ExecutionStatus.COMPLETED,
-        completedAt: '2025-08-05T20:01:00.000Z',
+        finishedAt: '2025-08-05T20:01:00.000Z',
         executionTimeMs: 60000,
       } as EsWorkflowStepExecution);
 
       await underTest.flush();
 
-      expect(stepExecutionRepository.updateStepExecutions).toHaveBeenCalledWith([
+      expect(stepExecutionRepository.bulkUpsert).toHaveBeenCalledWith([
         {
           id: 'fake-uuid-1',
           stepId: 'test-step-execution-id',
           status: ExecutionStatus.COMPLETED,
-          completedAt: '2025-08-05T20:01:00.000Z',
+          finishedAt: '2025-08-05T20:01:00.000Z',
           executionTimeMs: 60000,
         } as EsWorkflowStepExecution,
       ]);
@@ -265,30 +321,30 @@ describe('WorkflowExecutionState', () => {
         id: fakeUuid,
         stepId: 'test-step-execution-id',
         status: ExecutionStatus.COMPLETED,
-        completedAt: '2025-08-05T20:01:00.000Z',
+        finishedAt: '2025-08-05T20:01:00.000Z',
         executionTimeMs: 2000,
       } as EsWorkflowStepExecution);
 
       await underTest.flush();
 
-      expect(stepExecutionRepository.createStepExecution).toHaveBeenCalledWith(
+      expect(stepExecutionRepository.bulkUpsert).toHaveBeenCalledWith([
         expect.objectContaining({
           id: fakeUuid,
           stepId: 'test-step-execution-id',
           status: ExecutionStatus.COMPLETED,
-          completedAt: '2025-08-05T20:01:00.000Z',
+          finishedAt: '2025-08-05T20:01:00.000Z',
           startedAt: '2025-08-05T20:00:00.000Z',
           executionTimeMs: 2000,
-        } as EsWorkflowStepExecution)
-      );
+          isTestRun: false,
+        } as EsWorkflowStepExecution),
+      ]);
     });
 
     it('should not flush if there are no changes', async () => {
       await underTest.flush();
 
       expect(workflowExecutionRepository.updateWorkflowExecution).not.toHaveBeenCalled();
-      expect(stepExecutionRepository.createStepExecution).not.toHaveBeenCalled();
-      expect(stepExecutionRepository.updateStepExecutions).not.toHaveBeenCalled();
+      expect(stepExecutionRepository.bulkUpsert).not.toHaveBeenCalled();
     });
 
     it('should not flush if there are no changes since last flush', async () => {
@@ -310,7 +366,7 @@ describe('WorkflowExecutionState', () => {
         id: fakeUuid,
         stepId: 'test-step-execution-id',
         status: ExecutionStatus.COMPLETED,
-        completedAt: '2025-08-05T20:01:00.000Z',
+        finishedAt: '2025-08-05T20:01:00.000Z',
         executionTimeMs: 60000,
       } as EsWorkflowStepExecution);
       const secondFakeUuid = 'fake-uuid-2';
@@ -324,34 +380,8 @@ describe('WorkflowExecutionState', () => {
       await underTest.flush(); // second flush with no changes
       await underTest.flush(); // third flush with no changes
 
-      expect(workflowExecutionRepository.updateWorkflowExecution).toHaveBeenCalledTimes(1);
-      expect(stepExecutionRepository.createStepExecution).toHaveBeenCalledTimes(2); // create the first step execution and the second one
-      expect(stepExecutionRepository.updateStepExecutions).toHaveBeenCalledTimes(1);
-    });
-
-    it('should sync workflow execution with latest from repository', async () => {
-      workflowExecutionRepository.getWorkflowExecutionById = jest.fn().mockResolvedValue({
-        id: 'test-workflow-execution-id',
-        status: ExecutionStatus.CANCELLED,
-        cancelledAt: '2025-08-05T20:02:00.000Z',
-        cancelledBy: 'user-123',
-      } as EsWorkflowExecution);
-      underTest.updateWorkflowExecution({
-        status: ExecutionStatus.SKIPPED,
-      });
-
-      await underTest.flush();
-
-      expect(workflowExecutionRepository.getWorkflowExecutionById).toHaveBeenCalledWith(
-        'test-workflow-execution-id',
-        undefined
-      );
-      expect(underTest.getWorkflowExecution()).toEqual({
-        id: 'test-workflow-execution-id',
-        status: ExecutionStatus.CANCELLED,
-        cancelledAt: '2025-08-05T20:02:00.000Z',
-        cancelledBy: 'user-123',
-      } as EsWorkflowExecution);
+      expect(workflowExecutionRepository.updateWorkflowExecution).toHaveBeenCalledTimes(2);
+      expect(stepExecutionRepository.bulkUpsert).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -402,8 +432,15 @@ describe('WorkflowExecutionState', () => {
   });
 
   describe('load', () => {
+    it('should throw if stepExecutionIds is not set on the workflow execution', async () => {
+      await expect(underTest.load()).rejects.toThrow(
+        'WorkflowExecutionState: Workflow execution must have step execution IDs to be loaded'
+      );
+    });
+
     it('should load existing step executions', async () => {
-      (stepExecutionRepository.searchStepExecutionsByExecutionId as jest.Mock).mockResolvedValue([
+      underTest.updateWorkflowExecution({ stepExecutionIds: ['11', '22'] });
+      (stepExecutionRepository.getStepExecutionsByIds as jest.Mock).mockResolvedValue([
         {
           id: '11',
           stepId: 'testStep',
@@ -417,6 +454,7 @@ describe('WorkflowExecutionState', () => {
       ]);
       await underTest.load();
 
+      expect(stepExecutionRepository.getStepExecutionsByIds).toHaveBeenCalledWith(['11', '22']);
       expect(underTest.getLatestStepExecution('testStep')).toEqual({
         id: '11',
         stepId: 'testStep',
@@ -430,26 +468,27 @@ describe('WorkflowExecutionState', () => {
     });
 
     it('should sort step executions by executionIndex when loaded from repository', async () => {
-      (stepExecutionRepository.searchStepExecutionsByExecutionId as jest.Mock).mockResolvedValue([
+      underTest.updateWorkflowExecution({ stepExecutionIds: ['11', '44', '33', '22'] });
+      (stepExecutionRepository.getStepExecutionsByIds as jest.Mock).mockResolvedValue([
         {
           id: '11',
           stepId: 'testStep',
-          executionIndex: 1,
+          stepExecutionIndex: 1,
         } as EsWorkflowStepExecution,
         {
           id: '44',
           stepId: 'testStep',
-          executionIndex: 4,
+          stepExecutionIndex: 4,
         } as EsWorkflowStepExecution,
         {
           id: '33',
           stepId: 'testStep',
-          executionIndex: 3,
+          stepExecutionIndex: 3,
         } as EsWorkflowStepExecution,
         {
           id: '22',
           stepId: 'testStep',
-          executionIndex: 2,
+          stepExecutionIndex: 2,
         } as EsWorkflowStepExecution,
       ]);
       await underTest.load();

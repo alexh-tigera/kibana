@@ -15,7 +15,7 @@ import type { SolutionSideNavProps } from '@kbn/security-solution-side-nav';
 import type { NavigationLink } from '../../../links/types';
 import { track } from '../../../lib/telemetry';
 import { useKibana } from '../../../lib/kibana';
-import { CATEGORIES } from './categories';
+import { getNavCategories } from './categories';
 
 const settingsNavLink: NavigationLink = {
   id: SecurityPageName.administration,
@@ -103,7 +103,7 @@ describe('SecuritySideNav', () => {
           position: 'top',
         },
       ],
-      categories: CATEGORIES,
+      categories: getNavCategories(),
       tracker: track,
     });
   });
@@ -167,7 +167,7 @@ describe('SecuritySideNav', () => {
 
   it('should render get started item', () => {
     mockUseNavLinks.mockReturnValue([
-      { id: SecurityPageName.landing, title: 'Get started', sideNavIcon: 'launch' },
+      { id: SecurityPageName.landing, title: 'Get started', sideNavIcon: 'rocket' },
     ]);
     renderNav();
     expect(mockSolutionSideNav).toHaveBeenCalledWith(
@@ -177,7 +177,7 @@ describe('SecuritySideNav', () => {
             id: SecurityPageName.landing,
             label: 'Get started',
             position: 'bottom',
-            iconType: 'launch',
+            iconType: 'rocket',
             appendSeparator: true,
           }),
         ],
@@ -238,6 +238,28 @@ describe('SecuritySideNav', () => {
       expect(mockSolutionSideNav).toHaveBeenCalledWith(
         expect.objectContaining({
           panelBottomOffset: undefined,
+        })
+      );
+    });
+  });
+
+  describe('enableAlertsAndAttacksAlignment setting', () => {
+    it('should call getNavCategories with true when setting is enabled', () => {
+      useKibana().services.uiSettings.get = jest.fn().mockReturnValue(true);
+      renderNav();
+      expect(mockSolutionSideNav).toHaveBeenCalledWith(
+        expect.objectContaining({
+          categories: getNavCategories(true),
+        })
+      );
+    });
+
+    it('should call getNavCategories with false when setting is disabled', () => {
+      useKibana().services.uiSettings.get = jest.fn().mockReturnValue(false);
+      renderNav();
+      expect(mockSolutionSideNav).toHaveBeenCalledWith(
+        expect.objectContaining({
+          categories: getNavCategories(false),
         })
       );
     });

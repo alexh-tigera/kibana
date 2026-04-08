@@ -6,6 +6,7 @@
  */
 
 import { EuiFlexGroup, EuiPanel } from '@elastic/eui';
+import type { EmbeddablePackageState } from '@kbn/embeddable-plugin/public';
 import { i18n } from '@kbn/i18n';
 import type { SaveModalDashboardProps } from '@kbn/presentation-util-plugin/public';
 import {
@@ -14,6 +15,7 @@ import {
 } from '@kbn/presentation-util-plugin/public';
 import type { SLOWithSummaryResponse } from '@kbn/slo-schema';
 import React, { useCallback, useState } from 'react';
+import type { ErrorBudgetEmbeddableState } from '../../../embeddable/slo/error_budget/types';
 import { SLO_ERROR_BUDGET_ID } from '../../../embeddable/slo/error_budget/constants';
 import { useKibana } from '../../../hooks/use_kibana';
 import type { ChartData } from '../../../typings/slo';
@@ -22,20 +24,21 @@ import { ErrorBudgetChart } from './error_budget_chart';
 import { ErrorBudgetHeader } from './error_budget_header';
 
 const SavedObjectSaveModalDashboard = withSuspense(LazySavedObjectSaveModalDashboard);
+
 export interface Props {
   data: ChartData[];
   isLoading: boolean;
   slo: SLOWithSummaryResponse;
-  hideMetadata?: boolean;
   onBrushed?: (timeBounds: TimeBounds) => void;
+  hideHeaderDurationLabel?: boolean;
 }
 
 export function ErrorBudgetChartPanel({
   data,
   isLoading,
   slo,
-  hideMetadata = false,
   onBrushed,
+  hideHeaderDurationLabel = false,
 }: Props) {
   const [isMouseOver, setIsMouseOver] = useState(false);
 
@@ -45,22 +48,22 @@ export function ErrorBudgetChartPanel({
   const handleAttachToDashboardSave: SaveModalDashboardProps['onSave'] = useCallback(
     async ({ dashboardId, newTitle, newDescription }) => {
       const stateTransfer = embeddable!.getStateTransfer();
-      const embeddableInput = {
+      const serializedState: ErrorBudgetEmbeddableState = {
+        slo_id: slo.id,
+        slo_instance_id: slo.instanceId,
         title: newTitle,
         description: newDescription,
-        sloId: slo.id,
-        sloInstanceId: slo.instanceId,
       };
 
-      const state = {
-        serializedState: { rawState: embeddableInput },
+      const state: EmbeddablePackageState<ErrorBudgetEmbeddableState> = {
         type: SLO_ERROR_BUDGET_ID,
+        serializedState,
       };
 
       const path = dashboardId === 'new' ? '#/create' : `#/view/${dashboardId}`;
 
-      stateTransfer.navigateToWithEmbeddablePackage('dashboards', {
-        state,
+      stateTransfer.navigateToWithEmbeddablePackages<ErrorBudgetEmbeddableState>('dashboards', {
+        state: [state],
         path,
       });
     },
@@ -88,18 +91,12 @@ export function ErrorBudgetChartPanel({
         <EuiFlexGroup direction="column" gutterSize="l">
           <ErrorBudgetHeader
             slo={slo}
+            hideHeaderDurationLabel={hideHeaderDurationLabel}
             isMouseOver={isMouseOver}
             setDashboardAttachmentReady={setDashboardAttachmentReady}
-            hideMetadata={hideMetadata}
           />
 
-          <ErrorBudgetChart
-            slo={slo}
-            data={data}
-            isLoading={isLoading}
-            hideMetadata={hideMetadata}
-            onBrushed={onBrushed}
-          />
+          <ErrorBudgetChart slo={slo} data={data} isLoading={isLoading} onBrushed={onBrushed} />
         </EuiFlexGroup>
       </EuiPanel>
       {isDashboardAttachmentReady ? (

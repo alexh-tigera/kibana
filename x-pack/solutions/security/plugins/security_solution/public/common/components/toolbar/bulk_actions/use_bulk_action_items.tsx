@@ -6,12 +6,15 @@
  */
 
 import { useMemo, useCallback } from 'react';
+import type { EuiContextMenuPanelDescriptor } from '@elastic/eui';
+import { useBulkClosingReasonItems } from '@kbn/response-ops-detections-close-reason';
 import type { AlertTableContextMenuItem } from '../../../../detections/components/alerts_table/types';
 import { FILTER_ACKNOWLEDGED, FILTER_CLOSED, FILTER_OPEN } from '../../../../../common/types';
 import type {
   CustomBulkActionProp,
   SetEventsDeleted,
   SetEventsLoading,
+  AlertClosingReason,
 } from '../../../../../common/types';
 import * as i18n from './translations';
 import { updateAlertStatus } from './update_alerts';
@@ -21,6 +24,7 @@ import { APM_USER_INTERACTIONS } from '../../../lib/apm/constants';
 import type { AlertWorkflowStatus } from '../../../types';
 import type { OnUpdateAlertStatusError, OnUpdateAlertStatusSuccess } from './types';
 import { useAlertCloseInfoModal } from '../../../../detections/hooks/use_alert_close_info_modal';
+import { useAlertsPrivileges } from '../../../../detections/containers/detection_engine/alerts/use_alerts_privileges';
 
 export interface BulkActionsProps {
   eventIds: string[];
@@ -48,6 +52,7 @@ export const useBulkActionItems = ({
   const { addSuccess, addError, addWarning } = useAppToasts();
   const { startTransaction } = useStartTransaction();
   const { promptAlertCloseConfirmation } = useAlertCloseInfoModal();
+  const { hasAlertsUpdate } = useAlertsPrivileges();
 
   const onAlertStatusUpdateSuccess = useCallback(
     (updated: number, conflicts: number, newStatus: AlertWorkflowStatus) => {
@@ -100,8 +105,8 @@ export const useBulkActionItems = ({
   );
 
   const onClickUpdate = useCallback(
-    async (status: AlertWorkflowStatus) => {
-      if (status === 'closed' && !(await promptAlertCloseConfirmation())) {
+    async (status: AlertWorkflowStatus, reason?: AlertClosingReason) => {
+      if (status === 'closed' && !(await promptAlertCloseConfirmation({ query, ids: eventIds }))) {
         return;
       }
 
@@ -119,6 +124,7 @@ export const useBulkActionItems = ({
           status,
           query: query && JSON.parse(query),
           signalIds: eventIds,
+          reason,
         });
 
         // TODO: Only delete those that were successfully updated from updatedRules
@@ -147,9 +153,17 @@ export const useBulkActionItems = ({
     ]
   );
 
+  const { item: alertClosingReasonItem, panels: alertClosingReasonPanels } =
+    useBulkClosingReasonItems({
+      isEnabled: hasAlertsUpdate ?? false,
+      onSubmitCloseReason({ reason }) {
+        onClickUpdate(FILTER_CLOSED as AlertWorkflowStatus, reason);
+      },
+    });
+
   const items = useMemo(() => {
     const actionItems: AlertTableContextMenuItem[] = [];
-    if (showAlertStatusActions) {
+    if (showAlertStatusActions && hasAlertsUpdate) {
       if (currentStatus !== FILTER_OPEN) {
         actionItems.push({
           key: 'open',
@@ -168,10 +182,10 @@ export const useBulkActionItems = ({
       }
       if (currentStatus !== FILTER_CLOSED) {
         actionItems.push({
-          key: 'close',
-          'data-test-subj': 'close-alert-status',
-          onClick: () => onClickUpdate(FILTER_CLOSED as AlertWorkflowStatus),
-          name: i18n.BULK_ACTION_CLOSE_SELECTED,
+          key: alertClosingReasonItem?.key,
+          'data-test-subj': alertClosingReasonItem?.['data-test-subj'],
+          name: alertClosingReasonItem?.label,
+          panel: alertClosingReasonItem?.panel,
         });
       }
     }
@@ -192,7 +206,33 @@ export const useBulkActionItems = ({
       : [];
 
     return [...actionItems, ...additionalItems];
-  }, [currentStatus, customBulkActions, eventIds, onClickUpdate, query, showAlertStatusActions]);
+  }, [
+    hasAlertsUpdate,
+    alertClosingReasonItem,
+    currentStatus,
+    customBulkActions,
+    eventIds,
+    onClickUpdate,
+    query,
+    showAlertStatusActions,
+  ]);
 
-  return items;
+  const panels = useMemo(
+    () =>
+      [
+        ...alertClosingReasonPanels.map((panel) => {
+          return {
+            ...panel,
+            content: panel.renderContent({
+              alertItems: [],
+              closePopoverMenu: () => {},
+              setIsBulkActionsLoading: () => {},
+            }),
+          };
+        }),
+      ] as EuiContextMenuPanelDescriptor[],
+    [alertClosingReasonPanels]
+  );
+
+  return useMemo(() => ({ items, panels }), [items, panels]);
 };

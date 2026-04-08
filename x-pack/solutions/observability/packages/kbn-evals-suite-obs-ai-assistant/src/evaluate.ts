@@ -5,22 +5,41 @@
  * 2.0.
  */
 
-import { evaluate as base } from '@kbn/evals';
-import { KnowledgeBaseClient } from './knowledge_base_client';
-import { ObservabilityAIAssistantEvaluationChatClient } from './chat_client';
+import { evaluate as base, createDefaultTerminalReporter } from '@kbn/evals';
+import { mergeTests } from '@kbn/scout';
+import { synthtraceFixture } from '@kbn/scout-synthtrace';
+import { KnowledgeBaseClient } from './clients/knowledge_base_client';
+import { ConversationsClient } from './clients/conversations_client';
+import { createChatClient, type ChatClient } from './clients/chat';
+import type { EvaluateObservabilityAIAssistantDataset } from './evaluate_dataset';
+import { createEvaluateObservabilityAIAssistantDataset } from './evaluate_dataset';
+import { createScenarioSummaryReporter } from './scenario_summary_reporter';
 
-export const evaluate = base.extend<
+const evaluateWithSynthtrace = mergeTests(base, synthtraceFixture);
+
+export const evaluate = evaluateWithSynthtrace.extend<
   {},
   {
     knowledgeBaseClient: KnowledgeBaseClient;
-    chatClient: ObservabilityAIAssistantEvaluationChatClient;
+    conversationsClient: ConversationsClient;
+    chatClient: ChatClient;
+    evaluateDataset: EvaluateObservabilityAIAssistantDataset;
   }
 >({
   knowledgeBaseClient: [
-    async ({ fetch, log }, use) => {
-      const kbClient = new KnowledgeBaseClient(fetch, log);
+    async ({ fetch, log, esClient }, use) => {
+      const kbClient = new KnowledgeBaseClient(fetch, log, esClient);
 
       await use(kbClient);
+    },
+    {
+      scope: 'worker',
+    },
+  ],
+  conversationsClient: [
+    async ({ log, esClient }, use) => {
+      const convClient = new ConversationsClient(log, esClient);
+      await use(convClient);
     },
     {
       scope: 'worker',
@@ -32,11 +51,35 @@ export const evaluate = base.extend<
       // This guarantees KB is installed even if no spec references knowledgeBaseClient directly.
       await knowledgeBaseClient.ensureInstalled();
 
-      const chatClient = new ObservabilityAIAssistantEvaluationChatClient(fetch, log, connector.id);
+      const chatClient = createChatClient(fetch, log, connector.id);
       await use(chatClient);
     },
     {
       scope: 'worker',
     },
+  ],
+  evaluateDataset: [
+    ({ chatClient, evaluators, executorClient }, use) => {
+      use(
+        createEvaluateObservabilityAIAssistantDataset({
+          chatClient,
+          evaluators,
+          executorClient,
+        })
+      );
+    },
+    { scope: 'worker' },
+  ],
+  reportModelScore: [
+    async ({ reportDisplayOptions }, use) => {
+      const useScenarioReporting = process.env.SCENARIO_REPORTING === 'true';
+
+      if (useScenarioReporting) {
+        await use(createScenarioSummaryReporter({ reportDisplayOptions }));
+      } else {
+        await use(createDefaultTerminalReporter({ reportDisplayOptions }));
+      }
+    },
+    { scope: 'worker' },
   ],
 });

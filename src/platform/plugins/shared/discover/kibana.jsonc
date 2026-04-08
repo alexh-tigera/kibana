@@ -48,16 +48,19 @@
       "aiops",
       "fieldsMetadata",
       "logsDataAccess",
-      "embeddableEnhanced",
       "apmSourcesAccess",
       "fileUpload",
-      "metricsExperience"
+      "cps",
+      "alertingVTwo"
     ],
     "requiredBundles": [
       "kibanaUtils",
       "kibanaReact",
       "unifiedSearch",
-      "savedObjects"
+      "savedObjects",
+      "presentationPanel",
+      "presentationUtil",
+      "esql"
     ],
     "extraPublicDirs": [
       "common"

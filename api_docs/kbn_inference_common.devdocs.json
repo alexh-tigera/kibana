@@ -26,6 +26,8 @@
         "label": "ShortIdTable",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/short_id_table.ts",
+        "lineNumber": 22,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -40,6 +42,8 @@
               "any"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/short_id_table.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [],
@@ -56,6 +60,8 @@
               "(originalId: string) => string"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/short_id_table.ts",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -70,6 +76,8 @@
                   "string"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/short_id_table.ts",
+                "lineNumber": 28,
+                "columnNumber": 8,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -88,6 +96,8 @@
               "(shortId: string) => string | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/short_id_table.ts",
+            "lineNumber": 53,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -102,6 +112,8 @@
                   "string"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/short_id_table.ts",
+                "lineNumber": 53,
+                "columnNumber": 10,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -120,6 +132,8 @@
         "label": "Tokenizer",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/tokenizer.ts",
+        "lineNumber": 8,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -136,6 +150,8 @@
               "(input: string) => number"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/tokenizer.ts",
+            "lineNumber": 9,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -150,6 +166,8 @@
                   "string"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/tokenizer.ts",
+                "lineNumber": 13,
+                "columnNumber": 16,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -170,6 +188,8 @@
               "(input: string, maxTokens: number) => { tokens: number; truncated: boolean; text: string; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/tokenizer.ts",
+            "lineNumber": 17,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -184,6 +204,8 @@
                   "string"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/tokenizer.ts",
+                "lineNumber": 22,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -199,6 +221,8 @@
                   "number"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/tokenizer.ts",
+                "lineNumber": 23,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -222,6 +246,8 @@
           "(api: T, boundParams: U) => BoundAPI<T>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+        "lineNumber": 31,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -236,6 +262,8 @@
               "T"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+            "lineNumber": 32,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -251,6 +279,8 @@
               "U"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -294,6 +324,8 @@
           ">) => any"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+        "lineNumber": 36,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -308,6 +340,8 @@
               "BindableAPI"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+            "lineNumber": 36,
+            "columnNumber": 25,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -329,6 +363,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+            "lineNumber": 36,
+            "columnNumber": 43,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -348,7 +384,13 @@
         ],
         "signature": [
           "(connector: ",
-          "RawConnector",
+          {
+            "pluginId": "@kbn/inference-common",
+            "scope": "common",
+            "docId": "kibKbnInferenceCommonPluginApi",
+            "section": "def-common.RawConnector",
+            "text": "RawConnector"
+          },
           ") => ",
           {
             "pluginId": "@kbn/inference-common",
@@ -359,6 +401,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_to_inference.ts",
+        "lineNumber": 18,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -370,9 +414,17 @@
             "label": "connector",
             "description": [],
             "signature": [
-              "RawConnector"
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.RawConnector",
+                "text": "RawConnector"
+              }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_to_inference.ts",
+            "lineNumber": 18,
+            "columnNumber": 38,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -392,6 +444,8 @@
           "(modelName: string) => number | undefined"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_capabilities.ts",
+        "lineNumber": 32,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -406,6 +460,8 @@
               "string"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_capabilities.ts",
+            "lineNumber": 32,
+            "columnNumber": 44,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -432,6 +488,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 79,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -446,6 +504,8 @@
               "string"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 80,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -461,6 +521,8 @@
               "Record<string, any> | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 81,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": false
@@ -487,6 +549,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 86,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -501,6 +565,8 @@
               "string"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 87,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -513,6 +579,8 @@
             "label": "meta",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 88,
+            "columnNumber": 10,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -527,6 +595,8 @@
                   "number | undefined"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+                "lineNumber": 88,
+                "columnNumber": 12,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -554,6 +624,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 102,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -578,6 +650,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 93,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -592,6 +666,8 @@
               "string"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 94,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -607,6 +683,8 @@
               "number"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 95,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -623,7 +701,11 @@
         "label": "createPrompt",
         "description": [],
         "signature": [
-          "(init: { name: string; description: string; input: Zod.ZodType<TInput, Zod.ZodTypeDef, TInput>; }) => ",
+          "(init: { name: string; description?: string | undefined; input: ",
+          "ZodType",
+          "<TInput, unknown, ",
+          "node_modules/zod/v4/core/schemas",
+          "$ZodTypeInternals<TInput, unknown>>; }) => ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -634,6 +716,8 @@
           "<TInput, []>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/create_prompt.ts",
+        "lineNumber": 11,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -645,6 +729,8 @@
             "label": "init",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/create_prompt.ts",
+            "lineNumber": 11,
+            "columnNumber": 44,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -656,6 +742,8 @@
                 "label": "name",
                 "description": [],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/create_prompt.ts",
+                "lineNumber": 12,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -666,7 +754,12 @@
                 "tags": [],
                 "label": "description",
                 "description": [],
+                "signature": [
+                  "string | undefined"
+                ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/create_prompt.ts",
+                "lineNumber": 13,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -678,9 +771,14 @@
                 "label": "input",
                 "description": [],
                 "signature": [
-                  "Zod.ZodType<TInput, Zod.ZodTypeDef, TInput>"
+                  "ZodType",
+                  "<TInput, unknown, ",
+                  "node_modules/zod/v4/core/schemas",
+                  "$ZodTypeInternals<TInput, unknown>>"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/create_prompt.ts",
+                "lineNumber": 14,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -701,6 +799,8 @@
           "() => string"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/utils/tool_calls.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -728,6 +828,8 @@
           ") => string | undefined"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+        "lineNumber": 19,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -748,6 +850,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+            "lineNumber": 19,
+            "columnNumber": 42,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -782,6 +886,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+        "lineNumber": 80,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -802,6 +908,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+            "lineNumber": 81,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -812,11 +920,15 @@
             "type": "string",
             "tags": [],
             "label": "_modelName",
-            "description": [],
+            "description": [
+              "// use this later to get model family from model name"
+            ],
             "signature": [
               "string | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+            "lineNumber": 82,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": false
@@ -846,6 +958,8 @@
           ") => string | undefined"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/get_connector_model.ts",
+        "lineNumber": 18,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -866,6 +980,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/get_connector_model.ts",
+            "lineNumber": 18,
+            "columnNumber": 35,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -902,6 +1018,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+        "lineNumber": 60,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -922,6 +1040,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+            "lineNumber": 60,
+            "columnNumber": 38,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -958,6 +1078,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+        "lineNumber": 44,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -978,6 +1100,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_config.ts",
+            "lineNumber": 44,
+            "columnNumber": 38,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1007,6 +1131,8 @@
           ") => number | undefined"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_capabilities.ts",
+        "lineNumber": 16,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1027,6 +1153,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connector_capabilities.ts",
+            "lineNumber": 16,
+            "columnNumber": 38,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1050,6 +1178,8 @@
           " | undefined"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/known_models.ts",
+        "lineNumber": 20,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1064,6 +1194,8 @@
               "string"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/known_models.ts",
+            "lineNumber": 20,
+            "columnNumber": 36,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1111,6 +1243,8 @@
           "<string>>>) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+        "lineNumber": 20,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1150,6 +1284,8 @@
               "<string>>>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+            "lineNumber": 24,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1171,6 +1307,8 @@
           "(event: Record<string, unknown> & { type: string; }) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+        "lineNumber": 47,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1185,6 +1323,8 @@
               "Record<string, unknown> & { type: string; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+            "lineNumber": 50,
+            "columnNumber": 39,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1214,6 +1354,8 @@
           "<T>) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+        "lineNumber": 29,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1235,6 +1377,8 @@
               "<T>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1282,6 +1426,8 @@
           "<string>>>) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+        "lineNumber": 38,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1321,6 +1467,8 @@
               "<string>>>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+            "lineNumber": 42,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1342,6 +1490,8 @@
           "(error: unknown) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 108,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1356,6 +1506,8 @@
               "unknown"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 112,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1377,6 +1529,8 @@
           "(error: unknown) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 117,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1391,6 +1545,8 @@
               "unknown"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 120,
+            "columnNumber": 42,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1412,6 +1568,8 @@
           "(error: unknown) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 138,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1426,6 +1584,8 @@
               "unknown"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 141,
+            "columnNumber": 42,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1447,6 +1607,8 @@
           "(error: unknown) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 131,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1461,6 +1623,8 @@
               "unknown"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 134,
+            "columnNumber": 48,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1482,6 +1646,8 @@
           "(error: unknown) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 124,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1496,6 +1662,8 @@
               "unknown"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+            "lineNumber": 127,
+            "columnNumber": 41,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1517,6 +1685,8 @@
           "(event: TOutputEvent) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/event_utils.ts",
+        "lineNumber": 14,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1531,6 +1701,8 @@
               "TOutputEvent"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/event_utils.ts",
+            "lineNumber": 18,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1552,6 +1724,8 @@
           "(event: Record<string, unknown> & { type: string; }) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/event_utils.ts",
+        "lineNumber": 23,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1566,6 +1740,47 @@
               "Record<string, unknown> & { type: string; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/event_utils.ts",
+            "lineNumber": 26,
+            "columnNumber": 31,
+            "deprecated": false,
+            "trackAdoption": false,
+            "isRequired": true
+          }
+        ],
+        "returnComment": [],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.isOutputTokenLimitReachedError",
+        "type": "Function",
+        "tags": [],
+        "label": "isOutputTokenLimitReachedError",
+        "description": [
+          "\nCheck if an error is a {@link ChatCompletionTokenLimitReachedError}"
+        ],
+        "signature": [
+          "(error: Error) => boolean"
+        ],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+        "lineNumber": 94,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.isOutputTokenLimitReachedError.$1",
+            "type": "Object",
+            "tags": [],
+            "label": "error",
+            "description": [],
+            "signature": [
+              "Error"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+            "lineNumber": 98,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1595,6 +1810,8 @@
           "<string, unknown>) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/event_utils.ts",
+        "lineNumber": 32,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1616,6 +1833,8 @@
               "<string, unknown>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/event_utils.ts",
+            "lineNumber": 36,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1635,10 +1854,18 @@
         ],
         "signature": [
           "(connector: ",
-          "RawConnector",
+          {
+            "pluginId": "@kbn/inference-common",
+            "scope": "common",
+            "docId": "kibKbnInferenceCommonPluginApi",
+            "section": "def-common.RawConnector",
+            "text": "RawConnector"
+          },
           ") => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/is_supported_connector.ts",
+        "lineNumber": 24,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1650,9 +1877,17 @@
             "label": "connector",
             "description": [],
             "signature": [
-              "RawConnector"
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.RawConnector",
+                "text": "RawConnector"
+              }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/is_supported_connector.ts",
+            "lineNumber": 31,
+            "columnNumber": 38,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1674,6 +1909,8 @@
           "(id: string) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/is_supported_connector.ts",
+        "lineNumber": 13,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1688,41 +1925,8 @@
               "string"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/is_supported_connector.ts",
-            "deprecated": false,
-            "trackAdoption": false,
-            "isRequired": true
-          }
-        ],
-        "returnComment": [],
-        "initialIsOpen": false
-      },
-      {
-        "parentPluginId": "@kbn/inference-common",
-        "id": "def-common.isTokenLimitReachedError",
-        "type": "Function",
-        "tags": [],
-        "label": "isTokenLimitReachedError",
-        "description": [
-          "\nCheck if an error is a {@link ChatCompletionTokenLimitReachedError}"
-        ],
-        "signature": [
-          "(error: Error) => boolean"
-        ],
-        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
-        "deprecated": false,
-        "trackAdoption": false,
-        "children": [
-          {
-            "parentPluginId": "@kbn/inference-common",
-            "id": "def-common.isTokenLimitReachedError.$1",
-            "type": "Object",
-            "tags": [],
-            "label": "error",
-            "description": [],
-            "signature": [
-              "Error"
-            ],
-            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+            "lineNumber": 20,
+            "columnNumber": 42,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1744,6 +1948,8 @@
           "(error: Error) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+        "lineNumber": 106,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1758,6 +1964,8 @@
               "Error"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+            "lineNumber": 109,
+            "columnNumber": 37,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1779,6 +1987,8 @@
           "(error: Error | undefined) => boolean"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+        "lineNumber": 84,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1793,6 +2003,8 @@
               "Error | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+            "lineNumber": 87,
+            "columnNumber": 39,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": false
@@ -1812,6 +2024,8 @@
           "(values: T[], limit: number) => (string | T)[]"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/truncate_list.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -1826,6 +2040,8 @@
               "T[]"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/truncate_list.ts",
+            "lineNumber": 10,
+            "columnNumber": 33,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1841,6 +2057,8 @@
               "number"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/truncate_list.ts",
+            "lineNumber": 10,
+            "columnNumber": 46,
             "deprecated": false,
             "trackAdoption": false,
             "isRequired": true
@@ -1861,7 +2079,7 @@
         "signature": [
           "() => ",
           "OperatorFunction",
-          "<T, Exclude<T, { content: string; tool_calls: ",
+          "<T, Exclude<T, { content: string; refusal?: string | undefined; tool_calls: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -1869,39 +2087,31 @@
             "section": "def-common.ChatCompletionChunkToolCall",
             "text": "ChatCompletionChunkToolCall"
           },
-          "[]; deanonymized_input?: { message: ",
+          "[]; deanonymized_input?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "; deanonymizations: ",
+          "[] | undefined; deanonymized_output?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "[]; }[] | undefined; deanonymized_output?: { message: ",
+          " | undefined; metadata?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.AnonymizationResponseMetadata",
+            "text": "AnonymizationResponseMetadata"
           },
-          "; deanonymizations: ",
-          {
-            "pluginId": "@kbn/inference-common",
-            "scope": "common",
-            "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
-          },
-          "[]; } | undefined; } & { type: ",
+          " | undefined; } & { type: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -1912,6 +2122,8 @@
           ".ChatCompletionChunk; }>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+        "lineNumber": 58,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -1941,6 +2153,8 @@
           ".OutputUpdate; }>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/event_utils.ts",
+        "lineNumber": 41,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -1967,7 +2181,7 @@
             "section": "def-common.ChatCompletionTokenCount",
             "text": "ChatCompletionTokenCount"
           },
-          "; } & { type: ",
+          "; model?: string | undefined; } & { type: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -1978,6 +2192,8 @@
           ".ChatCompletionTokenCount; }>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/event_utils.ts",
+        "lineNumber": 71,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [],
@@ -1994,6 +2210,8 @@
         "label": "Anonymization",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 59,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2008,6 +2226,8 @@
               "{ type: string; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 60,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2028,6 +2248,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 63,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2042,6 +2264,8 @@
         "label": "AnonymizationEntity",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 53,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2053,6 +2277,8 @@
             "label": "class_name",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 54,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2064,6 +2290,8 @@
             "label": "value",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 55,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2075,6 +2303,8 @@
             "label": "mask",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 56,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2089,6 +2319,8 @@
         "label": "AnonymizationOutput",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 72,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2110,6 +2342,8 @@
               "[]"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 73,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2131,6 +2365,8 @@
               "[]"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 74,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2145,6 +2381,58 @@
               "string | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 75,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.AnonymizationOutput.replacementsId",
+            "type": "string",
+            "tags": [],
+            "label": "replacementsId",
+            "description": [],
+            "signature": [
+              "string | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 76,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.AnonymizationResponseMetadata",
+        "type": "Interface",
+        "tags": [],
+        "label": "AnonymizationResponseMetadata",
+        "description": [
+          "\nAnonymization metadata attached to inference responses and events."
+        ],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 85,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.AnonymizationResponseMetadata.anonymization",
+            "type": "Object",
+            "tags": [],
+            "label": "anonymization",
+            "description": [],
+            "signature": [
+              "{ replacementsId?: string | undefined; } | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 89,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2159,6 +2447,8 @@
         "label": "AnonymizationSettings",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 45,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2180,6 +2470,8 @@
               "[]"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 46,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2195,7 +2487,26 @@
         "description": [
           "\nA version of the {@link InferenceClient} that is pre-bound to a set of parameters."
         ],
+        "signature": [
+          {
+            "pluginId": "@kbn/inference-common",
+            "scope": "common",
+            "docId": "kibKbnInferenceCommonPluginApi",
+            "section": "def-common.BoundInferenceClient",
+            "text": "BoundInferenceClient"
+          },
+          " extends ",
+          {
+            "pluginId": "@kbn/inference-common",
+            "scope": "common",
+            "docId": "kibKbnInferenceCommonPluginApi",
+            "section": "def-common.InferenceEventEmitter",
+            "text": "InferenceEventEmitter"
+          }
+        ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+        "lineNumber": 54,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2244,6 +2555,8 @@
               ">"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 58,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -2259,6 +2572,8 @@
                   "TChatCompleteOptions"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/bound_api.ts",
+                "lineNumber": 20,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -2305,6 +2620,8 @@
               "<TId, TOutputSchema, TStream>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 64,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -2317,7 +2634,7 @@
                 "label": "options",
                 "description": [],
                 "signature": [
-                  "{ id: TId; abortSignal?: AbortSignal | undefined; input: string; metadata?: ",
+                  "{ id: TId; system?: string | undefined; abortSignal?: AbortSignal | undefined; input: string; schema?: TOutputSchema | undefined; metadata?: ",
                   {
                     "pluginId": "@kbn/inference-common",
                     "scope": "common",
@@ -2325,7 +2642,7 @@
                     "section": "def-common.ChatCompleteMetadata",
                     "text": "ChatCompleteMetadata"
                   },
-                  " | undefined; schema?: TOutputSchema | undefined; retry?: { onValidationError?: number | boolean | undefined; } | undefined; system?: string | undefined; stream?: TStream | undefined; modelName?: string | undefined; maxRetries?: number | undefined; retryConfiguration?: ",
+                  " | undefined; retry?: { onValidationError?: number | boolean | undefined; } | undefined; stream?: TStream | undefined; modelName?: string | undefined; maxRetries?: number | undefined; retryConfiguration?: ",
                   {
                     "pluginId": "@kbn/inference-common",
                     "scope": "common",
@@ -2344,6 +2661,8 @@
                   "[] | undefined; }"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/bound_api.ts",
+                "lineNumber": 29,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -2406,6 +2725,8 @@
               " & TPromptOptions>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 69,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -2421,10 +2742,40 @@
                   "{ prompt: TPrompt; } & TPromptOptions"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/bound_api.ts",
+                "lineNumber": 26,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
             ]
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.BoundInferenceClient.listConnectors",
+            "type": "Function",
+            "tags": [],
+            "label": "listConnectors",
+            "description": [
+              "\nReturns all available inference connectors and inference endpoints."
+            ],
+            "signature": [
+              "() => Promise<",
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.InferenceConnector",
+                "text": "InferenceConnector"
+              },
+              "[]>"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 75,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false,
+            "children": [],
+            "returnComment": []
           },
           {
             "parentPluginId": "@kbn/inference-common",
@@ -2447,6 +2798,8 @@
               ">"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 79,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -2461,6 +2814,8 @@
                   "string"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+                "lineNumber": 83,
+                "columnNumber": 22,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -2496,6 +2851,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 84,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -2516,6 +2873,8 @@
                   }
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+                "lineNumber": 87,
+                "columnNumber": 12,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -2534,6 +2893,8 @@
         "label": "BoundOptions",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+        "lineNumber": 9,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2555,6 +2916,8 @@
               " | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+            "lineNumber": 10,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2566,6 +2929,126 @@
             "label": "connectorId",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+            "lineNumber": 11,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.ChatCompleteAnonymizationMetadata",
+        "type": "Interface",
+        "tags": [],
+        "label": "ChatCompleteAnonymizationMetadata",
+        "description": [
+          "\nOptional anonymization metadata consumers can pass so inference can resolve\nfield-based policy for a target."
+        ],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+        "lineNumber": 34,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteAnonymizationMetadata.profileId",
+            "type": "string",
+            "tags": [],
+            "label": "profileId",
+            "description": [],
+            "signature": [
+              "string | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 39,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteAnonymizationMetadata.replacementsId",
+            "type": "string",
+            "tags": [],
+            "label": "replacementsId",
+            "description": [],
+            "signature": [
+              "string | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 40,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteAnonymizationMetadata.target",
+            "type": "Object",
+            "tags": [],
+            "label": "target",
+            "description": [],
+            "signature": [
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.ChatCompleteAnonymizationTarget",
+                "text": "ChatCompleteAnonymizationTarget"
+              },
+              " | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 41,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.ChatCompleteAnonymizationTarget",
+        "type": "Interface",
+        "tags": [],
+        "label": "ChatCompleteAnonymizationTarget",
+        "description": [],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+        "lineNumber": 29,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteAnonymizationTarget.targetType",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "targetType",
+            "description": [],
+            "signature": [
+              "\"index\" | \"data_view\" | \"index_pattern\""
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteAnonymizationTarget.targetId",
+            "type": "string",
+            "tags": [],
+            "label": "targetId",
+            "description": [],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 31,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2582,6 +3065,8 @@
           "\nSet of metadata that can be used then calling the inference APIs\n"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2603,6 +3088,31 @@
               " | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 16,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteMetadata.anonymization",
+            "type": "Object",
+            "tags": [],
+            "label": "anonymization",
+            "description": [],
+            "signature": [
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.ChatCompleteAnonymizationMetadata",
+                "text": "ChatCompleteAnonymizationMetadata"
+              },
+              " | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 17,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2618,6 +3128,8 @@
               " | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 18,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2644,6 +3156,8 @@
           "<TOptions>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+        "lineNumber": 199,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2657,6 +3171,26 @@
               "\nThe text content of the LLM response."
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 205,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteResponse.refusal",
+            "type": "string",
+            "tags": [],
+            "label": "refusal",
+            "description": [
+              "\nOptional refusal reason returned by the model when content is filtered."
+            ],
+            "signature": [
+              "string | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 209,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2680,6 +3214,8 @@
               "<TOptions>[]"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 213,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2703,6 +3239,51 @@
               " | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 217,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteResponse.model",
+            "type": "string",
+            "tags": [],
+            "label": "model",
+            "description": [
+              "\nModel effectively used, as specified by the response"
+            ],
+            "signature": [
+              "string | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 221,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompleteResponse.metadata",
+            "type": "Object",
+            "tags": [],
+            "label": "metadata",
+            "description": [
+              "\nOptional metadata attached by inference runtime."
+            ],
+            "signature": [
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.AnonymizationResponseMetadata",
+                "text": "AnonymizationResponseMetadata"
+              },
+              " | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 225,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2717,6 +3298,8 @@
         "label": "ChatCompleteRetryConfiguration",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+        "lineNumber": 153,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2733,6 +3316,8 @@
               "\"all\" | \"auto\" | ((err: Error) => boolean) | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 154,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2749,6 +3334,8 @@
               "number | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 165,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2765,6 +3352,8 @@
               "number | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 171,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2781,6 +3370,8 @@
           "\nRepresent a partial tool call present in a chunk event.\n\nNote that all properties of the structure, except from the index,\nare partial and must be aggregated."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+        "lineNumber": 56,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2794,6 +3385,8 @@
               "\nThe tool call index (position in the tool call array)."
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+            "lineNumber": 63,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2807,6 +3400,8 @@
               "\nchunk of tool call id."
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+            "lineNumber": 67,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2821,6 +3416,8 @@
               "{ name: string; arguments: string; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+            "lineNumber": 71,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2837,6 +3434,8 @@
           "\nToken count structure for the chatComplete API."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+        "lineNumber": 117,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2850,6 +3449,8 @@
               "\nInput token count"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+            "lineNumber": 121,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2863,6 +3464,26 @@
               "\nOutput token count"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+            "lineNumber": 125,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ChatCompletionTokenCount.thinking",
+            "type": "number",
+            "tags": [],
+            "label": "thinking",
+            "description": [
+              "\nThinking token count, if available"
+            ],
+            "signature": [
+              "number | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+            "lineNumber": 129,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2873,9 +3494,11 @@
             "tags": [],
             "label": "total",
             "description": [
-              "\nTotal token count"
+              "\nTotal token count (prompt + completion + thinking)"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+            "lineNumber": 133,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2892,6 +3515,8 @@
               "number | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+            "lineNumber": 137,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2908,6 +3533,8 @@
           "\nPass through for the connector telemetry"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2922,6 +3549,8 @@
               "string | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 25,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -2936,6 +3565,8 @@
               "string | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/metadata.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2962,6 +3593,8 @@
           "<TToolName>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -2976,6 +3609,8 @@
               "TToolName"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 27,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -2990,6 +3625,8 @@
         "label": "Deanonymization",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 66,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3001,6 +3638,8 @@
             "label": "start",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 67,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3012,6 +3651,8 @@
             "label": "end",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 68,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3032,6 +3673,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 69,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -3046,6 +3689,8 @@
         "label": "DeanonymizationOutput",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 79,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3067,6 +3712,162 @@
               "[]"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 80,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.DeanonymizedMessageData",
+        "type": "Interface",
+        "tags": [],
+        "label": "DeanonymizedMessageData",
+        "description": [
+          "\nDeanonymization data for a single message, pairing the deanonymized message\nwith the positions/entities that were restored."
+        ],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 94,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.DeanonymizedMessageData.message",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "message",
+            "description": [],
+            "signature": [
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.UserMessage",
+                "text": "UserMessage"
+              },
+              " | ",
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.AssistantMessage",
+                "text": "AssistantMessage"
+              },
+              "<",
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.ToolCall",
+                "text": "ToolCall"
+              },
+              "<string, ",
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.ToolCallArguments",
+                "text": "ToolCallArguments"
+              },
+              ">[] | undefined> | ",
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.ToolMessage",
+                "text": "ToolMessage"
+              },
+              "<string, ",
+              "ToolResponse",
+              ", ",
+              "ToolData",
+              " | undefined>"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 99,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.DeanonymizedMessageData.deanonymizations",
+            "type": "Array",
+            "tags": [],
+            "label": "deanonymizations",
+            "description": [],
+            "signature": [
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.Deanonymization",
+                "text": "Deanonymization"
+              },
+              "[]"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 100,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.InferenceCallbacks",
+        "type": "Interface",
+        "tags": [],
+        "label": "InferenceCallbacks",
+        "description": [],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+        "lineNumber": 28,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceCallbacks.complete",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "complete",
+            "description": [],
+            "signature": [
+              "InferenceCompleteCallbackHandler",
+              " | ",
+              "InferenceCompleteCallbackHandler",
+              "[] | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+            "lineNumber": 29,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceCallbacks.error",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "error",
+            "description": [],
+            "signature": [
+              "InferenceErrorCallbackHandler",
+              " | ",
+              "InferenceErrorCallbackHandler",
+              "[] | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -3082,7 +3883,26 @@
         "description": [
           "\nAn inference client, scoped to a request, that can be used to interact with LLMs."
         ],
+        "signature": [
+          {
+            "pluginId": "@kbn/inference-common",
+            "scope": "common",
+            "docId": "kibKbnInferenceCommonPluginApi",
+            "section": "def-common.InferenceClient",
+            "text": "InferenceClient"
+          },
+          " extends ",
+          {
+            "pluginId": "@kbn/inference-common",
+            "scope": "common",
+            "docId": "kibKbnInferenceCommonPluginApi",
+            "section": "def-common.InferenceEventEmitter",
+            "text": "InferenceEventEmitter"
+          }
+        ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+        "lineNumber": 18,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3115,6 +3935,8 @@
               "<TOptions>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 22,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -3130,6 +3952,8 @@
                   "TOptions"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+                "lineNumber": 79,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -3168,6 +3992,8 @@
               "<TId, TOutputSchema, TStream>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -3190,6 +4016,8 @@
                   "<TId, TOutputSchema, TStream>"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+                "lineNumber": 58,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -3262,6 +4090,8 @@
               "<TPromptOptions>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "returnComment": [],
@@ -3284,10 +4114,40 @@
                   "<TPrompt> & TPromptOptions"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+                "lineNumber": 77,
+                "columnNumber": 3,
                 "deprecated": false,
                 "trackAdoption": false
               }
             ]
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceClient.listConnectors",
+            "type": "Function",
+            "tags": [],
+            "label": "listConnectors",
+            "description": [
+              "\nReturns all available inference connectors and inference endpoints."
+            ],
+            "signature": [
+              "() => Promise<",
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.InferenceConnector",
+                "text": "InferenceConnector"
+              },
+              "[]>"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 39,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false,
+            "children": [],
+            "returnComment": []
           },
           {
             "parentPluginId": "@kbn/inference-common",
@@ -3310,6 +4170,8 @@
               ">"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 43,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -3324,6 +4186,8 @@
                   "string"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+                "lineNumber": 47,
+                "columnNumber": 22,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -3359,6 +4223,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+            "lineNumber": 48,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -3379,6 +4245,8 @@
                   }
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_client/types.ts",
+                "lineNumber": 51,
+                "columnNumber": 12,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -3399,6 +4267,8 @@
           "\nRepresents a stack connector that can be used for inference."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+        "lineNumber": 20,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3421,6 +4291,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 24,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3434,6 +4306,8 @@
               "the name of the connector"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3447,6 +4321,8 @@
               "the id of the connector"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3463,6 +4339,8 @@
               "{ [x: string]: any; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3485,6 +4363,110 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 35,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnector.isInferenceEndpoint",
+            "type": "boolean",
+            "tags": [],
+            "label": "isInferenceEndpoint",
+            "description": [
+              "\nWhen true, this entry represents an Elasticsearch inference endpoint\nrather than a Kibana stack connector. `connectorId` holds the inference endpoint ID."
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 39,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnector.isPreconfigured",
+            "type": "boolean",
+            "tags": [],
+            "label": "isPreconfigured",
+            "description": [
+              "\nWhen true, this connector is preconfigured via kibana.yml or populated through EIS\nDetermined by the presence of `metadata.display.name` on the underlying\nES inference endpoint."
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 44,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnector.isEis",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isEis",
+            "description": [
+              "\nWhen true, this connector represents an Elastic-managed inference endpoint (EIS)."
+            ],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 50,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnector.isDeprecated",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isDeprecated",
+            "description": [
+              "Present when sourced from a stack connector that exposes deprecation state."
+            ],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 54,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnector.isConnectorTypeDeprecated",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isConnectorTypeDeprecated",
+            "description": [
+              "Present when sourced from a stack connector that exposes connector-type deprecation."
+            ],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 56,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnector.isMissingSecrets",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isMissingSecrets",
+            "description": [
+              "Present when sourced from a stack connector that exposes missing-secrets state."
+            ],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 58,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -3499,6 +4481,8 @@
         "label": "InferenceConnectorCapabilities",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+        "lineNumber": 62,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3515,8 +4499,217 @@
               "number | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 63,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.InferenceConnectorsApiResponseBody",
+        "type": "Interface",
+        "tags": [],
+        "label": "InferenceConnectorsApiResponseBody",
+        "description": [
+          "\nResponse body shape for {@link INFERENCE_CONNECTORS_INTERNAL_API_PATH}."
+        ],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_connectors_api.ts",
+        "lineNumber": 17,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnectorsApiResponseBody.connectors",
+            "type": "Array",
+            "tags": [],
+            "label": "connectors",
+            "description": [],
+            "signature": [
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.InferenceConnector",
+                "text": "InferenceConnector"
+              },
+              "[]"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_connectors_api.ts",
+            "lineNumber": 21,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnectorsApiResponseBody.allConnectors",
+            "type": "Array",
+            "tags": [],
+            "label": "allConnectors",
+            "description": [],
+            "signature": [
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.InferenceConnector",
+                "text": "InferenceConnector"
+              },
+              "[]"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_connectors_api.ts",
+            "lineNumber": 22,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceConnectorsApiResponseBody.soEntryFound",
+            "type": "boolean",
+            "tags": [],
+            "label": "soEntryFound",
+            "description": [],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_connectors_api.ts",
+            "lineNumber": 23,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.InferenceEventEmitter",
+        "type": "Interface",
+        "tags": [],
+        "label": "InferenceEventEmitter",
+        "description": [],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+        "lineNumber": 33,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceEventEmitter.on",
+            "type": "Function",
+            "tags": [],
+            "label": "on",
+            "description": [],
+            "signature": [
+              "{ (type: \"complete\", handler: ",
+              "InferenceCompleteCallbackHandler",
+              "): void; (type: \"error\", handler: ",
+              "InferenceErrorCallbackHandler",
+              "): void; }"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+            "lineNumber": 34,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false,
+            "children": [
+              {
+                "parentPluginId": "@kbn/inference-common",
+                "id": "def-common.InferenceEventEmitter.on.$1",
+                "type": "string",
+                "tags": [],
+                "label": "type",
+                "description": [],
+                "signature": [
+                  "\"complete\""
+                ],
+                "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+                "lineNumber": 34,
+                "columnNumber": 6,
+                "deprecated": false,
+                "trackAdoption": false,
+                "isRequired": true
+              },
+              {
+                "parentPluginId": "@kbn/inference-common",
+                "id": "def-common.InferenceEventEmitter.on.$2",
+                "type": "Function",
+                "tags": [],
+                "label": "handler",
+                "description": [],
+                "signature": [
+                  "InferenceCompleteCallbackHandler"
+                ],
+                "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+                "lineNumber": 34,
+                "columnNumber": 24,
+                "deprecated": false,
+                "trackAdoption": false,
+                "isRequired": true
+              }
+            ],
+            "returnComment": []
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.InferenceEventEmitter.on",
+            "type": "Function",
+            "tags": [],
+            "label": "on",
+            "description": [],
+            "signature": [
+              "{ (type: \"complete\", handler: ",
+              "InferenceCompleteCallbackHandler",
+              "): void; (type: \"error\", handler: ",
+              "InferenceErrorCallbackHandler",
+              "): void; }"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+            "lineNumber": 35,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false,
+            "children": [
+              {
+                "parentPluginId": "@kbn/inference-common",
+                "id": "def-common.InferenceEventEmitter.on.$1",
+                "type": "string",
+                "tags": [],
+                "label": "type",
+                "description": [],
+                "signature": [
+                  "\"error\""
+                ],
+                "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+                "lineNumber": 35,
+                "columnNumber": 6,
+                "deprecated": false,
+                "trackAdoption": false,
+                "isRequired": true
+              },
+              {
+                "parentPluginId": "@kbn/inference-common",
+                "id": "def-common.InferenceEventEmitter.on.$2",
+                "type": "Function",
+                "tags": [],
+                "label": "handler",
+                "description": [],
+                "signature": [
+                  "InferenceErrorCallbackHandler"
+                ],
+                "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/callbacks.ts",
+                "lineNumber": 35,
+                "columnNumber": 21,
+                "deprecated": false,
+                "trackAdoption": false,
+                "isRequired": true
+              }
+            ],
+            "returnComment": []
           }
         ],
         "initialIsOpen": false
@@ -3529,6 +4722,8 @@
         "label": "MessageContentImage",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 33,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3543,6 +4738,8 @@
               "\"image\""
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+            "lineNumber": 34,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3557,6 +4754,8 @@
               "{ data: string; mimeType: string; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+            "lineNumber": 35,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -3571,6 +4770,8 @@
         "label": "MessageContentText",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 28,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3585,6 +4786,8 @@
               "\"text\""
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3596,6 +4799,8 @@
             "label": "text",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+            "lineNumber": 30,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -3610,6 +4815,8 @@
         "label": "Model",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/model_provider/index.ts",
+        "lineNumber": 30,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3630,6 +4837,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/model_provider/index.ts",
+            "lineNumber": 31,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3650,6 +4859,8 @@
               }
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/model_provider/index.ts",
+            "lineNumber": 32,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3664,6 +4875,8 @@
               "string | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/model_provider/index.ts",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -3688,6 +4901,8 @@
           " extends AnonymizationRuleBase"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 27,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3702,6 +4917,8 @@
               "\"NER\""
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 28,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3711,8 +4928,15 @@
             "type": "string",
             "tags": [],
             "label": "modelId",
-            "description": [],
+            "description": [
+              "\nThe Elasticsearch ML model ID to use for NER inference."
+            ],
+            "signature": [
+              "string | undefined"
+            ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3727,6 +4951,8 @@
               "number | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 33,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3741,6 +4967,8 @@
               "(\"PER\" | \"ORG\" | \"LOC\" | \"MISC\")[] | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 34,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -3767,6 +4995,8 @@
           "<TId, TOutputSchema, TStream>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+        "lineNumber": 61,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -3783,6 +5013,8 @@
               "TId"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 69,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3796,6 +5028,8 @@
               "\nThe ID of the connector to use.\nMust be an inference connector, or an error will be thrown."
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 73,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3812,6 +5046,8 @@
               "string | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 78,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3825,6 +5061,8 @@
               "\nThe prompt for the LLM."
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 82,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3841,6 +5079,8 @@
               "TOutputSchema | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 86,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3864,6 +5104,8 @@
               "[] | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 90,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3880,6 +5122,8 @@
               "string | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 95,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3903,6 +5147,8 @@
               " | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 102,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3919,6 +5165,8 @@
               "TStream | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 106,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3935,6 +5183,8 @@
               "AbortSignal | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 113,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3951,6 +5201,8 @@
               "number | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 117,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3974,6 +5226,8 @@
               " | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 123,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -3990,6 +5244,8 @@
               "{ onValidationError?: number | boolean | undefined; } | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 129,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4013,6 +5269,8 @@
               " | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 139,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4039,6 +5297,8 @@
           "<TId, TOutput>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+        "lineNumber": 163,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4055,6 +5315,8 @@
               "TId"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 167,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4071,6 +5333,8 @@
               "TOutput"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 171,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4084,6 +5348,8 @@
               "\nPotential text content provided by the LLM, if it was provided in addition to the tool call."
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 175,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4110,6 +5376,8 @@
           "<TInput, TPromptVersions>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+        "lineNumber": 88,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4123,6 +5391,8 @@
               "\nThe name of the prompt. Used for telemetry"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 94,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4135,7 +5405,12 @@
             "description": [
               "\nA human-readable description of what the prompt does. Used for evaluations."
             ],
+            "signature": [
+              "string | undefined"
+            ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 98,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4149,9 +5424,14 @@
               "\nA zod schema that will validate and transform the input variables for a prompt."
             ],
             "signature": [
-              "Zod.ZodType<TInput, Zod.ZodTypeDef, TInput>"
+              "ZodType",
+              "<TInput, unknown, ",
+              "node_modules/zod/v4/core/schemas",
+              "$ZodTypeInternals<TInput, unknown>>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 102,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4168,6 +5448,8 @@
               "TPromptVersions"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 106,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4194,6 +5476,8 @@
           "<TInput, TPromptVersions>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+        "lineNumber": 112,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4226,6 +5510,8 @@
               "<TInput, [...TPromptVersions, TNextPromptVersion]>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 119,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -4240,6 +5526,8 @@
                   "TNextPromptVersion"
                 ],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+                "lineNumber": 120,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false,
                 "isRequired": true
@@ -4266,6 +5554,8 @@
               "<TInput, TPromptVersions>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 122,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [],
@@ -4294,6 +5584,8 @@
           "<TPrompt> extends PromptChatCompleteOptions"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4308,6 +5600,8 @@
               "TPrompt"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+            "lineNumber": 25,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4319,9 +5613,11 @@
             "label": "input",
             "description": [],
             "signature": [
-              "TPrompt[\"input\"][\"_input\"]"
+              "TPrompt[\"input\"] extends { _zod: { output: any; }; } ? TPrompt[\"input\"][\"_zod\"][\"output\"] : unknown"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4343,6 +5639,8 @@
               "[] | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+            "lineNumber": 27,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4369,6 +5667,8 @@
           "<TTools>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+        "lineNumber": 58,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4386,6 +5686,8 @@
               "[] | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 65,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4404,6 +5706,8 @@
               " | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 70,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4424,6 +5728,8 @@
               "StaticPromptTemplate"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 74,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4440,6 +5746,8 @@
               "number | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 78,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4456,6 +5764,321 @@
               "TTools | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+            "lineNumber": 82,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.RawConnector",
+        "type": "Interface",
+        "tags": [],
+        "label": "RawConnector",
+        "description": [
+          "\nConnector types are living in the actions plugin and we can't afford\nhaving dependencies from this package to some mid-level plugin,\nso we're just using our own connector mixin type."
+        ],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+        "lineNumber": 69,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.id",
+            "type": "string",
+            "tags": [],
+            "label": "id",
+            "description": [],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 75,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.actionTypeId",
+            "type": "string",
+            "tags": [],
+            "label": "actionTypeId",
+            "description": [],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 76,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.name",
+            "type": "string",
+            "tags": [],
+            "label": "name",
+            "description": [],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 77,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.config",
+            "type": "Object",
+            "tags": [],
+            "label": "config",
+            "description": [],
+            "signature": [
+              "Record<string, any> | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 78,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.isPreconfigured",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isPreconfigured",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 79,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.isEis",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isEis",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 80,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.isDeprecated",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isDeprecated",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 81,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.isConnectorTypeDeprecated",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isConnectorTypeDeprecated",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 82,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawConnector.isMissingSecrets",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isMissingSecrets",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 83,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.RawInferenceConnector",
+        "type": "Interface",
+        "tags": [],
+        "label": "RawInferenceConnector",
+        "description": [],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+        "lineNumber": 86,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.id",
+            "type": "string",
+            "tags": [],
+            "label": "id",
+            "description": [],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 87,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.actionTypeId",
+            "type": "Enum",
+            "tags": [],
+            "label": "actionTypeId",
+            "description": [],
+            "signature": [
+              {
+                "pluginId": "@kbn/inference-common",
+                "scope": "common",
+                "docId": "kibKbnInferenceCommonPluginApi",
+                "section": "def-common.InferenceConnectorType",
+                "text": "InferenceConnectorType"
+              }
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 88,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.name",
+            "type": "string",
+            "tags": [],
+            "label": "name",
+            "description": [],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 89,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.config",
+            "type": "Object",
+            "tags": [],
+            "label": "config",
+            "description": [],
+            "signature": [
+              "Record<string, any> | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 90,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.isPreconfigured",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isPreconfigured",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 91,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.isEis",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isEis",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 92,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.isDeprecated",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isDeprecated",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 93,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.isConnectorTypeDeprecated",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isConnectorTypeDeprecated",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 94,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.RawInferenceConnector.isMissingSecrets",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "isMissingSecrets",
+            "description": [],
+            "signature": [
+              "boolean | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+            "lineNumber": 95,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4480,6 +6103,8 @@
           " extends AnonymizationRuleBase"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 36,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4494,6 +6119,8 @@
               "\"RegExp\""
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 37,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4505,17 +6132,24 @@
             "label": "pattern",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 38,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
           {
             "parentPluginId": "@kbn/inference-common",
             "id": "def-common.RegexAnonymizationRule.entityClass",
-            "type": "string",
+            "type": "CompoundType",
             "tags": [],
             "label": "entityClass",
             "description": [],
+            "signature": [
+              "\"IP\" | \"HOST_NAME\" | \"USER_NAME\" | \"URL\" | \"EMAIL\" | \"CLOUD_ACCOUNT\" | \"ENTITY_NAME\" | \"RESOURCE_NAME\" | \"RESOURCE_ID\" | NerEntityClass"
+            ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 39,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4530,6 +6164,8 @@
               "RuleMaskType | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+            "lineNumber": 40,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4556,6 +6192,8 @@
           "<TName, TArguments>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 80,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4569,6 +6207,8 @@
               "\nThe id of the tool call, that must be re-used when providing the tool call response"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 87,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4583,6 +6223,8 @@
               "{ name: TName; arguments: TArguments; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 91,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4599,6 +6241,8 @@
           "\nThe shape of tool call arguments (`toolCalls[number].arguments`)."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 73,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4613,6 +6257,58 @@
               "[x: string]:  unknown"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 77,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          }
+        ],
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.ToolCallbackResult",
+        "type": "Interface",
+        "tags": [],
+        "label": "ToolCallbackResult",
+        "description": [],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 108,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "children": [
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ToolCallbackResult.response",
+            "type": "CompoundType",
+            "tags": [],
+            "label": "response",
+            "description": [],
+            "signature": [
+              "string | ",
+              "ToolResponseStructured"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 109,
+            "columnNumber": 3,
+            "deprecated": false,
+            "trackAdoption": false
+          },
+          {
+            "parentPluginId": "@kbn/inference-common",
+            "id": "def-common.ToolCallbackResult.data",
+            "type": "Object",
+            "tags": [],
+            "label": "data",
+            "description": [],
+            "signature": [
+              "ToolData",
+              " | undefined"
+            ],
+            "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 110,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4639,6 +6335,8 @@
           "<TToolSchema>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 41,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4652,6 +6350,8 @@
               "\nA description of what the tool does. Note that this will be exposed to the LLM,\nso the description should be explicit about what the tool does and when to call it."
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 47,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4668,6 +6368,8 @@
               "TToolSchema | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 52,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4694,6 +6396,8 @@
           "<TToolDefinitions, TToolChoice>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 122,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4710,6 +6414,8 @@
               "TToolChoice | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 131,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4726,6 +6432,8 @@
               "TToolDefinitions | undefined"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 137,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4752,6 +6460,8 @@
           "<TName>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 60,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -4763,6 +6473,8 @@
             "label": "toolCallId",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 66,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           },
@@ -4777,6 +6489,8 @@
               "{ name: TName; arguments: string; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 67,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -4795,6 +6509,8 @@
           "\nList of code of error that are specific to the {@link ChatCompleteAPI}"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+        "lineNumber": 11,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4809,6 +6525,8 @@
           "\nList possible values of {@link ChatCompletionEvent} types."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+        "lineNumber": 13,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4823,6 +6541,8 @@
           "\nThe list of connector types that can be used with the inference APIs"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/connectors/connectors.ts",
+        "lineNumber": 8,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4837,6 +6557,8 @@
           "\nConstants for relevant inference providers"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_endpoints.ts",
+        "lineNumber": 22,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4851,6 +6573,8 @@
           "\nEnum for generic inference error codes."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 11,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4865,6 +6589,8 @@
           "\nEnum for all possible {@link Message} roles."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 12,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4877,6 +6603,8 @@
         "label": "ModelFamily",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/model_provider/index.ts",
+        "lineNumber": 24,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4889,6 +6617,8 @@
         "label": "ModelPlatform",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/model_provider/index.ts",
+        "lineNumber": 7,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4901,6 +6631,8 @@
         "label": "ModelProvider",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/model_provider/index.ts",
+        "lineNumber": 16,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4915,6 +6647,8 @@
           "\nList possible values of {@link OutputEvent} types."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/events.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4929,6 +6663,8 @@
           "\nTool invocation choice type.\n\nRefer to {@link ToolChoice} for more details."
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4946,6 +6682,25 @@
           "\"ai:anonymizationSettings\""
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/ui_settings/settings_keys.ts",
+        "lineNumber": 8,
+        "columnNumber": 14,
+        "deprecated": false,
+        "trackAdoption": false,
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.AnonymizationEntityClass",
+        "type": "Type",
+        "tags": [],
+        "label": "AnonymizationEntityClass",
+        "description": [],
+        "signature": [
+          "\"IP\" | \"HOST_NAME\" | \"USER_NAME\" | \"URL\" | \"EMAIL\" | \"CLOUD_ACCOUNT\" | \"ENTITY_NAME\" | \"RESOURCE_NAME\" | \"RESOURCE_ID\" | NerEntityClass"
+        ],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 10,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4975,6 +6730,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 43,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -4997,7 +6754,7 @@
             "section": "def-common.MessageRole",
             "text": "MessageRole"
           },
-          ".Assistant> & { content: string | null; } & (TToolCalls extends ",
+          ".Assistant> & { content: string | null; refusal?: string | null | undefined; } & (TToolCalls extends ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5016,6 +6773,8 @@
           ">[] ? { toolCalls: TToolCalls; } : { toolCalls?: TToolCalls | undefined; })"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 50,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5038,7 +6797,7 @@
             "section": "def-common.MessageRole",
             "text": "MessageRole"
           },
-          ".Assistant> & { content: string | null; } & (",
+          ".Assistant> & { content: string | null; refusal?: string | null | undefined; } & (",
           "ToolCallsOfToolOptions",
           "<TToolOptions> extends ",
           {
@@ -5079,6 +6838,8 @@
           "<TToolOptions> | undefined; })"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 108,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5128,6 +6889,8 @@
           ">"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/bound_api.ts",
+        "lineNumber": 16,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -5143,6 +6906,8 @@
               "TChatCompleteOptions"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/bound_api.ts",
+            "lineNumber": 20,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -5190,6 +6955,8 @@
           "<TId, TOutputSchema, TStream>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/bound_api.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -5202,7 +6969,7 @@
             "label": "options",
             "description": [],
             "signature": [
-              "{ id: TId; abortSignal?: AbortSignal | undefined; input: string; metadata?: ",
+              "{ id: TId; system?: string | undefined; abortSignal?: AbortSignal | undefined; input: string; schema?: TOutputSchema | undefined; metadata?: ",
               {
                 "pluginId": "@kbn/inference-common",
                 "scope": "common",
@@ -5210,7 +6977,7 @@
                 "section": "def-common.ChatCompleteMetadata",
                 "text": "ChatCompleteMetadata"
               },
-              " | undefined; schema?: TOutputSchema | undefined; retry?: { onValidationError?: number | boolean | undefined; } | undefined; system?: string | undefined; stream?: TStream | undefined; modelName?: string | undefined; maxRetries?: number | undefined; retryConfiguration?: ",
+              " | undefined; retry?: { onValidationError?: number | boolean | undefined; } | undefined; stream?: TStream | undefined; modelName?: string | undefined; maxRetries?: number | undefined; retryConfiguration?: ",
               {
                 "pluginId": "@kbn/inference-common",
                 "scope": "common",
@@ -5229,6 +6996,8 @@
               "[] | undefined; }"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/bound_api.ts",
+            "lineNumber": 29,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -5292,6 +7061,8 @@
           " & TPromptOptions>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/bound_api.ts",
+        "lineNumber": 19,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -5307,6 +7078,8 @@
               "{ prompt: TPrompt; } & TPromptOptions"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/bound_api.ts",
+            "lineNumber": 26,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -5340,6 +7113,8 @@
           "<TOptions>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+        "lineNumber": 78,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -5355,6 +7130,8 @@
               "TOptions"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+            "lineNumber": 79,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -5436,6 +7213,8 @@
           ">>>> : never)"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+        "lineNumber": 75,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5469,6 +7248,8 @@
           "<TOptions>> : never)"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+        "lineNumber": 179,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5480,7 +7261,7 @@
         "tags": [],
         "label": "ChatCompleteOptions",
         "description": [
-          "\nOptions used to call the {@link ChatCompleteAPI}"
+          "\nOptions used to call the {@link ChatCompleteAPI}.\n\n`connectorId` accepts both Kibana stack connector IDs (OpenAI, Bedrock, Gemini, etc.)\nand Elasticsearch inference endpoint IDs. The system automatically resolves which\npipeline to use based on the provided identifier."
         ],
         "signature": [
           "{ connectorId: string; system?: string | undefined; messages: ",
@@ -5515,7 +7296,7 @@
             "section": "def-common.ChatCompleteRetryConfiguration",
             "text": "ChatCompleteRetryConfiguration"
           },
-          " | undefined; stream?: boolean | undefined; } & ",
+          " | undefined; stream?: boolean | undefined; timeout?: number | undefined; } & ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5536,6 +7317,8 @@
           "<string>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+        "lineNumber": 82,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5562,6 +7345,8 @@
           "<TOptions>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+        "lineNumber": 190,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5576,7 +7361,7 @@
           "\nChunk event, containing a fragment of the total content,\nand potentially chunks of tool calls."
         ],
         "signature": [
-          "{ content: string; tool_calls: ",
+          "{ content: string; refusal?: string | undefined; tool_calls: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5584,39 +7369,31 @@
             "section": "def-common.ChatCompletionChunkToolCall",
             "text": "ChatCompletionChunkToolCall"
           },
-          "[]; deanonymized_input?: { message: ",
+          "[]; deanonymized_input?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "; deanonymizations: ",
+          "[] | undefined; deanonymized_output?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "[]; }[] | undefined; deanonymized_output?: { message: ",
+          " | undefined; metadata?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.AnonymizationResponseMetadata",
+            "text": "AnonymizationResponseMetadata"
           },
-          "; deanonymizations: ",
-          {
-            "pluginId": "@kbn/inference-common",
-            "scope": "common",
-            "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
-          },
-          "[]; } | undefined; } & { type: ",
+          " | undefined; } & { type: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5627,6 +7404,8 @@
           ".ChatCompletionChunk; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+        "lineNumber": 83,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5641,7 +7420,7 @@
           "\nEvents emitted from the {@link ChatCompleteResponse} observable\nreturned from the {@link ChatCompleteAPI}.\n\nThe chatComplete API returns 3 type of events:\n- {@link ChatCompletionChunkEvent}: message chunk events\n- {@link ChatCompletionTokenCountEvent}: token count event\n- {@link ChatCompletionMessageEvent}: message event\n\nNote that chunk events can be emitted any amount of times, but token count will be emitted\nat most once (could not be emitted depending on the underlying connector), and message\nevent will be emitted ex\n"
         ],
         "signature": [
-          "({ content: string; tool_calls: ",
+          "({ content: string; refusal?: string | undefined; tool_calls: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5649,39 +7428,31 @@
             "section": "def-common.ChatCompletionChunkToolCall",
             "text": "ChatCompletionChunkToolCall"
           },
-          "[]; deanonymized_input?: { message: ",
+          "[]; deanonymized_input?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "; deanonymizations: ",
+          "[] | undefined; deanonymized_output?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "[]; }[] | undefined; deanonymized_output?: { message: ",
+          " | undefined; metadata?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.AnonymizationResponseMetadata",
+            "text": "AnonymizationResponseMetadata"
           },
-          "; deanonymizations: ",
-          {
-            "pluginId": "@kbn/inference-common",
-            "scope": "common",
-            "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
-          },
-          "[]; } | undefined; } & { type: ",
+          " | undefined; } & { type: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5697,7 +7468,7 @@
             "section": "def-common.ChatCompletionTokenCount",
             "text": "ChatCompletionTokenCount"
           },
-          "; } & { type: ",
+          "; model?: string | undefined; } & { type: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5705,39 +7476,31 @@
             "section": "def-common.ChatCompletionEventType",
             "text": "ChatCompletionEventType"
           },
-          ".ChatCompletionTokenCount; }) | ({ content: string; deanonymized_input?: { message: ",
+          ".ChatCompletionTokenCount; }) | ({ content: string; refusal?: string | undefined; deanonymized_input?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "; deanonymizations: ",
+          "[] | undefined; deanonymized_output?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "[]; }[] | undefined; deanonymized_output?: { message: ",
+          " | undefined; metadata?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.AnonymizationResponseMetadata",
+            "text": "AnonymizationResponseMetadata"
           },
-          "; deanonymizations: ",
-          {
-            "pluginId": "@kbn/inference-common",
-            "scope": "common",
-            "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
-          },
-          "[]; } | undefined; toolCalls: ",
+          " | undefined; toolCalls: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5756,6 +7519,8 @@
           ".ChatCompletionMessage; })"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+        "lineNumber": 158,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5770,39 +7535,31 @@
           "\nMessage event, sent only once, after all the chunks were emitted, and containing\nthe whole text content and potential tool calls of the response."
         ],
         "signature": [
-          "{ content: string; deanonymized_input?: { message: ",
+          "{ content: string; refusal?: string | undefined; deanonymized_input?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "; deanonymizations: ",
+          "[] | undefined; deanonymized_output?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
+            "section": "def-common.DeanonymizedMessageData",
+            "text": "DeanonymizedMessageData"
           },
-          "[]; }[] | undefined; deanonymized_output?: { message: ",
+          " | undefined; metadata?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
             "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Message",
-            "text": "Message"
+            "section": "def-common.AnonymizationResponseMetadata",
+            "text": "AnonymizationResponseMetadata"
           },
-          "; deanonymizations: ",
-          {
-            "pluginId": "@kbn/inference-common",
-            "scope": "common",
-            "docId": "kibKbnInferenceCommonPluginApi",
-            "section": "def-common.Deanonymization",
-            "text": "Deanonymization"
-          },
-          "[]; } | undefined; toolCalls: ",
+          " | undefined; toolCalls: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5821,6 +7578,8 @@
           ".ChatCompletionMessage; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+        "lineNumber": 22,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5843,7 +7602,7 @@
             "section": "def-common.ChatCompletionTokenCount",
             "text": "ChatCompletionTokenCount"
           },
-          "; } & { type: ",
+          "; model?: string | undefined; } & { type: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -5854,6 +7613,8 @@
           ".ChatCompletionTokenCount; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/events.ts",
+        "lineNumber": 143,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5865,7 +7626,7 @@
         "tags": [],
         "label": "ChatCompletionTokenLimitReachedError",
         "description": [
-          "\nError thrown if the completion call fails because of a token limit\nerror, e.g. when the context window is higher than the limit"
+          "\nError thrown if the completion call fails because of an output token limit error"
         ],
         "signature": [
           {
@@ -5883,9 +7644,11 @@
             "section": "def-common.ChatCompletionErrorCode",
             "text": "ChatCompletionErrorCode"
           },
-          ".TokenLimitReachedError, { tokenLimit?: number | undefined; tokenCount?: number | undefined; }>"
+          ".OutputTokenLimitReachedError, { tokenLimit?: number | undefined; tokenCount?: number | undefined; }>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+        "lineNumber": 30,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5915,9 +7678,11 @@
             "section": "def-common.ChatCompletionErrorCode",
             "text": "ChatCompletionErrorCode"
           },
-          ".ToolNotFoundError, { name: string; }>"
+          ".ToolNotFoundError, { name: string; arguments: string; }>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+        "lineNumber": 41,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5958,6 +7723,8 @@
           "<string>[] | undefined; content?: string | undefined; }>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/errors.ts",
+        "lineNumber": 55,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -5988,6 +7755,8 @@
           "[]; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/anonymization/types.ts",
+        "lineNumber": 83,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6007,6 +7776,8 @@
           " ? FromToolSchemaObject<TToolSchema> : TToolSchema extends ToolSchemaTypeArray ? FromToolSchemaArray<TToolSchema> : TToolSchema extends ToolSchemaTypeBoolean ? boolean : TToolSchema extends ToolSchemaTypeNumber ? number : TToolSchema extends ToolSchemaTypeString ? FromToolSchemaString<TToolSchema> : never"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tool_schema.ts",
+        "lineNumber": 84,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6024,6 +7795,27 @@
           "\"auto\" | \"native\" | \"simulated\""
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/api.ts",
+        "lineNumber": 231,
+        "columnNumber": 1,
+        "deprecated": false,
+        "trackAdoption": false,
+        "initialIsOpen": false
+      },
+      {
+        "parentPluginId": "@kbn/inference-common",
+        "id": "def-common.INFERENCE_CONNECTORS_INTERNAL_API_PATH",
+        "type": "string",
+        "tags": [],
+        "label": "INFERENCE_CONNECTORS_INTERNAL_API_PATH",
+        "description": [
+          "\nInternal HTTP path for the inference connectors list API (search_inference_endpoints plugin).\nKept here so browser clients and the route definition share one source of truth."
+        ],
+        "signature": [
+          "\"/internal/search_inference_endpoints/connectors\""
+        ],
+        "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_connectors_api.ts",
+        "lineNumber": 14,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6056,6 +7848,8 @@
           ".abortedError, { status: number; }>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 68,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6078,6 +7872,8 @@
           "<TCode, TMeta>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 22,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6101,6 +7897,8 @@
           "; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 27,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6116,6 +7914,8 @@
           "Record<string, unknown> & { type: string; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_task.ts",
+        "lineNumber": 21,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6133,6 +7933,8 @@
           "keyof TData extends \"type\" ? never : TData & { type: TEventType; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_task.ts",
+        "lineNumber": 9,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6145,6 +7947,8 @@
         "label": "InferenceTaskEventType",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_task.ts",
+        "lineNumber": 17,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6177,6 +7981,8 @@
           ".internalError, Record<string, any>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 37,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6209,6 +8015,8 @@
           ".providerError, { status?: number | undefined; }>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 45,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6241,6 +8049,8 @@
           ".requestError, { status: number; }>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 56,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6301,6 +8111,8 @@
           " | undefined>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 98,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6332,6 +8144,8 @@
           ")[]"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 38,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6382,6 +8196,8 @@
           "<key, TToolResponses[key], any>; }>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 130,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6399,6 +8215,8 @@
           "unknown"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/events.ts",
+        "lineNumber": 18,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6436,6 +8254,8 @@
           "<TId, TOutputSchema, TStream>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+        "lineNumber": 19,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -6458,6 +8278,8 @@
               "<TId, TOutputSchema, TStream>"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+            "lineNumber": 58,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -6485,6 +8307,8 @@
           ".OutputComplete; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/events.ts",
+        "lineNumber": 40,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6528,6 +8352,8 @@
           "<TOutputSchema> : undefined>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+        "lineNumber": 145,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6561,6 +8387,8 @@
           ".OutputComplete; })"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/events.ts",
+        "lineNumber": 65,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6597,6 +8425,8 @@
           "<TOutputSchema> : undefined>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/api.ts",
+        "lineNumber": 181,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6622,6 +8452,8 @@
           ".OutputUpdate; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/events.ts",
+        "lineNumber": 23,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6693,6 +8525,8 @@
           "<TPromptOptions>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+        "lineNumber": 73,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -6715,6 +8549,8 @@
               "<TPrompt> & TPromptOptions"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+            "lineNumber": 77,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -6758,6 +8594,8 @@
           "<TPromptOptions>>> : never)"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+        "lineNumber": 42,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6784,6 +8622,8 @@
           "<TPromptOptions>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+        "lineNumber": 61,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6812,6 +8652,8 @@
           "<TPromptOptions>>>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/api.ts",
+        "lineNumber": 67,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6839,6 +8681,8 @@
           "<TToolDefinition[\"schema\"]> : {}"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools_of.ts",
+        "lineNumber": 36,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -6854,6 +8698,8 @@
           "(toolCall: TToolCall) => Promise<TToolCallbackResult>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 113,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "returnComment": [],
@@ -6869,6 +8715,8 @@
               "TToolCall"
             ],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+            "lineNumber": 116,
+            "columnNumber": 6,
             "deprecated": false,
             "trackAdoption": false
           }
@@ -6920,10 +8768,18 @@
             "text": "ToolCallArgumentsOfToolDefinition"
           },
           "<TToolOptions[\"tools\"][TName]>>, ",
-          "ToolCallbackResult",
+          {
+            "pluginId": "@kbn/inference-common",
+            "scope": "common",
+            "docId": "kibKbnInferenceCommonPluginApi",
+            "section": "def-common.ToolCallbackResult",
+            "text": "ToolCallbackResult"
+          },
           ">; } : never"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools_of.ts",
+        "lineNumber": 100,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7037,6 +8893,8 @@
           "<TTools[TToolName]>>; }[keyof TTools] : never"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools_of.ts",
+        "lineNumber": 47,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7106,6 +8964,8 @@
           "<NonNullable<TToolOptions[\"tools\"]>[TToolName]>>; }>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools_of.ts",
+        "lineNumber": 57,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7138,6 +8998,8 @@
           "<TToolName>"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools.ts",
+        "lineNumber": 30,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7165,6 +9027,8 @@
           " ? { data: TToolData; } : { data?: TToolData | undefined; })"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 75,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7286,6 +9150,8 @@
           "<TToolOptions>] : never"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 120,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7303,6 +9169,8 @@
           "keyof TToolOptions[\"tools\"] & string"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools_of.ts",
+        "lineNumber": 31,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7327,11 +9195,11 @@
           },
           "<",
           "ToolDefinitions",
-          " | undefined> ? TPromptVersion extends { tools?: ",
-          "ToolDefinitions",
-          " | undefined; } ? Pick<TPromptVersion, \"tools\"> : {} : {} : {}"
+          " | undefined> ? Pick<TPromptVersion, \"tools\"> : {} : {}"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/types.ts",
+        "lineNumber": 125,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7349,6 +9217,8 @@
           "ToolSchemaTypeObject"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tool_schema.ts",
+        "lineNumber": 79,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7367,6 +9237,8 @@
           " | ToolSchemaTypeString | ToolSchemaTypeBoolean | ToolSchemaTypeNumber | ToolSchemaTypeArray"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tool_schema.ts",
+        "lineNumber": 43,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7384,6 +9256,8 @@
           "TToolOptions[\"toolChoice\"] extends { function: infer TToolName; } ? TToolName extends keyof TToolOptions[\"tools\"] ? Pick<TToolOptions[\"tools\"], TToolName> : TToolOptions[\"tools\"] : TToolOptions[\"tools\"]"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/tools_of.ts",
+        "lineNumber": 20,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7398,7 +9272,7 @@
           "\nOptions used to call the {@link BoundChatCompleteAPI}"
         ],
         "signature": [
-          "{ abortSignal?: AbortSignal | undefined; metadata?: ",
+          "{ system?: string | undefined; timeout?: number | undefined; abortSignal?: AbortSignal | undefined; metadata?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -7406,7 +9280,7 @@
             "section": "def-common.ChatCompleteMetadata",
             "text": "ChatCompleteMetadata"
           },
-          " | undefined; temperature?: number | undefined; system?: string | undefined; stream?: boolean | undefined; tools?: ",
+          " | undefined; temperature?: number | undefined; stream?: boolean | undefined; tools?: ",
           "ToolDefinitions",
           " | undefined; toolChoice?: ",
           {
@@ -7435,6 +9309,8 @@
           " | undefined; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/bound_api.ts",
+        "lineNumber": 11,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7458,6 +9334,8 @@
           "> : never"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/bind/bind_api.ts",
+        "lineNumber": 18,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7472,7 +9350,7 @@
           "\nOptions used to call the {@link BoundOutputAPI}"
         ],
         "signature": [
-          "{ id: TId; abortSignal?: AbortSignal | undefined; input: string; metadata?: ",
+          "{ id: TId; system?: string | undefined; abortSignal?: AbortSignal | undefined; input: string; schema?: TOutputSchema | undefined; metadata?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -7480,7 +9358,7 @@
             "section": "def-common.ChatCompleteMetadata",
             "text": "ChatCompleteMetadata"
           },
-          " | undefined; schema?: TOutputSchema | undefined; retry?: { onValidationError?: number | boolean | undefined; } | undefined; system?: string | undefined; stream?: TStream | undefined; modelName?: string | undefined; maxRetries?: number | undefined; retryConfiguration?: ",
+          " | undefined; retry?: { onValidationError?: number | boolean | undefined; } | undefined; stream?: TStream | undefined; modelName?: string | undefined; maxRetries?: number | undefined; retryConfiguration?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -7499,6 +9377,8 @@
           "[] | undefined; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/output/bound_api.ts",
+        "lineNumber": 12,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7513,7 +9393,9 @@
           "\nOptions used to call the {@link BoundPromptAPI}"
         ],
         "signature": [
-          "{ abortSignal?: AbortSignal | undefined; input: Zod.input<TPrompt[\"input\"]>; metadata?: ",
+          "{ timeout?: number | undefined; abortSignal?: AbortSignal | undefined; input: ",
+          "output",
+          "<TPrompt[\"input\"]>; metadata?: ",
           {
             "pluginId": "@kbn/inference-common",
             "scope": "common",
@@ -7548,6 +9430,8 @@
           "[] | undefined; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/prompt/bound_api.ts",
+        "lineNumber": 12,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7581,6 +9465,8 @@
           "; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/chat_complete/messages.ts",
+        "lineNumber": 40,
+        "columnNumber": 1,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7597,9 +9483,11 @@
           "\nConstants for all default (preconfigured) inference endpoints."
         ],
         "signature": [
-          "{ readonly ELSER: \".elser-2-elasticsearch\"; readonly ELSER_IN_EIS_INFERENCE_ID: \".elser-2-elastic\"; readonly MULTILINGUAL_E5_SMALL: \".multilingual-e5-small-elasticsearch\"; }"
+          "{ readonly JINAv5: \".jina-embeddings-v5-text-small\"; readonly ELSER: \".elser-2-elasticsearch\"; readonly ELSER_IN_EIS_INFERENCE_ID: \".elser-2-elastic\"; readonly MULTILINGUAL_E5_SMALL: \".multilingual-e5-small-elasticsearch\"; readonly KIBANA_DEFAULT_CHAT_COMPLETION: \".anthropic-claude-4.5-sonnet-chat_completion\"; readonly OPENAI_GPT_5_2: \".openai-gpt-5.2-chat_completion\"; readonly ANTHROPIC_CLAUDE_4_6_OPUS: \".anthropic-claude-4.6-opus-chat_completion\"; readonly ANTHROPIC_CLAUDE_4_6_SONNET: \".anthropic-claude-4.6-sonnet-chat_completion\"; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_endpoints.ts",
+        "lineNumber": 11,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7612,6 +9500,8 @@
         "label": "elasticModelDictionary",
         "description": [],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/const.ts",
+        "lineNumber": 11,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "children": [
@@ -7623,6 +9513,8 @@
             "label": "[elasticModelIds.RainbowSprinkles]",
             "description": [],
             "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/const.ts",
+            "lineNumber": 12,
+            "columnNumber": 3,
             "deprecated": false,
             "trackAdoption": false,
             "children": [
@@ -7634,6 +9526,8 @@
                 "label": "provider",
                 "description": [],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/const.ts",
+                "lineNumber": 13,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false
               },
@@ -7645,6 +9539,8 @@
                 "label": "model",
                 "description": [],
                 "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/const.ts",
+                "lineNumber": 14,
+                "columnNumber": 5,
                 "deprecated": false,
                 "trackAdoption": false
               }
@@ -7664,6 +9560,8 @@
           "{ readonly RainbowSprinkles: \"rainbow-sprinkles\"; }"
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/inference_endpoints.ts",
+        "lineNumber": 38,
+        "columnNumber": 14,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false
@@ -7686,6 +9584,8 @@
           }
         ],
         "path": "x-pack/platform/packages/shared/ai-infra/inference-common/src/errors.ts",
+        "lineNumber": 21,
+        "columnNumber": 7,
         "deprecated": false,
         "trackAdoption": false,
         "initialIsOpen": false

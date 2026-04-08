@@ -23,8 +23,9 @@ import {
 import type { FieldDefinition, UnsavedFieldChange } from '@kbn/management-settings-types';
 import type { UiSettingsType } from '@kbn/core/public';
 import { i18n } from '@kbn/i18n';
+import { useConnectorExists } from '../../hooks/use_connector_exists';
 import type { UseGenAiConnectorsResult } from '../../hooks/use_genai_connectors';
-import { useSettingsContext } from '../../contexts/settings_context';
+import { useFieldSettingsContext, type ValidationError } from '../../contexts/settings_context';
 import { NO_DEFAULT_CONNECTOR } from '../../../common/constants';
 import { useKibana } from '../../hooks/use_kibana';
 
@@ -40,13 +41,56 @@ const NoDefaultOption: EuiComboBoxOptionOption<string> = {
   value: NO_DEFAULT_CONNECTOR,
 };
 
+// Validation function for Default AI Connector settings
+const validateDefaultAIConnector = (
+  unsavedChanges: Record<string, UnsavedFieldChange<UiSettingsType>>,
+  fields: Record<string, FieldDefinition<UiSettingsType>>,
+  connectorExists: boolean,
+  connectorExistsLoading: boolean
+): ValidationError[] => {
+  const defaultLlmValue = getDefaultLlmValue(unsavedChanges, fields);
+  const defaultLlmOnlyValue = getDefaultLlmOnlyValue(unsavedChanges, fields);
+
+  const errors: ValidationError[] = [];
+
+  // Check if selected connector exists (via direct getConnectorById, not the deduped list)
+  if (!connectorExists && !connectorExistsLoading && defaultLlmValue !== NO_DEFAULT_CONNECTOR) {
+    errors.push({
+      message: i18n.translate(
+        'xpack.gen_ai_settings.settings.defaultLLm.select.error.selectedDefaultLlmDoesNotExist.message',
+        {
+          defaultMessage:
+            'The connector previously selected does not exist anymore. Please select a different option.',
+        }
+      ),
+      field: GEN_AI_SETTINGS_DEFAULT_AI_CONNECTOR,
+    });
+  }
+
+  // Check if "disallow all other connectors" is enabled but no default connector is selected
+  if (defaultLlmOnlyValue && defaultLlmValue === NO_DEFAULT_CONNECTOR) {
+    errors.push({
+      message: i18n.translate(
+        'xpack.gen_ai_settings.settings.defaultLLmOnly.error.connectorNotSelected.message',
+        {
+          defaultMessage:
+            'When disallowing all other connectors, a default connector must be selected.',
+        }
+      ),
+      field: GEN_AI_SETTINGS_DEFAULT_AI_CONNECTOR_DEFAULT_ONLY,
+    });
+  }
+
+  return errors;
+};
+
 const getOptions = (connectors: UseGenAiConnectorsResult): EuiComboBoxOptionOption<string>[] => {
   const preconfigured =
     connectors.connectors
       ?.filter((connector) => connector.isPreconfigured)
       .map((connector) => ({
         label: connector.name,
-        value: connector.id,
+        value: connector.connectorId,
       })) ?? [];
 
   const custom =
@@ -54,7 +98,7 @@ const getOptions = (connectors: UseGenAiConnectorsResult): EuiComboBoxOptionOpti
       ?.filter((connector) => !connector.isPreconfigured)
       .map((connector) => ({
         label: connector.name,
-        value: connector.id,
+        value: connector.connectorId,
       })) ?? [];
 
   return [
@@ -100,9 +144,45 @@ const getOptionsByValues = (
 
 export const DefaultAIConnector: React.FC<Props> = ({ connectors }) => {
   const options = useMemo(() => getOptions(connectors), [connectors]);
-  const { handleFieldChange, fields, unsavedChanges } = useSettingsContext();
+
+  // Memoize field names to prevent recreation on every render
+  const fieldNames = useMemo(
+    () => [GEN_AI_SETTINGS_DEFAULT_AI_CONNECTOR, GEN_AI_SETTINGS_DEFAULT_AI_CONNECTOR_DEFAULT_ONLY],
+    []
+  );
+
+  // Use field-specific settings context
+  const { handleFieldChange, fields, unsavedChanges, setValidationErrors } =
+    useFieldSettingsContext(fieldNames);
+
   const { services } = useKibana();
-  const { notifications } = services;
+  const { notifications, application } = services;
+
+  const canEditAdvancedSettings = application.capabilities.advancedSettings?.save;
+
+  const defaultLlmValue = getDefaultLlmValue(unsavedChanges, fields);
+
+  // Check existence via direct getConnectorById to avoid false negatives from the deduped list
+  const { exists: connectorExists, loading: connectorExistsLoading } =
+    useConnectorExists(defaultLlmValue);
+
+  // Calculate and set validation errors automatically
+  React.useEffect(() => {
+    const errors = validateDefaultAIConnector(
+      unsavedChanges,
+      fields,
+      connectorExists,
+      connectorExistsLoading
+    );
+    setValidationErrors(errors);
+  }, [unsavedChanges, fields, connectorExists, connectorExistsLoading, setValidationErrors]);
+
+  // Get current validation errors for inline display
+  const validationErrors = useMemo(
+    () =>
+      validateDefaultAIConnector(unsavedChanges, fields, connectorExists, connectorExistsLoading),
+    [unsavedChanges, fields, connectorExists, connectorExistsLoading]
+  );
 
   const onChangeDefaultLlm = (selectedOptions: EuiComboBoxOptionOption<string>[]) => {
     const values = selectedOptions.map((option) => option.value);
@@ -148,18 +228,23 @@ export const DefaultAIConnector: React.FC<Props> = ({ connectors }) => {
     });
   };
 
-  const defaultLlmValues = getDefaultLlmValue(unsavedChanges, fields);
-
   const selectedOptions = useMemo(
-    () => getOptionsByValues(defaultLlmValues, options),
-    [defaultLlmValues, options]
+    () => getOptionsByValues(defaultLlmValue, options),
+    [defaultLlmValue, options]
   );
 
   const defaultLlmOnlyValue = getDefaultLlmOnlyValue(unsavedChanges, fields);
 
+  // Get validation errors for display (still needed for inline validation)
+  const defaultLlmErrors = validationErrors.map((error: ValidationError) => error.message);
+
   return (
     <>
-      <EuiFormRow label={GEN_AI_SETTINGS_DEFAULT_AI_CONNECTOR}>
+      <EuiFormRow
+        label={GEN_AI_SETTINGS_DEFAULT_AI_CONNECTOR}
+        isInvalid={defaultLlmErrors.length > 0}
+        error={defaultLlmErrors}
+      >
         <EuiComboBox
           data-test-subj="defaultAiConnectorComboBox"
           placeholder={i18n.translate(
@@ -170,9 +255,12 @@ export const DefaultAIConnector: React.FC<Props> = ({ connectors }) => {
           options={options}
           selectedOptions={selectedOptions}
           onChange={onChangeDefaultLlm}
-          isDisabled={fields[GEN_AI_SETTINGS_DEFAULT_AI_CONNECTOR]?.isReadOnly}
           isLoading={connectors.loading}
-          isInvalid={selectedOptions.length === 0 && !connectors.loading}
+          isDisabled={!canEditAdvancedSettings}
+          isInvalid={
+            (selectedOptions.length === 0 && !connectors.loading) ||
+            (defaultLlmOnlyValue && selectedOptions[0]?.value === NO_DEFAULT_CONNECTOR)
+          }
         />
       </EuiFormRow>
 
@@ -182,7 +270,6 @@ export const DefaultAIConnector: React.FC<Props> = ({ connectors }) => {
             <EuiCheckbox
               id="defaultAiConnectorCheckbox"
               data-test-subj="defaultAiConnectorCheckbox"
-              disabled={fields[GEN_AI_SETTINGS_DEFAULT_AI_CONNECTOR_DEFAULT_ONLY]?.isReadOnly}
               label={
                 <FormattedMessage
                   id="genAiSettings.gen_ai_settings.settings.defaultLlmOnly.checkbox.label"
@@ -191,6 +278,7 @@ export const DefaultAIConnector: React.FC<Props> = ({ connectors }) => {
               }
               checked={defaultLlmOnlyValue}
               onChange={(e) => onChangeDefaultOnly(e.target.checked)}
+              disabled={!canEditAdvancedSettings}
             />
           </EuiFlexItem>
 

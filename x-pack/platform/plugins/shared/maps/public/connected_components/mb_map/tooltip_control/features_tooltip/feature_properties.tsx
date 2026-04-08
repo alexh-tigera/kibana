@@ -295,7 +295,7 @@ export class FeatureProperties extends Component<Props, State> {
             })}
             data-test-subj="mapTooltipMoreActionsButton"
           >
-            <EuiIcon type="arrowRight" />
+            <EuiIcon type="chevronSingleRight" />
           </EuiButtonEmpty>
         </span>
       </td>
@@ -306,6 +306,7 @@ export class FeatureProperties extends Component<Props, State> {
     if (this.state.loadPropertiesErrorMsg) {
       return (
         <EuiCallOut
+          announceOnMount
           title={i18n.translate('xpack.maps.tooltip.unableToLoadContentTitle', {
             defaultMessage: 'Unable to load tooltip content',
           })}

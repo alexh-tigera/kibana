@@ -10,6 +10,7 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import { getHardcodedMappings } from './hardcoded_mappings';
+import { sortObjectByKeys } from './sorting_utils';
 import type {
   ResolvedSemconvYaml,
   YamlGroup,
@@ -76,7 +77,7 @@ function mapOtelTypeToEsType(otelType?: unknown): string {
 
   // Handle complex type objects (like enum definitions with members)
   if (typeof otelType === 'object' && otelType !== null) {
-    const typeObj = otelType as any;
+    const typeObj = otelType as Record<string, unknown>;
 
     // Check if it's an enum type with members
     if (typeObj.members && Array.isArray(typeObj.members)) {
@@ -285,7 +286,12 @@ export function processSemconvYaml(
   const hardcodedFields = getHardcodedMappings();
 
   // Merge all fields - hardcoded fields are added first, semantic convention fields can override
-  const totalFields = { ...hardcodedFields, ...registryFields, ...metricFields };
+  // Apply deterministic sorting to ensure consistent field ordering across builds
+  const totalFields = sortObjectByKeys({
+    ...hardcodedFields,
+    ...registryFields,
+    ...metricFields,
+  });
 
   const result: ProcessingResult = {
     registryFields,

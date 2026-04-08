@@ -37,6 +37,7 @@ import * as knowledgeBaseIndex from './knowledge_base_index';
 import {
   getAgentTemplateAssetsMap,
   getInstalledPackages,
+  getPackageDependencies,
   getPackageInfo,
   getPackages,
   getPackageUsageStats,
@@ -1434,9 +1435,10 @@ owner: elastic`,
           },
         });
 
-        // Mock paths that include knowledge base files
+        // Mock paths that include knowledge base files and README
         const mockPaths = [
           'my-package-1.0.0/manifest.yml',
+          'my-package-1.0.0/docs/README.md',
           'my-package-1.0.0/docs/knowledge_base/knowledge.md',
           'my-package-1.0.0/docs/knowledge_base/troubleshooting.md',
         ];
@@ -1465,12 +1467,20 @@ owner: elastic`,
         expect(MockRegistry.groupPathsByService).toHaveBeenCalledWith(
           expect.arrayContaining([
             'my-package-1.0.0/manifest.yml',
+            'my-package-1.0.0/docs/README.md',
             'my-package-1.0.0/docs/knowledge_base/knowledge.md',
             'my-package-1.0.0/docs/knowledge_base/troubleshooting.md',
           ])
         );
 
         expect(result.assets.elasticsearch?.knowledge_base).toEqual([
+          {
+            service: 'elasticsearch',
+            type: 'knowledge_base',
+            file: 'README.md',
+            pkgkey: 'my-package-1.0.0',
+            path: 'my-package-1.0.0/docs/README.md',
+          },
           {
             service: 'elasticsearch',
             type: 'knowledge_base',
@@ -1524,6 +1534,86 @@ owner: elastic`,
         expect(MockRegistry.groupPathsByService).toHaveBeenCalledWith(mockPaths);
         expect(result.assets.elasticsearch?.knowledge_base).toBeUndefined();
       });
+    });
+  });
+
+  describe('getPackageDependencies', () => {
+    const makeRegistryPackage = (requires?: object) =>
+      ({
+        name: 'my-package',
+        version: '1.0.0',
+        ...(requires ? { requires } : {}),
+      } as unknown as RegistryPackage);
+
+    it('enriches dependency entries with the title from the registry', async () => {
+      MockRegistry.fetchInfo.mockResolvedValue(
+        makeRegistryPackage({ content: [{ package: 'dep-pkg', version: '~1.0.0' }] })
+      );
+      MockRegistry.fetchFindLatestPackageOrUndefined.mockResolvedValueOnce({
+        name: 'dep-pkg',
+        version: '1.0.0',
+        title: 'Dependency Package',
+      } as RegistryPackage);
+
+      const result = await getPackageDependencies('my-package', '1.0.0');
+
+      expect(result).toEqual([{ name: 'dep-pkg', version: '~1.0.0', title: 'Dependency Package' }]);
+    });
+
+    it('falls back to package name as title when registry lookup returns undefined', async () => {
+      MockRegistry.fetchInfo.mockResolvedValue(
+        makeRegistryPackage({ content: [{ package: 'dep-pkg', version: '~1.0.0' }] })
+      );
+      MockRegistry.fetchFindLatestPackageOrUndefined.mockResolvedValueOnce(undefined);
+
+      const result = await getPackageDependencies('my-package', '1.0.0');
+
+      expect(result).toEqual([{ name: 'dep-pkg', version: '~1.0.0', title: 'dep-pkg' }]);
+    });
+
+    it('enriches multiple dependencies in parallel', async () => {
+      MockRegistry.fetchInfo.mockResolvedValue(
+        makeRegistryPackage({
+          content: [
+            { package: 'dep-a', version: '~1.0.0' },
+            { package: 'dep-b', version: '^2.0.0' },
+          ],
+        })
+      );
+      MockRegistry.fetchFindLatestPackageOrUndefined
+        .mockResolvedValueOnce({
+          name: 'dep-a',
+          version: '1.0.0',
+          title: 'Dep A',
+        } as RegistryPackage)
+        .mockResolvedValueOnce({
+          name: 'dep-b',
+          version: '2.1.0',
+          title: 'Dep B',
+        } as RegistryPackage);
+
+      const result = await getPackageDependencies('my-package', '1.0.0');
+
+      expect(result).toEqual([
+        { name: 'dep-a', version: '~1.0.0', title: 'Dep A' },
+        { name: 'dep-b', version: '^2.0.0', title: 'Dep B' },
+      ]);
+    });
+
+    it('returns an empty array when the package has no dependencies', async () => {
+      MockRegistry.fetchInfo.mockResolvedValue(makeRegistryPackage());
+
+      const result = await getPackageDependencies('my-package', '1.0.0');
+
+      expect(result).toEqual([]);
+    });
+
+    it('throws PackageNotFoundError when the package is not in the registry', async () => {
+      MockRegistry.fetchInfo.mockRejectedValue(new Error('not found'));
+
+      await expect(getPackageDependencies('my-package', '1.0.0')).rejects.toThrow(
+        PackageNotFoundError
+      );
     });
   });
 
@@ -1701,7 +1791,8 @@ owner: elastic`,
 
       expect(mockKnowledgeBaseIndex.getPackageKnowledgeBaseFromIndex).toHaveBeenCalledWith(
         esClient,
-        'nginx'
+        'nginx',
+        undefined
       );
 
       expect(result).toEqual({
@@ -1738,7 +1829,8 @@ owner: elastic`,
 
       expect(mockKnowledgeBaseIndex.getPackageKnowledgeBaseFromIndex).toHaveBeenCalledWith(
         esClient,
-        'nginx'
+        'nginx',
+        undefined
       );
 
       expect(result).toEqual({
@@ -1760,7 +1852,8 @@ owner: elastic`,
 
       expect(mockKnowledgeBaseIndex.getPackageKnowledgeBaseFromIndex).toHaveBeenCalledWith(
         esClient,
-        'nginx'
+        'nginx',
+        undefined
       );
 
       expect(result).toBeUndefined();
@@ -1782,7 +1875,8 @@ owner: elastic`,
 
       expect(mockKnowledgeBaseIndex.getPackageKnowledgeBaseFromIndex).toHaveBeenCalledWith(
         esClient,
-        'nginx'
+        'nginx',
+        undefined
       );
 
       expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -1805,7 +1899,8 @@ owner: elastic`,
 
       expect(mockKnowledgeBaseIndex.getPackageKnowledgeBaseFromIndex).toHaveBeenCalledWith(
         esClient,
-        ''
+        '',
+        undefined
       );
 
       expect(result).toBeUndefined();

@@ -30,6 +30,7 @@ export function createPromptRestApi({ fetch, signal }: PublicInferenceClientCrea
   return (options: PromptOptions) => {
     const {
       abortSignal,
+      connectorId,
       maxRetries,
       metadata,
       modelName,
@@ -38,9 +39,9 @@ export function createPromptRestApi({ fetch, signal }: PublicInferenceClientCrea
       temperature,
       prompt: { input: inputSchema, ...prompt },
       input,
-      connectorId,
       functionCalling,
       prevMessages,
+      toolChoice,
     } = options;
 
     const body: PromptRequestBody = {
@@ -54,6 +55,7 @@ export function createPromptRestApi({ fetch, signal }: PublicInferenceClientCrea
       input,
       prevMessages,
       metadata,
+      toolChoice,
     };
 
     const validationResult = inputSchema.safeParse(input);

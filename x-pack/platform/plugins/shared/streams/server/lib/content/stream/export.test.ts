@@ -18,7 +18,14 @@ const streams = [
       { destination: 'logs.foo', where: { always: {} }, status: 'enabled' },
       { destination: 'logs.hello', where: { always: {} }, status: 'enabled' },
     ],
-    queries: [{ id: 'logs-query', title: 'logs-query', kql: { query: 'logs' } }],
+    queries: [
+      {
+        id: 'logs-query',
+        title: 'logs-query',
+        description: '',
+        esql: { query: 'FROM logs | WHERE level == "error"' },
+      },
+    ],
   }),
   testContentPackEntry({
     name: 'logs.foo',
@@ -27,7 +34,14 @@ const streams = [
   testContentPackEntry({ name: 'logs.foo.bar' }),
   testContentPackEntry({
     name: 'logs.hello',
-    queries: [{ id: 'hello-query', title: 'hello-query', kql: { query: 'hello' } }],
+    queries: [
+      {
+        id: 'hello-query',
+        title: 'hello-query',
+        description: '',
+        esql: { query: 'FROM logs | WHERE greeting == "hello"' },
+      },
+    ],
   }),
 ];
 
@@ -39,19 +53,23 @@ describe('content pack export', () => {
       streams,
     });
 
-    const exportedStreams = prepareStreamsForExport({
-      tree,
-      inheritedFields: { inherited_field_1: { type: 'keyword' } },
-    });
+    const exportedStreams = prepareStreamsForExport({ tree });
     expect(sortBy(exportedStreams, 'name')).toEqual([
       testContentPackEntry({
         name: ROOT_STREAM_ID,
-        fields: { inherited_field_1: { type: 'keyword' } },
+        fields: {},
         routing: [
           { destination: 'foo', where: { always: {} }, status: 'enabled' },
           { destination: 'hello', where: { always: {} }, status: 'enabled' },
         ],
-        queries: [{ id: 'logs-query', title: 'logs-query', kql: { query: 'logs' } }],
+        queries: [
+          {
+            id: 'logs-query',
+            title: 'logs-query',
+            description: '',
+            esql: { query: 'FROM logs | WHERE level == "error"' },
+          },
+        ],
       }),
       testContentPackEntry({
         name: 'foo',
@@ -60,7 +78,14 @@ describe('content pack export', () => {
       testContentPackEntry({ name: 'foo.bar' }),
       testContentPackEntry({
         name: 'hello',
-        queries: [{ id: 'hello-query', title: 'hello-query', kql: { query: 'hello' } }],
+        queries: [
+          {
+            id: 'hello-query',
+            title: 'hello-query',
+            description: '',
+            esql: { query: 'FROM logs | WHERE greeting == "hello"' },
+          },
+        ],
       }),
     ]);
   });
@@ -69,11 +94,13 @@ describe('content pack export', () => {
     const tree = asTree({
       include: {
         objects: {
+          mappings: true,
           queries: [],
           routing: [
             {
               destination: 'logs.hello',
               objects: {
+                mappings: true,
                 routing: [],
                 queries: [{ id: 'hello-query' }],
               },
@@ -85,7 +112,7 @@ describe('content pack export', () => {
       streams,
     });
 
-    const exportedStreams = prepareStreamsForExport({ tree, inheritedFields: {} });
+    const exportedStreams = prepareStreamsForExport({ tree });
     expect(sortBy(exportedStreams, 'name')).toEqual([
       testContentPackEntry({
         name: ROOT_STREAM_ID,
@@ -93,7 +120,14 @@ describe('content pack export', () => {
       }),
       testContentPackEntry({
         name: 'hello',
-        queries: [{ id: 'hello-query', title: 'hello-query', kql: { query: 'hello' } }],
+        queries: [
+          {
+            id: 'hello-query',
+            title: 'hello-query',
+            description: '',
+            esql: { query: 'FROM logs | WHERE greeting == "hello"' },
+          },
+        ],
       }),
     ]);
   });

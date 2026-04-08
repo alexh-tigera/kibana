@@ -34,13 +34,13 @@ import {
   type ChatActionClickPayload,
   type Feedback,
   aiAssistantSimulatedFunctionCalling,
-  getElasticManagedLlmConnector,
   InferenceModelState,
 } from '@kbn/observability-ai-assistant-plugin/public';
 import type { AuthenticatedUser } from '@kbn/security-plugin/common';
 import { findLastIndex } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChatFeedback } from '@kbn/observability-ai-assistant-plugin/public/analytics/schemas/chat_feedback';
+import type { ApplicationStart } from '@kbn/core/public';
 import type { UseKnowledgeBaseResult } from '../hooks/use_knowledge_base';
 import { ASSISTANT_SETUP_TITLE, EMPTY_CONVERSATION_TITLE, UPGRADE_LICENSE_TITLE } from '../i18n';
 import { useAIAssistantChatService } from '../hooks/use_ai_assistant_chat_service';
@@ -57,6 +57,7 @@ import { useLicense } from '../hooks/use_license';
 import { PromptEditor } from '../prompt_editor/prompt_editor';
 import { useKibana } from '../hooks/use_kibana';
 import { ChatBanner } from './chat_banner';
+import { DefaultExperienceCallout } from './default_experience_callout';
 import { useConversationContextMenu, useScopes } from '../hooks';
 
 const fullHeightClassName = css`
@@ -126,6 +127,7 @@ export function ChatBody({
   initialTitle,
   knowledgeBase,
   showLinkToConversationsApp,
+  eisCalloutZIndex,
   onConversationUpdate,
   onToggleFlyoutPositionMode,
   navigateToConversation,
@@ -133,6 +135,7 @@ export function ChatBody({
   refreshConversations,
   updateDisplayedConversation,
   onConversationDuplicate,
+  navigateToConnectorsManagementApp,
 }: {
   connectors: ReturnType<typeof useGenAIConnectors>;
   currentUser?: Pick<AuthenticatedUser, 'full_name' | 'username' | 'profile_uid'>;
@@ -142,6 +145,7 @@ export function ChatBody({
   initialConversationId?: string;
   knowledgeBase: UseKnowledgeBaseResult;
   showLinkToConversationsApp: boolean;
+  eisCalloutZIndex?: number;
   onConversationUpdate: (conversation: { conversation: Conversation['conversation'] }) => void;
   onConversationDuplicate: (conversation: Conversation) => void;
   onToggleFlyoutPositionMode?: (flyoutPositionMode: FlyoutPositionMode) => void;
@@ -149,6 +153,7 @@ export function ChatBody({
   setIsUpdatingConversationList: (isUpdating: boolean) => void;
   refreshConversations: () => void;
   updateDisplayedConversation: (id?: string) => void;
+  navigateToConnectorsManagementApp: (application: ApplicationStart) => void;
 }) {
   const license = useLicense();
   const hasCorrectLicense = license?.hasAtLeast('enterprise');
@@ -408,14 +413,12 @@ export function ChatBody({
     conversation.refresh();
   };
 
-  const elasticManagedLlm = getElasticManagedLlmConnector(connectors.connectors);
-  const { conversationCalloutDismissed, tourCalloutDismissed } = useElasticLlmCalloutsStatus(false);
+  const { conversationCalloutDismissed } = useElasticLlmCalloutsStatus(false);
 
   const showElasticLlmCalloutInChat =
-    !!elasticManagedLlm &&
-    connectors.selectedConnector === elasticManagedLlm.id &&
-    !conversationCalloutDismissed &&
-    tourCalloutDismissed;
+    (connectors.connectors || []).some(
+      (connector) => connector.connectorId === connectors.selectedConnector && connector.isEis
+    ) && !conversationCalloutDismissed;
 
   const showKnowledgeBaseReIndexingCallout =
     knowledgeBase.status.value?.enabled === true &&
@@ -564,6 +567,7 @@ export function ChatBody({
                   }
                   showElasticLlmCalloutInChat={showElasticLlmCalloutInChat}
                   showKnowledgeBaseReIndexingCallout={showKnowledgeBaseReIndexingCallout}
+                  eisCalloutZIndex={eisCalloutZIndex}
                 />
               ) : (
                 <ChatTimeline
@@ -653,6 +657,7 @@ export function ChatBody({
       >
         <EuiFlexItem grow={false} className={chatBodyContainerClassNameWithError}>
           <EuiCallOut
+            announceOnMount
             color="danger"
             title={i18n.translate('xpack.aiAssistant.couldNotFindConversationTitle', {
               defaultMessage: 'Conversation not found',
@@ -683,6 +688,7 @@ export function ChatBody({
       >
         {conversation.error ? (
           <EuiCallOut
+            announceOnMount
             color="danger"
             title={i18n.translate('xpack.aiAssistant.couldNotFindConversationTitle', {
               defaultMessage: 'Conversation not found',
@@ -722,10 +728,14 @@ export function ChatBody({
           deleteConversation={deleteConversation}
           handleArchiveConversation={handleArchiveConversation}
           isConversationApp={!showLinkToConversationsApp}
+          navigateToConnectorsManagementApp={navigateToConnectorsManagementApp}
         />
       </EuiFlexItem>
       <EuiFlexItem grow={false}>
         <EuiHorizontalRule margin="none" />
+      </EuiFlexItem>
+      <EuiFlexItem grow={false}>
+        <DefaultExperienceCallout isConversationApp={!showLinkToConversationsApp} />
       </EuiFlexItem>
       {footer}
     </EuiFlexGroup>

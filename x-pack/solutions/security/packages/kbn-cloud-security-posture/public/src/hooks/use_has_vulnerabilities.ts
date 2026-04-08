@@ -5,17 +5,12 @@
  * 2.0.
  */
 
-import { buildGenericEntityFlyoutPreviewQuery } from '@kbn/cloud-security-posture-common';
+import type { UseCspOptions } from '@kbn/cloud-security-posture-common/types/findings';
 import { useVulnerabilitiesPreview } from './use_vulnerabilities_preview';
 import { hasVulnerabilitiesData } from '../utils/vulnerability_helpers';
 
-export const useHasVulnerabilities = (field: string, value: string) => {
-  const { data: vulnerabilitiesData } = useVulnerabilitiesPreview({
-    query: buildGenericEntityFlyoutPreviewQuery(field, value),
-    sort: [],
-    enabled: true,
-    pageSize: 1,
-  });
+export const useHasVulnerabilities = (options: UseCspOptions) => {
+  const { data: vulnerabilitiesData } = useVulnerabilitiesPreview(options);
 
   const {
     CRITICAL = 0,
@@ -35,9 +30,5 @@ export const useHasVulnerabilities = (field: string, value: string) => {
 
   const hasVulnerabilitiesFindings = hasVulnerabilitiesData(counts);
 
-  const has3PVulnerabilitiesFindings = vulnerabilitiesData?.data_stream?.some(
-    (item) => item !== 'cloud_security_posture.vulnerabilities'
-  );
-
-  return { counts, hasVulnerabilitiesFindings, has3PVulnerabilitiesFindings };
+  return { counts, hasVulnerabilitiesFindings };
 };

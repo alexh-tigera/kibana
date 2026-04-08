@@ -21,14 +21,18 @@ export type {
   ActionResult,
   ActionTypeExecutorOptions,
   ActionType,
+  ClassicActionType,
   InMemoryConnector,
   ActionsApiRequestHandlerContext,
-  SSLSettings,
+  ConnectorLifecycleListener,
+  ConnectorLifecyclePostCreateParams,
+  ConnectorLifecyclePostDeleteParams,
 } from './types';
 
 export type {
   ConnectorWithExtraFindData as FindActionResult,
   Connector,
+  ConnectorType,
 } from './application/connector/types';
 
 export type { PluginSetupContract, PluginStartContract } from './plugin';

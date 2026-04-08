@@ -18,8 +18,18 @@ import type { ActionConnector, GenericValidationResult } from '../../../../types
 import { EditConnectorTabs } from '../../../../types';
 import { times } from 'lodash';
 import { useHistory, useParams } from 'react-router-dom';
+import { createMockActionConnector } from '@kbn/alerts-ui-shared/src/common/test_utils/connector.mock';
 
 jest.mock('../../../../common/lib/kibana');
+jest.mock('../../../..', () => ({
+  ...jest.requireActual('../../../..'),
+  useConnectorContext: jest.fn().mockReturnValue({
+    services: {
+      validateEmailAddresses: jest.fn(),
+      enabledEmailServices: ['*'],
+    },
+  }),
+}));
 jest.mock('../../../lib/action_connector_api', () => ({
   loadAllActions: jest.fn(),
   loadActionTypes: jest.fn(),
@@ -29,6 +39,19 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn().mockReturnValue({}),
   useLocation: jest.fn().mockReturnValue({ search: '' }),
   useHistory: jest.fn().mockReturnValue({ push: jest.fn(), createHref: jest.fn() }),
+}));
+jest.mock('@kbn/response-ops-oauth-hooks', () => ({
+  ...jest.requireActual('@kbn/response-ops-oauth-hooks'),
+  useConnectorOAuthConnect: jest.fn().mockReturnValue({
+    connect: jest.fn(),
+    cancelConnect: jest.fn(),
+    isConnecting: false,
+    isAwaitingCallback: false,
+  }),
+  useConnectorOAuthDisconnect: jest.fn().mockReturnValue({
+    disconnect: jest.fn(),
+    isDisconnecting: false,
+  }),
 }));
 
 const useKibanaMock = useKibana as jest.Mocked<typeof useKibana>;
@@ -101,71 +124,44 @@ describe('actions_connectors_list', () => {
 
   describe('component with items', () => {
     const mockedActions: ActionConnector[] = [
-      {
+      createMockActionConnector({
         id: '1',
         actionTypeId: 'test',
         name: 'Test Connector 1',
-        secrets: {},
-        isSystemAction: false,
-        isPreconfigured: false,
-        isDeprecated: false,
         referencedByCount: 1,
-        config: {},
-      },
-      {
+      }),
+      createMockActionConnector({
         id: '2',
         actionTypeId: 'test2',
         name: 'Test Connector 2',
-        secrets: {},
-        isSystemAction: false,
         referencedByCount: 1,
-        isPreconfigured: false,
-        isDeprecated: false,
-        config: {},
-      },
-      {
+      }),
+      createMockActionConnector({
         id: '3',
         actionTypeId: 'test2',
         name: 'Test Connector 3',
-        isSystemAction: false,
         isMissingSecrets: true,
         referencedByCount: 1,
         isPreconfigured: true,
-        isDeprecated: false,
-      },
-      {
+      }),
+      createMockActionConnector({
         id: '4',
         actionTypeId: 'nonexistent',
         name: 'Test Connector 4',
-        secrets: {},
-        isSystemAction: false,
         referencedByCount: 1,
-        isPreconfigured: false,
-        isDeprecated: false,
-        config: {},
-      },
-      {
+      }),
+      createMockActionConnector({
         id: '5',
         actionTypeId: 'test3',
         name: 'Test Connector 5',
-        secrets: {},
-        isSystemAction: false,
         referencedByCount: 1,
-        isPreconfigured: false,
-        isDeprecated: false,
-        config: {},
-      },
-      {
+      }),
+      createMockActionConnector({
         id: '6',
         actionTypeId: 'test4',
         name: 'Test Connector 6',
-        secrets: {},
-        isSystemAction: false,
         referencedByCount: 1,
-        isPreconfigured: false,
-        isDeprecated: false,
-        config: {},
-      },
+      }),
     ];
     let mockedEditItem: jest.Mock;
 
@@ -198,6 +194,7 @@ describe('actions_connectors_list', () => {
           actionTypeTitle: 'Test Action',
           defaultActionParams: {},
           defaultRecoveredActionParams: {},
+          source: 'stack',
         };
       });
       useKibanaMock().services.actionTypeRegistry = actionTypeRegistry;
@@ -262,6 +259,66 @@ describe('actions_connectors_list', () => {
       expect(deleteButtons[deleteButtons.length - 1]).not.toBeDisabled();
       const runButtons = await screen.findAllByTestId('runConnector');
       expect(runButtons[runButtons.length - 1]).toBeDisabled();
+    });
+
+    it('renders authentication column with Service account for shared authMode', async () => {
+      const actionsWithAuth: ActionConnector[] = [
+        createMockActionConnector({
+          id: '1',
+          actionTypeId: 'test',
+          name: 'Test Connector with shared auth',
+          referencedByCount: 1,
+          authMode: 'shared',
+        }),
+      ];
+
+      render(
+        <IntlProvider>
+          <ActionsConnectorsList
+            setAddFlyoutVisibility={() => {}}
+            loadActions={async () => {}}
+            editItem={mockedEditItem}
+            isLoadingActions={false}
+            actions={actionsWithAuth}
+            setActions={() => {}}
+          />
+        </IntlProvider>
+      );
+
+      expect(await screen.findByTestId('actionsTable')).toBeInTheDocument();
+      const authModeCells = await screen.findAllByTestId('connectorsTableCell-authMode');
+      expect(authModeCells).toHaveLength(1);
+      expect(authModeCells[0]).toHaveTextContent('Service account');
+    });
+
+    it('renders authentication column with Personal credentials for per-user authMode', async () => {
+      const actionsWithAuth: ActionConnector[] = [
+        createMockActionConnector({
+          id: '1',
+          actionTypeId: 'test',
+          name: 'Test Connector with per-user auth',
+          referencedByCount: 1,
+          authMode: 'per-user',
+        }),
+      ];
+
+      render(
+        <IntlProvider>
+          <ActionsConnectorsList
+            setAddFlyoutVisibility={() => {}}
+            loadActions={async () => {}}
+            editItem={mockedEditItem}
+            isLoadingActions={false}
+            actions={actionsWithAuth}
+            setActions={() => {}}
+          />
+        </IntlProvider>
+      );
+
+      expect(await screen.findByTestId('actionsTable')).toBeInTheDocument();
+      const authModeCells = await screen.findAllByTestId('connectorsTableCell-authMode');
+      expect(authModeCells).toHaveLength(1);
+      expect(authModeCells[0]).toHaveTextContent('Personal credentials');
     });
 
     it('renders fix button when connector secrets is missing', async () => {
@@ -586,6 +643,7 @@ describe('actions_connectors_list', () => {
           actionTypeTitle: 'Test Action',
           defaultActionParams: {},
           defaultRecoveredActionParams: {},
+          source: 'stack',
         };
       });
 
@@ -644,6 +702,63 @@ describe('actions_connectors_list', () => {
         .getByTestId('actionsTable')
         .querySelectorAll('[data-euiicon-type="warning"]');
       expect(warningIcons.length).toEqual(2);
+    });
+  });
+
+  describe('component with spec connectors', () => {
+    beforeEach(async () => {
+      loadActionTypes.mockResolvedValueOnce([
+        {
+          id: 'spec.connector',
+          name: 'Spec Connector',
+          enabled: true,
+          enabledInConfig: true,
+          enabledInLicense: true,
+          supportedFeatureIds: ['alerting'],
+          source: 'spec',
+        },
+      ]);
+      const [
+        {
+          application: { capabilities },
+        },
+      ] = await mocks.getStartServices();
+      useKibanaMock().services.application.capabilities = {
+        ...capabilities,
+        actions: { execute: true, save: true, delete: true },
+      };
+      useKibanaMock().services.actionTypeRegistry = actionTypeRegistry;
+    });
+
+    it('should disable the test play button', async () => {
+      const actions = [
+        {
+          id: '1',
+          actionTypeId: 'spec.connector',
+          name: 'Spec Connector 1',
+          referencedByCount: 1,
+          config: {},
+          source: 'stack',
+        },
+      ] as ActionConnector[];
+
+      render(
+        <IntlProvider>
+          <ActionsConnectorsList
+            setAddFlyoutVisibility={() => {}}
+            loadActions={async () => {}}
+            editItem={() => {}}
+            isLoadingActions={false}
+            actions={actions}
+            setActions={() => {}}
+          />
+        </IntlProvider>
+      );
+
+      expect(await screen.findByTestId('actionsTable')).toBeInTheDocument();
+      expect(await screen.findAllByTestId('connectors-row')).toHaveLength(1);
+      const runButtons = await screen.findAllByTestId('runConnector');
+      expect(runButtons[0]).toBeDisabled();
     });
   });
 });

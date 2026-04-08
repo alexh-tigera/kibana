@@ -5,45 +5,44 @@
  * 2.0.
  */
 
-import { useMemo } from 'react';
 import { FILTER_CLOSED } from '@kbn/securitysolution-data-table/common/types';
+import type { ESBoolQuery } from '../../../common/typed_json';
 import { useSignalIndex } from '../../detections/containers/detection_engine/alerts/use_signal_index';
 import { useAlertsByStatus } from '../../overview/components/detection_response/alerts_by_status/use_alerts_by_status';
 import type { ParsedAlertsData } from '../../overview/components/detection_response/alerts_by_status/types';
-import type { CloudPostureEntityIdentifier } from '../components/entity_insight';
 
 export const useNonClosedAlerts = ({
-  field,
-  value,
+  identityFields,
   to,
   from,
   queryId,
-  includeRelatedIntegrationPackage = false,
+  additionalFilters,
+  skip = false,
+  entityType,
 }: {
-  field: CloudPostureEntityIdentifier;
-  value: string;
+  identityFields: Record<string, string>;
   to: string;
   from: string;
   queryId: string;
-  includeRelatedIntegrationPackage?: boolean;
+  additionalFilters?: ESBoolQuery[];
+  skip?: boolean;
+  /**
+   * When Entity Store v2 is on and `identityFields` includes `entity.id`, required so alerts are
+   * filtered using ECS terms resolved from the store (e.g. `user.name`), not a raw `entity.id` term.
+   */
+  entityType?: string;
 }) => {
   const { signalIndexName } = useSignalIndex();
 
-  const entityFilter = useMemo(() => ({ field, value }), [field, value]);
-
-  const { items: alertsData, alertHas3rdPartyData } = useAlertsByStatus({
-    entityFilter,
+  const { items: alertsData } = useAlertsByStatus({
+    identityFields,
+    entityType,
     signalIndexName,
     queryId,
     to,
     from,
-    // TODO: Asset Inventory - remove temp runtime mappings
-    runtimeMappings: {
-      'related.entity': {
-        type: 'keyword',
-      },
-    },
-    includeRelatedIntegrationPackage: true,
+    additionalFilters,
+    skip,
   });
 
   const filteredAlertsData: ParsedAlertsData = alertsData
@@ -53,5 +52,5 @@ export const useNonClosedAlerts = ({
   const hasNonClosedAlerts =
     (filteredAlertsData?.acknowledged?.total || 0) + (filteredAlertsData?.open?.total || 0) > 0;
 
-  return { hasNonClosedAlerts, filteredAlertsData, alertHas3rdPartyData };
+  return { hasNonClosedAlerts, filteredAlertsData };
 };

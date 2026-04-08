@@ -8,7 +8,7 @@
 import React from 'react';
 import { __IntlProvider as IntlProvider } from '@kbn/i18n-react';
 import { render } from '@testing-library/react';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@kbn/react-query';
 import type { EuiThemeComputed } from '@elastic/eui';
 import { EuiProvider } from '@elastic/eui';
 import { ThemeProvider } from '@emotion/react';
@@ -20,6 +20,10 @@ import { useKibana } from '../../common/lib/kibana';
 import { AGENT_STATUS_ERROR, EMPTY_PROMPT, NOT_AVAILABLE, PERMISSION_DENIED } from './translations';
 
 jest.mock('../../common/lib/kibana');
+jest.mock('../../common/experimental_features_context', () => ({
+  ...jest.requireActual('../../common/experimental_features_context'),
+  useIsExperimentalFeatureEnabled: jest.fn().mockReturnValue(false),
+}));
 
 const useKibanaMock = useKibana as jest.MockedFunction<typeof useKibana>;
 

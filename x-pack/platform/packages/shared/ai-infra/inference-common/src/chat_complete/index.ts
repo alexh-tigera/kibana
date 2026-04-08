@@ -49,6 +49,7 @@ export {
   type ToolChoice,
   type CustomToolChoice,
   type ToolCallArguments,
+  type ToolCallbackResult,
 } from './tools';
 
 export type {
@@ -58,9 +59,15 @@ export type {
   ToolCallbacksOfToolOptions,
   ToolNamesOf,
   ToolsOfChoice,
+  ToolCallsOfToolOptions,
 } from './tools_of';
 
-export type { ChatCompleteMetadata, ConnectorTelemetryMetadata } from './metadata';
+export type {
+  ChatCompleteMetadata,
+  ConnectorTelemetryMetadata,
+  ChatCompleteAnonymizationMetadata,
+  ChatCompleteAnonymizationTarget,
+} from './metadata';
 export {
   isChatCompletionChunkEvent,
   isChatCompletionEvent,
@@ -75,13 +82,14 @@ export {
   type ChatCompletionToolValidationError,
   type ChatCompletionTokenLimitReachedError,
   isToolValidationError,
-  isTokenLimitReachedError,
+  isOutputTokenLimitReachedError,
   isToolNotFoundError,
 } from './errors';
 
 export type {
   AnonymizationRule,
   AnonymizationEntity,
+  AnonymizationEntityClass,
   Anonymization,
   Deanonymization,
   AnonymizationOutput,
@@ -90,4 +98,15 @@ export type {
   RegexAnonymizationRule,
   NamedEntityRecognitionRule,
   AnonymizationSettings,
+  AnonymizationResponseMetadata,
+  DeanonymizedMessageData,
 } from './anonymization';
+
+export type {
+  InferenceCallbacks,
+  InferenceCallbackErrorEvent,
+  InferenceCallbackCompleteEvent,
+  InferenceCompleteCallbackHandler,
+  InferenceErrorCallbackHandler,
+  InferenceEventEmitter,
+} from './callbacks';

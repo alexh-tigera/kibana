@@ -22,7 +22,7 @@ import type { ObservabilityOnboardingLocatorParams } from '@kbn/deeplinks-observ
 import { OBSERVABILITY_ONBOARDING_LOCATOR } from '@kbn/deeplinks-observability';
 import { dynamic } from '@kbn/shared-ux-utility';
 import { KibanaErrorBoundary } from '@kbn/shared-ux-error-boundary';
-import { HelpCenterContent } from '../../components/help_center_content';
+import { InspectorHeaderLink } from '../../components/inspector_header_link';
 import { useReadOnlyBadge } from '../../hooks/use_readonly_badge';
 import { MetricsSettingsPage } from './settings';
 import { MetricsAlertDropdown } from '../../alerting/common/components/metrics_alert_dropdown';
@@ -45,9 +45,8 @@ import { useKibanaEnvironmentContext } from '../../hooks/use_kibana';
 const ADD_DATA_LABEL = i18n.translate('xpack.infra.metricsHeaderAddDataButtonLabel', {
   defaultMessage: 'Add data',
 });
-const HOSTS_FEEDBACK_LINK =
-  'https://docs.google.com/forms/d/e/1FAIpQLScRHG8TIVb1Oq8ZhD4aks3P1TmgiM58TY123QpDCcBz83YC6w/viewform';
-const METRICS_EXPLORER_FEEDBACK_URL = 'https://ela.st/survey-infra-metricsexplorer?usp=pp_url';
+const HOSTS_FEEDBACK_LINK = 'https://ela.st/host-feedback';
+const METRICS_EXPLORER_FEEDBACK_URL = 'https://ela.st/survey-infra-metricsexplorer';
 
 const MetricsExplorerPage = dynamic(() =>
   import('./metrics_explorer').then((mod) => ({ default: mod.MetricsExplorerPage }))
@@ -84,12 +83,6 @@ export const InfrastructurePage = () => {
         <AlertPrefillProvider>
           <ReloadRequestTimeProvider>
             <InfraMLCapabilitiesProvider>
-              <HelpCenterContent
-                feedbackLink="https://discuss.elastic.co/c/metrics"
-                appName={i18n.translate('xpack.infra.header.infrastructureHelpAppName', {
-                  defaultMessage: 'Metrics',
-                })}
-              />
               {setHeaderActionMenu && theme$ && (
                 <HeaderMenuPortal setHeaderActionMenu={setHeaderActionMenu} theme$={theme$}>
                   <EuiFlexGroup responsive={false} gutterSize="s">
@@ -111,6 +104,7 @@ export const InfrastructurePage = () => {
                         <EuiHeaderLink color={'primary'} {...settingsLinkProps}>
                           {settingsTabTitle}
                         </EuiHeaderLink>
+                        <InspectorHeaderLink />
                         <Routes>
                           <HeaderLinkAddDataRoute
                             path="/hosts"
@@ -240,6 +234,7 @@ const HeaderLinkFeedbackButtonRoute = ({
           kibanaVersion={kibanaVersion}
           isCloudEnv={isCloudEnv}
           isServerlessEnv={isServerlessEnv}
+          sanitizedPath={path}
         />
       )}
     />

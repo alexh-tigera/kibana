@@ -4,14 +4,24 @@
  * 2.0; you may not use this file except in compliance with the Elastic License
  * 2.0.
  */
+
+import { LENS_DATASOURCE_ID } from '@kbn/lens-common';
+
 import type { VisualizeFieldContext } from '@kbn/ui-actions-plugin/public';
+import type { ChartType } from '@kbn/visualization-utils';
 import { getDatasourceId } from '@kbn/visualization-utils';
 import { getIndexPatternFromESQLQuery } from '@kbn/esql-utils';
 import type { AggregateQuery } from '@kbn/es-query';
 import { isEqual } from 'lodash';
-import type { VisualizeEditorContext, Suggestion, IndexPatternRef } from '../types';
-import type { TypedLensByValueInput, TypedLensSerializedState } from '../react_embeddable/types';
-import type { TextBasedPrivateState } from '../datasources/form_based/esql_layer/types';
+import type {
+  VisualizeEditorContext,
+  VisualizationMap,
+  Suggestion,
+  IndexPatternRef,
+  TypedLensByValueInput,
+  TypedLensSerializedState,
+  TextBasedPrivateState,
+} from '@kbn/lens-common';
 
 const datasourceHasIndexPatternRefs = (
   unknownDatasource: unknown
@@ -36,7 +46,7 @@ export const injectESQLQueryIntoLensLayers = (
   const datasourceId = getDatasourceId(attributes.state.datasourceStates);
 
   // if the datasource is formBased, we should not fix the query
-  if (!datasourceId || datasourceId === 'formBased') {
+  if (!datasourceId || datasourceId === LENS_DATASOURCE_ID.FORM_BASED) {
     return attributes;
   }
 
@@ -55,7 +65,7 @@ export const injectESQLQueryIntoLensLayers = (
 
   const datasourceState = structuredClone(attributes.state.datasourceStates[datasourceId]);
 
-  // Update each layer with the new query and index pattern if needed
+  // Update each layer with the new query, index pattern, and timeField
   if (datasourceState?.layers) {
     Object.values(datasourceState.layers).forEach((layer) => {
       if (!isEqual(layer.query, query)) {
@@ -64,8 +74,15 @@ export const injectESQLQueryIntoLensLayers = (
         if (index) {
           layer.index = index;
         }
+        if (indexPatternRef) {
+          layer.timeField = indexPatternRef.timeField;
+        }
       }
     });
+  }
+
+  if (indexPatternRef && datasourceHasIndexPatternRefs(datasourceState)) {
+    datasourceState.indexPatternRefs = [indexPatternRef];
   }
   return {
     ...attributes,
@@ -101,11 +118,11 @@ export function mergeSuggestionWithVisContext({
     return suggestion;
   }
 
-  // it should be one of 'formBased'/'textBased' and have value
+  // it should be one of LENS_DATASOURCE_ID.FORM_BASED/LENS_DATASOURCE_ID.TEXT_BASED and have value
   const datasourceId = getDatasourceId(visAttributes.state.datasourceStates);
 
   // if the datasource is formBased, we should not merge
-  if (!datasourceId || datasourceId === 'formBased') {
+  if (!datasourceId || datasourceId === LENS_DATASOURCE_ID.FORM_BASED) {
     return suggestion;
   }
 
@@ -152,3 +169,63 @@ export function mergeSuggestionWithVisContext({
     return suggestion;
   }
 }
+
+const findCompatibleSuggestion = (suggestionCandidates: Suggestion[], targetChartType: ChartType) =>
+  suggestionCandidates.find(
+    (s) => s.title.includes(targetChartType) || s.visualizationId.includes(targetChartType)
+  );
+
+export const createSuggestionWithAttributes = (
+  suggestion: Suggestion,
+  preferredVisAttributes: TypedLensByValueInput['attributes'] | undefined,
+  context: VisualizeFieldContext | VisualizeEditorContext
+) =>
+  preferredVisAttributes
+    ? mergeSuggestionWithVisContext({
+        suggestion,
+        visAttributes: preferredVisAttributes,
+        context,
+      })
+    : suggestion;
+
+/**
+ * Selects the best suggestion for a target chart type, applying sub-type switching if needed
+ * (e.g., bar → line within XY, pie → donut).
+ */
+export const selectAndApplyChartSuggestion = ({
+  suggestionsList,
+  targetChartType,
+  chartType,
+  visualizationMap,
+  preferredVisAttributes,
+  context,
+}: {
+  suggestionsList: Suggestion[];
+  targetChartType: ChartType;
+  chartType: string | undefined;
+  visualizationMap: VisualizationMap;
+  preferredVisAttributes: TypedLensByValueInput['attributes'] | undefined;
+  context: VisualizeFieldContext | VisualizeEditorContext;
+}): Suggestion => {
+  const compatibleSuggestion = findCompatibleSuggestion(suggestionsList, targetChartType);
+  const selectedSuggestion = compatibleSuggestion ?? suggestionsList[0];
+
+  let finalSuggestion = selectedSuggestion;
+  if (chartType) {
+    const vis = visualizationMap[selectedSuggestion.visualizationId];
+    if (vis?.isSubtypeSupported?.(chartType) && vis?.switchVisualizationType) {
+      const currentSubType = vis.getVisualizationTypeId?.(selectedSuggestion.visualizationState);
+      if (currentSubType !== chartType) {
+        finalSuggestion = {
+          ...selectedSuggestion,
+          visualizationState: vis.switchVisualizationType(
+            chartType,
+            selectedSuggestion.visualizationState
+          ),
+        };
+      }
+    }
+  }
+
+  return createSuggestionWithAttributes(finalSuggestion, preferredVisAttributes, context);
+};

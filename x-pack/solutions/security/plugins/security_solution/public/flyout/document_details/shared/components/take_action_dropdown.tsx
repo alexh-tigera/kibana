@@ -9,12 +9,12 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import { EuiButton, EuiContextMenu, EuiPopover } from '@elastic/eui';
 import type { ExceptionListTypeEnum } from '@kbn/securitysolution-io-ts-list-types';
 import type { EcsSecurityExtension as Ecs } from '@kbn/securitysolution-ecs';
-import { TableId } from '@kbn/securitysolution-data-table';
 import type { TimelineEventsDetailsItem } from '@kbn/timelines-plugin/common';
 import { i18n } from '@kbn/i18n';
+import { getOr } from 'lodash/fp';
+import { useRunAlertWorkflowPanel } from '../../../../detections/components/alerts_table/timeline_actions/use_run_alert_workflow_panel';
 import { FLYOUT_FOOTER_DROPDOWN_BUTTON_TEST_ID } from './test_ids';
 import { getAlertDetailsFieldValue } from '../../../../common/lib/endpoint/utils/get_event_details_field_values';
-import { isActiveTimeline } from '../../../../helpers';
 import { useAlertExceptionActions } from '../../../../detections/components/alerts_table/timeline_actions/use_add_exception_actions';
 import { useAlertsActions } from '../../../../detections/components/alerts_table/timeline_actions/use_alerts_actions';
 import { useInvestigateInTimeline } from '../../../../detections/components/alerts_table/timeline_actions/use_investigate_in_timeline';
@@ -65,7 +65,7 @@ export interface TakeActionDropdownProps {
   /**
    * The actual raw document object
    */
-  dataAsNestedObject?: Ecs;
+  dataAsNestedObject: Ecs;
   /**
    * Callback called when the popover closes
    */
@@ -165,6 +165,13 @@ export const TakeActionDropdown = memo(
       [dataAsNestedObject]
     );
 
+    const isAlertSourceEndpoint = useMemo(() => {
+      const eventModules = getOr([], 'kibana.alert.original_event.module', dataAsNestedObject);
+      const kinds = getOr([], 'kibana.alert.original_event.kind', dataAsNestedObject);
+
+      return eventModules.includes('endpoint') && kinds.includes('alert');
+    }, [dataAsNestedObject]);
+
     // host isolation interaction
     const handleOnAddIsolationStatusClick = useCallback(
       (action: 'isolateHost' | 'unisolateHost') => {
@@ -189,7 +196,7 @@ export const TakeActionDropdown = memo(
       [onAddExceptionTypeClick]
     );
     const { exceptionActionItems } = useAlertExceptionActions({
-      isEndpointAlert: Boolean(isAgentEndpoint),
+      isEndpointAlert: isAlertSourceEndpoint,
       onAddExceptionTypeClick: handleOnAddExceptionTypeClick,
     });
 
@@ -210,7 +217,7 @@ export const TakeActionDropdown = memo(
     );
 
     // alert status interaction
-    const { actionItems: statusActionItems } = useAlertsActions({
+    const { actionItems: statusActionItems, panels: statusActionPanels } = useAlertsActions({
       alertStatus: alertSummaryData.alertStatus,
       closePopover: closePopoverAndFlyout,
       eventId: alertSummaryData.eventId,
@@ -297,18 +304,12 @@ export const TakeActionDropdown = memo(
       ]
     );
 
-    // cases interaction
-    const isInDetections = [TableId.alertsOnAlertsPage, TableId.alertsOnRuleDetailsPage].includes(
-      scopeId as TableId
-    );
     const { addToCaseActionItems } = useAddToCaseActions({
       ecsData: dataAsNestedObject,
       nonEcsData:
         dataFormattedForFieldBrowser?.map((d) => ({ field: d.field, value: d.values })) ?? [],
       onMenuItemClick,
       onSuccess: refetchFlyoutData,
-      isActiveTimelines: isActiveTimeline(scopeId),
-      isInDetections,
       refetch,
     });
 
@@ -318,11 +319,17 @@ export const TakeActionDropdown = memo(
       closePopoverHandler
     );
 
+    const { runWorkflowMenuItem, runAlertWorkflowPanel } = useRunAlertWorkflowPanel({
+      closePopover: closePopoverHandler,
+      ecsRowData: dataAsNestedObject,
+    });
+
     // items to render in the dropdown
     const items: AlertTableContextMenuItem[] = useMemo(
       () => [
         ...addToCaseActionItems,
         ...alertsActionItems,
+        ...runWorkflowMenuItem,
         ...hostIsolationActionItems,
         ...endpointResponseActionsConsoleItems,
         ...(osqueryAvailable ? [osqueryActionItem] : []),
@@ -331,6 +338,7 @@ export const TakeActionDropdown = memo(
       [
         addToCaseActionItems,
         alertsActionItems,
+        runWorkflowMenuItem,
         hostIsolationActionItems,
         endpointResponseActionsConsoleItems,
         osqueryAvailable,
@@ -346,7 +354,9 @@ export const TakeActionDropdown = memo(
         items,
       },
       ...alertTagsPanels,
+      ...runAlertWorkflowPanel,
       ...alertAssigneesPanels,
+      ...statusActionPanels,
     ];
 
     const takeActionButton = useMemo(
@@ -355,7 +365,7 @@ export const TakeActionDropdown = memo(
           data-test-subj={FLYOUT_FOOTER_DROPDOWN_BUTTON_TEST_ID}
           fill
           iconSide="right"
-          iconType="arrowDown"
+          iconType="chevronSingleDown"
           onClick={togglePopoverHandler}
         >
           {TAKE_ACTION}

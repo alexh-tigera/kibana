@@ -33,6 +33,11 @@ import voyageAIIcon from '../assets/images/voyageai.svg';
 import deepSeekIcon from '../assets/images/deepseek.svg';
 import ai21Icon from '../assets/images/ai21_labs_default.svg';
 import llamaIcon from '../assets/images/llama_stack_default.svg';
+import defaultIcon from '../assets/images/default_connector_icon.svg';
+import contextualAiIcon from '../assets/images/contextual_ai_icon.svg';
+import fireworksIcon from '../assets/images/fireworks.svg';
+import groqIcon from '../assets/images/grok.svg';
+import nvidiaIcon from '../assets/images/nvidia.svg';
 
 interface ServiceProviderProps {
   providerKey: ServiceProviderKeys;
@@ -88,6 +93,11 @@ export const SERVICE_PROVIDERS: Record<ServiceProviderKeys, ServiceProviderRecor
     name: 'Cohere',
     solutions: ['Search'],
   },
+  [ServiceProviderKeys.contextualai]: {
+    icon: contextualAiIcon,
+    name: 'Contextual AI',
+    solutions: ['Search'],
+  },
   [ServiceProviderKeys.elasticsearch]: {
     icon: elasticIcon,
     name: 'Elasticsearch',
@@ -95,8 +105,13 @@ export const SERVICE_PROVIDERS: Record<ServiceProviderKeys, ServiceProviderRecor
   },
   [ServiceProviderKeys.elastic]: {
     icon: elasticIcon,
-    name: 'Elastic',
+    name: 'Elastic Inference Service',
     solutions: ['Observability', 'Security', 'Search'],
+  },
+  [ServiceProviderKeys.fireworksai]: {
+    icon: fireworksIcon,
+    name: 'Fireworks AI',
+    solutions: ['Search'],
   },
   [ServiceProviderKeys.googleaistudio]: {
     icon: googleAIStudioIcon,
@@ -116,6 +131,11 @@ export const SERVICE_PROVIDERS: Record<ServiceProviderKeys, ServiceProviderRecor
   [ServiceProviderKeys.mistral]: {
     icon: mistralIcon,
     name: 'Mistral',
+    solutions: ['Search'],
+  },
+  [ServiceProviderKeys.nvidia]: {
+    icon: nvidiaIcon,
+    name: 'NVIDIA',
     solutions: ['Search'],
   },
   [ServiceProviderKeys.openai]: {
@@ -158,21 +178,27 @@ export const SERVICE_PROVIDERS: Record<ServiceProviderKeys, ServiceProviderRecor
     name: 'Llama Stack',
     solutions: ['Search'],
   },
+  [ServiceProviderKeys.groq]: {
+    icon: groqIcon,
+    name: 'Groq',
+    solutions: ['Observability', 'Security', 'Search'],
+  },
 };
 
 export const ServiceProviderIcon: React.FC<ServiceProviderProps> = ({ providerKey }) => {
   const provider = SERVICE_PROVIDERS[providerKey];
+  const iconType = provider ? provider.icon : defaultIcon;
 
-  return provider ? (
+  return (
     <EuiAvatar
       name={providerKey}
       data-test-subj={`icon-service-provider-${providerKey}`}
-      iconType={provider.icon}
-      color="#fff"
+      iconType={iconType}
+      color="plain"
       size="s"
       type="space"
     />
-  ) : null;
+  );
 };
 
 export const ServiceProviderName: React.FC<ServiceProviderProps> = ({
@@ -180,10 +206,11 @@ export const ServiceProviderName: React.FC<ServiceProviderProps> = ({
   searchValue,
 }) => {
   const provider = SERVICE_PROVIDERS[providerKey];
+  const providerName = provider ? provider.name : providerKey;
 
-  return provider ? (
-    <EuiHighlight search={searchValue ?? ''}>{provider.name}</EuiHighlight>
-  ) : (
-    <span>{providerKey}</span>
+  return (
+    <EuiHighlight data-test-subj={`${providerName}-provider`} search={searchValue ?? ''}>
+      {providerName}
+    </EuiHighlight>
   );
 };

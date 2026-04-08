@@ -35,6 +35,12 @@
       "end": {
         "type": "date"
       },
+      "initiator": {
+        "type": "keyword"
+      },
+      "initiatorId": {
+        "type": "keyword"
+      },
       "rule": {
         "properties": {
           "alertTypeId": {
@@ -64,6 +70,9 @@
           },
           "group": {
             "type": "keyword"
+          },
+          "params": {
+            "type": "flattened"
           }
         },
         "type": "nested"
@@ -281,6 +290,217 @@
       "throttle": {
         "type": "keyword"
       },
+      "uiamApiKey": {
+        "type": "binary"
+      },
+      "updatedAt": {
+        "type": "date"
+      },
+      "updatedBy": {
+        "type": "keyword"
+      }
+    }
+  },
+  "alerting_api_key_pending_invalidation": {
+    "dynamic": false,
+    "properties": {
+      "apiKeyId": {
+        "type": "keyword"
+      },
+      "createdAt": {
+        "type": "date"
+      },
+      "uiamApiKey": {
+        "type": "binary"
+      }
+    }
+  },
+  "alerting_notification_policy": {
+    "dynamic": false,
+    "properties": {
+      "auth": {
+        "properties": {
+          "apiKey": {
+            "type": "binary"
+          },
+          "createdByUser": {
+            "type": "boolean"
+          },
+          "owner": {
+            "type": "keyword"
+          }
+        },
+        "type": "object"
+      },
+      "createdAt": {
+        "type": "date"
+      },
+      "createdBy": {
+        "type": "keyword"
+      },
+      "createdByUsername": {
+        "type": "keyword"
+      },
+      "description": {
+        "fields": {
+          "keyword": {
+            "ignore_above": 256,
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "destinations": {
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "type": {
+            "type": "keyword"
+          }
+        },
+        "type": "object"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "groupBy": {
+        "type": "keyword"
+      },
+      "groupingMode": {
+        "type": "keyword"
+      },
+      "tags": {
+        "type": "keyword"
+      },
+      "name": {
+        "fields": {
+          "keyword": {
+            "ignore_above": 256,
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "snoozedUntil": {
+        "type": "date"
+      },
+      "throttle": {
+        "properties": {
+          "strategy": {
+            "type": "keyword"
+          }
+        },
+        "type": "object"
+      },
+      "updatedAt": {
+        "type": "date"
+      },
+      "updatedBy": {
+        "type": "keyword"
+      },
+      "updatedByUsername": {
+        "type": "keyword"
+      }
+    }
+  },
+  "alerting_rule": {
+    "dynamic": false,
+    "properties": {
+      "createdAt": {
+        "type": "date"
+      },
+      "createdBy": {
+        "type": "keyword"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "evaluation": {
+        "properties": {
+          "query": {
+            "properties": {
+              "base": {
+                "type": "text"
+              },
+              "condition": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      },
+      "grouping": {
+        "properties": {
+          "fields": {
+            "type": "keyword"
+          }
+        }
+      },
+      "kind": {
+        "type": "keyword"
+      },
+      "metadata": {
+        "properties": {
+          "description": {
+            "type": "text"
+          },
+          "name": {
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            },
+            "type": "text"
+          },
+          "owner": {
+            "type": "keyword"
+          },
+          "tags": {
+            "type": "keyword"
+          }
+        }
+      },
+      "no_data": {
+        "properties": {
+          "behavior": {
+            "type": "keyword"
+          },
+          "timeframe": {
+            "type": "keyword"
+          }
+        }
+      },
+      "recovery_policy": {
+        "properties": {
+          "query": {
+            "properties": {
+              "base": {
+                "type": "text"
+              },
+              "condition": {
+                "type": "text"
+              }
+            }
+          },
+          "type": {
+            "type": "keyword"
+          }
+        }
+      },
+      "schedule": {
+        "properties": {
+          "every": {
+            "type": "keyword"
+          },
+          "lookback": {
+            "type": "keyword"
+          }
+        }
+      },
+      "time_field": {
+        "type": "keyword"
+      },
       "updatedAt": {
         "type": "date"
       },
@@ -292,6 +512,9 @@
   "alerting_rule_template": {
     "dynamic": false,
     "properties": {
+      "description": {
+        "type": "text"
+      },
       "name": {
         "fields": {
           "keyword": {
@@ -309,7 +532,25 @@
       }
     }
   },
+  "anonymization-salt": {
+    "dynamic": false,
+    "properties": {}
+  },
   "api_key_pending_invalidation": {
+    "properties": {
+      "apiKeyId": {
+        "type": "keyword"
+      },
+      "createdAt": {
+        "type": "date"
+      },
+      "uiamApiKey": {
+        "type": "binary"
+      }
+    }
+  },
+  "api_key_to_invalidate": {
+    "dynamic": false,
     "properties": {
       "apiKeyId": {
         "type": "keyword"
@@ -585,6 +826,9 @@
       "duration": {
         "type": "unsigned_long"
       },
+      "extended_fields": {
+        "type": "flattened"
+      },
       "external_service": {
         "properties": {
           "connector_name": {
@@ -624,12 +868,18 @@
         "fields": {
           "keyword": {
             "type": "keyword"
+          },
+          "text": {
+            "type": "text"
           }
         },
         "type": "unsigned_long"
       },
       "observables": {
         "properties": {
+          "description": {
+            "type": "keyword"
+          },
           "typeKey": {
             "type": "keyword"
           },
@@ -644,6 +894,9 @@
       },
       "settings": {
         "properties": {
+          "extractObservables": {
+            "type": "boolean"
+          },
           "syncAlerts": {
             "type": "boolean"
           }
@@ -658,6 +911,17 @@
       "tags": {
         "type": "keyword"
       },
+      "template": {
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "version": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "title": {
         "fields": {
           "keyword": {
@@ -670,6 +934,12 @@
         "type": "integer"
       },
       "total_comments": {
+        "type": "integer"
+      },
+      "total_events": {
+        "type": "integer"
+      },
+      "total_observables": {
         "type": "integer"
       },
       "updated_at": {
@@ -718,6 +988,9 @@
             "type": "keyword"
           }
         }
+      },
+      "eventId": {
+        "type": "keyword"
       },
       "externalReferenceAttachmentTypeId": {
         "type": "keyword"
@@ -859,6 +1132,23 @@
   "cloud": {
     "dynamic": false,
     "properties": {}
+  },
+  "cloud-connect-api-key": {
+    "dynamic": false,
+    "properties": {
+      "apiKey": {
+        "type": "binary"
+      },
+      "clusterId": {
+        "type": "keyword"
+      },
+      "createdAt": {
+        "type": "date"
+      },
+      "updatedAt": {
+        "type": "date"
+      }
+    }
   },
   "cloud-security-posture-settings": {
     "dynamic": false,
@@ -1052,6 +1342,43 @@
       }
     }
   },
+  "data_stream-config": {
+    "dynamic": false,
+    "properties": {
+      "created_by": {
+        "type": "keyword"
+      },
+      "data_stream_id": {
+        "type": "keyword"
+      },
+      "integration_id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text"
+      },
+      "job_info": {
+        "properties": {
+          "job_id": {
+            "type": "keyword"
+          },
+          "job_type": {
+            "type": "keyword"
+          },
+          "status": {
+            "type": "keyword"
+          }
+        },
+        "type": "nested"
+      },
+      "metadata": {
+        "properties": {}
+      },
+      "result": {
+        "properties": {}
+      }
+    }
+  },
   "dynamic-config-overrides": {
     "dynamic": false,
     "properties": {}
@@ -1101,12 +1428,39 @@
       "integrationName": {
         "type": "keyword"
       },
+      "integrations": {
+        "dynamic": false,
+        "properties": {
+          "syncData": {
+            "dynamic": false,
+            "properties": {
+              "lastFullSync": {
+                "type": "date"
+              },
+              "lastUpdateProcessed": {
+                "type": "date"
+              }
+            },
+            "type": "object"
+          },
+          "syncMarkerIndex": {
+            "type": "keyword"
+          }
+        },
+        "type": "object"
+      },
       "managed": {
         "type": "boolean"
+      },
+      "managedVersion": {
+        "type": "integer"
       },
       "matchers": {
         "dynamic": false,
         "type": "object"
+      },
+      "matchersModifiedByUser": {
+        "type": "boolean"
       },
       "name": {
         "type": "keyword"
@@ -1165,6 +1519,80 @@
       }
     }
   },
+  "entity-engine-descriptor-v2": {
+    "dynamic": false,
+    "properties": {
+      "error": {
+        "properties": {
+          "action": {
+            "type": "keyword"
+          },
+          "message": {
+            "type": "text"
+          }
+        }
+      },
+      "logExtractionState": {
+        "properties": {
+          "additionalIndexPattern": {
+            "type": "keyword"
+          },
+          "additionalIndexPatterns": {
+            "type": "keyword"
+          },
+          "delay": {
+            "type": "keyword"
+          },
+          "docsLimit": {
+            "type": "integer"
+          },
+          "fieldHistoryLength": {
+            "type": "integer"
+          },
+          "filter": {
+            "type": "keyword"
+          },
+          "frequency": {
+            "type": "keyword"
+          },
+          "lastExecutionTimestamp": {
+            "type": "date"
+          },
+          "lookbackPeriod": {
+            "type": "keyword"
+          },
+          "paginationId": {
+            "type": "keyword"
+          },
+          "paginationTimestamp": {
+            "type": "date"
+          },
+          "timeout": {
+            "type": "keyword"
+          }
+        }
+      },
+      "status": {
+        "type": "keyword"
+      },
+      "type": {
+        "type": "keyword"
+      },
+      "versionState": {
+        "properties": {
+          "isMigratedFromV1": {
+            "type": "boolean"
+          },
+          "state": {
+            "type": "keyword"
+          },
+          "version": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  },
   "entity-engine-status": {
     "dynamic": false,
     "properties": {
@@ -1189,12 +1617,27 @@
       }
     }
   },
+  "entity-store-global-state": {
+    "dynamic": false,
+    "properties": {}
+  },
   "epm-packages": {
     "dynamic": false,
     "properties": {
       "additional_spaces_installed_kibana": {
         "index": false,
         "type": "flattened"
+      },
+      "dependencies": {
+        "properties": {
+          "name": {
+            "type": "keyword"
+          },
+          "version": {
+            "type": "keyword"
+          }
+        },
+        "type": "nested"
       },
       "es_index_patterns": {
         "dynamic": false,
@@ -1235,6 +1678,9 @@
       "install_version": {
         "type": "keyword"
       },
+      "installed_as_dependency": {
+        "type": "boolean"
+      },
       "installed_es": {
         "properties": {
           "deferred": {
@@ -1262,6 +1708,10 @@
       "internal": {
         "type": "boolean"
       },
+      "is_dependency_of": {
+        "dynamic": false,
+        "properties": {}
+      },
       "keep_policies_up_to_date": {
         "index": false,
         "type": "boolean"
@@ -1278,6 +1728,10 @@
         "type": "keyword"
       },
       "package_assets": {
+        "dynamic": false,
+        "properties": {}
+      },
+      "pending_upgrade_review": {
         "dynamic": false,
         "properties": {}
       },
@@ -1740,6 +2194,9 @@
         "index": false,
         "type": "flattened"
       },
+      "has_agent_version_conditions": {
+        "type": "boolean"
+      },
       "inactivity_timeout": {
         "type": "integer"
       },
@@ -1758,8 +2215,14 @@
       "is_protected": {
         "type": "boolean"
       },
+      "is_verifier": {
+        "type": "boolean"
+      },
       "keep_monitoring_alive": {
         "type": "boolean"
+      },
+      "min_agent_version": {
+        "type": "keyword"
       },
       "monitoring_enabled": {
         "index": false,
@@ -1777,6 +2240,10 @@
       "overrides": {
         "index": false,
         "type": "flattened"
+      },
+      "package_agent_version_conditions": {
+        "dynamic": false,
+        "properties": {}
       },
       "required_versions": {
         "index": false,
@@ -1801,6 +2268,44 @@
         "type": "date"
       },
       "updated_by": {
+        "type": "keyword"
+      }
+    }
+  },
+  "fleet-cloud-connector": {
+    "dynamic": false,
+    "properties": {
+      "accountType": {
+        "type": "keyword"
+      },
+      "cloudProvider": {
+        "type": "keyword"
+      },
+      "created_at": {
+        "type": "date"
+      },
+      "name": {
+        "type": "keyword"
+      },
+      "namespace": {
+        "type": "keyword"
+      },
+      "packagePolicyCount": {
+        "type": "integer"
+      },
+      "updated_at": {
+        "type": "date"
+      },
+      "vars": {
+        "type": "flattened"
+      },
+      "verification_failed_at": {
+        "type": "date"
+      },
+      "verification_started_at": {
+        "type": "date"
+      },
+      "verification_status": {
         "type": "keyword"
       }
     }
@@ -1839,6 +2344,9 @@
     "properties": {
       "bump_agent_policy_revision": {
         "type": "boolean"
+      },
+      "cloud_connector_id": {
+        "type": "keyword"
       },
       "created_at": {
         "type": "date"
@@ -1895,6 +2403,9 @@
           }
         }
       },
+      "package_agent_version_condition": {
+        "type": "keyword"
+      },
       "policy_id": {
         "type": "keyword"
       },
@@ -1912,6 +2423,9 @@
         }
       },
       "supports_agentless": {
+        "type": "boolean"
+      },
+      "supports_cloud_connector": {
         "type": "boolean"
       },
       "updated_at": {
@@ -1993,6 +2507,26 @@
       }
     }
   },
+  "gap_auto_fill_scheduler": {
+    "dynamic": false,
+    "properties": {
+      "createdAt": {
+        "type": "date"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "keyword"
+      },
+      "ruleTypeConsumerPairs": {
+        "type": "keyword"
+      },
+      "updatedAt": {
+        "type": "date"
+      }
+    }
+  },
   "graph-workspace": {
     "properties": {
       "description": {
@@ -2044,6 +2578,10 @@
         "type": "keyword"
       }
     }
+  },
+  "inference-settings": {
+    "dynamic": false,
+    "properties": {}
   },
   "infra-custom-dashboards": {
     "dynamic": false,
@@ -2108,6 +2646,9 @@
         "index": false,
         "type": "flattened"
       },
+      "has_agent_version_conditions": {
+        "type": "boolean"
+      },
       "inactivity_timeout": {
         "type": "integer"
       },
@@ -2126,8 +2667,14 @@
       "is_protected": {
         "type": "boolean"
       },
+      "is_verifier": {
+        "type": "boolean"
+      },
       "keep_monitoring_alive": {
         "type": "boolean"
+      },
+      "min_agent_version": {
+        "type": "keyword"
       },
       "monitoring_diagnostics": {
         "index": false,
@@ -2157,6 +2704,10 @@
       "overrides": {
         "index": false,
         "type": "flattened"
+      },
+      "package_agent_version_conditions": {
+        "dynamic": false,
+        "properties": {}
       },
       "required_versions": {
         "index": false,
@@ -2431,6 +2982,9 @@
       "bump_agent_policy_revision": {
         "type": "boolean"
       },
+      "cloud_connector_id": {
+        "type": "keyword"
+      },
       "created_at": {
         "type": "date"
       },
@@ -2486,6 +3040,9 @@
           }
         }
       },
+      "package_agent_version_condition": {
+        "type": "keyword"
+      },
       "policy_id": {
         "type": "keyword"
       },
@@ -2505,6 +3062,9 @@
       "supports_agentless": {
         "type": "boolean"
       },
+      "supports_cloud_connector": {
+        "type": "boolean"
+      },
       "updated_at": {
         "type": "date"
       },
@@ -2518,6 +3078,9 @@
   },
   "ingest_manager_settings": {
     "properties": {
+      "action_secret_storage_requirements_met": {
+        "type": "boolean"
+      },
       "delete_unenrolled_agents": {
         "properties": {
           "enabled": {
@@ -2530,11 +3093,21 @@
           }
         }
       },
+      "download_source_auth_secret_storage_requirements_met": {
+        "type": "boolean"
+      },
       "fleet_server_hosts": {
         "type": "keyword"
       },
       "has_seen_add_data_notice": {
         "index": false,
+        "type": "boolean"
+      },
+      "ilm_migration_status": {
+        "dynamic": false,
+        "properties": {}
+      },
+      "integration_knowledge_enabled": {
         "type": "boolean"
       },
       "output_secret_storage_requirements_met": {
@@ -2546,12 +3119,38 @@
       "secret_storage_requirements_met": {
         "type": "boolean"
       },
+      "ssl_secret_storage_requirements_met": {
+        "type": "boolean"
+      },
       "use_space_awareness_migration_started_at": {
         "index": false,
         "type": "date"
       },
       "use_space_awareness_migration_status": {
         "index": false,
+        "type": "keyword"
+      }
+    }
+  },
+  "integration-config": {
+    "dynamic": false,
+    "properties": {
+      "created_by": {
+        "type": "keyword"
+      },
+      "created_by_profile_uid": {
+        "type": "keyword"
+      },
+      "data_stream_count": {
+        "type": "integer"
+      },
+      "integration_id": {
+        "type": "keyword"
+      },
+      "metadata": {
+        "properties": {}
+      },
+      "status": {
         "type": "keyword"
       }
     }
@@ -2660,6 +3259,9 @@
   "maintenance-window": {
     "dynamic": false,
     "properties": {
+      "createdBy": {
+        "type": "keyword"
+      },
       "enabled": {
         "type": "boolean"
       },
@@ -2706,6 +3308,21 @@
       },
       "version": {
         "type": "integer"
+      }
+    }
+  },
+  "markdown": {
+    "dynamic": false,
+    "properties": {
+      "content": {
+        "index": false,
+        "type": "text"
+      },
+      "description": {
+        "type": "text"
+      },
+      "title": {
+        "type": "text"
       }
     }
   },
@@ -2839,6 +3456,20 @@
       }
     }
   },
+  "oauth_state": {
+    "dynamic": false,
+    "properties": {
+      "connectorId": {
+        "type": "keyword"
+      },
+      "expiresAt": {
+        "type": "date"
+      },
+      "state": {
+        "type": "keyword"
+      }
+    }
+  },
   "observability-onboarding-state": {
     "properties": {
       "progress": {
@@ -2850,27 +3481,6 @@
         "type": "object"
       },
       "type": {
-        "type": "keyword"
-      }
-    }
-  },
-  "onechat_workflow": {
-    "dynamic": false,
-    "properties": {
-      "access_control": {
-        "properties": {
-          "public": {
-            "type": "boolean"
-          }
-        }
-      },
-      "categories": {
-        "type": "keyword"
-      },
-      "user_id": {
-        "type": "keyword"
-      },
-      "workflow_id": {
         "type": "keyword"
       }
     }
@@ -2891,6 +3501,9 @@
         "type": "date"
       },
       "created_by": {
+        "type": "keyword"
+      },
+      "created_by_profile_uid": {
         "type": "keyword"
       },
       "description": {
@@ -2937,6 +3550,9 @@
         "type": "date"
       },
       "updated_by": {
+        "type": "keyword"
+      },
+      "updated_by_profile_uid": {
         "type": "keyword"
       },
       "version": {
@@ -2998,6 +3614,9 @@
       "created_by": {
         "type": "text"
       },
+      "created_by_profile_uid": {
+        "type": "keyword"
+      },
       "description": {
         "type": "text"
       },
@@ -3025,6 +3644,9 @@
       },
       "updated_by": {
         "type": "text"
+      },
+      "updated_by_profile_uid": {
+        "type": "keyword"
       },
       "version": {
         "type": "keyword"
@@ -3071,6 +3693,9 @@
       },
       "product_version": {
         "type": "keyword"
+      },
+      "resource_type": {
+        "type": "keyword"
       }
     }
   },
@@ -3097,6 +3722,9 @@
       "dataViewId": {
         "type": "keyword"
       },
+      "enableResetToZero": {
+        "type": "boolean"
+      },
       "enabled": {
         "type": "boolean"
       },
@@ -3106,6 +3734,17 @@
       "filter": {
         "dynamic": false,
         "properties": {}
+      },
+      "filters": {
+        "properties": {
+          "entity_types": {
+            "type": "keyword"
+          },
+          "filter": {
+            "type": "text"
+          }
+        },
+        "type": "nested"
       },
       "identifierType": {
         "type": "keyword"
@@ -3151,6 +3790,9 @@
     "properties": {
       "createdBy": {
         "type": "keyword"
+      },
+      "title": {
+        "type": "text"
       }
     }
   },
@@ -3178,6 +3820,9 @@
         "type": "keyword"
       },
       "sessionId": {
+        "type": "keyword"
+      },
+      "status": {
         "type": "keyword"
       },
       "username": {
@@ -3232,7 +3877,28 @@
   "security-rule": {
     "dynamic": false,
     "properties": {
+      "deprecated": {
+        "type": "boolean"
+      },
+      "name": {
+        "fields": {
+          "keyword": {
+            "normalizer": "lowercase",
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "risk_score": {
+        "type": "float"
+      },
       "rule_id": {
+        "type": "keyword"
+      },
+      "severity": {
+        "type": "keyword"
+      },
+      "tags": {
         "type": "keyword"
       },
       "version": {
@@ -3692,6 +4358,23 @@
     "dynamic": false,
     "properties": {}
   },
+  "slo_template": {
+    "dynamic": false,
+    "properties": {
+      "name": {
+        "fields": {
+          "keyword": {
+            "normalizer": "lowercase",
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "tags": {
+        "type": "keyword"
+      }
+    }
+  },
   "space": {
     "dynamic": false,
     "properties": {
@@ -3713,6 +4396,10 @@
     }
   },
   "spaces-usage-stats": {
+    "dynamic": false,
+    "properties": {}
+  },
+  "stream-prompts": {
     "dynamic": false,
     "properties": {}
   },
@@ -4011,6 +4698,9 @@
       "attempts": {
         "type": "integer"
       },
+      "cost": {
+        "type": "keyword"
+      },
       "enabled": {
         "type": "boolean"
       },
@@ -4065,10 +4755,39 @@
     "dynamic": false,
     "properties": {}
   },
+  "trial-companion-nba-milestone": {
+    "properties": {
+      "dismiss": {
+        "type": "boolean"
+      },
+      "openTODOs": {
+        "type": "integer"
+      }
+    }
+  },
   "ui-metric": {
     "properties": {
       "count": {
         "type": "integer"
+      }
+    }
+  },
+  "uiam_api_keys_provisioning_status": {
+    "properties": {
+      "@timestamp": {
+        "type": "date"
+      },
+      "entityId": {
+        "type": "keyword"
+      },
+      "entityType": {
+        "type": "keyword"
+      },
+      "message": {
+        "type": "text"
+      },
+      "status": {
+        "type": "keyword"
       }
     }
   },
@@ -4156,6 +4875,20 @@
       }
     }
   },
+  "user_connector_token": {
+    "dynamic": false,
+    "properties": {
+      "connectorId": {
+        "type": "keyword"
+      },
+      "credentialType": {
+        "type": "keyword"
+      },
+      "profileUid": {
+        "type": "keyword"
+      }
+    }
+  },
   "visualization": {
     "dynamic": false,
     "properties": {
@@ -4173,108 +4906,40 @@
       }
     }
   },
-  "workchat_agent": {
+  "watchlist-config": {
     "dynamic": false,
     "properties": {
-      "access_control": {
-        "properties": {
-          "public": {
-            "type": "boolean"
-          }
-        }
-      },
-      "agent_id": {
-        "type": "keyword"
-      },
-      "agent_name": {
-        "type": "text"
-      },
-      "configuration": {
-        "dynamic": false,
-        "properties": {},
-        "type": "object"
-      },
       "description": {
         "type": "text"
       },
-      "last_updated": {
-        "type": "date"
-      },
-      "user_id": {
-        "type": "keyword"
-      },
-      "user_name": {
-        "type": "keyword"
-      }
-    }
-  },
-  "workchat_conversation": {
-    "dynamic": "strict",
-    "properties": {
-      "access_control": {
-        "properties": {
-          "public": {
-            "type": "boolean"
-          }
-        }
-      },
-      "agent_id": {
-        "type": "keyword"
-      },
-      "conversation_id": {
-        "type": "keyword"
-      },
-      "events": {
-        "dynamic": false,
-        "properties": {},
-        "type": "object"
-      },
-      "last_updated": {
-        "type": "date"
-      },
-      "title": {
-        "type": "text"
-      },
-      "user_id": {
-        "type": "keyword"
-      },
-      "user_name": {
-        "type": "keyword"
-      }
-    }
-  },
-  "workchat_integration": {
-    "dynamic": "strict",
-    "properties": {
-      "configuration": {
-        "dynamic": false,
-        "properties": {},
-        "type": "object"
-      },
-      "created_at": {
-        "type": "date"
-      },
-      "created_by": {
-        "type": "keyword"
-      },
-      "description": {
-        "type": "text"
-      },
-      "integration_id": {
-        "type": "keyword"
+      "managed": {
+        "type": "boolean"
       },
       "name": {
         "type": "keyword"
       },
-      "type": {
-        "type": "keyword"
-      },
-      "updated_at": {
-        "type": "date"
+      "riskModifier": {
+        "type": "float"
       }
     }
   },
-
+  "watchlist-entity-source": {
+    "dynamic": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      },
+      "managed": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "text"
+      },
+      "type": {
+        "type": "keyword"
+      }
+    }
+  },
   "workplace_search_telemetry": {
     "dynamic": false,
     "properties": {}

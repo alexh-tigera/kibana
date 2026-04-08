@@ -15,6 +15,7 @@ import {
   loggingSystemMock,
   savedObjectsRepositoryMock,
   uiSettingsServiceMock,
+  coreFeatureFlagsMock,
 } from '@kbn/core/server/mocks';
 import { taskManagerMock } from '@kbn/task-manager-plugin/server/mocks';
 import { ruleTypeRegistryMock } from '../../../../rule_type_registry.mock';
@@ -36,6 +37,7 @@ import { RULE_SAVED_OBJECT_TYPE } from '../../../../saved_objects';
 import { backfillClientMock } from '../../../../backfill_client/backfill_client.mock';
 import type { RawRule } from '../../../../types';
 import type { Rule } from '../../../../../common';
+import { createMockConnector } from '@kbn/actions-plugin/server/application/connector/mocks';
 
 jest.mock('../../../../invalidate_pending_api_keys/bulk_mark_api_keys_for_invalidation', () => ({
   bulkMarkApiKeysForInvalidation: jest.fn(),
@@ -100,6 +102,8 @@ const rulesClientParams: jest.Mocked<ConstructorOptions> = {
   alertsService: null,
   backfillClient: backfillClientMock.create(),
   uiSettings: uiSettingsServiceMock.createStartContract(),
+  featureFlags: coreFeatureFlagsMock.createStart(),
+  isServerless: false,
 };
 const paramsModifier = jest.fn();
 
@@ -179,7 +183,7 @@ describe('bulkEdit()', () => {
     actionsClient = (await rulesClientParams.getActionsClient()) as jest.Mocked<ActionsClient>;
     actionsClient.getBulk.mockReset();
     actionsClient.getBulk.mockResolvedValue([
-      {
+      createMockConnector({
         id: '1',
         actionTypeId: 'test',
         config: {
@@ -190,12 +194,8 @@ describe('bulkEdit()', () => {
           secure: null,
           service: null,
         },
-        isMissingSecrets: false,
         name: 'email connector',
-        isPreconfigured: false,
-        isSystemAction: false,
-        isDeprecated: false,
-      },
+      }),
     ]);
     actionsClient.listTypes.mockReset();
     actionsClient.listTypes.mockResolvedValue([]);
@@ -989,26 +989,19 @@ describe('bulkEdit()', () => {
       });
 
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: '1',
           actionTypeId: 'test-1',
           config: {},
-          isMissingSecrets: false,
           name: 'test default connector',
-          isPreconfigured: false,
-          isDeprecated: false,
-          isSystemAction: false,
-        },
-        {
+        }),
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
           config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       const result = await rulesClient.bulkEdit({
@@ -1159,26 +1152,19 @@ describe('bulkEdit()', () => {
       });
 
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: '1',
           actionTypeId: 'test-1',
           config: {},
-          isMissingSecrets: false,
           name: 'test default connector',
-          isPreconfigured: false,
-          isDeprecated: false,
-          isSystemAction: false,
-        },
-        {
+        }),
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
           config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       const result = await rulesClient.bulkEdit({
@@ -1321,26 +1307,19 @@ describe('bulkEdit()', () => {
       });
 
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: '1',
           actionTypeId: 'test-1',
           config: {},
-          isMissingSecrets: false,
           name: 'test default connector',
-          isPreconfigured: false,
-          isDeprecated: false,
-          isSystemAction: false,
-        },
-        {
+        }),
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
           config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       await rulesClient.bulkEdit({
@@ -1432,26 +1411,19 @@ describe('bulkEdit()', () => {
       });
 
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: '1',
           actionTypeId: 'test-1',
           config: {},
-          isMissingSecrets: false,
           name: 'test default connector',
-          isPreconfigured: false,
-          isDeprecated: false,
-          isSystemAction: false,
-        },
-        {
+        }),
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
           config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       const result = await rulesClient.bulkEdit({
@@ -1482,16 +1454,12 @@ describe('bulkEdit()', () => {
 
       actionsClient.isSystemAction.mockReturnValue(false);
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
-          config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       const result = await rulesClient.bulkEdit({
@@ -1533,16 +1501,12 @@ describe('bulkEdit()', () => {
 
       actionsClient.isSystemAction.mockReturnValue(true);
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
-          config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       const res = await rulesClient.bulkEdit({
@@ -1560,7 +1524,7 @@ describe('bulkEdit()', () => {
         errors: [
           {
             message:
-              'Error validating bulk edit rules operations - [group]: definition for this key is missing',
+              "Error validating bulk edit rules operations - [group]: Additional properties are not allowed ('group' was unexpected)",
             rule: {
               id: '1',
               name: 'my rule name',
@@ -1587,16 +1551,12 @@ describe('bulkEdit()', () => {
 
       actionsClient.isSystemAction.mockReturnValue(true);
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
-          config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       const res = await rulesClient.bulkEdit({
@@ -1614,7 +1574,7 @@ describe('bulkEdit()', () => {
         errors: [
           {
             message:
-              'Error validating bulk edit rules operations - [frequency]: definition for this key is missing',
+              "Error validating bulk edit rules operations - [frequency]: Additional properties are not allowed ('frequency' was unexpected)",
             rule: {
               id: '1',
               name: 'my rule name',
@@ -1639,16 +1599,12 @@ describe('bulkEdit()', () => {
 
       actionsClient.isSystemAction.mockReturnValue(true);
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
-          config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       const res = await rulesClient.bulkEdit({
@@ -1666,7 +1622,7 @@ describe('bulkEdit()', () => {
         errors: [
           {
             message:
-              'Error validating bulk edit rules operations - [alertsFilter]: definition for this key is missing',
+              "Error validating bulk edit rules operations - [alertsFilter]: Additional properties are not allowed ('alertsFilter' was unexpected)",
             rule: {
               id: '1',
               name: 'my rule name',
@@ -1688,16 +1644,12 @@ describe('bulkEdit()', () => {
 
       actionsClient.isSystemAction.mockReturnValue(true);
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
-          config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       const res = await rulesClient.bulkEdit({
@@ -1714,7 +1666,7 @@ describe('bulkEdit()', () => {
       expect(res).toEqual({
         errors: [
           {
-            message: 'Cannot use the same system action twice',
+            message: 'Cannot use action system_action-id more than once for this rule',
             rule: {
               id: '1',
               name: 'my rule name',
@@ -1820,26 +1772,17 @@ describe('bulkEdit()', () => {
       });
 
       actionsClient.getBulk.mockResolvedValue([
-        {
+        createMockConnector({
           id: '1',
           actionTypeId: 'test-1',
-          config: {},
-          isMissingSecrets: false,
           name: 'test default connector',
-          isPreconfigured: false,
-          isDeprecated: false,
-          isSystemAction: false,
-        },
-        {
+        }),
+        createMockConnector({
           id: 'system_action-id',
           actionTypeId: 'test-2',
-          config: {},
-          isMissingSecrets: false,
           name: 'system action connector',
-          isPreconfigured: false,
-          isDeprecated: false,
           isSystemAction: true,
-        },
+        }),
       ]);
 
       actionsAuthorization.ensureAuthorized.mockRejectedValueOnce(
@@ -2742,7 +2685,10 @@ describe('bulkEdit()', () => {
 
   describe('apiKeys', () => {
     beforeEach(() => {
-      createAPIKeyMock.mockResolvedValueOnce({ apiKeysEnabled: true, result: { api_key: '111' } });
+      createAPIKeyMock.mockResolvedValueOnce({
+        apiKeysEnabled: true,
+        result: { id: '111', api_key: 'abc' },
+      });
       mockCreatePointInTimeFinderAsInternalUser({
         saved_objects: [
           {
@@ -2829,7 +2775,7 @@ describe('bulkEdit()', () => {
 
       expect(bulkMarkApiKeysForInvalidation).toHaveBeenCalledTimes(1);
       expect(bulkMarkApiKeysForInvalidation).toHaveBeenCalledWith(
-        { apiKeys: ['dW5kZWZpbmVkOjExMQ=='] },
+        { apiKeys: ['MTExOmFiYw=='] },
         expect.any(Object),
         expect.any(Object)
       );
@@ -2880,7 +2826,7 @@ describe('bulkEdit()', () => {
       });
 
       expect(bulkMarkApiKeysForInvalidation).toHaveBeenCalledWith(
-        { apiKeys: ['dW5kZWZpbmVkOjExMQ=='] },
+        { apiKeys: ['MTExOmFiYw=='] },
         expect.any(Object),
         expect.any(Object)
       );

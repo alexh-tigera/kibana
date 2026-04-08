@@ -31,8 +31,6 @@ import {
   getCaseUsersMockResponse,
   customFieldsMock,
   allCasesSnake,
-  mockCaseSummary,
-  mockInferenceConnectors,
 } from '../mock';
 import type {
   CaseConnectors,
@@ -46,33 +44,29 @@ import type {
   CasePostRequest,
   CasePatchRequest,
   AttachmentRequest,
-  CaseSummaryResponse,
-  InferenceConnectorsResponse,
 } from '../../../common/types/api';
 import { CaseStatuses } from '../../../common/types/domain';
-import type { AlertAttachment } from '../../../common/types/domain';
 import type { ValidFeatureId } from '@kbn/rule-data-utils';
 import type { UserProfile } from '@kbn/security-plugin/common';
 import { userProfiles } from '../user_profiles/api.mock';
 import { getCaseConnectorsMockResponse } from '../../common/mock/connectors';
+import { DEFAULT_FROM_DATE, DEFAULT_TO_DATE } from '../constants';
 
 export const resolveCase = async (caseId: string, signal: AbortSignal): Promise<ResolvedCase> =>
   Promise.resolve(basicResolvedCase);
+
+export const getCase = async ({
+  caseId,
+  signal,
+}: {
+  caseId: string;
+  signal?: AbortSignal;
+}): Promise<CaseUI> => Promise.resolve(basicCase);
 
 export const getSingleCaseMetrics = async (
   caseId: string,
   signal: AbortSignal
 ): Promise<SingleCaseMetricsResponse> => Promise.resolve(basicCaseMetrics);
-
-export const getCaseSummary = async (
-  caseId: string,
-  connectorId: string,
-  signal: AbortSignal
-): Promise<CaseSummaryResponse> => Promise.resolve(mockCaseSummary);
-
-export const getInferenceConnectors = async (
-  signal: AbortSignal
-): Promise<InferenceConnectorsResponse> => Promise.resolve(mockInferenceConnectors);
 
 export const getTags = async (signal: AbortSignal): Promise<string[]> => Promise.resolve(tags);
 
@@ -100,6 +94,8 @@ export const getCases = async ({
     owner: [],
     category: [],
     customFields: {},
+    from: DEFAULT_FROM_DATE,
+    to: DEFAULT_TO_DATE,
   },
   queryParams = {
     page: 1,
@@ -123,7 +119,8 @@ export const patchCase = async (
 export const updateCases = async (
   cases: CaseUpdateRequest[],
   signal: AbortSignal
-): Promise<CasesUI> => Promise.resolve(allCases.cases);
+): Promise<Array<CaseUI & { updateSummary?: { syncedAlertCount: number } }>> =>
+  Promise.resolve(allCases.cases.map((theCase) => ({ ...theCase })));
 
 export const createAttachments = async (
   newComment: AttachmentRequest,
@@ -140,7 +137,8 @@ export const deleteComment = async (
 export const patchComment = async (
   caseId: string,
   commentId: string,
-  alertAttachment: AlertAttachment,
+  commentUpdate: string,
+  version: string,
   signal: AbortSignal
 ): Promise<CaseUI> => Promise.resolve(basicCaseCommentPatch);
 
@@ -199,3 +197,6 @@ export const getSimilarCases = async () => allCasesSnake;
 export const postObservable = jest.fn();
 export const patchObservable = jest.fn();
 export const deleteObservable = jest.fn();
+export const bulkPostObservables = jest.fn();
+
+export const searchEvents = jest.fn();

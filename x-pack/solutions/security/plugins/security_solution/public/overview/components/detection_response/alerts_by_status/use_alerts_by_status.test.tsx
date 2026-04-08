@@ -45,6 +45,7 @@ const renderUseAlertsByStatus = (props: Partial<UseAlertsByStatusProps> = {}) =>
   renderHook(
     () =>
       useAlertsByStatus({
+        identityFields: {},
         queryId: 'test',
         signalIndexName: 'signal-alerts',
         from,
@@ -67,7 +68,6 @@ describe('useAlertsByStatus', () => {
     const { result } = renderUseAlertsByStatus();
 
     expect(result.current).toEqual({
-      alertHas3rdPartyData: false,
       items: null,
       isLoading: false,
       updatedAt: dateNow,
@@ -83,13 +83,12 @@ describe('useAlertsByStatus', () => {
   it('should return parsed items', () => {
     mockUseQueryAlerts.mockReturnValue({
       ...defaultUseQueryAlertsReturn,
-      data: mockAlertsData(),
+      data: mockAlertsData,
     });
 
     const { result } = renderUseAlertsByStatus();
 
     expect(result.current).toEqual({
-      alertHas3rdPartyData: false,
       items: parsedMockAlertsData,
       isLoading: false,
       updatedAt: dateNow,
@@ -103,14 +102,13 @@ describe('useAlertsByStatus', () => {
 
     mockUseQueryAlerts.mockReturnValue({
       ...defaultUseQueryAlertsReturn,
-      data: mockAlertsData(),
+      data: mockAlertsData,
     });
 
     const { result } = renderUseAlertsByStatus();
 
     expect(mockDateNow).toHaveBeenCalled();
     expect(result.current).toEqual({
-      alertHas3rdPartyData: false,
       items: parsedMockAlertsData,
       isLoading: false,
       updatedAt: newDateNow,
@@ -128,7 +126,6 @@ describe('useAlertsByStatus', () => {
     });
 
     expect(result.current).toEqual({
-      alertHas3rdPartyData: false,
       items: null,
       isLoading: false,
       updatedAt: dateNow,
@@ -155,21 +152,5 @@ describe('useAlertsByStatus', () => {
         queryName: ALERTS_QUERY_NAMES.BY_STATUS,
       })
     );
-  });
-
-  it('should return true if it contains more than 1 integration package', () => {
-    mockUseQueryAlerts.mockReturnValue({
-      ...defaultUseQueryAlertsReturn,
-      data: mockAlertsData({ includeRelatedIntegrationPackage: true }),
-    });
-
-    const { result } = renderUseAlertsByStatus();
-
-    expect(result.current).toEqual({
-      alertHas3rdPartyData: true,
-      items: parsedMockAlertsData,
-      isLoading: false,
-      updatedAt: dateNow,
-    });
   });
 });

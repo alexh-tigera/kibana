@@ -10,6 +10,8 @@
     "apiKeyId",
     "createdAt",
     "end",
+    "initiator",
+    "initiatorId",
     "rule",
     "rule.alertTypeId",
     "rule.consumer",
@@ -20,6 +22,7 @@
     "actions.actionRef",
     "actions.actionTypeId",
     "actions.group",
+    "actions.params",
     "alertTypeId",
     "artifacts",
     "artifacts.investigation_guide",
@@ -83,15 +86,83 @@
     "snoozeSchedule.skipRecurrences",
     "tags",
     "throttle",
+    "uiamApiKey",
+    "updatedAt",
+    "updatedBy"
+  ],
+  "alerting_api_key_pending_invalidation": [
+    "apiKeyId",
+    "createdAt",
+    "uiamApiKey"
+  ],
+  "alerting_notification_policy": [
+    "auth",
+    "auth.apiKey",
+    "auth.createdByUser",
+    "auth.owner",
+    "createdAt",
+    "createdBy",
+    "createdByUsername",
+    "description",
+    "destinations",
+    "destinations.id",
+    "destinations.type",
+    "enabled",
+    "groupBy",
+    "groupingMode",
+    "name",
+    "snoozedUntil",
+    "tags",
+    "throttle",
+    "throttle.strategy",
+    "updatedAt",
+    "updatedBy",
+    "updatedByUsername"
+  ],
+  "alerting_rule": [
+    "createdAt",
+    "createdBy",
+    "enabled",
+    "evaluation",
+    "evaluation.query",
+    "evaluation.query.base",
+    "evaluation.query.condition",
+    "grouping",
+    "grouping.fields",
+    "kind",
+    "metadata",
+    "metadata.description",
+    "metadata.name",
+    "metadata.owner",
+    "metadata.tags",
+    "no_data",
+    "no_data.behavior",
+    "no_data.timeframe",
+    "recovery_policy",
+    "recovery_policy.query",
+    "recovery_policy.query.base",
+    "recovery_policy.query.condition",
+    "recovery_policy.type",
+    "schedule",
+    "schedule.every",
+    "schedule.lookback",
+    "time_field",
     "updatedAt",
     "updatedBy"
   ],
   "alerting_rule_template": [
+    "description",
     "name",
     "ruleTypeId",
     "tags"
   ],
+  "anonymization-salt": [],
   "api_key_pending_invalidation": [
+    "apiKeyId",
+    "createdAt",
+    "uiamApiKey"
+  ],
+  "api_key_to_invalidate": [
     "apiKeyId",
     "createdAt"
   ],
@@ -168,6 +239,7 @@
     "customFields.value",
     "description",
     "duration",
+    "extended_fields",
     "external_service",
     "external_service.connector_name",
     "external_service.external_id",
@@ -181,17 +253,24 @@
     "external_service.pushed_by.username",
     "incremental_id",
     "observables",
+    "observables.description",
     "observables.typeKey",
     "observables.value",
     "owner",
     "settings",
+    "settings.extractObservables",
     "settings.syncAlerts",
     "severity",
     "status",
     "tags",
+    "template",
+    "template.id",
+    "template.version",
     "title",
     "total_alerts",
     "total_comments",
+    "total_events",
+    "total_observables",
     "updated_at",
     "updated_by",
     "updated_by.email",
@@ -207,6 +286,7 @@
     "created_at",
     "created_by",
     "created_by.username",
+    "eventId",
     "externalReferenceAttachmentTypeId",
     "owner",
     "persistableStateAttachmentTypeId",
@@ -253,6 +333,12 @@
     "type"
   ],
   "cloud": [],
+  "cloud-connect-api-key": [
+    "apiKey",
+    "clusterId",
+    "createdAt",
+    "updatedAt"
+  ],
   "cloud-security-posture-settings": [],
   "config": [
     "buildNum"
@@ -303,6 +389,18 @@
     "title",
     "version"
   ],
+  "data_stream-config": [
+    "created_by",
+    "data_stream_id",
+    "integration_id",
+    "job_info",
+    "job_info.job_id",
+    "job_info.job_type",
+    "job_info.status",
+    "metadata",
+    "result",
+    "title"
+  ],
   "dynamic-config-overrides": [],
   "endpoint:unified-user-artifact-manifest": [
     "artifactIds",
@@ -319,8 +417,15 @@
     "error",
     "filter",
     "integrationName",
+    "integrations",
+    "integrations.syncData",
+    "integrations.syncData.lastFullSync",
+    "integrations.syncData.lastUpdateProcessed",
+    "integrations.syncMarkerIndex",
     "managed",
+    "managedVersion",
     "matchers",
+    "matchersModifiedByUser",
     "name",
     "type"
   ],
@@ -341,6 +446,30 @@
   "entity-discovery-api-key": [
     "apiKey"
   ],
+  "entity-engine-descriptor-v2": [
+    "error",
+    "error.action",
+    "error.message",
+    "logExtractionState",
+    "logExtractionState.additionalIndexPattern",
+    "logExtractionState.additionalIndexPatterns",
+    "logExtractionState.delay",
+    "logExtractionState.docsLimit",
+    "logExtractionState.fieldHistoryLength",
+    "logExtractionState.filter",
+    "logExtractionState.frequency",
+    "logExtractionState.lastExecutionTimestamp",
+    "logExtractionState.lookbackPeriod",
+    "logExtractionState.paginationId",
+    "logExtractionState.paginationTimestamp",
+    "logExtractionState.timeout",
+    "status",
+    "type",
+    "versionState",
+    "versionState.isMigratedFromV1",
+    "versionState.state",
+    "versionState.version"
+  ],
   "entity-engine-status": [
     "fieldHistoryLength",
     "filter",
@@ -349,8 +478,12 @@
     "timestampField",
     "type"
   ],
+  "entity-store-global-state": [],
   "epm-packages": [
     "additional_spaces_installed_kibana",
+    "dependencies",
+    "dependencies.name",
+    "dependencies.version",
     "es_index_patterns",
     "experimental_data_stream_features",
     "experimental_data_stream_features.data_stream",
@@ -362,6 +495,7 @@
     "install_started_at",
     "install_status",
     "install_version",
+    "installed_as_dependency",
     "installed_es",
     "installed_es.deferred",
     "installed_es.id",
@@ -370,11 +504,13 @@
     "installed_kibana",
     "installed_kibana_space_id",
     "internal",
+    "is_dependency_of",
     "keep_policies_up_to_date",
     "latest_executed_state",
     "latest_install_failed_attempts",
     "name",
     "package_assets",
+    "pending_upgrade_review",
     "previous_version",
     "verification_key_id",
     "verification_status",
@@ -514,18 +650,22 @@
     "download_source_id",
     "fleet_server_host_id",
     "global_data_tags",
+    "has_agent_version_conditions",
     "inactivity_timeout",
     "is_default",
     "is_default_fleet_server",
     "is_managed",
     "is_preconfigured",
     "is_protected",
+    "is_verifier",
     "keep_monitoring_alive",
+    "min_agent_version",
     "monitoring_enabled",
     "monitoring_output_id",
     "name",
     "namespace",
     "overrides",
+    "package_agent_version_conditions",
     "required_versions",
     "revision",
     "schema_version",
@@ -534,6 +674,19 @@
     "unenroll_timeout",
     "updated_at",
     "updated_by"
+  ],
+  "fleet-cloud-connector": [
+    "accountType",
+    "cloudProvider",
+    "created_at",
+    "name",
+    "namespace",
+    "packagePolicyCount",
+    "updated_at",
+    "vars",
+    "verification_failed_at",
+    "verification_started_at",
+    "verification_status"
   ],
   "fleet-fleet-server-host": [
     "host_urls",
@@ -546,6 +699,7 @@
   "fleet-message-signing-keys": [],
   "fleet-package-policies": [
     "bump_agent_policy_revision",
+    "cloud_connector_id",
     "created_at",
     "created_by",
     "description",
@@ -563,12 +717,14 @@
     "package.requires_root",
     "package.title",
     "package.version",
+    "package_agent_version_condition",
     "policy_id",
     "policy_ids",
     "revision",
     "secret_references",
     "secret_references.id",
     "supports_agentless",
+    "supports_cloud_connector",
     "updated_at",
     "updated_by",
     "vars"
@@ -596,6 +752,13 @@
     "policy_id",
     "token_plain"
   ],
+  "gap_auto_fill_scheduler": [
+    "createdAt",
+    "enabled",
+    "name",
+    "ruleTypeConsumerPairs",
+    "updatedAt"
+  ],
   "graph-workspace": [
     "description",
     "kibanaSavedObjectMeta",
@@ -607,16 +770,12 @@
     "version",
     "wsState"
   ],
-  "guided-onboarding-guide-state": [
-    "guideId",
-    "isActive"
-  ],
-  "guided-onboarding-plugin-state": [],
   "index-pattern": [
     "name",
     "title",
     "type"
   ],
+  "inference-settings": [],
   "infra-custom-dashboards": [
     "assetType",
     "dashboardFilterAssetIdEnabled",
@@ -637,13 +796,16 @@
     "download_source_id",
     "fleet_server_host_id",
     "global_data_tags",
+    "has_agent_version_conditions",
     "inactivity_timeout",
     "is_default",
     "is_default_fleet_server",
     "is_managed",
     "is_preconfigured",
     "is_protected",
+    "is_verifier",
     "keep_monitoring_alive",
+    "min_agent_version",
     "monitoring_diagnostics",
     "monitoring_enabled",
     "monitoring_http",
@@ -652,6 +814,7 @@
     "name",
     "namespace",
     "overrides",
+    "package_agent_version_conditions",
     "required_versions",
     "revision",
     "schema_version",
@@ -732,6 +895,7 @@
   ],
   "ingest-package-policies": [
     "bump_agent_policy_revision",
+    "cloud_connector_id",
     "created_at",
     "created_by",
     "description",
@@ -749,27 +913,42 @@
     "package.requires_root",
     "package.title",
     "package.version",
+    "package_agent_version_condition",
     "policy_id",
     "policy_ids",
     "revision",
     "secret_references",
     "secret_references.id",
     "supports_agentless",
+    "supports_cloud_connector",
     "updated_at",
     "updated_by",
     "vars"
   ],
   "ingest_manager_settings": [
+    "action_secret_storage_requirements_met",
     "delete_unenrolled_agents",
     "delete_unenrolled_agents.enabled",
     "delete_unenrolled_agents.is_preconfigured",
+    "download_source_auth_secret_storage_requirements_met",
     "fleet_server_hosts",
     "has_seen_add_data_notice",
+    "ilm_migration_status",
+    "integration_knowledge_enabled",
     "output_secret_storage_requirements_met",
     "prerelease_integrations_enabled",
     "secret_storage_requirements_met",
+    "ssl_secret_storage_requirements_met",
     "use_space_awareness_migration_started_at",
     "use_space_awareness_migration_status"
+  ],
+  "integration-config": [
+    "created_by",
+    "created_by_profile_uid",
+    "data_stream_count",
+    "integration_id",
+    "metadata",
+    "status"
   ],
   "intercept_interaction_record": [],
   "intercept_trigger_record": [
@@ -806,6 +985,7 @@
     "title"
   ],
   "maintenance-window": [
+    "createdBy",
     "enabled",
     "events",
     "expirationDate",
@@ -820,6 +1000,11 @@
     "title",
     "uiStateJSON",
     "version"
+  ],
+  "markdown": [
+    "content",
+    "description",
+    "title"
   ],
   "metrics-data-source": [],
   "metrics-explorer-view": [],
@@ -849,17 +1034,15 @@
   "monitoring-telemetry": [
     "reportedClusterUuids"
   ],
+  "oauth_state": [
+    "connectorId",
+    "expiresAt",
+    "state"
+  ],
   "observability-onboarding-state": [
     "progress",
     "state",
     "type"
-  ],
-  "onechat_workflow": [
-    "access_control",
-    "access_control.public",
-    "categories",
-    "user_id",
-    "workflow_id"
   ],
   "osquery-manager-usage-metric": [
     "count",
@@ -868,6 +1051,7 @@
   "osquery-pack": [
     "created_at",
     "created_by",
+    "created_by_profile_uid",
     "description",
     "enabled",
     "name",
@@ -882,6 +1066,7 @@
     "shards",
     "updated_at",
     "updated_by",
+    "updated_by_profile_uid",
     "version"
   ],
   "osquery-pack-asset": [
@@ -901,6 +1086,7 @@
   "osquery-saved-query": [
     "created_at",
     "created_by",
+    "created_by_profile_uid",
     "description",
     "ecs_mapping",
     "id",
@@ -910,6 +1096,7 @@
     "timeout",
     "updated_at",
     "updated_by",
+    "updated_by_profile_uid",
     "version"
   ],
   "policy-settings-protection-updates-note": [
@@ -918,16 +1105,15 @@
   "privilege-monitoring-status": [
     "status"
   ],
-  "privmon-api-key": [
-    "apiKey"
-  ],
+  "privmon-api-key": [],
   "product-doc-install-status": [
     "index_name",
     "inference_id",
     "installation_status",
     "last_installation_date",
     "product_name",
-    "product_version"
+    "product_version",
+    "resource_type"
   ],
   "query": [
     "description",
@@ -937,9 +1123,13 @@
   "risk-engine-configuration": [
     "alertSampleSizePerShard",
     "dataViewId",
+    "enableResetToZero",
     "enabled",
     "excludeAlertStatuses",
     "filter",
+    "filters",
+    "filters.entity_types",
+    "filters.filter",
     "identifierType",
     "interval",
     "pageSize",
@@ -955,7 +1145,8 @@
     "unInstallCount"
   ],
   "scheduled_report": [
-    "createdBy"
+    "createdBy",
+    "title"
   ],
   "search": [
     "description",
@@ -966,6 +1157,7 @@
     "realmName",
     "realmType",
     "sessionId",
+    "status",
     "username"
   ],
   "search-telemetry": [],
@@ -982,7 +1174,12 @@
     "provider"
   ],
   "security-rule": [
+    "deprecated",
+    "name",
+    "risk_score",
     "rule_id",
+    "severity",
+    "tags",
     "version"
   ],
   "security-solution-signals-migration": [
@@ -1133,12 +1330,17 @@
     "version"
   ],
   "slo-settings": [],
+  "slo_template": [
+    "name",
+    "tags"
+  ],
   "space": [
     "disabledFeatures",
     "name",
     "solution"
   ],
   "spaces-usage-stats": [],
+  "stream-prompts": [],
   "synthetics-dynamic-settings": [],
   "synthetics-monitor": [
     "alert",
@@ -1206,6 +1408,7 @@
   ],
   "task": [
     "attempts",
+    "cost",
     "enabled",
     "ownerId",
     "partition",
@@ -1223,8 +1426,19 @@
   ],
   "telemetry": [],
   "threshold-explorer-view": [],
+  "trial-companion-nba-milestone": [
+    "dismiss",
+    "openTODOs"
+  ],
   "ui-metric": [
     "count"
+  ],
+  "uiam_api_keys_provisioning_status": [
+    "@timestamp",
+    "entityId",
+    "entityType",
+    "message",
+    "status"
   ],
   "upgrade-assistant-ml-upgrade-operation": [
     "snapshotId"
@@ -1252,43 +1466,28 @@
   "usage-counters": [
     "domainId"
   ],
+  "user_connector_token": [
+    "connectorId",
+    "credentialType",
+    "profileUid"
+  ],
   "visualization": [
     "description",
     "kibanaSavedObjectMeta",
     "title",
     "version"
   ],
-  "workchat_agent": [
-    "access_control",
-    "access_control.public",
-    "agent_id",
-    "agent_name",
-    "configuration",
+  "watchlist-config": [
     "description",
-    "last_updated",
-    "user_id",
-    "user_name"
-  ],
-  "workchat_conversation": [
-    "access_control",
-    "access_control.public",
-    "agent_id",
-    "conversation_id",
-    "events",
-    "last_updated",
-    "title",
-    "user_id",
-    "user_name"
-  ],
-  "workchat_integration": [
-    "configuration",
-    "created_at",
-    "created_by",
-    "description",
-    "integration_id",
+    "managed",
     "name",
-    "type",
-    "updated_at"
+    "riskModifier"
+  ],
+  "watchlist-entity-source": [
+    "enabled",
+    "managed",
+    "name",
+    "type"
   ],
   "workplace_search_telemetry": []
 }
