@@ -130,6 +130,9 @@ export function SloEditFormObjectiveSection() {
                     {...field}
                     required
                     id={timeWindowTypeSelect}
+                    aria-label={i18n.translate('xpack.slo.sloEdit.timeWindowType.label', {
+                      defaultMessage: 'Time window',
+                    })}
                     data-test-subj="sloFormTimeWindowTypeSelect"
                     options={TIMEWINDOW_TYPE_OPTIONS}
                     value={field.value}
@@ -163,6 +166,9 @@ export function SloEditFormObjectiveSection() {
                     {...field}
                     required
                     id={timeWindowSelect}
+                    aria-label={i18n.translate('xpack.slo.sloEdit.timeWindowDuration.label', {
+                      defaultMessage: 'Duration',
+                    })}
                     data-test-subj="sloFormTimeWindowDurationSelect"
                     options={
                       timeWindowType === 'calendarAligned'
@@ -234,6 +240,9 @@ export function SloEditFormObjectiveSection() {
                     }
                     required
                     id={budgetingSelect}
+                    aria-label={i18n.translate('xpack.slo.sloEdit.budgetingMethod.label', {
+                      defaultMessage: 'Budgeting method',
+                    })}
                     data-test-subj="sloFormBudgetingMethodSelect"
                     options={BUDGETING_METHOD_OPTIONS}
                   />
