@@ -806,7 +806,7 @@ export const QueryBarTopRow = React.memo(
               timeZone={uiSettings.get('dateFormat:tz')}
               prependBasePath={http?.basePath.prepend}
               canAccessAdvancedSettings={
-                (application?.capabilities.advancedSettings?.show as boolean | undefined) ?? true
+                (application?.capabilities.advancedSettings?.save as boolean | undefined) ?? false
               }
             />
           </>
