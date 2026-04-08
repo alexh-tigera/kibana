@@ -532,7 +532,7 @@ describe('textToTimeRange', () => {
 
       it.each([
         ['last 30 minutes', 'now-30m/m', 'now'],
-        ['last 3 hours', 'now-3h/m', 'now'],
+        ['last 3 hours', 'now-3h/h', 'now'],
         ['last 10 seconds', 'now-10s/m', 'now'],
         ['last 500 milliseconds', 'now-500ms/s', 'now'],
       ])('natural duration (sub-day) "%s" → start=%s', (text, start, end) => {
@@ -547,7 +547,7 @@ describe('textToTimeRange', () => {
         ['-7d', 'now-7d/d'],
         ['7d', 'now-7d/d'],
         ['30m', 'now-30m/m'],
-        ['3h', 'now-3h/m'],
+        ['3h', 'now-3h/h'],
         ['500ms', 'now-500ms/s'],
       ])('shorthand "%s" → start=%s', (text, start) => {
         const range = textToTimeRange(text, opts(true));
@@ -560,7 +560,7 @@ describe('textToTimeRange', () => {
       it.each([
         ['now-30m to now', 'now-30m/m', 'now'],
         ['-7d to now', 'now-7d/d', 'now'],
-        ['now-3h to now-1h', 'now-3h/m', 'now-1h'],
+        ['now-3h to now-1h', 'now-3h/h', 'now-1h'],
       ])('delimiter-split "%s" → start=%s end=%s', (text, start, end) => {
         const range = textToTimeRange(text, opts(true));
 
