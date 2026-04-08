@@ -652,7 +652,7 @@ export class AlertingPlugin {
       features: plugins.features,
     });
 
-    this.changeTrackingService?.initialize(core.elasticsearch.client.asInternalUser);
+    this.changeTrackingService?.initialize(core.elasticsearch.client.asInternalUser).catch(() => {});
     rulesClientFactory.initialize({
       ruleTypeRegistry: ruleTypeRegistry!,
       logger,
