@@ -7,14 +7,7 @@
 
 import { KibanaServices } from '../../../common/lib/kibana';
 
-import type { GetRuleExecutionEventsResponse } from '../../../../common/api/detection_engine/rule_monitoring';
-import {
-  LogLevelEnum,
-  RuleExecutionEventTypeEnum,
-} from '../../../../common/api/detection_engine/rule_monitoring';
-
 import { api } from './api_client';
-import type { FetchRuleExecutionEventsArgs } from './api_client_interface';
 
 jest.mock('../../../common/lib/kibana');
 
@@ -38,92 +31,6 @@ describe('Rule Monitoring API Client', () => {
         '/internal/detection_engine/health/_setup',
         expect.objectContaining({
           method: 'POST',
-        })
-      );
-    });
-  });
-
-  describe('fetchRuleExecutionEvents', () => {
-    const responseMock: GetRuleExecutionEventsResponse = {
-      events: [],
-      pagination: {
-        page: 1,
-        per_page: 20,
-        total: 0,
-      },
-    };
-
-    beforeEach(() => {
-      fetchMock.mockClear();
-      fetchMock.mockResolvedValue(responseMock);
-    });
-
-    it('calls API correctly with only rule id specified', async () => {
-      await api.fetchRuleExecutionEvents({ ruleId: '42' });
-
-      expect(fetchMock).toHaveBeenCalledWith(
-        '/internal/detection_engine/rules/42/execution/events',
-        expect.objectContaining({
-          method: 'GET',
-          query: {},
-        })
-      );
-    });
-
-    const ISO_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-
-    it.each<[string, Omit<FetchRuleExecutionEventsArgs, 'ruleId'>, Record<string, unknown>]>([
-      [
-        'search term filter',
-        { searchTerm: 'something to search' },
-        { search_term: 'something to search' },
-      ],
-      [
-        'event types filter',
-        { eventTypes: [RuleExecutionEventTypeEnum.message] },
-        { event_types: 'message' },
-      ],
-      [
-        'log level filter',
-        { logLevels: [LogLevelEnum.warn, LogLevelEnum.error] },
-        { log_levels: 'warn,error' },
-      ],
-      [
-        'start date filter in relative format',
-        { dateRange: { start: 'now-1d/d' } },
-        { date_start: expect.stringMatching(ISO_PATTERN) },
-      ],
-      [
-        'end date filter',
-        { dateRange: { end: 'now-3d/d' } },
-        { date_end: expect.stringMatching(ISO_PATTERN) },
-      ],
-      [
-        'date range filter in relative format',
-        { dateRange: { start: new Date().toISOString(), end: new Date().toISOString() } },
-        {
-          date_start: expect.stringMatching(ISO_PATTERN),
-          date_end: expect.stringMatching(ISO_PATTERN),
-        },
-      ],
-      [
-        'pagination',
-        { sortOrder: 'asc', page: 42, perPage: 146 } as const,
-        { sort_order: 'asc', page: 42, per_page: 146 },
-      ],
-    ])('calls API correctly with %s', async (_, params, expectedParams) => {
-      await api.fetchRuleExecutionEvents({
-        ruleId: '42',
-        ...params,
-      });
-
-      expect(fetchMock).toHaveBeenCalledWith(
-        '/internal/detection_engine/rules/42/execution/events',
-        expect.objectContaining({
-          method: 'GET',
-          query: {
-            ...expectedParams,
-          },
         })
       );
     });

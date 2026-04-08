@@ -7,14 +7,11 @@
 
 import type { SortOrder } from '../../../../common/api/detection_engine';
 import type {
-  GetRuleExecutionEventsResponse,
   GetRuleHealthRequestBody,
   GetRuleHealthResponse,
   GetSpaceHealthRequestBody,
   GetSpaceHealthResponse,
-  LogLevel,
   ReadRuleExecutionResultsResponse,
-  RuleExecutionEventType,
   RuleRunType,
   UnifiedExecutionResultSortField,
   UnifiedExecutionStatus,
@@ -26,14 +23,6 @@ export interface IRuleMonitoringApiClient {
    * and Detection Engine health, and can do any other setup work.
    */
   setupDetectionEngineHealthApi(): Promise<void>;
-
-  /**
-   * Fetches plain rule execution events (status changes, metrics, generic events) from Event Log.
-   * @throws An error if response is not OK.
-   */
-  fetchRuleExecutionEvents(
-    args: FetchRuleExecutionEventsArgs
-  ): Promise<GetRuleExecutionEventsResponse>;
 
   /**
    * Fetches unified rule execution results.
@@ -79,53 +68,6 @@ export interface RuleMonitoringApiCallArgs {
    * Optional signal for cancelling the request.
    */
   signal?: AbortSignal;
-}
-
-export interface DateRange {
-  start?: string;
-  end?: string;
-}
-
-export interface FetchRuleExecutionEventsArgs extends RuleMonitoringApiCallArgs {
-  /**
-   * Saved Object ID of the rule (`rule.id`, not static `rule.rule_id`).
-   */
-  ruleId: string;
-
-  /**
-   * Filter by event message. If set, result will include events matching the search term.
-   */
-  searchTerm?: string;
-
-  /**
-   * Filter by event type. If set, result will include only events matching any of these.
-   */
-  eventTypes?: RuleExecutionEventType[];
-
-  /**
-   * Filter by log level. If set, result will include only events matching any of these.
-   */
-  logLevels?: LogLevel[];
-
-  /**
-   * Filter by date range. If set, result will include only events recorded in the specified date range.
-   */
-  dateRange?: DateRange;
-
-  /**
-   * What order to sort by (e.g. `asc` or `desc`).
-   */
-  sortOrder?: SortOrder;
-
-  /**
-   * Current page to fetch.
-   */
-  page?: number;
-
-  /**
-   * Number of results to fetch per page.
-   */
-  perPage?: number;
 }
 
 export interface ReadRuleExecutionResultsRequestArgs {

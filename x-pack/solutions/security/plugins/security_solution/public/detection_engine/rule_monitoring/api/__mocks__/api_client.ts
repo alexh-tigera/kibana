@@ -6,7 +6,6 @@
  */
 
 import type {
-  GetRuleExecutionEventsResponse,
   GetRuleHealthRequestBody,
   GetRuleHealthResponse,
   GetSpaceHealthRequestBody,
@@ -16,38 +15,15 @@ import type {
 import {
   HealthIntervalGranularity,
   HealthIntervalType,
-  LogLevelEnum,
-  RuleExecutionEventTypeEnum,
 } from '../../../../../common/api/detection_engine/rule_monitoring';
 
 import type {
-  FetchRuleExecutionEventsArgs,
   IRuleMonitoringApiClient,
   ReadRuleExecutionResultsArgs,
 } from '../api_client_interface';
 
 export const api: jest.Mocked<IRuleMonitoringApiClient> = {
   setupDetectionEngineHealthApi: jest.fn<Promise<void>, []>().mockResolvedValue(),
-
-  fetchRuleExecutionEvents: jest
-    .fn<Promise<GetRuleExecutionEventsResponse>, [FetchRuleExecutionEventsArgs]>()
-    .mockResolvedValue({
-      events: [
-        {
-          timestamp: '2021-12-29T10:42:59.996Z',
-          sequence: 0,
-          level: LogLevelEnum.info,
-          type: RuleExecutionEventTypeEnum['status-change'],
-          execution_id: 'execution-id-1',
-          message: 'Rule changed status to "succeeded". Rule execution completed without errors',
-        },
-      ],
-      pagination: {
-        page: 1,
-        per_page: 20,
-        total: 1,
-      },
-    }),
 
   readRuleExecutionResults: jest
     .fn<Promise<ReadRuleExecutionResultsResponse>, [ReadRuleExecutionResultsArgs]>()

@@ -5,13 +5,11 @@
  * 2.0.
  */
 
-import { omitBy, isUndefined } from 'lodash';
 import dateMath from '@kbn/datemath';
 
 import { KibanaServices } from '../../../common/lib/kibana';
 
 import type {
-  GetRuleExecutionEventsResponse,
   GetRuleHealthRequestBody,
   GetRuleHealthResponse,
   GetSpaceHealthRequestBody,
@@ -21,13 +19,11 @@ import type {
 import {
   GET_RULE_HEALTH_URL,
   GET_SPACE_HEALTH_URL,
-  getRuleExecutionEventsUrl,
   readRuleExecutionResultsUrl,
   SETUP_HEALTH_URL,
 } from '../../../../common/api/detection_engine/rule_monitoring';
 
 import type {
-  FetchRuleExecutionEventsArgs,
   IRuleMonitoringApiClient,
   ReadRuleExecutionResultsArgs,
 } from './api_client_interface';
@@ -37,45 +33,6 @@ export const api: IRuleMonitoringApiClient = {
     await http().fetch(SETUP_HEALTH_URL, {
       version: '1',
       method: 'POST',
-    });
-  },
-
-  fetchRuleExecutionEvents: (
-    args: FetchRuleExecutionEventsArgs
-  ): Promise<GetRuleExecutionEventsResponse> => {
-    const {
-      ruleId,
-      searchTerm,
-      eventTypes,
-      logLevels,
-      dateRange,
-      sortOrder,
-      page,
-      perPage,
-      signal,
-    } = args;
-
-    const url = getRuleExecutionEventsUrl(ruleId);
-    const startDate = dateMath.parse(dateRange?.start ?? '')?.toISOString();
-    const endDate = dateMath.parse(dateRange?.end ?? '', { roundUp: true })?.toISOString();
-
-    return http().fetch<GetRuleExecutionEventsResponse>(url, {
-      method: 'GET',
-      version: '1',
-      query: omitBy(
-        {
-          search_term: searchTerm?.length ? searchTerm : undefined,
-          event_types: eventTypes?.length ? eventTypes.join(',') : undefined,
-          log_levels: logLevels?.length ? logLevels.join(',') : undefined,
-          date_start: startDate,
-          date_end: endDate,
-          sort_order: sortOrder,
-          page,
-          per_page: perPage,
-        },
-        isUndefined
-      ),
-      signal,
     });
   },
 
