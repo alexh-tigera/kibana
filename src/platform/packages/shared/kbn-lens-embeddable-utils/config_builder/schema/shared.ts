@@ -58,7 +58,7 @@ export const sharedPanelInfoSchema = {
       maxSize: 100,
       meta: {
         id: 'lensPanelFilters',
-        description: 'Filters applied to the panel',
+        description: 'Filters applied to this panel only, in addition to any dashboard-level filters.',
       },
     })
   ),
@@ -146,8 +146,8 @@ const layerSettingsSchemaWrapped = schema.object(layerSettingsSchema);
 export type LayerSettingsSchema = TypeOf<typeof layerSettingsSchemaWrapped>;
 
 export const axisTitleSchemaProps = {
-  text: schema.maybe(schema.string({ defaultValue: '', meta: { description: 'Axis title text' } })),
-  visible: schema.maybe(schema.boolean({ meta: { description: 'Show the title' } })),
+  text: schema.maybe(schema.string({ defaultValue: '', meta: { description: 'Custom text for the axis title. When empty, defaults to the field name.' } })),
+  visible: schema.maybe(schema.boolean({ meta: { description: 'When `true`, displays the axis title.' } })),
 };
 
 export const legendTruncateAfterLinesSchema = schema.maybe(
@@ -156,7 +156,7 @@ export const legendTruncateAfterLinesSchema = schema.maybe(
     min: 1,
     max: 10,
     meta: {
-      description: 'Maximum lines before truncating legend items (1-10)',
+      description: 'Maximum lines before truncating legend items. Accepts 1 to 10.',
       id: 'legendTruncateAfterLines',
     },
   })

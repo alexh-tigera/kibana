@@ -97,7 +97,7 @@ const bucketTermsRankByCustomSharedSchema = schema.object({
   direction: builderEnums.direction({
     meta: {
       id: 'termsRankByCustomDirection',
-      description: 'Sort direction for custom ranking',
+      description: 'Sort direction for custom ranking.',
     },
   }),
 });
@@ -262,7 +262,7 @@ export const bucketTermsOperationSchema = schema.object(
             direction: builderEnums.direction({
               meta: {
                 id: 'termsRankByAlphabeticalDirection',
-                description: 'Sort direction for alphabetical ranking',
+                description: 'Sort direction for alphabetical ranking.',
               },
             }),
           },
@@ -276,7 +276,7 @@ export const bucketTermsOperationSchema = schema.object(
              */
             max: schema.number({
               meta: {
-                description: 'Maximum number of rare terms',
+                description: 'Maximum number of rare terms.',
               },
             }),
           },
@@ -302,7 +302,7 @@ export const bucketTermsOperationSchema = schema.object(
             direction: builderEnums.direction({
               meta: {
                 id: 'termsRankByMetricDirection',
-                description: 'Sort direction for metric-based ranking',
+                description: 'Sort direction for metric-based ranking.',
               },
             }),
           },
