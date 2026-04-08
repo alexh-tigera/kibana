@@ -7,10 +7,7 @@
 
 import { KibanaServices } from '../../../common/lib/kibana';
 
-import type {
-  GetRuleExecutionEventsResponse,
-  GetRuleExecutionResultsResponse,
-} from '../../../../common/api/detection_engine/rule_monitoring';
+import type { GetRuleExecutionEventsResponse } from '../../../../common/api/detection_engine/rule_monitoring';
 import {
   LogLevelEnum,
   RuleExecutionEventTypeEnum,
@@ -132,53 +129,4 @@ describe('Rule Monitoring API Client', () => {
     });
   });
 
-  describe('fetchRuleExecutionResults', () => {
-    const responseMock: GetRuleExecutionResultsResponse = {
-      events: [],
-      total: 0,
-    };
-
-    beforeEach(() => {
-      fetchMock.mockClear();
-      fetchMock.mockResolvedValue(responseMock);
-    });
-
-    it('calls API with correct parameters', async () => {
-      await api.fetchRuleExecutionResults({
-        ruleId: '42',
-        start: '2001-01-01T17:00:00.000Z',
-        end: '2001-01-02T17:00:00.000Z',
-        queryText: '',
-        statusFilters: [],
-      });
-
-      expect(fetchMock).toHaveBeenCalledWith(
-        '/internal/detection_engine/rules/42/execution/results',
-        expect.objectContaining({
-          method: 'GET',
-          query: {
-            end: '2001-01-02T17:00:00.000Z',
-            page: undefined,
-            per_page: undefined,
-            query_text: '',
-            sort_field: undefined,
-            sort_order: undefined,
-            start: '2001-01-01T17:00:00.000Z',
-            status_filters: '',
-          },
-        })
-      );
-    });
-
-    it('returns API response as is', async () => {
-      const response = await api.fetchRuleExecutionResults({
-        ruleId: '42',
-        start: 'now-30',
-        end: 'now',
-        queryText: '',
-        statusFilters: [],
-      });
-      expect(response).toEqual(responseMock);
-    });
-  });
 });

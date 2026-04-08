@@ -716,7 +716,7 @@ export const RuleDetailsPage = connector(
                           rule,
                           hasMlPermissions,
                           hasActionsPrivileges,
-                          canEditRules
+                          canEnableDisableRules
                         )}
                       >
                         <EuiFlexGroup>
@@ -726,7 +726,7 @@ export const RuleDetailsPage = connector(
                               !rule ||
                               !isExistingRule ||
                               !canEditRuleWithActions(rule, hasActionsPrivileges) ||
-                              !canEditRules ||
+                              !canEnableDisableRules ||
                               (isMlRule(rule?.type) && !hasMlPermissions)
                             }
                             enabled={isRuleEnabled}
@@ -750,14 +750,14 @@ export const RuleDetailsPage = connector(
                             ruleId={ruleId}
                             disabled={
                               !isExistingRule ||
-                              !canEditRules ||
+                              !isRuleEditButtonEnabled ||
                               (isMlRule(rule?.type) && !hasMlPermissions)
                             }
                             disabledReason={explainLackOfPermission(
                               rule,
                               hasMlPermissions,
                               hasActionsPrivileges,
-                              canEditRules
+                              isRuleEditButtonEnabled
                             )}
                           />
                         </EuiFlexItem>
