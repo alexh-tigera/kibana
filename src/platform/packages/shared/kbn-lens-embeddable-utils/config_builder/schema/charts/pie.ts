@@ -50,7 +50,7 @@ const pieStateSharedSchema = {
         meta: {
           id: 'pieLegend',
           title: 'Legend',
-          description: 'Legend configuration for pie chart',
+          description: 'Legend configuration for pie chart.',
         },
       }
     )
@@ -59,18 +59,18 @@ const pieStateSharedSchema = {
   labels: schema.maybe(
     schema.object(
       {
-        visible: schema.maybe(schema.boolean({ meta: { description: 'Show slice labels' } })),
+        visible: schema.maybe(schema.boolean({ meta: { description: 'When `true`, displays slice labels.' } })),
         position: schema.maybe(
           schema.oneOf([schema.literal('inside'), schema.literal('outside')], {
             meta: {
-              description: 'Renders pie chart slice labels inside or outside the pie',
+              description: 'Renders pie chart slice labels inside or outside the pie.',
             },
           })
         ),
       },
       {
         meta: {
-          description: 'Label configuration for pie chart slice labels inside or outside the pie',
+          description: 'Label configuration for pie chart slice labels inside or outside the pie.',
         },
       }
     )
@@ -78,7 +78,7 @@ const pieStateSharedSchema = {
   donut_hole: schema.maybe(
     schema.oneOf(
       [schema.literal('none'), schema.literal('s'), schema.literal('m'), schema.literal('l')],
-      { meta: { description: 'Donut hole size: none (pie), or s/m/l' } }
+      { meta: { description: 'Donut hole size: `none` (pie), or `s`, `m`, `l`.' } }
     )
   ),
 };
@@ -139,7 +139,7 @@ export const pieStateSchemaNoESQL = schema.object(
       {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of metric configurations (minimum 1)' },
+        meta: { description: 'Array of metric configurations (minimum 1).' },
       }
     ),
     group_by: schema.maybe(
@@ -148,7 +148,7 @@ export const pieStateSchemaNoESQL = schema.object(
         {
           minSize: 1,
           maxSize: 100,
-          meta: { description: 'Array of breakdown dimensions (minimum 1)' },
+          meta: { description: 'Array of breakdown dimensions (minimum 1).' },
         }
       )
     ),
@@ -157,7 +157,7 @@ export const pieStateSchemaNoESQL = schema.object(
     meta: {
       id: 'pieNoESQL',
       title: 'Pie Chart (DSL)',
-      description: 'Pie chart configuration for standard queries',
+      description: 'Pie chart configuration for standard queries.',
     },
     validate: validateForMultipleMetrics,
   }
@@ -175,19 +175,19 @@ export const pieStateSchemaESQL = schema.object(
     ...pieStateSharedSchema,
     metrics: schema.arrayOf(
       esqlColumnWithFormatSchema.extends(partitionStatePrimaryMetricOptionsSchema, {
-        meta: { description: 'ES|QL column reference for primary metric' },
+        meta: { description: 'ES|QL column reference for primary metric.' },
       }),
       {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of metric configurations (minimum 1)' },
+        meta: { description: 'Array of metric configurations (minimum 1).' },
       }
     ),
     group_by: schema.maybe(
       schema.arrayOf(esqlColumnWithFormatSchema.extends(partitionStateBreakdownByOptionsSchema), {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of breakdown dimensions (minimum 1)' },
+        meta: { description: 'Array of breakdown dimensions (minimum 1).' },
       })
     ),
   },
@@ -195,7 +195,7 @@ export const pieStateSchemaESQL = schema.object(
     meta: {
       id: 'pieESQL',
       title: 'Pie Chart (ES|QL)',
-      description: 'Pie chart configuration for ES|QL queries',
+      description: 'Pie chart configuration for ES|QL queries.',
     },
     validate: validateForMultipleMetrics,
   }
@@ -208,7 +208,7 @@ export const pieStateSchema = objectUnion([pieStateSchemaNoESQL, pieStateSchemaE
   meta: {
     id: 'pieChart',
     title: 'Pie Chart',
-    description: 'Pie chart state: standard query or ES|QL query',
+    description: 'Pie chart state: standard query or ES|QL query.',
   },
 });
 

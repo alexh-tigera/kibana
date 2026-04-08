@@ -22,8 +22,8 @@ import { objectUnion } from './utils/object_union';
 const regionMapStateRegionOptionsSchema = {
   ems: schema.maybe(
     schema.object({
-      boundaries: schema.string({ meta: { description: 'EMS boundaries' } }),
-      join: schema.string({ meta: { description: 'EMS join field' } }),
+      boundaries: schema.string({ meta: { description: 'EMS boundaries.' } }),
+      join: schema.string({ meta: { description: 'EMS join field.' } }),
     })
   ),
 };

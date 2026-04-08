@@ -48,7 +48,7 @@ const treemapSharedStateSchema = {
         meta: {
           id: 'treemapLegend',
           title: 'Legend',
-          description: 'Configuration for the treemap chart legend appearance and behavior',
+          description: 'Configuration for the treemap chart legend appearance and behavior.',
         },
       }
     )
@@ -61,9 +61,9 @@ const treemapSharedStateSchema = {
   labels: schema.maybe(
     schema.object(
       {
-        visible: schema.maybe(schema.boolean({ meta: { description: 'Show category labels' } })),
+        visible: schema.maybe(schema.boolean({ meta: { description: 'When `true`, displays category labels.' } })),
       },
-      { meta: { description: 'Labels configuration' } }
+      { meta: { description: 'Labels configuration.' } }
     )
   ),
 };
@@ -133,7 +133,7 @@ export const treemapStateSchemaNoESQL = schema.object(
       {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of metric configurations (minimum 1)' },
+        meta: { description: 'Array of metric configurations (minimum 1).' },
       }
     ),
     /**
@@ -145,7 +145,7 @@ export const treemapStateSchemaNoESQL = schema.object(
         {
           minSize: 1,
           maxSize: 100,
-          meta: { description: 'Array of breakdown dimensions (minimum 1)' },
+          meta: { description: 'Array of breakdown dimensions (minimum 1).' },
         }
       )
     ),
@@ -155,7 +155,7 @@ export const treemapStateSchemaNoESQL = schema.object(
       id: 'treemapNoESQL',
       title: 'Treemap Chart (DSL)',
       description:
-        'Treemap chart configuration schema for data source queries (non-ES|QL mode), defining metrics and breakdown dimensions',
+        'Treemap chart configuration schema for data source queries (non-ES|QL mode), defining metrics and breakdown dimensions.',
     },
     validate: validateForMultipleMetrics,
   }
@@ -176,7 +176,7 @@ export const treemapStateSchemaESQL = schema.object(
       {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of metric configurations (minimum 1)' },
+        meta: { description: 'Array of metric configurations (minimum 1).' },
       }
     ),
     /**
@@ -186,7 +186,7 @@ export const treemapStateSchemaESQL = schema.object(
       schema.arrayOf(esqlColumnWithFormatSchema.extends(partitionStateBreakdownByOptionsSchema), {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of breakdown dimensions (minimum 1)' },
+        meta: { description: 'Array of breakdown dimensions (minimum 1).' },
       })
     ),
   },
@@ -195,7 +195,7 @@ export const treemapStateSchemaESQL = schema.object(
       id: 'treemapESQL',
       title: 'Treemap Chart (ES|QL)',
       description:
-        'Treemap chart configuration schema for ES|QL queries, defining metrics and breakdown dimensions using column-based configuration',
+        'Treemap chart configuration schema for ES|QL queries, defining metrics and breakdown dimensions using column-based configuration.',
     },
     validate: validateForMultipleMetrics,
   }
@@ -206,7 +206,7 @@ export const treemapStateSchema = objectUnion([treemapStateSchemaNoESQL, treemap
     id: 'treemapChart',
     title: 'Treemap Chart',
     description:
-      'Treemap chart configuration schema supporting both data source queries (non-ES|QL) and ES|QL query modes',
+      'Treemap chart configuration schema supporting both data source queries (non-ES|QL) and ES|QL query modes.',
   },
 });
 

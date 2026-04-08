@@ -68,7 +68,7 @@ export const statisticsSchema = schema.oneOf(
   ],
   {
     meta: {
-      description: 'Statistical functions that can be displayed in chart legend for data series',
+      description: 'Statistical functions that can be displayed in chart legend for data series.',
     },
   }
 );
@@ -116,8 +116,8 @@ const domainFitConfigSchema = schema.object(
 const domainCustomConfigSchema = schema.object(
   {
     type: schema.literal('custom'),
-    min: schema.number({ meta: { description: 'Min domain value' } }),
-    max: schema.number({ meta: { description: 'Max domain value' } }),
+    min: schema.number({ meta: { description: 'Minimum domain value.' } }),
+    max: schema.number({ meta: { description: 'Maximum domain value.' } }),
     rounding: schema.maybe(domainRoundingSchema),
   },
   {
@@ -140,7 +140,7 @@ const yDomainSchema = schema.discriminatedUnion(
       rounding: true,
     },
     meta: {
-      description: 'Y-axis domain configuration',
+      description: 'Y-axis domain configuration defining how the axis bounds are calculated. Defaults to `full` with rounding enabled.',
     },
   }
 );
@@ -151,7 +151,7 @@ export type YDomainSchemaType = TypeOf<typeof yDomainSchema>;
  */
 const yScaleSchema = schema.oneOf(
   [schema.literal('linear'), schema.literal('log'), schema.literal('sqrt')],
-  { meta: { description: 'Y-axis scale type for data transformation' } }
+  { meta: { description: 'Y-axis scale type for data transformation. Valid values are `linear`, `log`, and `sqrt`.' } }
 );
 export type YScaleSchemaType = TypeOf<typeof yScaleSchema>;
 
@@ -160,22 +160,22 @@ export type YScaleSchemaType = TypeOf<typeof yScaleSchema>;
  */
 export const sharedAxisSchema = {
   title: schema.maybe(
-    schema.object(axisTitleSchemaProps, { meta: { description: 'Axis title configuration' } })
+    schema.object(axisTitleSchemaProps, { meta: { description: 'Axis title configuration.' } })
   ),
   ticks: schema.maybe(
     schema.object(
       {
-        visible: schema.boolean({ meta: { description: 'Show tick marks on the axis' } }),
+        visible: schema.boolean({ meta: { description: 'When `true`, displays tick marks on the axis.' } }),
       },
-      { meta: { description: 'Axis tick marks configuration' } }
+      { meta: { description: 'Axis tick marks configuration.' } }
     )
   ),
   grid: schema.maybe(
     schema.object(
       {
-        visible: schema.boolean({ meta: { description: 'Show grid lines for this axis' } }),
+        visible: schema.boolean({ meta: { description: 'When `true`, displays grid lines for this axis.' } }),
       },
-      { meta: { description: 'Axis grid lines configuration' } }
+      { meta: { description: 'Axis grid lines configuration.' } }
     )
   ),
   labels: schema.maybe(
@@ -190,12 +190,12 @@ export const sharedAxisSchema = {
         orientation: schema.maybe(
           builderEnums.orientation({
             meta: {
-              description: 'Orientation of the axis labels',
+              description: 'Orientation of the axis labels. Valid values are `horizontal`, `vertical`, and `angled`.',
             },
           })
         ),
       },
-      { meta: { description: 'Label configuration' } }
+      { meta: { description: 'Axis label configuration.' } }
     )
   ),
 };
@@ -230,13 +230,13 @@ const xAxisSchema = schema.object(
     domain: schema.maybe(
       schema.oneOf([domainFitConfigSchema, domainCustomConfigSchema], {
         meta: {
-          description: 'X-axis domain configuration',
+          description: 'X-axis domain configuration.',
         },
       })
     ),
   },
   {
-    meta: { description: 'X-axis configuration' },
+    meta: { description: 'X-axis configuration.' },
   }
 );
 export type XAxisSchemaType = TypeOf<typeof xAxisSchema>;
@@ -258,7 +258,7 @@ export const xyDataLayerSharedSchema = {
       schema.literal('bar_stacked'),
       schema.literal('line'),
     ],
-    { meta: { description: 'Chart type for the data layer' } }
+    { meta: { description: 'Chart type for the data layer.' } }
   ),
 };
 
@@ -269,7 +269,7 @@ const sharedLegendSchema = {
   visibility: legendVisibilitySchemaWithAuto,
   statistics: schema.maybe(
     schema.arrayOf(statisticsSchema, {
-      meta: { description: 'Statistics to display in legend' },
+      meta: { description: 'Statistics to display in the legend.' },
       maxSize: statisticsOptionsSize,
     })
   ),
@@ -278,10 +278,21 @@ const sharedLegendSchema = {
 /**
  * Layout Schemas
  */
+const legendTruncateMaxPixelsSchema = schema.maybe(
+  schema.number({
+    defaultValue: 250,
+    min: 10,
+    max: 1000,
+    meta: {
+      description: 'Maximum pixels before truncating legend items in list layout. Defaults to `250`. Valid range is 10-1000.',
+      id: 'legendTruncateMaxPixels',
+    },
+  })
+);
 const legendTruncateEnabledSchema = schema.maybe(
   schema.boolean({
     meta: {
-      description: 'Enable truncation of legend items',
+      description: 'When `true`, enables truncation of legend items.',
     },
   })
 );
@@ -317,10 +328,10 @@ const xyStylingSchema = schema.object(
               {
                 visible: schema.boolean({
                   defaultValue: DEFAULT_PARTIAL_BUCKETS_VISIBLE,
-                  meta: { description: 'Show partial bucket indicators at time range edges' },
+                  meta: { description: 'When `true`, shows partial bucket indicators at time range edges. Defaults to `false`.' },
                 }),
               },
-              { meta: { description: 'Partial (incomplete) bucket indicator configuration' } }
+              { meta: { description: 'Partial (incomplete) bucket indicator configuration.' } }
             )
           ),
           current_time_marker: schema.maybe(
@@ -328,17 +339,17 @@ const xyStylingSchema = schema.object(
               {
                 visible: schema.boolean({
                   defaultValue: DEFAULT_CURRENT_TIME_MARKER_VISIBLE,
-                  meta: { description: 'Show current time marker line' },
+                  meta: { description: 'When `true`, shows the current time marker line. Defaults to `false`.' },
                 }),
               },
-              { meta: { description: 'Current time marker configuration' } }
+              { meta: { description: 'Current time marker configuration.' } }
             )
           ),
         },
         {
           meta: {
             id: 'xyStylingOverlays',
-            description: 'Visual overlays drawn on top of the chart canvas',
+            description: 'Visual overlays drawn on top of the chart canvas.',
           },
         }
       )
@@ -358,13 +369,13 @@ const xyStylingSchema = schema.object(
               schema.literal('average'),
               schema.literal('nearest'),
             ],
-            { meta: { description: 'Fitting function type for missing data' } }
+            { meta: { description: 'Fitting function type for missing data. Valid values are `none`, `zero`, `linear`, `carry`, `lookahead`, `average`, and `nearest`.' } }
           ),
           emphasize: schema.maybe(
             schema.boolean({
               meta: {
                 description:
-                  'Visually distinguish fitted segments with a dashed line style and reduced area opacity',
+                  'When `true`, visually distinguishes fitted segments with a dashed line style and reduced area opacity.',
               },
             })
           ),
@@ -374,7 +385,7 @@ const xyStylingSchema = schema.object(
               {
                 meta: {
                   description:
-                    'How to render line and area edges when data does not cover the full X domain',
+                    'How to render line and area edges when data does not cover the full X domain. Valid values are `none`, `zero`, and `nearest`.',
                 },
               }
             )
@@ -383,7 +394,7 @@ const xyStylingSchema = schema.object(
         {
           meta: {
             id: 'xyFitting',
-            description: 'Missing data interpolation configuration for line and area series',
+            description: 'Missing data interpolation configuration for line and area series.',
           },
         }
       )
@@ -397,7 +408,7 @@ const xyStylingSchema = schema.object(
         ],
         {
           defaultValue: DEFAULT_LINES_INTERPOLATION,
-          meta: { description: 'Curve interpolation method for line and area series' },
+          meta: { description: 'Curve interpolation method for line and area series. Defaults to `linear`. Valid values are `linear`, `smooth`, and `stepped`.' },
         }
       )
     ),
@@ -409,7 +420,7 @@ const xyStylingSchema = schema.object(
               [schema.literal('auto'), schema.literal('visible'), schema.literal('hidden')],
               {
                 defaultValue: DEFAULT_POINTS_VISIBILITY,
-                meta: { description: 'Data point marker visibility on line and area series' },
+                meta: { description: 'Data point marker visibility on line and area series. Defaults to `auto`. Valid values are `auto`, `visible`, and `hidden`.' },
               }
             )
           ),
@@ -417,7 +428,7 @@ const xyStylingSchema = schema.object(
         {
           meta: {
             id: 'xyStylingPoints',
-            description: 'Data point marker settings for line and area series',
+            description: 'Data point marker settings for line and area series.',
           },
         }
       )
@@ -432,14 +443,14 @@ const xyStylingSchema = schema.object(
               defaultValue: DEFAULT_AREAS_FILL_OPACITY,
               min: 0,
               max: 2,
-              meta: { description: 'Area fill opacity (0-1 typical, max 2 for legacy)' },
+              meta: { description: 'Area fill opacity. Defaults to `0.3`. Valid range is 0-2.' },
             })
           ),
         },
         {
           meta: {
             id: 'xyStylingAreas',
-            description: 'Area-specific rendering settings',
+            description: 'Area-specific rendering settings.',
           },
         }
       )
@@ -451,7 +462,7 @@ const xyStylingSchema = schema.object(
             schema.number({
               defaultValue: DEFAULT_BARS_MINIMUM_HEIGHT,
               min: 0,
-              meta: { description: 'Minimum bar height in pixels' },
+              meta: { description: 'Minimum bar height in pixels. Defaults to `1`.' },
             })
           ),
           data_labels: schema.maybe(
@@ -459,17 +470,17 @@ const xyStylingSchema = schema.object(
               {
                 visible: schema.boolean({
                   defaultValue: DEFAULT_DATA_LABELS_VISIBLE,
-                  meta: { description: 'Display value labels on bar data points' },
+                  meta: { description: 'When `true`, displays value labels on bar data points. Defaults to `false`.' },
                 }),
               },
-              { meta: { description: 'Data label configuration for bar series' } }
+              { meta: { description: 'Data label configuration for bar series.' } }
             )
           ),
         },
         {
           meta: {
             id: 'xyStylingBars',
-            description: 'Bar-specific rendering settings',
+            description: 'Bar-specific rendering settings.',
           },
         }
       )
@@ -478,7 +489,7 @@ const xyStylingSchema = schema.object(
   {
     meta: {
       id: 'xyStyling',
-      description: 'Visual styling options for the chart',
+      description: 'Visual styling options for the chart.',
     },
   }
 );
@@ -502,7 +513,7 @@ const xySharedSettings = {
             meta: {
               id: 'xyLegendOutsideHorizontal',
               title: 'Outside horizontal',
-              description: 'Outside legend positioned horizontal (top/bottom) of the chart',
+              description: 'Outside legend positioned horizontally (top or bottom) relative to the chart.',
             },
           }
         ),
@@ -519,7 +530,7 @@ const xySharedSettings = {
             meta: {
               id: 'xyLegendOutsideVertical',
               title: 'Outside vertical',
-              description: 'Outside legend positioned vertical (left/right) of the chart',
+              description: 'Outside legend positioned vertically (left or right) relative to the chart.',
             },
           }
         ),
@@ -530,11 +541,11 @@ const xySharedSettings = {
             placement: schema.literal('inside'),
             layout: schema.maybe(gridLayout),
             columns: schema.maybe(
-              schema.number({ min: 1, max: 5, meta: { description: 'Number of legend columns' } })
+              schema.number({ min: 1, max: 5, meta: { description: 'Number of legend columns. Valid range is 1-5.' } })
             ),
             position: schema.maybe(
               cornerPositionSchema({
-                meta: { description: 'Legend position inside the chart' },
+                meta: { description: 'Legend position inside the chart.' },
               })
             ),
           },
@@ -542,7 +553,7 @@ const xySharedSettings = {
             meta: {
               id: 'xyLegendInside',
               title: 'Inside',
-              description: 'Inside legend',
+              description: 'Legend positioned inside the chart area.',
             },
           }
         ),
@@ -551,7 +562,7 @@ const xySharedSettings = {
         meta: {
           id: 'xyLegend',
           title: 'Legend',
-          description: 'Legend configuration for XY chart',
+          description: 'Legend configuration for the XY chart.',
         },
       }
     )
@@ -598,7 +609,7 @@ const xyDataLayerSchemaNoESQL = schema.object(
         color: schema.maybe(colorMappingSchema),
         aggregate_first: schema.maybe(
           schema.boolean({
-            meta: { description: 'Whether to aggregate before splitting series' },
+            meta: { description: 'When `true`, aggregates data before splitting into series.' },
           })
         ),
       })
@@ -608,7 +619,7 @@ const xyDataLayerSchemaNoESQL = schema.object(
         axis_id: schema.maybe(yAxisIdReferenceSchema),
         color: schema.maybe(staticColorSchema),
       }),
-      { meta: { description: 'Array of metrics to display on Y-axis' }, maxSize: 100 }
+      { meta: { description: 'Array of metrics to display on the Y-axis.' }, maxSize: 100 }
     ),
     x: schema.maybe(mergeAllBucketsWithChartDimensionSchema({})),
   },
@@ -616,7 +627,7 @@ const xyDataLayerSchemaNoESQL = schema.object(
     meta: {
       id: 'xyLayerNoESQL',
       title: 'Layer (DSL)',
-      description: 'Data layer for standard queries with metrics and buckets',
+      description: 'Data layer for standard queries with metrics and buckets.',
     },
   }
 );
@@ -635,7 +646,7 @@ const xyDataLayerSchemaESQL = schema.object(
           color: schema.maybe(colorMappingSchema),
           collapse_by: schema.maybe(collapseBySchema),
         },
-        { meta: { description: 'ES|QL column for breakdown' } }
+        { meta: { description: 'ES|QL column for breakdown.' } }
       )
     ),
     y: schema.arrayOf(
@@ -644,9 +655,9 @@ const xyDataLayerSchemaESQL = schema.object(
           axis_id: schema.maybe(yAxisIdReferenceSchema),
           color: schema.maybe(staticColorSchema),
         },
-        { meta: { description: 'ES|QL column for Y-axis metric' } }
+        { meta: { description: 'ES|QL column for Y-axis metric.' } }
       ),
-      { meta: { description: 'Array of ES|QL columns for Y-axis metrics' }, maxSize: 100 }
+      { meta: { description: 'Array of ES|QL columns for Y-axis metrics.' }, maxSize: 100 }
     ),
     x: schema.maybe(esqlColumnWithFormatSchema),
   },
@@ -654,7 +665,7 @@ const xyDataLayerSchemaESQL = schema.object(
     meta: {
       id: 'xyLayerESQL',
       title: 'Layer (ES|QL)',
-      description: 'Data layer for ES|QL queries with column references',
+      description: 'Data layer for ES|QL queries with column references.',
     },
   }
 );
@@ -690,34 +701,34 @@ const STROKE_WIDTH_MAX = 10;
 const referenceLineLayerShared = {
   fill: schema.maybe(
     schema.oneOf([schema.literal('above'), schema.literal('below')], {
-      meta: { description: 'Fill direction for reference line' },
+      meta: { description: 'Fill direction for the reference line. Valid values are `above` and `below`.' },
     })
   ),
   text: schema.maybe(
     schema.object(
       {
-        visible: schema.boolean({ meta: { description: 'Show text label on the reference line' } }),
+        visible: schema.boolean({ meta: { description: 'When `true`, shows the text label on the reference line.' } }),
       },
-      { meta: { description: 'Reference line text label configuration' } }
+      { meta: { description: 'Reference line text label configuration.' } }
     )
   ),
-  icon: schema.maybe(getListOfAvailableIcons('Icon to display on the reference line')),
+  icon: schema.maybe(getListOfAvailableIcons('Icon to display on the reference line.')),
   stroke_width: schema.maybe(
     schema.number({
-      meta: { description: 'Line width in pixels' },
+      meta: { description: 'Line width in pixels. Valid range is 1-10.' },
       min: STROKE_WIDTH_MIN,
       max: STROKE_WIDTH_MAX,
     })
   ),
   stroke_dash: schema.maybe(
     schema.oneOf([schema.literal('solid'), schema.literal('dashed'), schema.literal('dotted')], {
-      meta: { description: 'Line style' },
+      meta: { description: 'Line style. Valid values are `solid`, `dashed`, and `dotted`.' },
     })
   ),
   color: schema.maybe(staticColorSchema),
   position: schema.maybe(
     schema.oneOf([schema.literal('auto'), schema.literal('left'), schema.literal('right')], {
-      meta: { description: 'Position of the icon and label relative to the reference line' },
+      meta: { description: 'Position of the icon and label relative to the reference line. Valid values are `auto`, `left`, and `right`.' },
     })
   ),
   axis_id: schema.maybe(
@@ -741,14 +752,14 @@ const referenceLineLayerSchemaNoESQL = schema.object(
     type: schema.literal('reference_lines'),
     thresholds: schema.arrayOf(
       mergeAllMetricsWithChartDimensionSchemaWithStaticOps(referenceLineLayerShared),
-      { meta: { description: 'Array of reference line thresholds' }, minSize: 1, maxSize: 100 }
+      { meta: { description: 'Array of reference line thresholds.' }, minSize: 1, maxSize: 100 }
     ),
   },
   {
     meta: {
       id: 'xyReferenceLineLayerNoESQL',
       title: 'Reference Line Layer (DSL)',
-      description: 'Reference line layer for standard queries',
+      description: 'Reference line layer for standard queries.',
     },
   }
 );
@@ -762,7 +773,7 @@ const referenceLineLayerSchemaESQL = schema.object(
     ...dataSourceEsqlTableSchema,
     type: schema.literal('reference_lines'),
     thresholds: schema.arrayOf(esqlColumnWithFormatSchema.extends(referenceLineLayerShared), {
-      meta: { description: 'Array of ES|QL-based reference line thresholds' },
+      meta: { description: 'Array of ES|QL-based reference line thresholds.' },
       minSize: 1,
       maxSize: 100,
     }),
@@ -771,7 +782,7 @@ const referenceLineLayerSchemaESQL = schema.object(
     meta: {
       id: 'xyReferenceLineLayerESQL',
       title: 'Reference Line Layer (ES|QL)',
-      description: 'Reference line layer for ES|QL queries',
+      description: 'Reference line layer for ES|QL queries.',
     },
   }
 );
@@ -781,7 +792,7 @@ const referenceLineLayerSchemaESQL = schema.object(
  */
 const annotationEventShared = {
   color: schema.maybe(staticColorSchema),
-  visible: schema.maybe(schema.boolean({ meta: { description: 'Show the annotation' } })),
+  visible: schema.maybe(schema.boolean({ meta: { description: 'When `true`, shows the annotation.' } })),
 };
 
 /**
@@ -789,21 +800,21 @@ const annotationEventShared = {
  */
 const annotationPointShared = {
   ...annotationEventShared,
-  icon: schema.maybe(getListOfAvailableIcons('Icon to display at the annotation point')),
+  icon: schema.maybe(getListOfAvailableIcons('Icon to display at the annotation point.')),
   line: schema.maybe(
     schema.object(
       {
         stroke_width: schema.number({
-          meta: { description: 'Vertical line width in pixels' },
+          meta: { description: 'Vertical line width in pixels. Valid range is 1-10.' },
           min: STROKE_WIDTH_MIN,
           max: STROKE_WIDTH_MAX,
         }),
         stroke_dash: schema.oneOf(
           [schema.literal('solid'), schema.literal('dashed'), schema.literal('dotted')],
-          { meta: { description: 'Vertical line style' } }
+          { meta: { description: 'Vertical line style. Valid values are `solid`, `dashed`, and `dotted`.' } }
         ),
       },
-      { meta: { description: 'Vertical line configuration for point annotation' } }
+      { meta: { description: 'Vertical line configuration for point annotation.' } }
     )
   ),
 };
@@ -812,8 +823,8 @@ const annotationPointShared = {
  * Timestamp format for annotations (Unix timestamp or ISO date string)
  */
 const annotationTimestampSchema = schema.oneOf([
-  schema.number({ meta: { description: 'Unix timestamp in milliseconds' } }),
-  schema.string({ meta: { description: 'ISO date string' } }),
+  schema.number({ meta: { description: 'Unix timestamp in milliseconds.' } }),
+  schema.string({ meta: { description: 'ISO date string.' } }),
 ]);
 
 /**
@@ -824,32 +835,32 @@ const annotationQuery = schema.object(
     ...annotationPointShared,
     type: schema.literal('query'),
     query: filterSchema,
-    time_field: schema.string({ meta: { description: 'Field containing the timestamp' } }),
-    label: schema.maybe(schema.string({ meta: { description: 'Label text for the annotation' } })),
+    time_field: schema.string({ meta: { description: 'Field containing the timestamp.' } }),
+    label: schema.maybe(schema.string({ meta: { description: 'Label text for the annotation.' } })),
     text: schema.maybe(
       schema.object(
         {
-          visible: schema.boolean({ meta: { description: 'Show text label on the annotation' } }),
+          visible: schema.boolean({ meta: { description: 'When `true`, shows the text label on the annotation.' } }),
           field: schema.maybe(
             schema.string({
-              meta: { description: 'Field name for text label source' },
+              meta: { description: 'Field name to use as the text label source.' },
             })
           ),
         },
-        { meta: { description: 'Annotation text label configuration' } }
+        { meta: { description: 'Annotation text label configuration.' } }
       )
     ),
     extra_fields: schema.maybe(
       schema.arrayOf(
-        schema.string({ meta: { description: 'Additional field to include in tooltip' } }),
-        { meta: { description: 'Additional fields for annotation tooltip' }, maxSize: 100 }
+        schema.string({ meta: { description: 'Additional field to include in the tooltip.' } }),
+        { meta: { description: 'Additional fields to include in the annotation tooltip.' }, maxSize: 100 }
       )
     ),
   },
   {
     meta: {
       id: 'xyAnnotationQuery',
-      description: 'Annotation from query results matching a filter',
+      description: 'Annotation from query results matching a filter.',
     },
   }
 );
@@ -862,20 +873,20 @@ const annotationManualEvent = schema.object(
     ...annotationPointShared,
     type: schema.literal('point'),
     timestamp: annotationTimestampSchema,
-    label: schema.maybe(schema.string({ meta: { description: 'Label text for the annotation' } })),
+    label: schema.maybe(schema.string({ meta: { description: 'Label text for the annotation.' } })),
     text: schema.maybe(
       schema.object(
         {
-          visible: schema.boolean({ meta: { description: 'Show text label on the annotation' } }),
+          visible: schema.boolean({ meta: { description: 'When `true`, shows the text label on the annotation.' } }),
         },
-        { meta: { description: 'Annotation text label visibility' } }
+        { meta: { description: 'Annotation text label visibility.' } }
       )
     ),
   },
   {
     meta: {
       id: 'xyAnnotationManualEvent',
-      description: 'Manual point annotation at specific timestamp',
+      description: 'Manual point annotation at a specific timestamp.',
     },
   }
 );
@@ -892,20 +903,20 @@ const annotationManualRange = schema.object(
         from: annotationTimestampSchema,
         to: annotationTimestampSchema,
       },
-      { meta: { description: 'Time range for annotation' } }
+      { meta: { description: 'Time range for the annotation.' } }
     ),
-    label: schema.maybe(schema.string({ meta: { description: 'Label text for the annotation' } })),
+    label: schema.maybe(schema.string({ meta: { description: 'Label text for the annotation.' } })),
     fill: schema.maybe(
       schema.oneOf([schema.literal('inside'), schema.literal('outside')], {
         defaultValue: 'inside',
-        meta: { description: 'Fill direction for range' },
+        meta: { description: 'Fill direction for the range. Defaults to `inside`. Valid values are `inside` and `outside`.' },
       })
     ),
   },
   {
     meta: {
       id: 'xyAnnotationManualRange',
-      description: 'Manual range annotation spanning time interval',
+      description: 'Manual range annotation spanning a time interval.',
     },
   }
 );
@@ -920,14 +931,14 @@ const annotationLayerByValueSchema = schema.object(
     type: schema.literal('annotations'),
     events: schema.arrayOf(
       schema.oneOf([annotationQuery, annotationManualEvent, annotationManualRange]),
-      { meta: { description: 'Array of annotation configurations' }, minSize: 1, maxSize: 100 }
+      { meta: { description: 'Array of annotation configurations.' }, minSize: 1, maxSize: 100 }
     ),
   },
   {
     meta: {
       id: 'xyAnnotationLayerNoESQL',
       title: 'Annotation Layer (DSL)',
-      description: 'Layer containing annotations (query-based, points, and ranges)',
+      description: 'Layer containing annotations (query-based, points, and ranges).',
     },
   }
 );
@@ -939,13 +950,13 @@ const annotationByRefLayerSchema = schema.object(
   {
     type: schema.literal('annotation_group'),
     group_id: schema.string({
-      meta: { description: 'ID of the linked annotation group from the library' },
+      meta: { description: 'ID of the linked annotation group from the library.' },
     }),
   },
   {
     meta: {
       id: 'xyAnnotationByRefLayer',
-      description: 'Reference to a library annotation group',
+      description: 'Reference to a library annotation group.',
     },
   }
 );
@@ -955,7 +966,7 @@ const annotationLayerSchema = objectUnion(
   {
     meta: {
       id: 'xyAnnotationLayer',
-      description: 'Annotation layer which can be defined by-value or by-reference',
+      description: 'Annotation layer which can be defined by-value or by-reference.',
     },
   }
 );
@@ -969,7 +980,7 @@ const xyLayerUnionNoESQL = objectUnion(
   {
     meta: {
       id: 'xyLayersNoESQL',
-      description: 'XY chart layer types for DSL queries',
+      description: 'XY chart layer types for DSL queries.',
     },
   }
 );
@@ -977,7 +988,7 @@ const xyLayerUnionNoESQL = objectUnion(
 const xyLayerUnionESQL = objectUnion([xyDataLayerSchemaESQL], {
   meta: {
     id: 'xyLayersESQL',
-    description: 'XY chart layer types for ES|QL queries',
+    description: 'XY chart layer types for ES|QL queries.',
   },
 });
 
@@ -993,14 +1004,14 @@ export const xyStateSchemaNoESQL = schema.object(
     layers: schema.arrayOf(xyLayerUnionNoESQL, {
       minSize: 1,
       maxSize: 100,
-      meta: { description: 'Chart layers' },
+      meta: { description: 'Chart layers.' },
     }),
   },
   {
     meta: {
       id: 'xyChartNoESQL',
       title: 'XY Chart (DSL)',
-      description: 'XY chart configuration for DSL queries',
+      description: 'XY chart configuration for DSL queries.',
     },
   }
 );
@@ -1016,14 +1027,14 @@ export const xyStateSchemaESQL = schema.object(
     layers: schema.arrayOf(xyLayerUnionESQL, {
       minSize: 1,
       maxSize: 100,
-      meta: { description: 'ES|QL chart layers' },
+      meta: { description: 'ES|QL chart layers.' },
     }),
   },
   {
     meta: {
       id: 'xyChartESQL',
       title: 'XY Chart (ES|QL)',
-      description: 'XY chart configuration for ES|QL queries',
+      description: 'XY chart configuration for ES|QL queries.',
     },
   }
 );
@@ -1035,7 +1046,7 @@ export const xyStateSchema = objectUnion([xyStateSchemaNoESQL, xyStateSchemaESQL
   meta: {
     id: 'xyChart',
     title: 'XY Chart',
-    description: 'XY chart configuration',
+    description: 'XY chart configuration.',
   },
 });
 

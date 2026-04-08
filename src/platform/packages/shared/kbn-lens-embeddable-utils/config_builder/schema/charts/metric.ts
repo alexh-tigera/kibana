@@ -128,7 +128,7 @@ const metricStylingSchema = schema.object(
          */
         position: schema.maybe(
           metricValuePositionSchema({
-            meta: { description: 'Position of the primary metric value (top, middle, or bottom)' },
+            meta: { description: 'Position of the primary metric value (top, middle, or bottom).' },
             defaultValue: DEFAULT_PRIMARY_POSITION,
           })
         ),
@@ -148,14 +148,14 @@ const metricStylingSchema = schema.object(
                 horizontalAlignmentSchema({
                   meta: {
                     description:
-                      'Horizontal alignment for the title and subtitle text (left, center or right)',
+                      'Horizontal alignment for the title and subtitle text (left, center, or right).',
                   },
                   defaultValue: DEFAULT_PRIMARY_LABELS_ALIGNMENT,
                 })
               ),
             },
             {
-              meta: { description: 'Labels (title and subtitle) configuration' },
+              meta: { description: 'Labels (title and subtitle) configuration.' },
             }
           )
         ),
@@ -174,7 +174,7 @@ const metricStylingSchema = schema.object(
               alignment: schema.maybe(
                 horizontalAlignmentSchema({
                   meta: {
-                    description: 'Alignment for the primary metric value (left, center or right)',
+                    description: 'Alignment for the primary metric value (left, center, or right).',
                   },
                   defaultValue: DEFAULT_PRIMARY_VALUE_ALIGNMENT,
                 })
@@ -196,7 +196,7 @@ const metricStylingSchema = schema.object(
               ),
             },
             {
-              meta: { description: 'Primary metric value configuration' },
+              meta: { description: 'Primary metric value configuration.' },
             }
           )
         ),
@@ -229,7 +229,7 @@ const metricStylingSchema = schema.object(
                   schema.literal('tag'),
                   schema.literal('temperature'),
                 ],
-                { meta: { description: 'Icon name' } }
+                { meta: { description: 'Icon name.' } }
               ),
               /**
                * Icon alignment. Possible values:
@@ -238,7 +238,7 @@ const metricStylingSchema = schema.object(
                */
               alignment: schema.maybe(
                 leftRightAlignmentSchema({
-                  meta: { description: 'Icon alignment' },
+                  meta: { description: 'Icon alignment (left or right).' },
                   defaultValue: DEFAULT_PRIMARY_ICON_ALIGNMENT,
                 })
               ),
@@ -247,7 +247,7 @@ const metricStylingSchema = schema.object(
               meta: {
                 id: 'metricIconConfig',
                 title: 'Icon Configuration',
-                description: 'Icon configuration for the primary metric',
+                description: 'Icon configuration for the primary metric.',
               },
             }
           )
@@ -266,7 +266,7 @@ const metricStylingSchema = schema.object(
              */
             visible: schema.maybe(
               schema.boolean({
-                meta: { description: 'Whether to display the label' },
+                meta: { description: 'When `true`, displays the label.' },
                 defaultValue: DEFAULT_SECONDARY_LABEL_VISIBLE,
               })
             ),
@@ -279,7 +279,7 @@ const metricStylingSchema = schema.object(
               placementSchema({
                 meta: {
                   description:
-                    'Label placement relative to the secondary metric value (before or after)',
+                    'Label placement relative to the secondary metric value (before or after).',
                 },
                 defaultValue: DEFAULT_SECONDARY_LABEL_PLACEMENT,
               })
@@ -297,12 +297,12 @@ const metricStylingSchema = schema.object(
                */
               alignment: schema.maybe(
                 horizontalAlignmentSchema({
-                  meta: { description: 'Alignment for secondary values (left, center or right)' },
+                  meta: { description: 'Alignment for secondary values (left, center, or right).' },
                   defaultValue: DEFAULT_SECONDARY_VALUE_ALIGNMENT,
                 })
               ),
             },
-            { meta: { description: 'Secondary metric value configuration' } }
+            { meta: { description: 'Secondary metric value configuration.' } }
           )
         ),
       })
@@ -311,7 +311,7 @@ const metricStylingSchema = schema.object(
   {
     meta: {
       id: 'metricStyling',
-      description: 'Visual styling options for the chart',
+      description: 'Visual styling options for the chart.',
     },
   }
 );
@@ -352,7 +352,7 @@ const metricStateSecondaryMetricOptionsSchema = {
       compareToSchemaShared.extends(
         {
           to: schema.literal('baseline'),
-          baseline: schema.number({ meta: { description: 'Baseline value' }, defaultValue: 0 }),
+          baseline: schema.number({ meta: { description: 'Baseline value. Defaults to `0`.' }, defaultValue: 0 }),
         },
         { meta: { id: 'metricCompareToBaseline', title: 'Compare To Baseline' } }
       ),
@@ -459,7 +459,7 @@ export const metricStateSchemaNoESQL = schema.object(
     meta: {
       id: 'metricNoESQL',
       title: 'Metric Chart (DSL)',
-      description: 'Metric chart configuration for standard queries',
+      description: 'Metric chart configuration for standard queries.',
     },
     validate: ({ metrics, breakdown_by }) => {
       const primaryMetric = metrics.find((metric) => isPrimaryMetric(metric));
@@ -512,7 +512,7 @@ export const esqlMetricState = schema.object(
     meta: {
       id: 'metricESQL',
       title: 'Metric Chart (ES|QL)',
-      description: 'Metric chart configuration for ES|QL queries',
+      description: 'Metric chart configuration for ES|QL queries.',
     },
     validate: ({ metrics, breakdown_by }) => {
       const primaryMetric = metrics.find((metric) => isPrimaryMetric(metric));

@@ -145,7 +145,7 @@ export const legacyColorByValueSchema = colorByValueBaseSchema.extends(
     meta: {
       id: 'legacyColorByValue',
       title: 'Legacy color by value',
-      description: 'Legacy color by value configuration',
+      description: 'Legacy color by value configuration.',
       deprecated: true,
     },
   }
@@ -159,7 +159,7 @@ export const legacyColorByValueAbsoluteSchema = legacyColorByValueSchema.extends
     meta: {
       id: 'legacyColorByValueAbsolute',
       title: 'Legacy color by value (absolute)',
-      description: 'Legacy color by absolute value configuration',
+      description: 'Legacy color by absolute value configuration.',
       deprecated: true,
     },
   }
@@ -173,7 +173,7 @@ export const colorByValueAbsoluteSchema = colorByValueBaseSchema.extends(
     meta: {
       id: 'colorByValueAbsolute',
       title: 'Color By Value (Absolute)',
-      description: 'Color by absolute value configuration',
+      description: 'Color by absolute value configuration.',
     },
   }
 );
@@ -186,7 +186,7 @@ export const colorByValuePercentageSchema = colorByValueBaseSchema.extends(
     meta: {
       id: 'colorByValuePercentage',
       title: 'Color By Value (Percentage)',
-      description: 'Color by percentage value configuration',
+      description: 'Color by percentage value configuration.',
     },
   }
 );
@@ -261,7 +261,7 @@ const gradientColorMappingSchema = schema.object(
     }),
     sort: schema.maybe(
       schema.oneOf([schema.literal('asc'), schema.literal('desc')], {
-        meta: { description: 'Sort direction' },
+        meta: { description: 'Sort direction.' },
       })
     ),
     mapping: schema.maybe(
@@ -316,6 +316,6 @@ export type UnassignedColorType = TypeOf<typeof unassignedColorSchema>;
 export const applyColorToSchema = schema.oneOf(
   [schema.literal('value'), schema.literal('background')],
   {
-    meta: { description: 'Where to apply the color' },
+    meta: { description: 'Where to apply the color (`value` or `background`).' },
   }
 );

@@ -33,7 +33,7 @@ import { objectUnion } from './utils/object_union';
  * so it uses a datatable-specific schema rather than the shared applyColorToSchema.
  */
 const applyColorToDatatableSchema = schema.oneOf([applyColorToSchema, schema.literal('badge')], {
-  meta: { description: 'Where to apply the color for datatable (value, background, or badge)' },
+  meta: { description: 'Where to apply the color for the datatable. Valid values are `value`, `background`, and `badge`.' },
 });
 
 /**
@@ -45,15 +45,15 @@ const sortingSchema = schema.oneOf(
     schema.object(
       {
         column_type: schema.oneOf([schema.literal('metric'), schema.literal('row')], {
-          meta: { description: 'Type of column to sort by' },
+          meta: { description: 'Type of column to sort by. Valid values are `metric` and `row`.' },
         }),
         index: schema.number({
           min: 0,
-          meta: { description: 'Index of the column/row to sort by (0-based)' },
+          meta: { description: 'Index of the column or row to sort by (0-based).' },
         }),
-        direction: builderEnums.direction({ meta: { description: 'Sort direction' } }),
+        direction: builderEnums.direction({ meta: { description: 'Sort direction. Valid values are `asc` and `desc`.' } }),
       },
-      { meta: { description: 'Sort by a metric or row column' } }
+      { meta: { description: 'Sort by a metric or row column.' } }
     ),
     // Sorting for pivoted metric columns (created by split_metrics_by)
     schema.object(
@@ -63,22 +63,22 @@ const sortingSchema = schema.oneOf(
           min: 0,
           meta: {
             description:
-              '0-based index into the "metrics" array for the metric to sort; use "values" to identify the pivoted column',
+              '0-based index into the "metrics" array for the metric to sort; use "values" to identify the pivoted column.',
           },
         }),
         values: schema.arrayOf(schema.string(), {
           minSize: 1,
           maxSize: 20,
           meta: {
-            description: 'Array of pivot values, one for each split_metrics_by column in order',
+            description: 'Array of pivot values, one for each split_metrics_by column in order.',
           },
         }),
-        direction: builderEnums.direction({ meta: { description: 'Sort direction' } }),
+        direction: builderEnums.direction({ meta: { description: 'Sort direction. Valid values are `asc` and `desc`.' } }),
       },
       {
         meta: {
           description:
-            'Sort by a pivoted metric column (created when metrics are pivoted by split_metrics_by)',
+            'Sort by a pivoted metric column (created when metrics are pivoted by split_metrics_by).',
         },
       }
     ),
@@ -106,7 +106,7 @@ const datatableStateSharedOptionsSchema = {
             [schema.literal('compact'), schema.literal('default'), schema.literal('expanded')],
             {
               defaultValue: 'default',
-              meta: { description: 'Density mode' },
+              meta: { description: 'Density mode. Defaults to `default`. Valid values are `compact`, `default`, and `expanded`.' },
             }
           )
         ),
@@ -130,7 +130,7 @@ const datatableStateSharedOptionsSchema = {
                 ],
                 {
                   meta: {
-                    description: 'Maximum number of lines to use before header is truncated',
+                    description: 'Maximum number of lines to use before the header is truncated. Valid range is 1-5.',
                   },
                 }
               )
@@ -150,7 +150,7 @@ const datatableStateSharedOptionsSchema = {
                 ],
                 {
                   meta: {
-                    description: 'Number of lines to display per table body cell',
+                    description: 'Number of lines to display per table body cell. Valid range is 1-20.',
                   },
                 }
               )
@@ -161,7 +161,7 @@ const datatableStateSharedOptionsSchema = {
       {
         meta: {
           id: 'datatableDensity',
-          description: 'Density configuration for the datatable',
+          description: 'Density configuration for the datatable.',
         },
       }
     )
@@ -180,7 +180,7 @@ const datatableStateSharedOptionsSchema = {
       ],
       {
         meta: {
-          description: 'Enables pagination and sets the number of rows to display per page',
+          description: 'Enables pagination and sets the number of rows to display per page. Valid values are `10`, `20`, `30`, `50`, and `100`.',
         },
       }
     )
@@ -195,11 +195,11 @@ const datatableStateSharedOptionsSchema = {
   row_numbers: schema.maybe(
     schema.object(
       {
-        visible: schema.boolean({ meta: { description: 'Show row numbers' } }),
+        visible: schema.boolean({ meta: { description: 'When `true`, displays row numbers.' } }),
       },
       {
         meta: {
-          description: 'Configuration for row numbers',
+          description: 'Configuration for row numbers.',
         },
       }
     )
@@ -221,7 +221,7 @@ const datatableStateCommonOptionsSchema = {
   width: schema.maybe(
     schema.number({
       min: 0,
-      meta: { description: 'Column width in pixels' },
+      meta: { description: 'Column width in pixels.' },
     })
   ),
 };
@@ -234,7 +234,7 @@ const datatableStateRowsOptionsNoESQLSchema = {
   alignment: schema.maybe(
     horizontalAlignmentSchema({
       defaultValue: 'left',
-      meta: { description: 'Alignment of the rows' },
+      meta: { description: 'Horizontal alignment of the row values. Defaults to `left`.' },
     })
   ),
   /**
@@ -247,7 +247,7 @@ const datatableStateRowsOptionsNoESQLSchema = {
   click_filter: schema.maybe(
     schema.boolean({
       defaultValue: false,
-      meta: { description: 'Whether to enable the one click filter' },
+      meta: { description: 'When `true`, enables one-click filtering on the column. Defaults to `false`.' },
     })
   ),
   /**
@@ -292,7 +292,7 @@ const datatableStateMetricsOptionsSchema = {
   alignment: schema.maybe(
     horizontalAlignmentSchema({
       defaultValue: 'right',
-      meta: { description: 'Alignment of the columns' },
+      meta: { description: 'Horizontal alignment of the metric column values. Defaults to `right`.' },
     })
   ),
   /**
@@ -309,11 +309,11 @@ const datatableStateMetricsOptionsSchema = {
             schema.literal('min'),
             schema.literal('max'),
           ],
-          { meta: { description: 'Type of summary function to apply to the column' } }
+          { meta: { description: 'Type of summary function to apply to the column. Valid values are `sum`, `avg`, `count`, `min`, and `max`.' } }
         ),
-        label: schema.maybe(schema.string({ meta: { description: 'Summary row label' } })),
+        label: schema.maybe(schema.string({ meta: { description: 'Summary row label.' } })),
       },
-      { meta: { description: 'Summary row configuration' } }
+      { meta: { description: 'Summary row configuration.' } }
     )
   ),
 };
@@ -390,7 +390,7 @@ export const datatableStateSchemaNoESQL = schema.object(
       {
         minSize: 1,
         maxSize: 1000,
-        meta: { description: 'Array of metrics to display as columns in the datatable' },
+        meta: { description: 'Array of metrics to display as columns in the datatable.' },
       }
     ),
     /**
@@ -402,7 +402,7 @@ export const datatableStateSchemaNoESQL = schema.object(
         {
           minSize: 1,
           maxSize: 50,
-          meta: { description: 'Array of operations to split the datatable rows by' },
+          meta: { description: 'Array of operations to split the datatable rows by.' },
         }
       )
     ),
@@ -413,7 +413,7 @@ export const datatableStateSchemaNoESQL = schema.object(
       schema.arrayOf(bucketOperationDefinitionSchema, {
         minSize: 1,
         maxSize: 20,
-        meta: { description: 'Array of operations to split the metric columns by' },
+        meta: { description: 'Array of operations to split the metric columns by.' },
       })
     ),
   },
@@ -422,7 +422,7 @@ export const datatableStateSchemaNoESQL = schema.object(
     meta: {
       id: 'datatableNoESQL',
       title: 'Datatable (DSL)',
-      description: 'Datatable state configuration for standard queries',
+      description: 'Datatable state configuration for standard queries.',
     },
   }
 );
@@ -445,7 +445,7 @@ export const datatableStateSchemaESQL = schema.object(
         {
           minSize: 1,
           maxSize: 1000,
-          meta: { description: 'Array of metrics to display as columns in the datatable' },
+          meta: { description: 'Array of metrics to display as columns in the datatable.' },
         }
       )
     ),
@@ -456,7 +456,7 @@ export const datatableStateSchemaESQL = schema.object(
       schema.arrayOf(esqlColumnWithFormatSchema.extends(datatableStateRowsOptionsESQLSchema), {
         minSize: 1,
         maxSize: 50,
-        meta: { description: 'Array of operations to split the datatable rows by' },
+        meta: { description: 'Array of operations to split the datatable rows by.' },
       })
     ),
     /**
@@ -466,7 +466,7 @@ export const datatableStateSchemaESQL = schema.object(
       schema.arrayOf(esqlColumnWithFormatSchema, {
         minSize: 1,
         maxSize: 20,
-        meta: { description: 'Array of operations to split the metric columns by' },
+        meta: { description: 'Array of operations to split the metric columns by.' },
       })
     ),
   },
@@ -486,7 +486,7 @@ export const datatableStateSchemaESQL = schema.object(
     meta: {
       id: 'datatableESQL',
       title: 'Datatable (ES|QL)',
-      description: 'Datatable state configuration for ES|QL queries',
+      description: 'Datatable state configuration for ES|QL queries.',
     },
   }
 );
@@ -497,7 +497,7 @@ export const datatableStateSchema = objectUnion(
     meta: {
       id: 'datatableChart',
       title: 'Datatable',
-      description: 'Datatable chart configuration: DSL or ES|QL query based',
+      description: 'Datatable chart configuration: DSL or ES|QL query based.',
     },
   }
 );

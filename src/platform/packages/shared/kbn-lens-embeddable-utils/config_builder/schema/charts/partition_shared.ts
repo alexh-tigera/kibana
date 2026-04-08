@@ -16,7 +16,7 @@ export const valueDisplaySchema = schema.maybe(
     {
       visible: schema.maybe(
         schema.boolean({
-          meta: { description: 'Show metric values on the chart' },
+          meta: { description: 'When `true`, displays metric values on the chart.' },
         })
       ),
       mode: schema.maybe(
@@ -31,7 +31,7 @@ export const valueDisplaySchema = schema.maybe(
           defaultValue: 2,
           min: 0,
           max: 10,
-          meta: { description: 'Decimal places for percentage display (0-10)' },
+          meta: { description: 'Decimal places for percentage display (0-10).' },
         })
       ),
     },
@@ -39,7 +39,7 @@ export const valueDisplaySchema = schema.maybe(
       meta: {
         id: 'valueDisplay',
         description:
-          'Configure the visibility and the format of the values rendered on each chart partition section',
+          'Configure the visibility and the format of the values rendered on each chart partition section.',
       },
     }
   )
@@ -48,7 +48,7 @@ export const valueDisplaySchema = schema.maybe(
 export const legendNestedSchema = schema.maybe(
   schema.boolean({
     defaultValue: false,
-    meta: { description: 'Show nested legend with hierarchical breakdown levels' },
+    meta: { description: 'When `true`, displays a nested legend with hierarchical breakdown levels.' },
   })
 );
 

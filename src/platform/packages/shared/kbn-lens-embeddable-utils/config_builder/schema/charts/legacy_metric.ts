@@ -35,7 +35,7 @@ const legacyMetricStateMetricOptionsSchema = {
         schema.literal('xl'),
         schema.literal('xxl'),
       ],
-      { meta: { description: 'Font size for the label and value' }, defaultValue: 'm' }
+      { meta: { description: 'Font size for the label and value (`xs`, `s`, `m`, `l`, `xl`, or `xxl`).' }, defaultValue: 'm' }
     )
   ),
   labels: schema.maybe(
@@ -47,11 +47,11 @@ const legacyMetricStateMetricOptionsSchema = {
          * - 'bottom': Align label to the bottom of the value
          */
         alignment: verticalAlignmentSchema({
-          meta: { description: 'Label alignment' },
+          meta: { description: 'Label alignment (top or bottom).' },
           defaultValue: 'top',
         }),
       },
-      { meta: { description: 'Labels configuration' } }
+      { meta: { description: 'Labels configuration.' } }
     )
   ),
   values: schema.maybe(
@@ -64,11 +64,11 @@ const legacyMetricStateMetricOptionsSchema = {
          * - 'right': Align value to the right
          */
         alignment: horizontalAlignmentSchema({
-          meta: { description: 'Value alignment' },
+          meta: { description: 'Value alignment (left, center, or right).' },
           defaultValue: 'left',
         }),
       },
-      { meta: { description: 'Values configuration' } }
+      { meta: { description: 'Values configuration.' } }
     )
   ),
   /**

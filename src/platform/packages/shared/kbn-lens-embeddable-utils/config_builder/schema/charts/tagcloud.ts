@@ -31,7 +31,7 @@ const tagcloudStateTagsByOptionsSchema = {
 const tagcloudStateSharedOptionsSchema = {
   orientation: schema.maybe(
     builderEnums.orientation({
-      meta: { description: 'Orientation of the tagcloud' },
+      meta: { description: 'Orientation of the tag cloud.' },
       defaultValue: 'horizontal',
     })
   ),
@@ -41,15 +41,15 @@ const tagcloudStateSharedOptionsSchema = {
         min: schema.number({
           defaultValue: LENS_TAGCLOUD_DEFAULT_STATE.minFontSize,
           min: 1,
-          meta: { description: 'Minimum font size' },
+          meta: { description: 'Minimum font size in pixels.' },
         }),
         max: schema.number({
           defaultValue: LENS_TAGCLOUD_DEFAULT_STATE.maxFontSize,
           max: 120,
-          meta: { description: 'Maximum font size' },
+          meta: { description: 'Maximum font size in pixels.' },
         }),
       },
-      { meta: { description: 'Minimum and maximum font size for the tags' } }
+      { meta: { description: 'Minimum and maximum font size for the tags.' } }
     )
   ),
   /**
@@ -59,14 +59,14 @@ const tagcloudStateSharedOptionsSchema = {
     schema.object(
       {
         visible: schema.boolean({
-          meta: { description: 'Show caption' },
+          meta: { description: 'When `true`, displays the caption.' },
           defaultValue: LENS_TAGCLOUD_DEFAULT_STATE.showCaption,
         }),
       },
       {
         meta: {
           description:
-            'Caption configuration representing the metric and the tag_by operations labels',
+            'Caption configuration representing the metric and the tag_by operations labels.',
         },
       }
     )

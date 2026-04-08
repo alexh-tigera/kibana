@@ -40,7 +40,7 @@ export const waffleStateSharedSchema = {
             schema.oneOf([schema.literal('absolute')], {
               meta: {
                 description:
-                  'Legend value display mode: absolute (show raw metric values in legend)',
+                  'Legend value display mode: absolute (show raw metric values in legend).',
               },
             }),
             { minSize: 1, maxSize: 1 }
@@ -54,7 +54,7 @@ export const waffleStateSharedSchema = {
         meta: {
           id: 'waffleLegend',
           title: 'Legend',
-          description: 'Legend configuration for waffle chart',
+          description: 'Legend configuration for waffle chart.',
         },
       }
     )
@@ -99,7 +99,7 @@ export const waffleStateSchemaNoESQL = schema.object(
       {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of metric configurations (minimum 1)' },
+        meta: { description: 'Array of metric configurations (minimum 1).' },
       }
     ),
     group_by: schema.maybe(
@@ -108,7 +108,7 @@ export const waffleStateSchemaNoESQL = schema.object(
         {
           minSize: 1,
           maxSize: 100,
-          meta: { description: 'Array of breakdown dimensions (minimum 1)' },
+          meta: { description: 'Array of breakdown dimensions (minimum 1).' },
         }
       )
     ),
@@ -117,7 +117,7 @@ export const waffleStateSchemaNoESQL = schema.object(
     meta: {
       id: 'waffleNoESQL',
       title: 'Waffle Chart (DSL)',
-      description: 'Waffle chart configuration for standard queries',
+      description: 'Waffle chart configuration for standard queries.',
     },
     validate: validateMultipleMetricsCriteria,
   }
@@ -138,14 +138,14 @@ export const waffleStateSchemaESQL = schema.object(
       {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of metric configurations (minimum 1)' },
+        meta: { description: 'Array of metric configurations (minimum 1).' },
       }
     ),
     group_by: schema.maybe(
       schema.arrayOf(esqlColumnWithFormatSchema.extends(partitionStateBreakdownByOptionsSchema), {
         minSize: 1,
         maxSize: 100,
-        meta: { description: 'Array of ES|QL breakdown columns (minimum 1)' },
+        meta: { description: 'Array of ES|QL breakdown columns (minimum 1).' },
       })
     ),
   },
@@ -153,7 +153,7 @@ export const waffleStateSchemaESQL = schema.object(
     meta: {
       id: 'waffleESQL',
       title: 'Waffle Chart (ES|QL)',
-      description: 'Waffle chart configuration for ES|QL queries',
+      description: 'Waffle chart configuration for ES|QL queries.',
     },
     validate: validateMultipleMetricsCriteria,
   }
@@ -166,7 +166,7 @@ export const waffleStateSchema = objectUnion([waffleStateSchemaNoESQL, waffleSta
   meta: {
     id: 'waffleChart',
     title: 'Waffle Chart',
-    description: 'Waffle chart configuration: DSL or ES|QL query based',
+    description: 'Waffle chart configuration: DSL or ES|QL query based.',
   },
 });
 
