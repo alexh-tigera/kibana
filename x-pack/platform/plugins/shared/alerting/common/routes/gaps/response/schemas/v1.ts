@@ -7,7 +7,7 @@
 
 import { schema } from '@kbn/config-schema';
 
-import { gapStatus } from '../../../../constants';
+import { gapStatus, gapReasonType } from '../../../../constants';
 
 export const gapStatusSchema = schema.oneOf([
   schema.literal(gapStatus.UNFILLED),
@@ -35,6 +35,15 @@ export const gapsResponseSchema = schema.object({
   unfilled_duration_ms: schema.number(),
   in_progress_duration_ms: schema.number(),
   updated_at: schema.maybe(schema.string()),
+  failed_auto_fill_attempts: schema.maybe(schema.number()),
+  reason: schema.maybe(
+    schema.object({
+      type: schema.oneOf([
+        schema.literal(gapReasonType.RULE_DISABLED),
+        schema.literal(gapReasonType.RULE_DID_NOT_RUN),
+      ]),
+    })
+  ),
 });
 
 export const errorResponseSchema = schema.object({

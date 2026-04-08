@@ -8,6 +8,7 @@
  */
 
 import type { Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 import type { ScoutPage } from '..';
 
 /**
@@ -18,6 +19,15 @@ import type { ScoutPage } from '..';
  */
 export class KibanaCodeEditorWrapper {
   constructor(private readonly page: ScoutPage) {}
+
+  /**
+   * Waits for the Monaco textarea inside the container (visible + enabled), like FTR
+   * `waitCodeEditorReady`.
+   */
+  async waitCodeEditorReady(dataTestSubjId: string): Promise<void> {
+    const editor = this.page.getByTestId(dataTestSubjId).getByTestId('kibanaCodeEditor');
+    await expect(editor).toBeVisible();
+  }
 
   /**
    * Returns the current value of the Monaco editor model at the given index.
@@ -106,5 +116,11 @@ export class KibanaCodeEditorWrapper {
   getCurrentMarkers(testSubjId: string = 'kibanaCodeEditor'): Locator {
     const selector = `[data-test-subj="${testSubjId}"] .cdr.squiggly-error`;
     return this.page.locator(selector);
+  }
+
+  public getCodeEditorSuggestWidget() {
+    return this.page.locator(
+      '[data-test-subj="kbnCodeEditorEditorOverflowWidgetsContainer"] .suggest-widget'
+    );
   }
 }

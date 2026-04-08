@@ -577,7 +577,7 @@ describe('features', () => {
         'findGaps',
         'bulkEditParams',
         'getGapAutoFillScheduler',
-        'getGapAutoFillSchedulerLogs',
+        'findGapAutoFillSchedulerLogs',
       ],
       ...[
         'create',
@@ -593,12 +593,7 @@ describe('features', () => {
         'bulkDelete',
         'unsnooze',
         'runSoon',
-        'createGapAutoFillScheduler',
-        'updateGapAutoFillScheduler',
-        'deleteGapAutoFillScheduler',
       ],
-      ...['enable', 'disable', 'bulkEnable', 'bulkDisable'],
-      ...['deleteBackfill', 'fillGaps', 'scheduleBackfill'],
     ];
 
     const expectedAllPrivileges = [
@@ -755,7 +750,7 @@ describe('features', () => {
         'findGaps',
         'bulkEditParams',
         'getGapAutoFillScheduler',
-        'getGapAutoFillSchedulerLogs',
+        'findGapAutoFillSchedulerLogs',
       ],
       ...[
         'create',
@@ -771,12 +766,7 @@ describe('features', () => {
         'bulkDelete',
         'unsnooze',
         'runSoon',
-        'createGapAutoFillScheduler',
-        'updateGapAutoFillScheduler',
-        'deleteGapAutoFillScheduler',
       ],
-      ...['enable', 'disable', 'bulkEnable', 'bulkDisable'],
-      ...['deleteBackfill', 'fillGaps', 'scheduleBackfill'],
     ];
 
     const expectedAllPrivileges = [

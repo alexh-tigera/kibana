@@ -56,6 +56,10 @@
     "@kbn/zod",
     "@kbn/connector-schemas",
     "@kbn/connector-specs",
+    "@kbn/actions-utils",
+    "@kbn/encrypted-saved-objects-shared",
+    "@kbn/usage-api-plugin",
+    "@kbn/core-security-server",
   ],
   "exclude": [
     "target/**/*",

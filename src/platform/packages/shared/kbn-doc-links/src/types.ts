@@ -25,9 +25,11 @@ export interface DocLinksMeta {
  */
 export interface DocLinks {
   readonly settings: string;
+  readonly aiAssistantSettings: string;
   readonly elasticStackGetStarted: string;
   readonly apiReference: string;
   readonly serverlessReleaseNotes: string;
+  readonly hostedCloudReleaseNotes: string;
   readonly upgrade: {
     readonly upgradingStackOnPrem: string;
     readonly upgradingStackOnCloud: string;
@@ -54,6 +56,10 @@ export interface DocLinks {
     readonly beatsAndLogstashConfiguration: string;
     readonly elasticsearchBillingManagingCosts: string;
     readonly indexManagement: string;
+    readonly cloudConnect: string;
+    readonly connectToAutoops: string;
+    readonly deploymentSignup: string;
+    readonly cloudPricing: string;
   };
   readonly console: {
     readonly guide: string;
@@ -87,6 +93,7 @@ export interface DocLinks {
     readonly notebooksExamples: string;
     readonly customerEngineerRequestForm: string;
     readonly elasticCommunity: string;
+    readonly elasticCloud: string;
   };
   readonly searchGettingStarted: {
     readonly visitSearchLabs: string;
@@ -120,6 +127,7 @@ export interface DocLinks {
     readonly connectorsContentExtraction: string;
     readonly connectorsDropbox: string;
     readonly connectorsGithub: string;
+    readonly connectorsGitlab: string;
     readonly connectorsGoogleCloudStorage: string;
     readonly connectorsGoogleDrive: string;
     readonly connectorsGmail: string;
@@ -150,6 +158,7 @@ export interface DocLinks {
     readonly documentLevelSecurity: string;
     readonly e5Model: string;
     readonly elasticInferenceService: string;
+    readonly elasticInferenceServicePricing: string;
     readonly elser: string;
     readonly engines: string;
     readonly indexApi: string;
@@ -320,6 +329,7 @@ export interface DocLinks {
     readonly avcResults: string;
     readonly bidirectionalIntegrations: string;
     readonly thirdPartyLlmProviders: string;
+    readonly endpointExceptions: string;
     readonly trustedApps: string;
     readonly trustedDevices: string;
     readonly elasticAiFeatures: string;
@@ -350,6 +360,7 @@ export interface DocLinks {
     readonly createEsqlRuleType: string;
     readonly ruleUiAdvancedParams: string;
     readonly entityAnalytics: {
+      readonly api: string;
       readonly riskScorePrerequisites: string;
       readonly entityRiskScoring: string;
       readonly assetCriticality: string;
@@ -445,6 +456,7 @@ export interface DocLinks {
     elasticManagedLlm: string;
     elasticManagedLlmUsageCost: string;
     elasticServerlessSearchManagedLlmUsageCost: string;
+    downsamplingConcepts: string;
   }>;
   readonly alerting: Readonly<{
     authorization: string;
@@ -574,6 +586,12 @@ export interface DocLinks {
     agentReleaseProcess: string;
     fipsIngest: string;
     edotCollector: string;
+    agentPolicyLimitCpu: string;
+    agentDownloadTimeout: string;
+    elasticAgentStandaloneDownload: string;
+    elasticAgentStandaloneLoggingConfig: string;
+    agentPolicyLogLevel: string;
+    elasticAgentLogFileRetention: string;
   }>;
   readonly integrationDeveloper: {
     upload: string;
@@ -708,10 +726,15 @@ export interface DocLinks {
     readonly mcpServer: string;
     readonly a2aServer: string;
     readonly limitationsKnownIssues: string;
+    readonly learnMore: string;
   };
   readonly indexManagement: {
     readonly componentTemplate: string;
     readonly indexAlias: string;
+  };
+  readonly subscriptions: string;
+  readonly cases: {
+    readonly casesPermissions: string;
   };
 }
 

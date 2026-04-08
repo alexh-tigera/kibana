@@ -7,7 +7,12 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { mockPersistedLogFactory } from './query_string_input.test.mocks';
+import { mockPersistedLogFactory } from '@kbn/kql/public/components/query_string_input/query_string_input.test.mocks';
+
+jest.mock('@kbn/esql/public/kibana_services', () => ({
+  useKibanaServices: jest.fn(() => ({})),
+  untilPluginStartServicesReady: jest.fn(() => new Promise(() => {})),
+}));
 
 import React from 'react';
 import { BehaviorSubject } from 'rxjs';
@@ -20,6 +25,8 @@ import { dataPluginMock } from '@kbn/data-plugin/public/mocks';
 import { KibanaContextProvider } from '@kbn/kibana-react-plugin/public';
 import { I18nProvider } from '@kbn/i18n-react';
 import { stubIndexPattern } from '@kbn/data-plugin/public/stubs';
+import { kqlPluginMock } from '@kbn/kql/public/mocks';
+import type { Filter } from '@kbn/es-query';
 import { UI_SETTINGS } from '@kbn/data-plugin/common';
 import { unifiedSearchPluginMock } from '../mocks';
 import { EuiThemeProvider } from '@elastic/eui';
@@ -108,7 +115,9 @@ function wrapQueryBarTopRowInContext(
 
   const services = {
     ...startMock,
+    core: startMock,
     unifiedSearch: unifiedSearchPluginMock.createStartContract(),
+    kql: kqlPluginMock.createStartContract(),
     data: dataPluginMock.createStartContract(),
     appName: 'discover',
     storage: createMockStorage(),
@@ -645,6 +654,42 @@ describe('QueryBarTopRowTopRow', () => {
     });
   });
 
+  describe('filter bar toggle button', () => {
+    const filtersMock = [{ meta: {} }] as Filter[];
+
+    it('should render when showAddFilter is true and filters has at least one entry', async () => {
+      render(
+        wrapQueryBarTopRowInContext({
+          isDirty: false,
+          showAddFilter: true,
+          filters: filtersMock,
+          indexPatterns: [stubIndexPattern],
+          timeHistory: mockTimeHistory,
+        })
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('filterBarToggleButton')).toBeInTheDocument();
+      });
+    });
+
+    it('should not render when filters is empty', async () => {
+      render(
+        wrapQueryBarTopRowInContext({
+          isDirty: false,
+          showAddFilter: true,
+          filters: [],
+          indexPatterns: [stubIndexPattern],
+          timeHistory: mockTimeHistory,
+        })
+      );
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('filterBarToggleButton')).not.toBeInTheDocument();
+      });
+    });
+  });
+
   describe('draft', () => {
     it('should call onDraftChange when in dirty state', async () => {
       const onDraftChange = jest.fn();
@@ -712,6 +757,26 @@ describe('QueryBarTopRowTopRow', () => {
         expect(getByText(kqlQuery.query)).toBeInTheDocument();
         expect(onDraftChange).toHaveBeenCalledWith(undefined);
       });
+    });
+
+    it('should call onDraftChange only once even if unmounted', async () => {
+      const onDraftChange = jest.fn();
+      const state = {
+        query: kqlQuery,
+        dateRangeFrom: 'now-7d',
+        dateRangeTo: 'now',
+      };
+      const { unmount } = render(
+        wrapQueryBarTopRowInContext({
+          isDirty: false,
+          onDraftChange,
+          ...state,
+        })
+      );
+
+      unmount();
+
+      expect(onDraftChange).toHaveBeenCalledTimes(1);
     });
   });
 });

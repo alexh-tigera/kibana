@@ -5,16 +5,30 @@
  * 2.0.
  */
 
-import type { BoundInferenceClient } from '@kbn/inference-common';
+import { type BoundInferenceClient, MessageRole } from '@kbn/inference-common';
 import { executeAsReasoningAgent } from '@kbn/inference-prompt-utils';
-import type { Streams, ProcessingSimulationResponse } from '@kbn/streams-schema';
+import type { FlattenRecord, ProcessingSimulationResponse, Streams } from '@kbn/streams-schema';
 import type { StreamlangDSL, GrokProcessor, DissectProcessor } from '@kbn/streamlang';
-import type { FlattenRecord } from '@kbn/streams-schema';
 import type { IFieldsMetadataClient } from '@kbn/fields-metadata-plugin/server/services/fields_metadata/types';
-import { isOtelStream } from '@kbn/streams-schema';
+import {
+  isOtelStream,
+  OTEL_CONTENT_FIELD,
+  ECS_CONTENT_FIELD,
+  OTEL_SEVERITY_FIELD,
+  ECS_SEVERITY_FIELD,
+} from '@kbn/streams-schema';
 import type { ElasticsearchClient } from '@kbn/core/server';
+import { i18n } from '@kbn/i18n';
 import { SuggestIngestPipelinePrompt } from './prompt';
 import { getPipelineDefinitionJsonSchema, pipelineDefinitionSchema } from './schema';
+
+export interface SuggestProcessingPipelineResult {
+  pipeline: StreamlangDSL | null;
+  metadata: {
+    stepsUsed: number;
+    maxSteps: number;
+  };
+}
 
 export async function suggestProcessingPipeline({
   definition,
@@ -36,10 +50,18 @@ export async function suggestProcessingPipeline({
   documents: FlattenRecord[];
   fieldsMetadataClient: IFieldsMetadataClient;
   esClient: ElasticsearchClient;
-}): Promise<StreamlangDSL | null> {
+}): Promise<SuggestProcessingPipelineResult> {
+  const effectiveMaxSteps = maxSteps ?? 10;
+
   // No need to involve reasoning if there are no sample documents
   if (documents.length === 0) {
-    return null;
+    return {
+      pipeline: null,
+      metadata: {
+        stepsUsed: 0,
+        maxSteps: effectiveMaxSteps,
+      },
+    };
   }
 
   // Collect metrics for the initial pipeline
@@ -64,6 +86,8 @@ export async function suggestProcessingPipeline({
     fields_schema: isOtel
       ? `OpenTelemetry (OTel) semantic convention for log records`
       : 'Elastic Common Schema (ECS)',
+    content_field: isOtel ? OTEL_CONTENT_FIELD : ECS_CONTENT_FIELD,
+    severity_field: isOtel ? OTEL_SEVERITY_FIELD : ECS_SEVERITY_FIELD,
     pipeline_schema: JSON.stringify(getPipelineDefinitionJsonSchema(pipelineDefinitionSchema)),
     initial_dataset_analysis: JSON.stringify(simulationMetrics),
     parsing_processor: parsingProcessor ? JSON.stringify(parsingProcessor) : undefined,
@@ -74,7 +98,7 @@ export async function suggestProcessingPipeline({
     inferenceClient,
     prompt: SuggestIngestPipelinePrompt,
     input,
-    maxSteps,
+    maxSteps: effectiveMaxSteps,
     toolCallbacks: {
       simulate_pipeline: async (toolCall) => {
         // 1. Validate the pipeline schema
@@ -89,8 +113,11 @@ export async function suggestProcessingPipeline({
           };
         }
 
-        // 2. Simulate the pipeline and collect metrics
-        const simulateResult = await simulatePipeline(pipeline.data as StreamlangDSL);
+        // 2. Add customIdentifiers to steps for proper tracking in simulation results
+        const pipelineWithIdentifiers = addCustomIdentifiersToSteps(pipeline.data as StreamlangDSL);
+
+        // 3. Simulate the pipeline and collect metrics
+        const simulateResult = await simulatePipeline(pipelineWithIdentifiers);
         const metrics = await getSimulationMetrics(
           simulateResult,
           fieldsMetadataClient,
@@ -164,22 +191,43 @@ export async function suggestProcessingPipeline({
     abortSignal: signal,
   });
 
+  // Count assistant messages to determine steps used
+  const stepsUsed = response.input.filter(
+    (message) => message.role === MessageRole.Assistant
+  ).length;
+
+  const metadata = {
+    stepsUsed,
+    maxSteps: effectiveMaxSteps,
+  };
+
   // Check for empty toolCalls array (similar to #244335)
   if (!('toolCalls' in response) || response.toolCalls.length === 0) {
-    throw new Error('The LLM response did not contain any tool calls');
+    throw new Error(
+      i18n.translate('xpack.streams.ai.suggestProcessingPipeline.noToolCallsError', {
+        defaultMessage:
+          'Pipeline suggestions could not be generated from current log samples.\n\nTry fetching new sample data and re-running the suggestion.',
+      })
+    );
   }
 
   const commitPipeline = pipelineDefinitionSchema.safeParse(
     response.toolCalls[0].function.arguments.pipeline
   );
   if (!commitPipeline.success) {
-    return null;
+    return {
+      pipeline: null,
+      metadata,
+    };
   }
 
   // Add customIdentifier to each step for proper tracking in simulations
   const pipelineWithIdentifiers = addCustomIdentifiersToSteps(commitPipeline.data as StreamlangDSL);
 
-  return pipelineWithIdentifiers;
+  return {
+    pipeline: pipelineWithIdentifiers,
+    metadata,
+  };
 }
 
 /**
@@ -209,6 +257,7 @@ function validateProcessorFailureRates(simulationResult: ProcessingSimulationRes
   }
 
   for (const [processorId, metrics] of Object.entries(simulationResult.processors_metrics)) {
+    if (!metrics) continue;
     if (metrics.failed_rate > maxFailureRate) {
       const failurePercentage = (metrics.failed_rate * 100).toFixed(2);
       errors.push(
@@ -220,13 +269,13 @@ function validateProcessorFailureRates(simulationResult: ProcessingSimulationRes
   return errors;
 }
 
-function getUniqueDocumentErrors(simulationResult: ProcessingSimulationResponse): string[] {
+export function getUniqueDocumentErrors(simulationResult: ProcessingSimulationResponse): string[] {
   if (!simulationResult.documents || simulationResult.documents.length === 0) {
     return [];
   }
 
   // Collect all unique error messages
-  const errorMap = new Map<string, { count: number; type: string; exampleDoc?: any }>();
+  const errorMap = new Map<string, { count: number; type: string; exampleDoc?: FlattenRecord }>();
 
   for (const doc of simulationResult.documents) {
     if (doc.errors && doc.errors.length > 0) {
@@ -247,9 +296,32 @@ function getUniqueDocumentErrors(simulationResult: ProcessingSimulationResponse)
 
   // Format errors with counts and example context
   const uniqueErrors: string[] = [];
+  const maxErrors = 5;
+  const maxErrorLength = 250;
+  let errorIndex = 0;
+
   for (const [errorKey, errorInfo] of errorMap.entries()) {
+    if (errorIndex >= maxErrors) {
+      break;
+    }
+
     const countStr = errorInfo.count > 1 ? ` (occurred in ${errorInfo.count} documents)` : '';
-    uniqueErrors.push(`${errorKey}${countStr}`);
+    const fullError = `${errorKey}${countStr}`;
+
+    // Truncate error message if it exceeds max length
+    const truncatedError =
+      fullError.length > maxErrorLength
+        ? `${fullError.substring(0, maxErrorLength)}...`
+        : fullError;
+
+    uniqueErrors.push(truncatedError);
+    errorIndex++;
+  }
+
+  // Add message if there are more errors
+  const remainingErrors = errorMap.size - maxErrors;
+  if (remainingErrors > 0) {
+    uniqueErrors.push(`... and ${remainingErrors} more error(s)`);
   }
 
   return uniqueErrors;

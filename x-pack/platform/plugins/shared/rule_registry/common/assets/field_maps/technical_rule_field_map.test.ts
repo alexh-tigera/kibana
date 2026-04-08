@@ -17,8 +17,24 @@ it('matches snapshot', () => {
         "required": true,
         "type": "date",
       },
+      "data_stream.dataset": Object {
+        "array": false,
+        "required": false,
+        "type": "keyword",
+      },
+      "data_stream.namespace": Object {
+        "array": false,
+        "required": false,
+        "type": "keyword",
+      },
+      "data_stream.type": Object {
+        "array": false,
+        "required": false,
+        "type": "keyword",
+      },
       "ecs.version": Object {
         "array": false,
+        "ignore_above": 1024,
         "required": false,
         "type": "keyword",
       },
@@ -36,7 +52,7 @@ it('matches snapshot', () => {
       },
       "event.original": Object {
         "array": false,
-        "ignore_above": 1024,
+        "ignore_above": 32766,
         "required": false,
         "type": "keyword",
       },
@@ -96,6 +112,11 @@ it('matches snapshot', () => {
         "type": "date",
       },
       "kibana.alert.maintenance_window_ids": Object {
+        "array": true,
+        "required": false,
+        "type": "keyword",
+      },
+      "kibana.alert.maintenance_window_names": Object {
         "array": true,
         "required": false,
         "type": "keyword",
@@ -422,6 +443,7 @@ it('matches snapshot', () => {
       },
       "tags": Object {
         "array": true,
+        "ignore_above": 1024,
         "required": false,
         "type": "keyword",
       },

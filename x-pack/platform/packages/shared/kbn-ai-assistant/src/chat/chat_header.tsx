@@ -25,13 +25,6 @@ import type {
   Conversation,
   ConversationAccess,
 } from '@kbn/observability-ai-assistant-plugin/common';
-import {
-  ElasticLlmTourCallout,
-  getElasticManagedLlmConnector,
-  ElasticLlmCalloutKey,
-  useElasticLlmCalloutDismissed,
-  useObservabilityAIAssistantFlyoutStateContext,
-} from '@kbn/observability-ai-assistant-plugin/public';
 import type { ApplicationStart } from '@kbn/core/public';
 import { ChatActionsMenu } from './chat_actions_menu';
 import type { UseGenAIConnectorsResult } from '../hooks/use_genai_connectors';
@@ -121,13 +114,14 @@ export function ChatHeader({
     }
   };
 
-  const elasticManagedLlm = getElasticManagedLlmConnector(connectors.connectors);
-  const [tourCalloutDismissed, setTourCalloutDismissed] = useElasticLlmCalloutDismissed(
-    ElasticLlmCalloutKey.TOUR_CALLOUT,
-    false
+  const actionsMenu = (
+    <ChatActionsMenu
+      connectors={connectors}
+      disabled={licenseInvalid}
+      navigateToConnectorsManagementApp={navigateToConnectorsManagementApp}
+      isConversationApp={isConversationApp}
+    />
   );
-
-  const { isFlyoutOpen } = useObservabilityAIAssistantFlyoutStateContext();
 
   return (
     <EuiPanel
@@ -278,7 +272,7 @@ export function ChatHeader({
                                 { defaultMessage: 'Navigate to conversations' }
                               )}
                               data-test-subj="observabilityAiAssistantChatHeaderButton"
-                              iconType="discuss"
+                              iconType="comment"
                               onClick={() => navigateToConversation(conversationId)}
                             />
                           </EuiToolTip>
@@ -289,25 +283,7 @@ export function ChatHeader({
                 </>
               ) : null}
 
-              <EuiFlexItem grow={false}>
-                {!!elasticManagedLlm &&
-                !tourCalloutDismissed &&
-                !(isConversationApp && isFlyoutOpen) ? (
-                  <ElasticLlmTourCallout dismissTour={() => setTourCalloutDismissed(true)}>
-                    <ChatActionsMenu
-                      connectors={connectors}
-                      disabled={licenseInvalid}
-                      navigateToConnectorsManagementApp={navigateToConnectorsManagementApp}
-                    />
-                  </ElasticLlmTourCallout>
-                ) : (
-                  <ChatActionsMenu
-                    connectors={connectors}
-                    disabled={licenseInvalid}
-                    navigateToConnectorsManagementApp={navigateToConnectorsManagementApp}
-                  />
-                )}
-              </EuiFlexItem>
+              <EuiFlexItem grow={false}>{actionsMenu}</EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlexItem>
         </EuiFlexGroup>

@@ -23,7 +23,7 @@ import {
 import type { IngestPipeline } from '@kbn/file-upload-common';
 import type { MappingTypeMapping } from '@elastic/elasticsearch/lib/api/types';
 import { ES_FIELD_TYPES } from '@kbn/field-types';
-import type { FileAnalysis } from '../../../..';
+import type { FileAnalysis } from '../../../../file_upload_manager';
 import { getFieldsFromMappings } from '../../../../file_upload_manager';
 import type { CombinedField } from './types';
 import { GeoPointForm } from './geo_point';
@@ -183,7 +183,7 @@ export class CombinedFieldsForm extends Component<Props, State> {
                   onClick={this.togglePopover.bind(null, 'semantic')}
                   size="s"
                   color="text"
-                  iconType="plusInCircleFilled"
+                  iconType="plusCircle"
                   isDisabled={this.isSemanticTextCompatible() === false}
                 >
                   <FormattedMessage
@@ -209,7 +209,7 @@ export class CombinedFieldsForm extends Component<Props, State> {
                   onClick={this.togglePopover.bind(null, 'geo')}
                   size="s"
                   color="text"
-                  iconType="plusInCircleFilled"
+                  iconType="plusCircle"
                   isDisabled={this.isLatLonCompatible() === false}
                 >
                   <FormattedMessage

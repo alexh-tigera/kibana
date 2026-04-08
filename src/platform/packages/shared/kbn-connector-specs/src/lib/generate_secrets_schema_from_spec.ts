@@ -8,13 +8,37 @@
  */
 
 import { z } from '@kbn/zod/v4';
-import type { ConnectorSpec } from '../connector_spec';
+import type { AuthMode, ConnectorSpec } from '../connector_spec';
+import * as authTypeSpecs from '../all_auth_types';
 import { getSchemaForAuthType } from '.';
 
-export const generateSecretsSchemaFromSpec = (authTypes: ConnectorSpec['authTypes']) => {
+interface GenerateOptions {
+  isPfxEnabled?: boolean;
+  authMode?: AuthMode | '';
+}
+
+export const generateSecretsSchemaFromSpec = (
+  authSpec: ConnectorSpec['auth'],
+  { isPfxEnabled, authMode }: GenerateOptions = {
+    isPfxEnabled: true,
+  }
+) => {
   const secretSchemas: z.core.$ZodTypeDiscriminable[] = [];
-  for (const authType of authTypes || []) {
-    secretSchemas.push(getSchemaForAuthType(authType));
+  for (const authType of authSpec?.types || []) {
+    const schema = getSchemaForAuthType(authType);
+    if (schema.id === 'pfx_certificate' && !isPfxEnabled) {
+      continue;
+    }
+
+    const authTypeSpec = Object.values(authTypeSpecs).find((spec) => spec.id === schema.id);
+    const authTypeMode = authTypeSpec?.authMode ?? 'shared';
+
+    const hasAuthModeFilter = Boolean(authMode);
+    if (hasAuthModeFilter && authTypeMode !== authMode) {
+      continue;
+    }
+
+    secretSchemas.push(schema.schema);
   }
   return secretSchemas.length > 0
     ? // to make zod types happy

@@ -9,6 +9,9 @@
 
 import type { CoreSetup, CoreStart, Plugin, PluginInitializerContext } from '@kbn/core/public';
 import { PublicStepRegistry } from './step_registry';
+import { registerInternalStepDefinitions } from './steps';
+import { PublicTriggerRegistry } from './trigger_registry';
+import { registerInternalTriggerDefinitions } from './triggers';
 import type {
   WorkflowsExtensionsPublicPluginSetup,
   WorkflowsExtensionsPublicPluginSetupDeps,
@@ -26,19 +29,23 @@ export class WorkflowsExtensionsPublicPlugin
     >
 {
   private readonly stepRegistry: PublicStepRegistry;
+  private readonly triggerRegistry: PublicTriggerRegistry;
 
   constructor(_initializerContext: PluginInitializerContext) {
     this.stepRegistry = new PublicStepRegistry();
+    this.triggerRegistry = new PublicTriggerRegistry();
   }
 
   public setup(
     _core: CoreSetup,
     _plugins: WorkflowsExtensionsPublicPluginSetupDeps
   ): WorkflowsExtensionsPublicPluginSetup {
+    registerInternalStepDefinitions(this.stepRegistry);
+    registerInternalTriggerDefinitions(this.triggerRegistry);
+
     return {
-      registerStepDefinition: (metadata) => {
-        this.stepRegistry.register(metadata);
-      },
+      registerStepDefinition: (definition) => this.stepRegistry.register(definition),
+      registerTriggerDefinition: (definition) => this.triggerRegistry.register(definition),
     };
   }
 
@@ -55,6 +62,18 @@ export class WorkflowsExtensionsPublicPlugin
       },
       hasStepDefinition: (stepTypeId: string) => {
         return this.stepRegistry.has(stepTypeId);
+      },
+      getAllTriggerDefinitions: () => {
+        return this.triggerRegistry.getAll();
+      },
+      getTriggerDefinition: (triggerId: string) => {
+        return this.triggerRegistry.get(triggerId);
+      },
+      hasTriggerDefinition: (triggerId: string) => {
+        return this.triggerRegistry.has(triggerId);
+      },
+      isReady: async () => {
+        await Promise.all([this.stepRegistry.whenReady(), this.triggerRegistry.whenReady()]);
       },
     };
   }

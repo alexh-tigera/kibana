@@ -8,23 +8,37 @@
  */
 
 import Fs from 'fs';
+import { expandAgentQueue } from '../agent_images';
 import { BuildkiteClient, type BuildkiteStep } from '../buildkite';
 import { collectEnvFromLabels } from '../pr_labels';
-import { expandAgentQueue } from '../agent_images';
 import { getRequiredEnv } from '#pipeline-utils';
 
-interface ScoutTestDiscoveryConfig {
+export interface ModuleDiscoveryInfo {
+  name: string;
   group: string;
-  path: string;
-  usesParallelWorkers: boolean;
-  configs: string[];
   type: 'plugin' | 'package';
+  isAffected?: boolean;
+  configs: {
+    path: string;
+    hasTests: boolean;
+    tags: string[];
+    serverRunFlags: string[];
+    usesParallelWorkers: boolean;
+  }[];
 }
 
 // Collect environment variables to pass through to test execution steps
 const scoutExtraEnv: Record<string, string> = {};
 if (process.env.SERVERLESS_TESTS_ONLY) {
   scoutExtraEnv.SERVERLESS_TESTS_ONLY = process.env.SERVERLESS_TESTS_ONLY;
+}
+
+if (process.env.UIAM_DOCKER_IMAGE) {
+  scoutExtraEnv.UIAM_DOCKER_IMAGE = process.env.UIAM_DOCKER_IMAGE;
+}
+
+if (process.env.UIAM_COSMOSDB_DOCKER_IMAGE) {
+  scoutExtraEnv.UIAM_COSMOSDB_DOCKER_IMAGE = process.env.UIAM_COSMOSDB_DOCKER_IMAGE;
 }
 
 export async function pickScoutTestGroupRunOrder(scoutConfigsPath: string) {
@@ -35,52 +49,72 @@ export async function pickScoutTestGroupRunOrder(scoutConfigsPath: string) {
     throw new Error(`Scout configs file not found at ${scoutConfigsPath}`);
   }
 
-  const rawScoutConfigs = JSON.parse(Fs.readFileSync(scoutConfigsPath, 'utf-8')) as Record<
-    string,
-    ScoutTestDiscoveryConfig
-  >;
-  const pluginsOrPackagesWithScoutTests: string[] = Object.keys(rawScoutConfigs);
+  const modulesWithTests = JSON.parse(
+    Fs.readFileSync(scoutConfigsPath, 'utf-8')
+  ) as ModuleDiscoveryInfo[];
 
-  if (pluginsOrPackagesWithScoutTests.length === 0) {
+  if (modulesWithTests.length === 0) {
     // no scout configs found, nothing to need to upload steps
     return;
   }
 
-  const scoutCiRunGroups = pluginsOrPackagesWithScoutTests.map((name) => ({
-    label: `Scout: [ ${rawScoutConfigs[name].group} / ${name} ] ${rawScoutConfigs[name].type}`,
-    key: name,
-    agents: expandAgentQueue(rawScoutConfigs[name].usesParallelWorkers ? 'n2-8-spot' : 'n2-4-spot'),
-    group: rawScoutConfigs[name].group,
-  }));
+  const SCOUT_CONFIGS_DEPS =
+    process.env.SCOUT_CONFIGS_DEPS !== undefined
+      ? process.env.SCOUT_CONFIGS_DEPS.split(',')
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : ['build_scout_tests'];
+
+  const scoutCiRunGroups = modulesWithTests.map((module) => {
+    // Check if any config in this module uses parallel workers
+    const usesParallelWorkers = module.configs.some((config) => config.usesParallelWorkers);
+    const affectedPrefix = module.isAffected ? 'affected ' : '';
+
+    return {
+      label: `${affectedPrefix}Scout: [ ${module.group} / ${module.name} ] ${module.type}`,
+      key: module.name,
+      agents: expandAgentQueue(usesParallelWorkers ? 'n2-8-spot' : 'n2-4-spot'),
+      group: module.group,
+    };
+  });
+
+  const steps = [
+    {
+      group: 'Scout Configs',
+      key: 'scout-configs',
+      depends_on: SCOUT_CONFIGS_DEPS,
+      steps: scoutCiRunGroups.map(
+        ({ label, key, group, agents }): BuildkiteStep => ({
+          label,
+          command: getRequiredEnv('SCOUT_CONFIGS_SCRIPT'),
+          timeout_in_minutes: 60,
+          key,
+          agents,
+          env: {
+            SCOUT_CONFIG_GROUP_KEY: key,
+            SCOUT_CONFIG_GROUP_TYPE: group,
+            ...envFromlabels,
+            ...scoutExtraEnv,
+          },
+          retry: {
+            automatic: [
+              { exit_status: '-1', limit: 3 },
+              { exit_status: '*', limit: 1 },
+            ],
+          },
+        })
+      ),
+    },
+  ].flat();
+
+  // Register each Scout child step for cancel-on-gate-failure before uploading
+  // so a concurrent gate failure can cancel or short-circuit them immediately.
+  // We register child step keys (not the group key) because `buildkite-agent step cancel`
+  // does not work on group keys.
+  for (const { key } of scoutCiRunGroups) {
+    bk.setMetadata(`cancel_on_gate_failure:${key}`, 'true');
+  }
 
   // upload the step definitions to Buildkite
-  bk.uploadSteps(
-    [
-      {
-        group: 'Scout Configs',
-        key: 'scout-configs',
-        depends_on: ['build_scout_tests'],
-        steps: scoutCiRunGroups.map(
-          ({ label, key, group, agents }): BuildkiteStep => ({
-            label,
-            command: getRequiredEnv('SCOUT_CONFIGS_SCRIPT'),
-            timeout_in_minutes: 60,
-            agents,
-            env: {
-              SCOUT_CONFIG_GROUP_KEY: key,
-              SCOUT_CONFIG_GROUP_TYPE: group,
-              ...envFromlabels,
-              ...scoutExtraEnv,
-            },
-            retry: {
-              automatic: [
-                { exit_status: '10', limit: 1 },
-                { exit_status: '*', limit: 3 },
-              ],
-            },
-          })
-        ),
-      },
-    ].flat()
-  );
+  bk.uploadSteps(steps);
 }

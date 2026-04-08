@@ -5,17 +5,19 @@
  * 2.0.
  */
 
-import { z } from '@kbn/zod';
-import { ToolType, ToolResultType } from '@kbn/onechat-common';
-import type { BuiltinToolDefinition, ToolAvailabilityContext } from '@kbn/onechat-server';
-import { executeEsql } from '@kbn/onechat-genai-utils';
-import type { CoreSetup } from '@kbn/core-lifecycle-server';
-import { getSpaceIdFromRequest } from './helpers';
+import { z } from '@kbn/zod/v4';
+import { ToolType, ToolResultType } from '@kbn/agent-builder-common';
+import type { BuiltinToolDefinition, ToolAvailabilityContext } from '@kbn/agent-builder-server';
+import { executeEsql } from '@kbn/agent-builder-genai-utils';
+import type { Logger } from '@kbn/logging';
+import { getAgentBuilderResourceAvailability } from '../utils/get_agent_builder_resource_availability';
 import { securityTool } from './constants';
+import type { SecuritySolutionPluginCoreSetupDependencies } from '../../plugin_contract';
 
 const attackDiscoverySearchSchema = z.object({
   alertIds: z
     .array(z.string())
+    .min(1)
     .describe(
       'An array of alert IDs to search for in attack discoveries. The tool will find attack discoveries where kibana.alert.attack_discovery.alert_ids contains any of the provided alert IDs.'
     ),
@@ -23,33 +25,40 @@ const attackDiscoverySearchSchema = z.object({
 
 export const SECURITY_ATTACK_DISCOVERY_SEARCH_TOOL_ID = securityTool('attack_discovery_search');
 
+const SAFE_ID_PATTERN = /^[a-zA-Z0-9_\-.:]+$/;
+
 export const attackDiscoverySearchTool = (
-  core: CoreSetup
+  core: SecuritySolutionPluginCoreSetupDependencies,
+  logger: Logger
 ): BuiltinToolDefinition<typeof attackDiscoverySearchSchema> => {
   return {
     id: SECURITY_ATTACK_DISCOVERY_SEARCH_TOOL_ID,
     type: ToolType.builtin,
-    description: `Search and analyze attack discoveries. Use this tool to find attack discoveries related to specific alerts by providing alert IDs. The tool searches the kibana.alert.attack_discovery.alert_ids field. Automatically queries both scheduled and ad-hoc attack discovery indices for the current space. Limits results to 5 attack discoveries.`,
+    description: `Search and analyze attack discoveries. Use this tool to find attack discoveries related to specific alerts by providing alert IDs. The tool searches the kibana.alert.attack_discovery.alert_ids field. Automatically queries both scheduled and ad-hoc attack discovery indices for the current space. Returns up to 10 attack discoveries from the last 7 days.`,
     schema: attackDiscoverySearchSchema,
     availability: {
       cacheMode: 'space',
-      handler: async ({ spaceId }: ToolAvailabilityContext) => {
+      handler: async ({ request, spaceId }: ToolAvailabilityContext) => {
         try {
-          const [coreStart] = await core.getStartServices();
-          const esClient = coreStart.elasticsearch.client.asInternalUser;
-          const index = `.alerts-security.attack.discovery.alerts-${spaceId}*,.adhoc.alerts-security.attack.discovery.alerts-${spaceId}`;
+          const availability = await getAgentBuilderResourceAvailability({ core, request, logger });
+          if (availability.status === 'available') {
+            const [coreStart] = await core.getStartServices();
+            const esClient = coreStart.elasticsearch.client.asInternalUser;
+            const index = `.alerts-security.attack.discovery.alerts-${spaceId}*,.adhoc.alerts-security.attack.discovery.alerts-${spaceId}`;
 
-          const indexExists = await esClient.indices.exists({
-            index,
-          });
-          if (indexExists) {
-            return { status: 'available' };
+            const indexExists = await esClient.indices.exists({
+              index,
+            });
+            if (indexExists) {
+              return { status: 'available' };
+            }
+
+            return {
+              status: 'unavailable',
+              reason: 'Attack discovery index does not exist for this space',
+            };
           }
-
-          return {
-            status: 'unavailable',
-            reason: 'Attack discovery index does not exist for this space',
-          };
+          return availability;
         } catch (error) {
           return {
             status: 'unavailable',
@@ -60,24 +69,46 @@ export const attackDiscoverySearchTool = (
         }
       },
     },
-    handler: async ({ alertIds }, { request, esClient, logger }) => {
-      const spaceId = getSpaceIdFromRequest(request);
-
+    handler: async ({ alertIds }, { spaceId, esClient }) => {
       logger.debug(
         `${SECURITY_ATTACK_DISCOVERY_SEARCH_TOOL_ID} tool called with alertIds: ${JSON.stringify(
           alertIds
         )}`
       );
 
+      if (!SAFE_ID_PATTERN.test(spaceId)) {
+        return {
+          results: [
+            {
+              type: ToolResultType.error,
+              data: { message: `Invalid space ID format: "${spaceId}".` },
+            },
+          ],
+        };
+      }
+
       try {
-        // Build date filter for last 7 days
+        const sanitizedAlertIds = alertIds.filter((id) => SAFE_ID_PATTERN.test(id));
+        if (sanitizedAlertIds.length === 0) {
+          return {
+            results: [
+              {
+                type: ToolResultType.error,
+                data: {
+                  message:
+                    'No valid alert IDs provided. IDs must contain only alphanumeric characters, hyphens, underscores, dots, and colons.',
+                },
+              },
+            ],
+          };
+        }
+
         const now = new Date();
         const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         const dateFilter = `@timestamp >= "${sevenDaysAgo.toISOString()}" AND @timestamp <= "${now.toISOString()}"`;
 
-        // Build alert IDs filter using MV_CONTAINS with OR conditions
-        const alertIdsFilter = alertIds
-          .map((alertId) => `MV_CONTAINS(kibana.alert.attack_discovery.alert_ids,"${alertId}")`)
+        const alertIdsFilter = sanitizedAlertIds
+          .map((id) => `MV_CONTAINS(kibana.alert.attack_discovery.alert_ids,"${id}")`)
           .join(' OR ');
 
         const whereClause = `${dateFilter} AND (${alertIdsFilter})`;
@@ -86,7 +117,7 @@ export const attackDiscoverySearchTool = (
         | WHERE ${whereClause}
         | KEEP _id, kibana.alert.attack_discovery.title, kibana.alert.severity, kibana.alert.workflow_status, kibana.alert.attack_discovery.alert_ids, kibana.alert.case_ids, @timestamp
         | SORT @timestamp DESC
-        | LIMIT 100`;
+        | LIMIT 10`;
 
         logger.debug(`Executing ES|QL query: ${esqlQuery}`);
 
@@ -103,9 +134,8 @@ export const attackDiscoverySearchTool = (
             },
           },
           {
-            type: ToolResultType.tabularData,
+            type: ToolResultType.esqlResults,
             data: {
-              source: 'esql',
               query: esqlQuery,
               columns: esqlResponse.columns,
               values: esqlResponse.values,
@@ -115,13 +145,14 @@ export const attackDiscoverySearchTool = (
 
         return { results };
       } catch (error) {
-        logger.error(`Error in ${SECURITY_ATTACK_DISCOVERY_SEARCH_TOOL_ID} tool: ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.error(`Error in ${SECURITY_ATTACK_DISCOVERY_SEARCH_TOOL_ID} tool: ${errorMessage}`);
         return {
           results: [
             {
               type: ToolResultType.error,
               data: {
-                message: `Error: ${error.message}`,
+                message: `Error: ${errorMessage}`,
               },
             },
           ],

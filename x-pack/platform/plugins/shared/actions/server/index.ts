@@ -21,9 +21,12 @@ export type {
   ActionResult,
   ActionTypeExecutorOptions,
   ActionType,
+  ClassicActionType,
   InMemoryConnector,
   ActionsApiRequestHandlerContext,
-  SSLSettings,
+  ConnectorLifecycleListener,
+  ConnectorLifecyclePostCreateParams,
+  ConnectorLifecyclePostDeleteParams,
 } from './types';
 
 export type {

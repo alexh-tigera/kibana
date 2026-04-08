@@ -120,6 +120,9 @@ const SecurityAlertRequired = rt.type({
 });
 // prettier-ignore
 const SecurityAlertOptional = rt.partial({
+  'data_stream.dataset': schemaString,
+  'data_stream.namespace': schemaString,
+  'data_stream.type': schemaString,
   'ecs.version': schemaString,
   'event.action': schemaString,
   'event.kind': schemaString,
@@ -142,6 +145,7 @@ const SecurityAlertOptional = rt.partial({
   'kibana.alert.intended_timestamp': schemaDate,
   'kibana.alert.last_detected': schemaDate,
   'kibana.alert.maintenance_window_ids': schemaStringArray,
+  'kibana.alert.maintenance_window_names': schemaStringArray,
   'kibana.alert.muted': schemaBoolean,
   'kibana.alert.new_terms': schemaStringArray,
   'kibana.alert.original_data_stream.dataset': schemaString,
@@ -228,6 +232,7 @@ const SecurityAlertOptional = rt.partial({
   'service.risk.calculated_level': schemaString,
   'service.risk.calculated_score_norm': schemaNumber,
   tags: schemaStringArray,
+  'threat.enrichments': schemaUnknown,
   'user.asset.criticality': schemaString,
 });
 

@@ -14,9 +14,9 @@ import {
 import { STREAMS_TIERED_AI_FEATURE } from '@kbn/streams-plugin/common';
 import { useKibana } from './use_kibana';
 import { useGenAIConnectors, type UseGenAIConnectorsResult } from './use_genai_connectors';
-import { getElasticManagedLlmConnector } from '../utils/get_elastic_managed_llm_connector';
 
 export interface AIFeatures {
+  loading: boolean;
   enabled: boolean;
   couldBeEnabled: boolean;
   genAiConnectors: UseGenAIConnectorsResult;
@@ -44,11 +44,21 @@ export function useAIFeatures(): AIFeatures | null {
     ElasticLlmCalloutKey.TOUR_CALLOUT
   );
 
-  if (!isAIAvailableForTier || genAiConnectors.loading) {
+  if (!isAIAvailableForTier) {
     return null;
   }
 
-  const elasticManagedLlmConnector = getElasticManagedLlmConnector(genAiConnectors.connectors);
+  if (genAiConnectors.loading) {
+    return {
+      loading: true,
+      enabled: false,
+      couldBeEnabled: false,
+      genAiConnectors,
+      isManagedAIConnector: false,
+      hasAcknowledgedAdditionalCharges: tourCalloutDismissed,
+      acknowledgeAdditionalCharges: setTourCalloutDismissed,
+    };
+  }
 
   // Check for actions.show permission (read access is sufficient for listing connectors)
   const hasActionsPermission = core.application.capabilities.actions?.show || false;
@@ -61,11 +71,13 @@ export function useAIFeatures(): AIFeatures | null {
   const couldBeEnabled = Boolean(
     license?.hasAtLeast('enterprise') && core.application.capabilities.actions?.show
   );
-  const isManagedAIConnector = elasticManagedLlmConnector
-    ? elasticManagedLlmConnector.id === genAiConnectors.selectedConnector
-    : false;
+  const selectedConnector = (genAiConnectors.connectors || []).find(
+    (connector) => connector.connectorId === genAiConnectors.selectedConnector
+  );
+  const isManagedAIConnector = selectedConnector?.isEis || false;
 
   return {
+    loading: false,
     enabled,
     couldBeEnabled,
     genAiConnectors,

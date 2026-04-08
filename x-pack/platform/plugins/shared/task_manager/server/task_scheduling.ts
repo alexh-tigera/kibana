@@ -13,6 +13,7 @@ import { isEqual } from 'lodash';
 import type { Middleware } from './lib/middleware';
 import { parseIntervalAsMillisecond } from './lib/intervals';
 import type {
+  ApiKeyOptions,
   ConcreteTaskInstance,
   IntervalSchedule,
   RruleSchedule,
@@ -155,7 +156,11 @@ export class TaskScheduling {
     );
   }
 
-  public async bulkDisable(taskIds: string[], clearStateIdsOrBoolean?: string[] | boolean) {
+  public async bulkDisable(
+    taskIds: string[],
+    clearStateIdsOrBoolean?: string[] | boolean,
+    options?: ApiKeyOptions
+  ) {
     return await retryableBulkUpdate({
       taskIds,
       store: this.store,
@@ -170,10 +175,11 @@ export class TaskScheduling {
           : {}),
       }),
       validate: false,
+      options,
     });
   }
 
-  public async bulkEnable(taskIds: string[], runSoon: boolean = true) {
+  public async bulkEnable(taskIds: string[], runSoon: boolean = true, options?: ApiKeyOptions) {
     return await retryableBulkUpdate({
       taskIds,
       store: this.store,
@@ -192,12 +198,14 @@ export class TaskScheduling {
         return { ...task, enabled: true };
       },
       validate: false,
+      options,
     });
   }
 
   public async bulkUpdateState(
     taskIds: string[],
-    stateMapFn: (s: ConcreteTaskInstance['state'], id: string) => ConcreteTaskInstance['state']
+    stateMapFn: (s: ConcreteTaskInstance['state'], id: string) => ConcreteTaskInstance['state'],
+    options?: ApiKeyOptions
   ) {
     return await retryableBulkUpdate({
       taskIds,
@@ -209,6 +217,7 @@ export class TaskScheduling {
         state: stateMapFn(task.state, task.id),
       }),
       validate: false,
+      options,
     });
   }
 
@@ -223,7 +232,8 @@ export class TaskScheduling {
    */
   public async bulkUpdateSchedules(
     taskIds: string[],
-    schedule: IntervalSchedule | RruleSchedule
+    schedule: IntervalSchedule | RruleSchedule,
+    options?: ApiKeyOptions
   ): Promise<BulkUpdateTaskResult> {
     return retryableBulkUpdate({
       taskIds,
@@ -244,6 +254,7 @@ export class TaskScheduling {
        * where both are defined by passing mergeAttributes: false here.
        */
       mergeAttributes: false,
+      options,
     });
   }
 

@@ -17,10 +17,10 @@ import type {
 import type { SavedObjectReference } from '@kbn/core/types';
 import type { DataViewSpec } from '@kbn/data-views-plugin/common';
 import type { LensAttributes } from '../../types';
-import { DEFAULT_LAYER_ID } from '../../types';
+import { DEFAULT_LAYER_ID } from '../../constants';
 import {
   addLayerColumn,
-  buildDatasetState,
+  buildDataSourceState,
   buildDatasourceStates,
   buildReferences,
   generateApiLayer,
@@ -36,12 +36,20 @@ import type {
   LegacyMetricStateESQL,
   LegacyMetricStateNoESQL,
 } from '../../schema/charts/legacy_metric';
-import { getSharedChartLensStateToAPI, getSharedChartAPIToLensState } from './utils';
-import { fromColorByValueAPIToLensState, fromColorByValueLensStateToAPI } from '../coloring';
-import { isEsqlTableTypeDataset } from '../../utils';
+import {
+  getSharedChartLensStateToAPI,
+  getSharedChartAPIToLensState,
+  getLensStateLayer,
+  getDatasourceLayers,
+} from './utils';
+import {
+  fromColorByValueAPIToLensState,
+  fromColorByValueLensStateToAPI,
+  isColorByValueAbsolute,
+} from '../coloring';
+import { isEsqlTableTypeDataSource } from '../../utils';
 
-const ACCESSOR = 'metric_formula_accessor';
-const LENS_DEFAULT_LAYER_ID = 'layer_0';
+const ACCESSOR = 'legacy_metric_accessor';
 
 function buildVisualizationState(config: LegacyMetricState): LegacyMetricVisualizationState {
   const layer = config;
@@ -51,8 +59,8 @@ function buildVisualizationState(config: LegacyMetricState): LegacyMetricVisuali
     layerType: 'data',
     accessor: ACCESSOR,
     size: layer.metric.size,
-    titlePosition: layer.metric.alignments?.labels,
-    textAlign: layer.metric.alignments?.value,
+    titlePosition: layer.metric.labels?.alignment,
+    textAlign: layer.metric.values?.alignment,
     ...(layer.metric.apply_color_to && layer.metric.color
       ? {
           colorMode: layer.metric.apply_color_to === 'background' ? 'Background' : 'Labels',
@@ -64,7 +72,7 @@ function buildVisualizationState(config: LegacyMetricState): LegacyMetricVisuali
 
 function reverseBuildVisualizationState(
   visualization: LegacyMetricVisualizationState,
-  layer: FormBasedLayer | TextBasedLayer,
+  layer: Omit<FormBasedLayer, 'indexPatternId'> | TextBasedLayer,
   layerId: string,
   adHocDataViews: Record<string, DataViewSpec>,
   references: SavedObjectReference[],
@@ -74,15 +82,21 @@ function reverseBuildVisualizationState(
     throw new Error('Metric accessor is missing in the visualization state');
   }
 
-  const dataset = buildDatasetState(layer, adHocDataViews, references, adhocReferences, layerId);
+  const dataSource = buildDataSourceState(
+    layer,
+    layerId,
+    adHocDataViews,
+    references,
+    adhocReferences
+  );
 
-  if (!dataset || dataset.type == null) {
-    throw new Error('Unsupported dataset type');
+  if (!dataSource || dataSource.type == null || isEsqlTableTypeDataSource(dataSource)) {
+    throw new Error('Unsupported DataSource type');
   }
 
   const props: DeepPartial<DeepMutable<LegacyMetricState>> = {
     ...generateApiLayer(layer),
-    metric: isEsqlTableTypeDataset(dataset)
+    metric: isEsqlTableTypeDataSource(dataSource)
       ? getValueApiColumn(visualization.accessor, layer as TextBasedLayer)
       : operationFromColumn(visualization.accessor, layer as FormBasedLayer),
   } as LegacyMetricState;
@@ -93,10 +107,16 @@ function reverseBuildVisualizationState(
     }
 
     if (visualization.titlePosition || visualization.textAlign) {
-      props.metric.alignments = {
-        ...(visualization.titlePosition ? { labels: visualization.titlePosition } : {}),
-        ...(visualization.textAlign ? { value: visualization.textAlign } : {}),
-      };
+      if (visualization.titlePosition) {
+        props.metric.labels = {
+          alignment: visualization.titlePosition,
+        };
+      }
+      if (visualization.textAlign) {
+        props.metric.values = {
+          alignment: visualization.textAlign,
+        };
+      }
     }
 
     if (visualization.colorMode && visualization.colorMode !== 'None' && visualization.palette) {
@@ -104,7 +124,7 @@ function reverseBuildVisualizationState(
         visualization.colorMode === 'Background' ? 'background' : 'value';
 
       const colorByValue = fromColorByValueLensStateToAPI(visualization.palette);
-      if (colorByValue?.range === 'absolute') {
+      if (isColorByValueAbsolute(colorByValue)) {
         props.metric.color = colorByValue;
       }
     }
@@ -112,7 +132,7 @@ function reverseBuildVisualizationState(
 
   return {
     type: 'legacy_metric',
-    dataset: dataset satisfies LegacyMetricState['dataset'],
+    data_source: dataSource satisfies LegacyMetricState['data_source'],
     ...props,
   } as LegacyMetricState;
 }
@@ -129,7 +149,7 @@ function buildFormBasedLayer(layer: LegacyMetricStateNoESQL): FormBasedPersisted
 }
 
 function getValueColumns(layer: LegacyMetricStateESQL) {
-  return [getValueColumn(ACCESSOR, layer.metric.column, 'number')];
+  return [getValueColumn(ACCESSOR, layer.metric, 'number')];
 }
 
 type LegacyMetricAttributes = Extract<
@@ -156,7 +176,7 @@ export function fromAPItoLensState(
     (v): v is { id: string; type: 'dataView' } => v.type === 'dataView'
   );
   const references = regularDataViews.length
-    ? buildReferences({ [LENS_DEFAULT_LAYER_ID]: regularDataViews[0]?.id })
+    ? buildReferences({ [DEFAULT_LAYER_ID]: regularDataViews[0]?.id })
     : [];
 
   return {
@@ -167,7 +187,7 @@ export function fromAPItoLensState(
       datasourceStates: layers,
       internalReferences,
       visualization,
-      adHocDataViews: config.dataset.type === 'index' ? adHocDataViews : {},
+      adHocDataViews,
     },
   };
 }
@@ -177,21 +197,15 @@ export function fromLensStateToAPI(
 ): Extract<LensApiState, { type: 'legacy_metric' }> {
   const { state } = config;
   const visualization = state.visualization as LegacyMetricVisualizationState;
-  const layers =
-    state.datasourceStates.formBased?.layers ??
-    state.datasourceStates.textBased?.layers ??
-    // @ts-expect-error unfortunately due to a migration bug, some existing SO might still have the old indexpattern DS state
-    (state.datasourceStates.indexpattern?.layers as PersistedIndexPatternLayer[]) ??
-    [];
-
-  const [layerId, layer] = Object.entries(layers)[0];
+  const layers = getDatasourceLayers(state);
+  const [layerId, layer] = getLensStateLayer(layers, visualization.layerId);
 
   const visualizationState = {
     ...getSharedChartLensStateToAPI(config),
     ...reverseBuildVisualizationState(
       visualization,
       layer,
-      layerId ?? LENS_DEFAULT_LAYER_ID,
+      layerId ?? DEFAULT_LAYER_ID,
       config.state.adHocDataViews ?? {},
       config.references,
       config.state.internalReferences

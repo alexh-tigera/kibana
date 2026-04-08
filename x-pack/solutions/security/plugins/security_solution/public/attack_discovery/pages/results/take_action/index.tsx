@@ -14,14 +14,15 @@ import {
 } from '@kbn/elastic-assistant-common';
 import {
   EuiButtonEmpty,
-  EuiContextMenuItem,
-  EuiContextMenuPanel,
+  EuiContextMenu,
+  type EuiContextMenuPanelDescriptor,
   EuiPopover,
   useGeneratedHtmlId,
 } from '@elastic/eui';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { SecurityAgentBuilderAttachments } from '../../../../../common/constants';
+import { useReportAddToChat } from '../../../../agent_builder/hooks/use_report_add_to_chat';
+import * as agentBuilderI18n from '../../../../agent_builder/components/translations';
 import { useAssistantAvailability } from '../../../../assistant/use_assistant_availability';
 import { useAddToNewCase } from './use_add_to_case';
 import { useAddToExistingCase } from './use_add_to_existing_case';
@@ -33,8 +34,10 @@ import { UpdateAlertsModal } from './update_alerts_modal';
 import { useAttackDiscoveryBulk } from '../../use_attack_discovery_bulk';
 import { useUpdateAlertsStatus } from './use_update_alerts_status';
 import { isAttackDiscoveryAlert } from '../../utils/is_attack_discovery_alert';
-import { useIsExperimentalFeatureEnabled } from '../../../../common/hooks/use_experimental_features';
-import { useAgentBuilderAttachment } from '../../../../agent_builder/hooks/use_agent_builder_attachment';
+import { useAgentBuilderAvailability } from '../../../../agent_builder/hooks/use_agent_builder_availability';
+import { useAttackDiscoveryAttachment } from '../use_attack_discovery_attachment';
+import { useAlertsPrivileges } from '../../../../detections/containers/detection_engine/alerts/use_alerts_privileges';
+import { useAttackRunWorkflowContextMenuItems } from '../../../../detections/hooks/attacks/bulk_actions/context_menu_items/use_attack_run_workflow_context_menu_items';
 
 interface Props {
   attackDiscoveries: AttackDiscovery[] | AttackDiscoveryAlert[];
@@ -74,6 +77,8 @@ const TakeActionComponent: React.FC<Props> = ({
   const { onAddToExistingCase } = useAddToExistingCase({
     canUserCreateAndReadCases,
   });
+
+  const { hasAlertsUpdate } = useAlertsPrivileges();
 
   // boilerplate for the take action popover:
   const takeActionContextMenuPopoverId = useGeneratedHtmlId({
@@ -208,25 +213,32 @@ const TakeActionComponent: React.FC<Props> = ({
     showAssistantOverlay?.();
   }, [closePopover, showAssistantOverlay]);
 
-  const isAgentBuilderEnabled = useIsExperimentalFeatureEnabled('agentBuilderEnabled');
-  const attackDiscovery = attackDiscoveries.length === 1 ? attackDiscoveries[0] : null;
-  const { openAgentBuilderFlyout } = useAgentBuilderAttachment({
-    attachmentType: SecurityAgentBuilderAttachments.alert,
-    attachmentData: {
-      alert: attackDiscovery
-        ? getAttackDiscoveryMarkdown({
-            attackDiscovery,
-            replacements,
-          })
-        : '',
-    },
-    attachmentPrompt: i18n.VIEW_IN_AGENT_BUILDER,
-  });
-
+  const { hasAgentBuilderPrivilege, isAgentChatExperienceEnabled, hasValidAgentBuilderLicense } =
+    useAgentBuilderAvailability();
+  const attackDiscovery = attackDiscoveries.length === 1 ? attackDiscoveries[0] : undefined;
+  const openAgentBuilderFlyout = useAttackDiscoveryAttachment(attackDiscovery, replacements);
+  const reportAddToChatClick = useReportAddToChat();
   const onViewInAgentBuilder = useCallback(() => {
     closePopover();
+    reportAddToChatClick({
+      pathway: 'attack_discovery_take_action',
+      attachments: ['alert'],
+    });
     openAgentBuilderFlyout();
-  }, [closePopover, openAgentBuilderFlyout]);
+  }, [closePopover, openAgentBuilderFlyout, reportAddToChatClick]);
+
+  const isAddToChatDisabled = !hasValidAgentBuilderLicense;
+
+  const { items: runWorkflowItems, panels: runWorkflowPanels } =
+    useAttackRunWorkflowContextMenuItems({
+      attacksForWorkflowRun: attackDiscoveries.map((ad) => {
+        return {
+          attackId: ad.id ?? '',
+          attackIndex: isAttackDiscoveryAlert(ad) ? ad.index : undefined,
+        };
+      }),
+      closePopover,
+    });
 
   // button for the popover:
   const button = useMemo(
@@ -234,7 +246,7 @@ const TakeActionComponent: React.FC<Props> = ({
       <EuiButtonEmpty
         data-test-subj="takeActionPopoverButton"
         iconSide="right"
-        iconType="arrowDown"
+        iconType="chevronSingleDown"
         onClick={onButtonClick}
         size={buttonSize}
       >
@@ -244,110 +256,123 @@ const TakeActionComponent: React.FC<Props> = ({
     [buttonSize, buttonText, onButtonClick]
   );
 
-  // items for the popover:
-  const items: React.JSX.Element[] = useMemo(
-    () =>
-      [
-        <EuiContextMenuItem
-          data-test-subj="addToCase"
-          disabled={addToCaseDisabled}
-          key="addToCase"
-          onClick={onClickAddToNewCase}
-        >
-          {i18n.ADD_TO_NEW_CASE}
-        </EuiContextMenuItem>,
-
-        <EuiContextMenuItem
-          data-test-subj="addToExistingCase"
-          disabled={addToCaseDisabled}
-          key="addToExistingCase"
-          onClick={onClickAddToExistingCase}
-        >
-          {i18n.ADD_TO_EXISTING_CASE}
-        </EuiContextMenuItem>,
-
-        attackDiscoveries.length === 1
-          ? isAgentBuilderEnabled
-            ? [
-                <EuiContextMenuItem
-                  data-test-subj="viewInAgentBuilder"
-                  key="viewInAgentBuilder"
-                  onClick={onViewInAgentBuilder}
-                >
-                  {i18n.VIEW_IN_AGENT_BUILDER}
-                </EuiContextMenuItem>,
-              ]
-            : [
-                <EuiContextMenuItem
-                  data-test-subj="viewInAiAssistant"
-                  disabled={viewInAiAssistantDisabled}
-                  key="viewInAiAssistant"
-                  onClick={onViewInAiAssistant}
-                >
-                  {i18n.VIEW_IN_AI_ASSISTANT}
-                </EuiContextMenuItem>,
-              ]
-          : [],
-      ].flat(),
-    [
-      addToCaseDisabled,
-      attackDiscoveries.length,
-      isAgentBuilderEnabled,
-      onClickAddToExistingCase,
-      onClickAddToNewCase,
-      onViewInAgentBuilder,
-      onViewInAiAssistant,
-      viewInAiAssistantDisabled,
-    ]
-  );
-
   const allItems = useMemo(() => {
     const isSingleAttackDiscovery = attackDiscoveries.length === 1;
     const firstAttackDiscovery = isSingleAttackDiscovery ? attackDiscoveries[0] : null;
-    const isAlert = firstAttackDiscovery && isAttackDiscoveryAlert(firstAttackDiscovery);
+    const isAlert = firstAttackDiscovery != null && isAttackDiscoveryAlert(firstAttackDiscovery);
 
     const isOpen = isAlert && firstAttackDiscovery.alertWorkflowStatus === 'open';
     const isAcknowledged = isAlert && firstAttackDiscovery.alertWorkflowStatus === 'acknowledged';
     const isClosed = isAlert && firstAttackDiscovery.alertWorkflowStatus === 'closed';
 
-    const markAsOpenItem = !isOpen
-      ? [
-          <EuiContextMenuItem
-            data-test-subj="markAsOpen"
-            key="markAsOpen"
-            onClick={() => onUpdateWorkflowStatus('open')}
-          >
-            {i18n.MARK_AS_OPEN}
-          </EuiContextMenuItem>,
-        ]
+    const markAsOpenItem =
+      !isOpen && hasAlertsUpdate
+        ? [
+            {
+              'data-test-subj': 'markAsOpen',
+              key: 'markAsOpen',
+              name: i18n.MARK_AS_OPEN,
+              onClick: () => onUpdateWorkflowStatus('open'),
+            },
+          ]
+        : [];
+
+    const markAsAcknowledgedItem =
+      !isAcknowledged && hasAlertsUpdate
+        ? [
+            {
+              'data-test-subj': 'markAsAcknowledged',
+              key: 'markAsAcknowledged',
+              name: i18n.MARK_AS_ACKNOWLEDGED,
+              onClick: () => onUpdateWorkflowStatus('acknowledged'),
+            },
+          ]
+        : [];
+
+    const markAsClosedItem =
+      !isClosed && hasAlertsUpdate
+        ? [
+            {
+              'data-test-subj': 'markAsClosed',
+              key: 'markAsClosed',
+              name: i18n.MARK_AS_CLOSED,
+              onClick: () => onUpdateWorkflowStatus('closed'),
+            },
+          ]
+        : [];
+
+    const caseItems = [
+      {
+        'data-test-subj': 'addToCase',
+        disabled: addToCaseDisabled,
+        key: 'addToCase',
+        name: i18n.ADD_TO_NEW_CASE,
+        onClick: onClickAddToNewCase,
+      },
+      {
+        'data-test-subj': 'addToExistingCase',
+        disabled: addToCaseDisabled,
+        key: 'addToExistingCase',
+        name: i18n.ADD_TO_EXISTING_CASE,
+        onClick: onClickAddToExistingCase,
+      },
+    ];
+
+    const aiItems = isSingleAttackDiscovery
+      ? isAgentChatExperienceEnabled
+        ? hasAgentBuilderPrivilege
+          ? [
+              {
+                'data-test-subj': 'viewInAgentBuilder',
+                disabled: isAddToChatDisabled,
+                key: 'viewInAgentBuilder',
+                name: i18n.ADD_TO_CHAT,
+                onClick: onViewInAgentBuilder,
+                toolTipContent: isAddToChatDisabled
+                  ? agentBuilderI18n.UPGRADE_TO_ENTERPRISE_TO_USE_AGENT_BUILDER_CHAT
+                  : undefined,
+              },
+            ]
+          : []
+        : [
+            {
+              'data-test-subj': 'viewInAiAssistant',
+              disabled: viewInAiAssistantDisabled,
+              key: 'viewInAiAssistant',
+              name: i18n.VIEW_IN_AI_ASSISTANT,
+              onClick: onViewInAiAssistant,
+            },
+          ]
       : [];
 
-    const markAsAcknowledgedItem = !isAcknowledged
-      ? [
-          <EuiContextMenuItem
-            data-test-subj="markAsAcknowledged"
-            key="markAsAcknowledged"
-            onClick={() => onUpdateWorkflowStatus('acknowledged')}
-          >
-            {i18n.MARK_AS_ACKNOWLEDGED}
-          </EuiContextMenuItem>,
-        ]
-      : [];
+    return [
+      ...markAsOpenItem,
+      ...markAsAcknowledgedItem,
+      ...markAsClosedItem,
+      ...runWorkflowItems,
+      ...caseItems,
+      ...aiItems,
+    ];
+  }, [
+    attackDiscoveries,
+    hasAlertsUpdate,
+    addToCaseDisabled,
+    onClickAddToNewCase,
+    onClickAddToExistingCase,
+    isAgentChatExperienceEnabled,
+    hasAgentBuilderPrivilege,
+    isAddToChatDisabled,
+    onViewInAgentBuilder,
+    viewInAiAssistantDisabled,
+    onViewInAiAssistant,
+    onUpdateWorkflowStatus,
+    runWorkflowItems,
+  ]);
 
-    const markAsClosedItem = !isClosed
-      ? [
-          <EuiContextMenuItem
-            data-test-subj="markAsClosed"
-            key="markAsClosed"
-            onClick={() => onUpdateWorkflowStatus('closed')}
-          >
-            {i18n.MARK_AS_CLOSED}
-          </EuiContextMenuItem>,
-        ]
-      : [];
-
-    return [...markAsOpenItem, ...markAsAcknowledgedItem, ...markAsClosedItem, ...items].flat();
-  }, [attackDiscoveries, items, onUpdateWorkflowStatus]);
+  const panels: EuiContextMenuPanelDescriptor[] = useMemo(
+    () => [{ id: 0, items: allItems }, ...runWorkflowPanels],
+    [allItems, runWorkflowPanels]
+  );
 
   const onCloseOrCancel = useCallback(() => {
     setPendingAction(null);
@@ -364,7 +389,7 @@ const TakeActionComponent: React.FC<Props> = ({
         isOpen={isPopoverOpen}
         panelPaddingSize="none"
       >
-        <EuiContextMenuPanel size="s" items={allItems} />
+        <EuiContextMenu size="s" initialPanelId={0} panels={panels} />
       </EuiPopover>
 
       {pendingAction != null && !hasSearchAILakeConfigurations && (

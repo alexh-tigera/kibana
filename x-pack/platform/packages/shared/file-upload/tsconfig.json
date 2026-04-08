@@ -6,8 +6,8 @@
       "jest",
       "node",
       "react",
-      "@emotion/react/types/css-prop",
-      "../../../../../typings/emotion.d.ts"
+      "@testing-library/jest-dom",
+      "@kbn/ambient-ui-types",
     ]
   },
   "include": [
@@ -16,7 +16,6 @@
     "**/*.tsx",
     "**/*.svg",
     "**/*.d.ts",
-    "../../../../../typings/emotion.d.ts"
   ],
   "exclude": [
     "target/**/*"

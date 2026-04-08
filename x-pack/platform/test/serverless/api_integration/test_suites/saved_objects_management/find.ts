@@ -91,7 +91,8 @@ export default function ({ getService }: FtrProviderContext) {
           expect(body).to.eql({
             statusCode: 400,
             error: 'Bad Request',
-            message: '[request query.searchFields]: definition for this key is missing',
+            message:
+              "[request query.searchFields]: Additional properties are not allowed ('searchFields' was unexpected)",
           });
         });
       });
@@ -127,7 +128,10 @@ export default function ({ getService }: FtrProviderContext) {
             .set(roleAuthc.apiKeyHeader)
             .expect(200);
           const objects = body.saved_objects;
-          expect(objects.map((obj: any) => obj.id)).to.eql(['only-ref-1', 'ref-1-and-ref-2']);
+          expect(objects.map((obj: any) => obj.id).sort()).to.eql([
+            'only-ref-1',
+            'ref-1-and-ref-2',
+          ]);
         });
       });
 

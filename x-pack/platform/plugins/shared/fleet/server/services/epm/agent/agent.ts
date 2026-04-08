@@ -8,6 +8,7 @@
 import Handlebars from '@kbn/handlebars';
 import { load, dump } from 'js-yaml';
 import type { Logger } from '@kbn/core/server';
+import { coerce, satisfies } from 'semver';
 
 import type {
   PackageInfo,
@@ -30,7 +31,8 @@ const handlebars = Handlebars.create();
 export function getMetaVariables(
   pkg: Pick<PackageInfo, 'name' | 'title' | 'version'>,
   input: PackagePolicyInput,
-  stream?: PackagePolicyInputStream
+  stream?: PackagePolicyInputStream,
+  agentVersion?: string
 ) {
   return {
     // Package variables
@@ -51,10 +53,44 @@ export function getMetaVariables(
     input: {
       id: input?.id || '',
     },
+    agent: {
+      version: agentVersion,
+    },
   };
 }
 
 export type MetaVariable = ReturnType<typeof getMetaVariables>;
+
+/**
+ * Merges two compiled template objects following these rules:
+ * - Scalars: override wins.
+ * - Maps (plain objects): deep-merged recursively.
+ * - Arrays: base elements first, override appended.
+ */
+export function mergeCompiledTemplates(
+  base: Record<string, any>,
+  override: Record<string, any>
+): Record<string, any> {
+  const result: Record<string, any> = { ...base };
+  for (const [key, overrideValue] of Object.entries(override)) {
+    const baseValue = result[key];
+    if (Array.isArray(baseValue) && Array.isArray(overrideValue)) {
+      result[key] = [...baseValue, ...overrideValue];
+    } else if (
+      baseValue !== null &&
+      overrideValue !== null &&
+      typeof baseValue === 'object' &&
+      typeof overrideValue === 'object' &&
+      !Array.isArray(baseValue) &&
+      !Array.isArray(overrideValue)
+    ) {
+      result[key] = mergeCompiledTemplates(baseValue, overrideValue);
+    } else {
+      result[key] = overrideValue;
+    }
+  }
+  return result;
+}
 
 export function compileTemplate(
   variables: PackagePolicyConfigRecord,
@@ -250,6 +286,25 @@ function urlEncodeHelper(input: string) {
   return encodedString;
 }
 handlebars.registerHelper('url_encode', urlEncodeHelper);
+
+function semverSatisfiesHelper(
+  this: any,
+  agentVersion: string,
+  versionCondition: string,
+  options: any
+) {
+  // without agent version (parent policy), the condition is not met, the conditional template is not included
+  if (!agentVersion) {
+    return options.inverse(this);
+  }
+  return satisfies(coerce(agentVersion)!, versionCondition)
+    ? options.fn(this)
+    : options.inverse(this);
+}
+// cel.yml.hbs
+// {{#semverSatisfies _meta.agent.version "^9.3.0"}}
+// {{/semverSatisfies}}
+handlebars.registerHelper('semverSatisfies', semverSatisfiesHelper);
 
 function replaceRootLevelYamlVariables(yamlVariables: { [k: string]: any }, yamlTemplate: string) {
   if (Object.keys(yamlVariables).length === 0 || !yamlTemplate) {

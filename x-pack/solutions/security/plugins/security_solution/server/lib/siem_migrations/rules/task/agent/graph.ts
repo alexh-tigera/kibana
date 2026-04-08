@@ -7,6 +7,7 @@
 
 import { END, START, StateGraph } from '@langchain/langgraph';
 import { ToolNode } from '@langchain/langgraph/prebuilt';
+import { AIMessage } from '@langchain/core/messages';
 import { getCreateSemanticQueryNode } from './nodes/create_semantic_query';
 import { getMatchPrebuiltRuleNode } from './nodes/match_prebuilt_rule';
 import { migrateRuleConfigSchema, migrateRuleState } from './state';
@@ -30,7 +31,7 @@ export function getRuleMigrationAgent({
     telemetryClient,
   });
 
-  const resolveDepsToolNode = new ToolNode([tools.getRulesByName]);
+  const resolveDepsToolNode = new ToolNode([tools.getRulesByName, tools.getResourceByType]);
 
   const translationSubGraph = getTranslateRuleGraph({
     model,
@@ -39,7 +40,9 @@ export function getRuleMigrationAgent({
     telemetryClient,
     logger,
   });
-  const resolveDependenciesNode = getResolveDepsNode({ model });
+  const resolveDependenciesNode = getResolveDepsNode({
+    model: model.bindTools(Object.values(tools)),
+  });
   const createSemanticQueryNode = getCreateSemanticQueryNode({ model });
 
   const siemMigrationAgentGraph = new StateGraph(migrateRuleState, migrateRuleConfigSchema)
@@ -92,5 +95,7 @@ const matchedPrebuiltRuleConditional = (state: MigrateRuleState) => {
 export function toolRouter(state: MigrateRuleState): string {
   const messages = state.messages;
   const lastMessage = messages.at(-1);
-  return lastMessage?.tool_calls?.length ? 'hasToolCalls' : 'noToolCalls';
+  return AIMessage.isInstance(lastMessage) && lastMessage?.tool_calls?.length
+    ? 'hasToolCalls'
+    : 'noToolCalls';
 }

@@ -9,9 +9,10 @@
 
 import { schema } from '@kbn/config-schema';
 import { timeRangeSchema } from '@kbn/es-query-server';
-import { baseMetaSchema, createdMetaSchema, updatedMetaSchema } from '../meta_schemas';
+import { asCodeMetaSchema } from '@kbn/as-code-shared-schemas';
+import { accessControlSchema } from '../dashboard_state_schemas';
 
-export const searchRequestBodySchema = schema.object({
+export const searchRequestParamsSchema = schema.object({
   page: schema.maybe(
     schema.number({
       meta: {
@@ -26,7 +27,7 @@ export const searchRequestBodySchema = schema.object({
       },
     })
   ),
-  search: schema.maybe(
+  query: schema.maybe(
     schema.string({
       meta: {
         description:
@@ -35,9 +36,19 @@ export const searchRequestBodySchema = schema.object({
     })
   ),
   tags: schema.maybe(
-    schema.object({
-      included: schema.maybe(schema.arrayOf(schema.string())),
-      excluded: schema.maybe(schema.arrayOf(schema.string())),
+    schema.oneOf([schema.string(), schema.arrayOf(schema.string(), { maxSize: 100 })], {
+      meta: {
+        description:
+          'A tag ID to include. Accepts a single tag ID or multiple tag IDs. When multiple are specified, dashboards matching ANY of the tag IDs are included.',
+      },
+    })
+  ),
+  excluded_tags: schema.maybe(
+    schema.oneOf([schema.string(), schema.arrayOf(schema.string(), { maxSize: 100 })], {
+      meta: {
+        description:
+          'A tag ID to exclude. Accepts a single tag ID or multiple tag IDs. When multiple are specified, dashboards matching ANY of the tag IDs are excluded.',
+      },
     })
   ),
 });
@@ -49,10 +60,11 @@ export const searchResponseBodySchema = schema.object({
       data: schema.object({
         description: schema.maybe(schema.string()),
         tags: schema.maybe(schema.arrayOf(schema.string())),
-        timeRange: schema.maybe(timeRangeSchema),
+        time_range: schema.maybe(timeRangeSchema),
         title: schema.string(),
+        access_control: accessControlSchema,
       }),
-      meta: schema.allOf([baseMetaSchema, createdMetaSchema, updatedMetaSchema]),
+      meta: asCodeMetaSchema,
     })
   ),
   total: schema.number(),

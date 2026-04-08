@@ -51,7 +51,6 @@ export {
   INTERNAL_BULK_GET_CASES_URL,
   LENS_ATTACHMENT_TYPE,
   INTERNAL_BULK_CREATE_ATTACHMENTS_URL,
-  SAVED_OBJECT_TYPES,
   CASE_COMMENT_SAVED_OBJECT,
   CASES_CONNECTORS_CAPABILITY,
   GET_CONNECTORS_CONFIGURE_API_TAG,
@@ -59,6 +58,7 @@ export {
   CREATE_COMMENT_CAPABILITY,
   CASES_REOPEN_CAPABILITY,
   ASSIGN_CASE_CAPABILITY,
+  MANAGE_TEMPLATES_CAPABILITY,
 } from './constants';
 
 export type { AttachmentAttributes } from './types/domain';
@@ -68,3 +68,5 @@ export { createUICapabilities, type CasesUiCapabilities } from './utils/capabili
 export { getApiTags, type CasesApiTags } from './utils/api_tags';
 export { CaseMetricsFeature } from './types/api';
 export type { SingleCaseMetricsResponse, CasesMetricsResponse } from './types/api';
+
+export { getSavedObjectsTypes } from './utils/saved_object_types';

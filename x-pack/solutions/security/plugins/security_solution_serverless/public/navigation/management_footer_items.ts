@@ -6,11 +6,15 @@
  */
 
 import type { NodeDefinition } from '@kbn/core-chrome-browser';
+import { AIChatExperience } from '@kbn/ai-assistant-common';
 import { SecurityPageName } from '@kbn/security-solution-navigation';
 import { i18nStrings, securityLink } from '@kbn/security-solution-navigation/links';
 import { STACK_MANAGEMENT_NAV_ID, DATA_MANAGEMENT_NAV_ID } from '@kbn/deeplinks-management';
 
-export const createManagementFooterItemsTree = (): NodeDefinition => ({
+export const createManagementFooterItemsTree = (
+  chatExperience: AIChatExperience = AIChatExperience.Classic,
+  showAlertingV2: boolean = false
+): NodeDefinition => ({
   id: 'category-management',
   title: i18nStrings.projectSettings.title,
   breadcrumbStatus: 'hidden',
@@ -101,6 +105,20 @@ export const createManagementFooterItemsTree = (): NodeDefinition => ({
             },
           ],
         },
+        ...(showAlertingV2
+          ? [
+              {
+                id: 'v2_alerting_preview',
+                title: i18nStrings.stackManagementV2.v2AlertingPreview.title,
+                renderAs: 'panelOpener' as const,
+                children: [
+                  { link: 'management:rules' as const },
+                  { link: 'management:episodes' as const, breadcrumbStatus: 'hidden' as const },
+                  { link: 'management:notification_policies' as const },
+                ],
+              },
+            ]
+          : []),
         {
           title: i18nStrings.stackManagementV2.alertsAndInsights.title,
           breadcrumbStatus: 'hidden',
@@ -121,9 +139,16 @@ export const createManagementFooterItemsTree = (): NodeDefinition => ({
               id: SecurityPageName.entityAnalyticsManagement,
               link: securityLink(SecurityPageName.entityAnalyticsManagement),
             },
+          ],
+        },
+        {
+          title: i18nStrings.projectPerformance.title,
+          breadcrumbStatus: 'hidden',
+          children: [
             {
-              id: SecurityPageName.entityAnalyticsEntityStoreManagement,
-              link: securityLink(SecurityPageName.entityAnalyticsEntityStoreManagement),
+              link: 'management:queryActivity',
+              breadcrumbStatus: 'hidden',
+              badgeType: 'new',
             },
           ],
         },
@@ -138,18 +163,42 @@ export const createManagementFooterItemsTree = (): NodeDefinition => ({
           ],
         },
         {
+          title: i18nStrings.modelManagement.title,
+          children: [
+            { link: 'management:elastic_inference_service' },
+            { link: 'management:inference_endpoints' },
+            { link: 'management:model_settings' },
+          ],
+        },
+        {
           title: i18nStrings.stackManagement.ai.title,
           breadcrumbStatus: 'hidden',
-          children: [
-            {
-              link: 'management:genAiSettings',
-              breadcrumbStatus: 'hidden',
-            },
-            {
-              link: 'management:securityAiAssistantManagement',
-              breadcrumbStatus: 'hidden',
-            },
-          ],
+          children:
+            chatExperience !== AIChatExperience.Agent
+              ? [
+                  {
+                    link: 'management:genAiSettings',
+                    breadcrumbStatus: 'hidden',
+                  },
+                  {
+                    link: 'management:evals',
+                    breadcrumbStatus: 'hidden',
+                  },
+                  {
+                    link: 'management:securityAiAssistantManagement',
+                    breadcrumbStatus: 'hidden',
+                  },
+                ]
+              : [
+                  {
+                    link: 'management:genAiSettings',
+                    breadcrumbStatus: 'hidden',
+                  },
+                  {
+                    link: 'management:evals',
+                    breadcrumbStatus: 'hidden',
+                  },
+                ],
         },
         {
           title: i18nStrings.stackManagement.content.title,
@@ -180,7 +229,6 @@ export const createManagementFooterItemsTree = (): NodeDefinition => ({
               breadcrumbStatus: 'hidden',
             },
             { link: 'maps' },
-            { link: 'visualize' },
           ],
         },
         {

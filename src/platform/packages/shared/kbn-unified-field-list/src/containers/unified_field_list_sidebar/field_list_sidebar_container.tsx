@@ -39,6 +39,7 @@ import { useMemoCss } from '@kbn/css-utils/public/use_memo_css';
 import { prepareDataViewForEditing } from '@kbn/discover-utils';
 import {
   useExistingFieldsFetcher,
+  type ExistingFieldsFetcherParams,
   type ExistingFieldsFetcher,
 } from '../../hooks/use_existing_fields';
 import { useQuerySubscriber } from '../../hooks/use_query_subscriber';
@@ -55,7 +56,7 @@ import type {
   UnifiedFieldListSidebarContainerStateService,
   SearchMode,
 } from '../../types';
-import { withRestorableState } from '../../restorable_state';
+import { useRestorableRef, withRestorableState } from '../../restorable_state';
 
 const RESPONSIVE_BREAKPOINTS = ['xs', 's'];
 
@@ -73,6 +74,15 @@ const InternalUnifiedFieldListSidebarContainer: React.FC<
   InternalUnifiedFieldListSidebarContainerProps
 > = (props) => {
   const { variant, commonSidebarProps } = props;
+  const isSidebarCollapsedRef = useRestorableRef(
+    'isCollapsed',
+    commonSidebarProps.isSidebarCollapsed ?? false,
+    {
+      shouldStoreDefaultValueRightAway: true, // otherwise, it would re-initialize with the localStorage value which might override tab-scoped state
+    }
+  );
+
+  isSidebarCollapsedRef.current = commonSidebarProps.isSidebarCollapsed ?? false;
 
   if (variant === 'button-and-flyout-always') {
     return <ButtonVariant {...props} />;
@@ -154,6 +164,12 @@ export type UnifiedFieldListSidebarContainerProps = Omit<
 
   initialState?: UnifiedFieldListSidebarContainerPropsWithRestorableState['initialState'];
   onInitialStateChange?: UnifiedFieldListSidebarContainerPropsWithRestorableState['onInitialStateChange'];
+
+  /**
+   * Custom container for existing fields info map
+   */
+  initialExistingFieldsInfo?: ExistingFieldsFetcherParams['initialExistingFieldsInfo'];
+  onInitialExistingFieldsInfoChange?: ExistingFieldsFetcherParams['onInitialExistingFieldsInfoChange'];
 };
 
 /**
@@ -177,6 +193,8 @@ const UnifiedFieldListSidebarContainer = forwardRef<
     variant = 'responsive',
     onFieldEdited,
     additionalFilters,
+    initialExistingFieldsInfo,
+    onInitialExistingFieldsInfoChange,
   } = props;
   const [stateService] = useState<UnifiedFieldListSidebarContainerStateService>(
     createStateService({ options: getCreationOptions() })
@@ -230,6 +248,8 @@ const UnifiedFieldListSidebarContainer = forwardRef<
     fromDate: querySubscriberResult.fromDate,
     toDate: querySubscriberResult.toDate,
     services,
+    initialExistingFieldsInfo,
+    onInitialExistingFieldsInfoChange,
   });
 
   const editField = useMemo(
@@ -339,6 +359,7 @@ const UnifiedFieldListSidebarContainer = forwardRef<
       stateService,
       isProcessing,
       isAffectedByGlobalFilter,
+      isSidebarCollapsed,
       onEditField: editField,
       onDeleteField: deleteField,
       compressed: stateService.creationOptions.compressed ?? false,
@@ -346,7 +367,6 @@ const UnifiedFieldListSidebarContainer = forwardRef<
     };
 
     if (stateService.creationOptions.showSidebarToggleButton) {
-      commonProps.isSidebarCollapsed = isSidebarCollapsed;
       commonProps.onToggleSidebar = sidebarVisibility.toggle;
     }
 
@@ -448,7 +468,7 @@ function ButtonVariant({
                           defaultMessage: 'Back',
                         }
                       )}
-                      type="arrowLeft"
+                      type="chevronSingleLeft"
                     />{' '}
                     <strong>
                       {i18n.translate('unifiedFieldList.fieldListSidebar.flyoutHeading', {

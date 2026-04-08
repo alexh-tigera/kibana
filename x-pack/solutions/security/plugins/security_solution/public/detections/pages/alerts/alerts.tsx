@@ -21,6 +21,7 @@ import { NeedAdminForUpdateRulesCallOut } from '../../../detection_engine/rule_m
 import { MissingDetectionsPrivilegesCallOut } from '../../components/callouts/missing_detections_privileges_callout';
 import { NoPrivileges } from '../../../common/components/no_privileges';
 import { HeaderPage } from '../../../common/components/header_page';
+import { useAlertsPrivileges } from '../../containers/detection_engine/alerts/use_alerts_privileges';
 
 export const ALERTS_PAGE_LOADING_TEST_ID = 'alerts-page-loading';
 
@@ -29,7 +30,8 @@ export const ALERTS_PAGE_LOADING_TEST_ID = 'alerts-page-loading';
  * the actual content of the alerts page is rendered
  */
 export const AlertsPage = memo(() => {
-  const [{ loading: userInfoLoading, isAuthenticated, canUserREAD, hasIndexRead }] = useUserData();
+  const [{ loading: userInfoLoading, isAuthenticated }] = useUserData();
+  const { hasAlertsRead: canReadAlerts } = useAlertsPrivileges();
   const { loading: listsConfigLoading, needsConfiguration: needsListsConfiguration } =
     useListsConfig();
   const { signalIndexNeedsInit } = useSignalHelpers();
@@ -47,8 +49,8 @@ export const AlertsPage = memo(() => {
     [needsListsConfiguration, signalIndexNeedsInit]
   );
   const privilegesRequired: boolean = useMemo(
-    () => !signalIndexNeedsInit && (hasIndexRead === false || canUserREAD === false),
-    [canUserREAD, hasIndexRead, signalIndexNeedsInit]
+    () => !signalIndexNeedsInit && canReadAlerts === false,
+    [canReadAlerts, signalIndexNeedsInit]
   );
 
   if (loading) {

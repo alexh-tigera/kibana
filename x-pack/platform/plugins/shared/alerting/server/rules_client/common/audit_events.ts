@@ -11,6 +11,7 @@ import type { ArrayElement } from '@kbn/utility-types';
 import {
   AD_HOC_RUN_SAVED_OBJECT_TYPE,
   GAP_AUTO_FILL_SCHEDULER_SAVED_OBJECT_TYPE,
+  RULE_TEMPLATE_SAVED_OBJECT_TYPE,
 } from '../../saved_objects';
 
 export enum RuleAuditAction {
@@ -26,6 +27,8 @@ export enum RuleAuditAction {
   FIND = 'rule_find',
   MUTE = 'rule_mute',
   UNMUTE = 'rule_unmute',
+  BULK_MUTE_ALERTS = 'rule_alert_bulk_mute',
+  BULK_UNMUTE_ALERTS = 'rule_alert_bulk_unmute',
   MUTE_ALERT = 'rule_alert_mute',
   UNMUTE_ALERT = 'rule_alert_unmute',
   AGGREGATE = 'rule_aggregate',
@@ -40,6 +43,8 @@ export enum RuleAuditAction {
   SNOOZE = 'rule_snooze',
   UNSNOOZE = 'rule_unsnooze',
   RUN_SOON = 'rule_run_soon',
+  ACKNOWLEDGE_ALERT = 'rule_alert_acknowledge',
+  UNACKNOWLEDGE_ALERT = 'rule_alert_unacknowledge',
   UNTRACK_ALERT = 'rule_alert_untrack',
   SCHEDULE_BACKFILL = 'rule_schedule_backfill',
   FIND_GAPS = 'rule_find_gaps',
@@ -60,6 +65,7 @@ export enum GapAutoFillSchedulerAuditAction {
   GET = 'gap_auto_fill_scheduler_get',
   UPDATE = 'gap_auto_fill_scheduler_update',
   DELETE = 'gap_auto_fill_scheduler_delete',
+  GET_LOGS = 'gap_auto_fill_scheduler_get_logs',
 }
 
 export interface GapAutoFillSchedulerAuditEventParams {
@@ -86,6 +92,8 @@ const ruleEventVerbs: Record<RuleAuditAction, VerbsTuple> = {
   rule_find: ['access', 'accessing', 'accessed'],
   rule_mute: ['mute', 'muting', 'muted'],
   rule_unmute: ['unmute', 'unmuting', 'unmuted'],
+  rule_alert_bulk_mute: ['bulk mute', 'bulk muting', 'bulk muted'],
+  rule_alert_bulk_unmute: ['bulk unmute', 'bulk unmuting', 'bulk unmuted'],
   rule_alert_mute: ['mute alert of', 'muting alert of', 'muted alert of'],
   rule_alert_unmute: ['unmute alert of', 'unmuting alert of', 'unmuted alert of'],
   rule_aggregate: ['access', 'accessing', 'accessed'],
@@ -121,6 +129,16 @@ const ruleEventVerbs: Record<RuleAuditAction, VerbsTuple> = {
     'access global execution summary for',
     'accessing global execution summary for',
     'accessed global execution summary for',
+  ],
+  rule_alert_acknowledge: [
+    'acknowledge alert of',
+    'acknowledging alert of',
+    'acknowledged alert of',
+  ],
+  rule_alert_unacknowledge: [
+    'unacknowledge alert of',
+    'unacknowledging alert of',
+    'unacknowledged alert of',
   ],
   rule_alert_untrack: ['untrack', 'untracking', 'untracked'],
   rule_schedule_backfill: [
@@ -164,6 +182,8 @@ const ruleEventTypes: Record<RuleAuditAction, ArrayElement<EcsEvent['type']>> = 
   rule_find: 'access',
   rule_mute: 'change',
   rule_unmute: 'change',
+  rule_alert_bulk_mute: 'change',
+  rule_alert_bulk_unmute: 'change',
   rule_alert_mute: 'change',
   rule_alert_unmute: 'change',
   rule_aggregate: 'access',
@@ -176,6 +196,8 @@ const ruleEventTypes: Record<RuleAuditAction, ArrayElement<EcsEvent['type']>> = 
   rule_get_execution_kpi: 'access',
   rule_get_global_execution_kpi: 'access',
   rule_get_global_execution_summary: 'access',
+  rule_alert_acknowledge: 'change',
+  rule_alert_unacknowledge: 'change',
   rule_alert_untrack: 'change',
   rule_schedule_backfill: 'access',
   rule_find_gaps: 'access',
@@ -283,6 +305,68 @@ export function adHocRunAuditEvent({
   };
 }
 
+export enum RuleTemplateAuditAction {
+  GET = 'rule_template_get',
+  FIND = 'rule_template_find',
+}
+
+const ruleTemplateEventVerbs: Record<RuleTemplateAuditAction, VerbsTuple> = {
+  rule_template_get: ['access', 'accessing', 'accessed'],
+  rule_template_find: ['access', 'accessing', 'accessed'],
+};
+
+const ruleTemplateEventTypes: Record<RuleTemplateAuditAction, ArrayElement<EcsEvent['type']>> = {
+  rule_template_get: 'access',
+  rule_template_find: 'access',
+};
+
+export interface RuleTemplateAuditEventParams {
+  action: RuleTemplateAuditAction;
+  outcome?: EcsEvent['outcome'];
+  savedObject?: NonNullable<AuditEvent['kibana']>['saved_object'];
+  error?: Error;
+}
+
+export function ruleTemplateAuditEvent({
+  action,
+  savedObject,
+  outcome,
+  error,
+}: RuleTemplateAuditEventParams): AuditEvent {
+  const doc = savedObject
+    ? [
+        `${RULE_TEMPLATE_SAVED_OBJECT_TYPE} [id=${savedObject.id}]`,
+        savedObject.name && `[name=${savedObject.name}]`,
+      ]
+        .filter(Boolean)
+        .join(' ')
+    : 'a rule template';
+  const [present, progressive, past] = ruleTemplateEventVerbs[action];
+  const message = error
+    ? `Failed attempt to ${present} ${doc}`
+    : outcome === 'unknown'
+    ? `User is ${progressive} ${doc}`
+    : `User has ${past} ${doc}`;
+  const type = ruleTemplateEventTypes[action];
+
+  return {
+    message,
+    event: {
+      action,
+      category: ['database'],
+      type: type ? [type] : undefined,
+      outcome: outcome ?? (error ? 'failure' : 'success'),
+    },
+    kibana: {
+      saved_object: savedObject,
+    },
+    error: error && {
+      code: error.name,
+      message: error.message,
+    },
+  };
+}
+
 const gapAutoFillSchedulerEventVerbs: Record<GapAutoFillSchedulerAuditAction, VerbsTuple> = {
   gap_auto_fill_scheduler_create: [
     'create gap auto fill scheduler',
@@ -304,6 +388,11 @@ const gapAutoFillSchedulerEventVerbs: Record<GapAutoFillSchedulerAuditAction, Ve
     'deleting gap auto fill scheduler',
     'deleted gap auto fill scheduler',
   ],
+  gap_auto_fill_scheduler_get_logs: [
+    'get gap auto fill scheduler logs',
+    'getting gap auto fill scheduler logs',
+    'got gap auto fill scheduler logs',
+  ],
 };
 
 const gapAutoFillSchedulerEventTypes: Record<
@@ -314,6 +403,7 @@ const gapAutoFillSchedulerEventTypes: Record<
   gap_auto_fill_scheduler_get: 'access',
   gap_auto_fill_scheduler_update: 'change',
   gap_auto_fill_scheduler_delete: 'deletion',
+  gap_auto_fill_scheduler_get_logs: 'access',
 };
 
 export function gapAutoFillSchedulerAuditEvent({

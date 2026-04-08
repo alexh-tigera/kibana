@@ -23,6 +23,7 @@ import {
   EuiSpacer,
   useEuiTheme,
 } from '@elastic/eui';
+import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { AutoOpsPromotionCallout } from '@kbn/autoops-promotion-callout';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { toggleSetupMode } from '../../lib/setup_mode';
@@ -52,6 +53,18 @@ export function NoData(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [useInternalCollection, setUseInternalCollection] = useState(false);
   const isCloudEnabled = props.isCloudEnabled;
+  const { services } = useKibana();
+
+  const cloudConnectStatus = Legacy.shims.useCloudConnectStatus();
+  const cloudConnectUrl = services.application.getUrlForApp('cloud_connect');
+  const handleConnectClick = (e) => {
+    e.preventDefault();
+    services.application.navigateToApp('cloud_connect');
+  };
+  const hasCloudConnectPermission = Boolean(
+    services.application.capabilities.cloudConnect?.show ||
+      services.application.capabilities.cloudConnect?.configure
+  );
 
   async function startSetup() {
     setIsLoading(true);
@@ -119,12 +132,19 @@ export function NoData(props) {
           </h1>
         </EuiScreenReaderOnly>
         <EuiPageBody restrictWidth={600}>
-          {Legacy.shims.hasEnterpriseLicense && (
-            <>
-              <AutoOpsPromotionCallout style={{ margin: `0 ${euiTheme.size.l}` }} />
-              <EuiSpacer size="m" />
-            </>
-          )}
+          {!Legacy.shims.isAirGapped &&
+            !cloudConnectStatus.isLoading &&
+            !cloudConnectStatus.isCloudConnectAutoopsEnabled && (
+              <>
+                <AutoOpsPromotionCallout
+                  cloudConnectUrl={cloudConnectUrl}
+                  onConnectClick={handleConnectClick}
+                  hasCloudConnectPermission={hasCloudConnectPermission}
+                  overrideCalloutProps={{ style: { margin: `0 ${euiTheme.size.l}` } }}
+                />
+                <EuiSpacer size="m" />
+              </>
+            )}
           <EuiPageTemplate.EmptyPrompt
             icon={<EuiIcon type="monitoringApp" size="xxl" />}
             body={
@@ -168,12 +188,19 @@ export function NoData(props) {
         </h1>
       </EuiScreenReaderOnly>
       <EuiPageBody restrictWidth={600}>
-        {Legacy.shims.hasEnterpriseLicense && (
-          <>
-            <AutoOpsPromotionCallout style={{ margin: `0 ${euiTheme.size.l}` }} />
-            <EuiSpacer size="m" />
-          </>
-        )}
+        {!Legacy.shims.isAirGapped &&
+          !cloudConnectStatus.isLoading &&
+          !cloudConnectStatus.isCloudConnectAutoopsEnabled && (
+            <>
+              <AutoOpsPromotionCallout
+                cloudConnectUrl={cloudConnectUrl}
+                onConnectClick={handleConnectClick}
+                hasCloudConnectPermission={hasCloudConnectPermission}
+                overrideCalloutProps={{ style: { margin: `0 ${euiTheme.size.l}` } }}
+              />
+              <EuiSpacer size="m" />
+            </>
+          )}
         <EuiPageTemplate.EmptyPrompt
           icon={<EuiIcon type="monitoringApp" size="xxl" />}
           title={

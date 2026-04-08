@@ -6,16 +6,11 @@
  */
 
 import type { AttackDiscovery, Replacements } from '@kbn/elastic-assistant-common';
-import {
-  getAttackDiscoveryMarkdown,
-  replaceAnonymizedValuesWithOriginalValues,
-} from '@kbn/elastic-assistant-common';
+import { replaceAnonymizedValuesWithOriginalValues } from '@kbn/elastic-assistant-common';
 import { EuiFlexGroup, EuiFlexItem, EuiIcon, EuiSpacer, EuiTitle, useEuiTheme } from '@elastic/eui';
 import { css } from '@emotion/react';
 import React, { useMemo } from 'react';
 
-import { SecurityAgentBuilderAttachments } from '../../../../../../../common/constants';
-import { ATTACK_DISCOVERY_ATTACHMENT_PROMPT } from '../../../../../../agent_builder/components/prompts';
 import { useKibana } from '../../../../../../common/lib/kibana';
 import { AttackChain } from './attack/attack_chain';
 import { InvestigateInTimelineButton } from '../../../../../../common/components/event_details/investigate_in_timeline_button';
@@ -25,9 +20,9 @@ import { AttackDiscoveryMarkdownFormatter } from '../../../attack_discovery_mark
 import * as i18n from './translations';
 import { ViewInAiAssistant } from '../../view_in_ai_assistant';
 import { SECURITY_FEATURE_ID } from '../../../../../../../common';
-import { useIsExperimentalFeatureEnabled } from '../../../../../../common/hooks/use_experimental_features';
+import { useAgentBuilderAvailability } from '../../../../../../agent_builder/hooks/use_agent_builder_availability';
 import { NewAgentBuilderAttachment } from '../../../../../../agent_builder/components/new_agent_builder_attachment';
-import { useAgentBuilderAttachment } from '../../../../../../agent_builder/hooks/use_agent_builder_attachment';
+import { useAttackDiscoveryAttachment } from '../../../use_attack_discovery_attachment';
 
 const scrollable = css`
   overflow-x: auto;
@@ -77,7 +72,10 @@ const AttackDiscoveryTabComponent: React.FC<Props> = ({
     [detailsMarkdown, replacements]
   );
 
-  const tacticMetadata = useMemo(() => getTacticMetadata(attackDiscovery), [attackDiscovery]);
+  const tacticMetadata = useMemo(
+    () => getTacticMetadata(attackDiscovery.mitreAttackTactics),
+    [attackDiscovery]
+  );
 
   const originalAlertIds = useMemo(
     () => attackDiscovery.alertIds.map((id) => replacements?.[id] ?? id),
@@ -86,21 +84,9 @@ const AttackDiscoveryTabComponent: React.FC<Props> = ({
 
   const filters = useMemo(() => buildAlertsKqlFilter('_id', originalAlertIds), [originalAlertIds]);
 
-  const isAgentBuilderEnabled = useIsExperimentalFeatureEnabled('agentBuilderEnabled');
-  const attackDiscoveryWithOriginalValues = useMemo(
-    () =>
-      getAttackDiscoveryMarkdown({
-        attackDiscovery,
-        replacements,
-      }),
-    [attackDiscovery, replacements]
-  );
+  const { isAgentChatExperienceEnabled } = useAgentBuilderAvailability();
 
-  const { openAgentBuilderFlyout } = useAgentBuilderAttachment({
-    attachmentType: SecurityAgentBuilderAttachments.alert,
-    attachmentData: { alert: attackDiscoveryWithOriginalValues },
-    attachmentPrompt: ATTACK_DISCOVERY_ATTACHMENT_PROMPT,
-  });
+  const openAgentBuilderFlyout = useAttackDiscoveryAttachment(attackDiscovery, replacements);
 
   return (
     <div data-test-subj="attackDiscoveryTab">
@@ -137,15 +123,21 @@ const AttackDiscoveryTabComponent: React.FC<Props> = ({
             <h2>{i18n.ATTACK_CHAIN}</h2>
           </EuiTitle>
           <EuiSpacer size="s" />
-          <AttackChain attackDiscovery={attackDiscovery} />
+          <AttackChain attackTactics={attackDiscovery.mitreAttackTactics} />
           <EuiSpacer size="l" />
         </>
       )}
 
       <EuiFlexGroup alignItems="center" gutterSize="none" responsive={false}>
         <EuiFlexItem grow={false}>
-          {isAgentBuilderEnabled ? (
-            <NewAgentBuilderAttachment onClick={openAgentBuilderFlyout} />
+          {isAgentChatExperienceEnabled ? (
+            <NewAgentBuilderAttachment
+              onClick={openAgentBuilderFlyout}
+              telemetry={{
+                pathway: 'attack_discovery_top',
+                attachments: ['alert'],
+              }}
+            />
           ) : (
             <ViewInAiAssistant attackDiscovery={attackDiscovery} replacements={replacements} />
           )}

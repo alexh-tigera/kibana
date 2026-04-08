@@ -8,7 +8,7 @@
 import type { CoreSetup, DocLinksServiceSetup, IRouter } from '@kbn/core/server';
 import type { UsageCounter } from '@kbn/usage-collection-plugin/server';
 import type { EncryptedSavedObjectsPluginSetup } from '@kbn/encrypted-saved-objects-plugin/server';
-import type { ConfigSchema } from '@kbn/unified-search-plugin/server/config';
+import type { ConfigSchema } from '@kbn/kql/server/config';
 import type { Observable } from 'rxjs';
 import type { AlertingConfig } from '../config';
 import type { GetAlertIndicesAlias, ILicenseState } from '../lib';
@@ -63,10 +63,19 @@ import { alertDeleteScheduleRoute } from './alert_delete/apis/schedule/create_al
 import { alertDeleteLastRunRoute } from './alert_delete/apis/last_run/get_alert_delete_last_run_route';
 
 // backfill API
-import { scheduleBackfillRoute } from './backfill/apis/schedule/schedule_backfill_route';
-import { getBackfillRoute } from './backfill/apis/get/get_backfill_route';
-import { findBackfillRoute } from './backfill/apis/find/find_backfill_route';
-import { deleteBackfillRoute } from './backfill/apis/delete/delete_backfill_route';
+import {
+  scheduleBackfillRoute,
+  scheduleBackfillPublicRoute,
+} from './backfill/apis/schedule/schedule_backfill_route';
+import { getBackfillRoute, getBackfillPublicRoute } from './backfill/apis/get/get_backfill_route';
+import {
+  findBackfillRoute,
+  findBackfillPublicRoute,
+} from './backfill/apis/find/find_backfill_route';
+import {
+  deleteBackfillRoute,
+  deleteBackfillPublicRoute,
+} from './backfill/apis/delete/delete_backfill_route';
 
 // Gaps ApI
 import { findGapsRoute } from './gaps/apis/find/find_gaps_route';
@@ -74,9 +83,17 @@ import { fillGapByIdRoute } from './gaps/apis/fill/fill_gap_by_id_route';
 import { getRuleIdsWithGapsRoute } from './gaps/apis/get_rule_ids_with_gaps/get_rule_ids_with_gaps_route';
 import { getGapsSummaryByRuleIdsRoute } from './gaps/apis/get_gaps_summary_by_rule_ids/get_gaps_summary_by_rule_ids_route';
 import { createAutoFillSchedulerRoute } from './gaps/apis/gap_auto_fill_schedule/create/create_auto_fill_scheduler_route';
+import { getAutoFillSchedulerRoute } from './gaps/apis/gap_auto_fill_schedule/get/get_auto_fill_scheduler_route';
+import { updateAutoFillSchedulerRoute } from './gaps/apis/gap_auto_fill_schedule/update/update_auto_fill_scheduler_route';
+import { deleteAutoFillSchedulerRoute } from './gaps/apis/gap_auto_fill_schedule/delete/delete_auto_fill_scheduler_route';
+import { findAutoFillSchedulerLogsRoute } from './gaps/apis/gap_auto_fill_schedule/logs/find_auto_fill_scheduler_logs_route';
 import { getGlobalExecutionSummaryRoute } from './get_global_execution_summary';
 import type { AlertingPluginsStart } from '../plugin';
 import { getInternalRuleTemplateRoute } from './rule_templates/apis/get/get_rule_template_route';
+import { findInternalRuleTemplatesRoute } from './rule_templates/apis/find/find_rule_template_route';
+import { bulkMuteAlertsRoute } from './rule/apis/bulk_mute_alerts/bulk_mute_alerts_route';
+import { bulkUnmuteAlertsRoute } from './rule/apis/bulk_unmute_alerts/bulk_unmute_alerts_route';
+
 export interface RouteOptions {
   router: IRouter<AlertingRequestHandlerContext>;
   licenseState: ILicenseState;
@@ -105,6 +122,7 @@ export function defineRoutes(opts: RouteOptions) {
   createRuleRoute(opts);
   getRuleRoute(router, licenseState);
   getInternalRuleTemplateRoute(router, licenseState);
+  findInternalRuleTemplatesRoute(router, licenseState);
   getInternalRuleRoute(router, licenseState);
   resolveRuleRoute(router, licenseState);
   updateRuleRoute(router, licenseState);
@@ -141,15 +159,23 @@ export function defineRoutes(opts: RouteOptions) {
   bulkUntrackAlertsByQueryRoute(router, licenseState);
   muteAlertRoute(router, licenseState);
   unmuteAlertRoute(router, licenseState);
+  bulkMuteAlertsRoute(router, licenseState);
+  bulkUnmuteAlertsRoute(router, licenseState);
   alertDeletePreviewRoute(router, licenseState);
   alertDeleteScheduleRoute(router, licenseState, core);
   alertDeleteLastRunRoute(router, licenseState);
 
-  // backfill APIs
+  // backfill APIs (internal)
   scheduleBackfillRoute(router, licenseState);
   getBackfillRoute(router, licenseState);
   findBackfillRoute(router, licenseState);
   deleteBackfillRoute(router, licenseState);
+
+  // backfill APIs (public)
+  scheduleBackfillPublicRoute(router, licenseState);
+  getBackfillPublicRoute(router, licenseState);
+  findBackfillPublicRoute(router, licenseState);
+  deleteBackfillPublicRoute(router, licenseState);
 
   // Gaps APIs
   findGapsRoute(router, licenseState);
@@ -157,9 +183,11 @@ export function defineRoutes(opts: RouteOptions) {
   getRuleIdsWithGapsRoute(router, licenseState);
   getGapsSummaryByRuleIdsRoute(router, licenseState);
 
-  if (alertingConfig?.gapAutoFillScheduler?.enabled) {
-    createAutoFillSchedulerRoute(router, licenseState);
-  }
+  createAutoFillSchedulerRoute(router, licenseState);
+  getAutoFillSchedulerRoute(router, licenseState);
+  updateAutoFillSchedulerRoute(router, licenseState);
+  deleteAutoFillSchedulerRoute(router, licenseState);
+  findAutoFillSchedulerLogsRoute(router, licenseState);
 
   // Rules Settings APIs
   if (alertingConfig.rulesSettings.enabled) {

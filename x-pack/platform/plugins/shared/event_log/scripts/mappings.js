@@ -23,6 +23,10 @@ exports.EcsCustomPropertyMappings = {
           id: {
             type: 'keyword',
           },
+          type: {
+            type: 'keyword',
+            ignore_above: 1024,
+          },
           scheduled: {
             type: 'date',
           },
@@ -147,6 +151,17 @@ exports.EcsCustomPropertyMappings = {
                   updated_at: {
                     type: 'date',
                   },
+                  failed_auto_fill_attempts: {
+                    type: 'long',
+                  },
+                  reason: {
+                    properties: {
+                      type: {
+                        type: 'keyword',
+                        ignore_above: 1024,
+                      },
+                    },
+                  },
                 },
               },
               execution: {
@@ -220,6 +235,17 @@ exports.EcsCustomPropertyMappings = {
                         type: 'date_range',
                         format: 'strict_date_optional_time||epoch_millis',
                       },
+                      gap_reason: {
+                        properties: {
+                          type: {
+                            type: 'keyword',
+                            ignore_above: 1024,
+                          },
+                        },
+                      },
+                      matched_indices_count: {
+                        type: 'long',
+                      },
                       frozen_indices_queried_count: {
                         type: 'long',
                       },
@@ -251,6 +277,12 @@ exports.EcsCustomPropertyMappings = {
                         type: 'long',
                       },
                       update_alerts_duration_ms: {
+                        type: 'long',
+                      },
+                      alerts_candidate_count: {
+                        type: 'long',
+                      },
+                      alerts_suppressed_count: {
                         type: 'long',
                       },
                     },

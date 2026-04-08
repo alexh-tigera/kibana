@@ -5,8 +5,9 @@
  * 2.0.
  */
 
-import type { NavigationTreeDefinition } from '@kbn/core-chrome-browser';
+import type { AppDeepLinkId, NavigationTreeDefinition } from '@kbn/core-chrome-browser';
 import { i18n } from '@kbn/i18n';
+import { AIChatExperience } from '@kbn/ai-assistant-common';
 
 import { SecurityPageName } from '@kbn/security-solution-navigation';
 import { defaultNavigationTree } from '@kbn/security-solution-navigation/navigation_tree';
@@ -19,7 +20,11 @@ const SOLUTION_NAME = i18n.translate(
   { defaultMessage: 'Elastic AI SOC Engine' }
 );
 
-export const createAiNavigationTree = (): NavigationTreeDefinition => ({
+export const createAiNavigationTree = (
+  chatExperience: AIChatExperience = AIChatExperience.Classic,
+  workflowsUiEnabled: boolean = false,
+  showAlertingV2: boolean = false
+): NavigationTreeDefinition => ({
   body: [
     {
       id: 'ease_home',
@@ -45,7 +50,7 @@ export const createAiNavigationTree = (): NavigationTreeDefinition => ({
         {
           id: SecurityPageName.configurations,
           link: securityLink(SecurityPageName.configurations),
-          icon: 'controlsHorizontal',
+          icon: 'controls',
           children: [
             {
               id: SecurityPageName.configurationsIntegrations,
@@ -55,10 +60,14 @@ export const createAiNavigationTree = (): NavigationTreeDefinition => ({
               id: SecurityPageName.configurationsBasicRules,
               link: securityLink(SecurityPageName.configurationsBasicRules),
             },
-            {
-              id: SecurityPageName.configurationsAiSettings,
-              link: securityLink(SecurityPageName.configurationsAiSettings),
-            },
+            ...(chatExperience !== AIChatExperience.Agent
+              ? [
+                  {
+                    id: SecurityPageName.configurationsAiSettings,
+                    link: securityLink(SecurityPageName.configurationsAiSettings),
+                  },
+                ]
+              : []),
           ],
         },
       ],
@@ -67,8 +76,24 @@ export const createAiNavigationTree = (): NavigationTreeDefinition => ({
       breadcrumbStatus: 'hidden',
       children: [
         {
-          link: 'discover',
+          link: 'discover' as AppDeepLinkId,
+          icon: 'productDiscover',
         },
+        ...(chatExperience === AIChatExperience.Agent
+          ? [
+              {
+                icon: 'productAgent',
+                link: 'agent_builder' as AppDeepLinkId,
+              },
+            ]
+          : []),
+        ...(workflowsUiEnabled
+          ? [
+              {
+                link: 'workflows' as AppDeepLinkId,
+              },
+            ]
+          : []),
         {
           id: SecurityPageName.aiValue,
           link: securityLink(SecurityPageName.aiValue),
@@ -81,12 +106,12 @@ export const createAiNavigationTree = (): NavigationTreeDefinition => ({
     {
       id: SecurityPageName.landing,
       link: securityLink(SecurityPageName.landing),
-      icon: 'launch',
+      icon: 'rocket',
     },
     {
       link: 'dev_tools',
       title: i18nStrings.devTools,
-      icon: 'editorCodeBlock',
+      icon: 'code',
     },
     {
       title: i18nStrings.ingestAndManageData.title,
@@ -140,6 +165,19 @@ export const createAiNavigationTree = (): NavigationTreeDefinition => ({
             },
           ],
         },
+        ...(showAlertingV2
+          ? [
+              {
+                id: 'v2_alerting_preview',
+                title: i18nStrings.stackManagementV2.v2AlertingPreview.title,
+                renderAs: 'panelOpener' as const,
+                children: [
+                  { link: 'management:rules' as const },
+                  { link: 'management:notification_policies' as const },
+                ],
+              },
+            ]
+          : []),
         {
           title: i18nStrings.stackManagementV2.alertsAndInsights.title,
           children: [
@@ -156,6 +194,14 @@ export const createAiNavigationTree = (): NavigationTreeDefinition => ({
             {
               link: 'management:trained_models',
             },
+          ],
+        },
+        {
+          title: i18nStrings.modelManagement.title,
+          children: [
+            { link: 'management:elastic_inference_service' },
+            { link: 'management:inference_endpoints' },
+            { link: 'management:model_settings' },
           ],
         },
         {

@@ -4,24 +4,22 @@
 
 $schema: https://moonrepo.dev/schemas/project.json
 id: '@kbn/esql'
-type: unknown
+layer: unknown
 owners:
   defaultOwner: '@elastic/kibana-esql'
-toolchain:
+toolchains:
   default: node
 language: typescript
 project:
-  name: '@kbn/esql'
+  title: '@kbn/esql'
   description: Moon project for @kbn/esql
   channel: ''
   owner: '@elastic/kibana-esql'
-  metadata:
-    sourceRoot: src/platform/plugins/shared/esql
+  sourceRoot: src/platform/plugins/shared/esql
 dependsOn:
   - '@kbn/esql-editor'
   - '@kbn/kibana-react-plugin'
   - '@kbn/core'
-  - '@kbn/data-views-plugin'
   - '@kbn/i18n'
   - '@kbn/config-schema'
   - '@kbn/esql-utils'
@@ -40,7 +38,7 @@ dependsOn:
   - '@kbn/esql-types'
   - '@kbn/licensing-plugin'
   - '@kbn/projects-solutions-groups'
-  - '@kbn/esql-ast'
+  - '@kbn/esql-language'
   - '@kbn/presentation-util'
   - '@kbn/content-management-plugin'
   - '@kbn/index-editor'
@@ -48,6 +46,17 @@ dependsOn:
   - '@kbn/field-formats-plugin'
   - '@kbn/file-upload-plugin'
   - '@kbn/discover-utils'
+  - '@kbn/controls-schemas'
+  - '@kbn/kql'
+  - '@kbn/cps'
+  - '@kbn/inspector-plugin'
+  - '@kbn/inference-plugin'
+  - '@kbn/actions-plugin'
+  - '@kbn/core-http-server'
+  - '@kbn/management-settings-ids'
+  - '@kbn/es-types'
+  - '@kbn/core-elasticsearch-server'
+  - '@kbn/controls-constants'
 tags:
   - plugin
   - prod
@@ -59,16 +68,6 @@ fileGroups:
     - public/**/*
     - server/**/*
     - '!target/**/*'
-tasks:
-  jest:
-    args:
-      - '--config'
-      - $projectRoot/jest.config.js
-    inputs:
-      - '@group(src)'
-  jestCI:
-    args:
-      - '--config'
-      - $projectRoot/jest.config.js
-    inputs:
-      - '@group(src)'
+  jest-config:
+    - jest.config.js
+tasks: {}

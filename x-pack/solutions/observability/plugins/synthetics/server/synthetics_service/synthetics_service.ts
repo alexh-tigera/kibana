@@ -19,6 +19,7 @@ import { ALL_SPACES_ID } from '@kbn/spaces-plugin/common/constants';
 import pMap from 'p-map';
 import moment from 'moment';
 import type { MaintenanceWindow } from '@kbn/maintenance-windows-plugin/common';
+import pRetry from 'p-retry';
 import { isEmpty } from 'lodash';
 import { registerCleanUpTask } from './private_location/clean_up_task';
 import type { SyntheticsServerSetup } from '../types';
@@ -149,7 +150,17 @@ export class SyntheticsService {
       if (!this.indexTemplateInstalling) {
         this.indexTemplateInstalling = true;
 
-        const installedPackage = await installSyntheticsIndexTemplates(this.server);
+        const installedPackage = await pRetry(() => installSyntheticsIndexTemplates(this.server), {
+          retries: 3,
+          minTimeout: 3000,
+          factor: 2,
+          onFailedAttempt: (error) => {
+            this.logger.debug(
+              `Attempt ${error.attemptNumber} to install synthetics index templates failed. ` +
+                `${error.retriesLeft} retries remaining.`
+            );
+          },
+        });
         this.indexTemplateInstalling = false;
         if (
           installedPackage.name === 'synthetics' &&
@@ -216,8 +227,14 @@ export class SyntheticsService {
                 service.signupUrl = signupUrl;
 
                 if (service.isAllowed && service.config.manifestUrl) {
-                  void service.setupIndexTemplates();
-                  await service.pushConfigs();
+                  await service.setupIndexTemplates();
+                  if (service.indexTemplateExists) {
+                    await service.pushConfigs(ALL_SPACES_ID);
+                  } else {
+                    service.logger.warn(
+                      'Skipping monitor push — synthetics index templates not yet installed.'
+                    );
+                  }
                 } else {
                   if (!service.isAllowed) {
                     service.logger.debug('User is not allowed to access Synthetics service.');
@@ -430,7 +447,7 @@ export class SyntheticsService {
     }
   }
 
-  async pushConfigs() {
+  async pushConfigs(spaceId: string) {
     const license = await this.getLicense();
     const service = this;
 
@@ -440,7 +457,7 @@ export class SyntheticsService {
     let output: ServiceData['output'] | null = null;
 
     const paramsBySpace = await this.getSyntheticsParams();
-    const maintenanceWindows = await this.getMaintenanceWindows();
+    const maintenanceWindows = await this.getMaintenanceWindows(spaceId);
     const finder = await this.getSOClientFinder({ pageSize: PER_PAGE });
 
     const bucketsByLocation: Record<string, MonitorFields[]> = {};
@@ -669,7 +686,7 @@ export class SyntheticsService {
     return paramsBySpace;
   }
 
-  async getMaintenanceWindows() {
+  async getMaintenanceWindows(spaceId: string) {
     const maintenanceWindowClient = this.server.getMaintenanceWindowClientInternal(
       {} as KibanaRequest
     );
@@ -681,6 +698,7 @@ export class SyntheticsService {
     const mws = await maintenanceWindowClient.find({
       page: 0,
       perPage: 1000,
+      namespaces: [spaceId],
     });
     return mws.data;
   }

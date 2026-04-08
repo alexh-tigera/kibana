@@ -6,8 +6,9 @@
  */
 
 import type { CoreSetup } from '@kbn/core-lifecycle-server';
-import type { BuiltinToolDefinition } from '@kbn/onechat-server';
+import type { BuiltinToolDefinition } from '@kbn/agent-builder-server';
 import { productDocumentationTool } from './product_documentation';
+import { integrationKnowledgeTool } from './integration_knowledge';
 import type {
   AgentBuilderPlatformPluginStart,
   PluginSetupDependencies,
@@ -23,6 +24,7 @@ import { executeEsqlTool } from './execute_esql';
 import { searchTool } from './search';
 import { createVisualizationTool } from './create_visualization';
 import { getWorkflowExecutionStatusTool } from './get_workflow_execution_status';
+import { resumeWorkflowExecutionTool } from './resume_workflow_execution';
 
 export const registerTools = ({
   coreSetup,
@@ -31,10 +33,10 @@ export const registerTools = ({
   coreSetup: CoreSetup<PluginStartDependencies, AgentBuilderPlatformPluginStart>;
   setupDeps: PluginSetupDependencies;
 }) => {
-  const { onechat } = setupDeps;
+  const { agentBuilder } = setupDeps;
 
   const tools: Array<BuiltinToolDefinition<any>> = [
-    searchTool(),
+    searchTool({ coreSetup, topSnippetsDefaults: agentBuilder.topSnippets }),
     getDocumentByIdTool(),
     executeEsqlTool(),
     generateEsqlTool(),
@@ -43,16 +45,18 @@ export const registerTools = ({
     indexExplorerTool(),
     createVisualizationTool(),
     productDocumentationTool(coreSetup),
+    integrationKnowledgeTool(coreSetup),
     casesTool(coreSetup),
   ];
 
   if (setupDeps.workflowsManagement) {
     tools.push(
-      getWorkflowExecutionStatusTool({ workflowsManagement: setupDeps.workflowsManagement })
+      getWorkflowExecutionStatusTool({ workflowsManagement: setupDeps.workflowsManagement }),
+      resumeWorkflowExecutionTool({ workflowsManagement: setupDeps.workflowsManagement })
     );
   }
 
   tools.forEach((tool) => {
-    onechat.tools.register(tool);
+    agentBuilder.tools.register(tool);
   });
 };

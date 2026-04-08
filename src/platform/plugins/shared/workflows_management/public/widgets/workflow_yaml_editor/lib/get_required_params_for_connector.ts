@@ -108,6 +108,7 @@ export function getRequiredParamsForConnector(
       { name: 'method', example: 'GET' },
     ],
     wait: [{ name: 'duration', example: '5s' }],
+    waitForInput: [{ name: 'message', example: 'Please approve before continuing' }],
   };
 
   return basicConnectorParams[connectorType] || [];
@@ -137,8 +138,8 @@ function extractRequiredParamsFromSchema(
         continue;
       }
 
-      // Check if field is required (not optional)
-      const isOptional = zodField instanceof z.ZodOptional;
+      // Recommended way to check if field is required (not optional)
+      const isOptional = zodField.safeParse(undefined).success;
       const isRequired = !isOptional;
 
       // Extract description for examples

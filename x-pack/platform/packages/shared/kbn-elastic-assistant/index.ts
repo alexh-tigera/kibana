@@ -114,7 +114,6 @@ export {
 } from './impl/assistant_context/constants';
 
 export type { AIConnector } from './impl/connectorland/connector_selector';
-export { useLoadConnectors } from './impl/connectorland/use_load_connectors';
 
 export type {
   /** for rendering results in a code block */
@@ -207,4 +206,8 @@ export interface UseAssistantAvailability {
   hasUpdateAIAssistantAnonymization: boolean;
   // When true, user has `Edit` privilege for `Global Knowledge Base`
   hasManageGlobalKnowledgeBase: boolean;
+  // When true, user has privilege to access Agent Builder feature
+  hasAgentBuilderPrivilege?: boolean;
+  // When true, use has privilege to manage Agent Builder feature
+  hasAgentBuilderManagePrivilege?: boolean;
 }

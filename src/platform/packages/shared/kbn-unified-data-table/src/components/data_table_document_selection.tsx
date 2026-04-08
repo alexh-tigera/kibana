@@ -35,6 +35,7 @@ import { DataTableCopyRowsAsJson } from './data_table_copy_rows_as_json';
 import { useControlColumn } from '../hooks/use_control_column';
 import type { CustomBulkActions } from '../types';
 import { styles as toolbarStyles } from './custom_toolbar/render_custom_toolbar';
+import { CopyAsTextFormat } from '../utils/copy_value_to_clipboard';
 
 export const SelectButton = (props: EuiDataGridCellValueElementProps) => {
   const { record, rowIndex } = useControlColumn(props);
@@ -220,6 +221,16 @@ export function DataTableDocumentToolbarBtn({
       // Copy results to clipboard as text
       <DataTableCopyRowsAsText
         key="copyRowsAsText"
+        format={CopyAsTextFormat.tabular}
+        rows={rows}
+        toastNotifications={toastNotifications}
+        columns={columns}
+        onCompleted={closePopover}
+      />,
+      // Copy results to clipboard as markdown
+      <DataTableCopyRowsAsText
+        key="copyRowsAsMarkdown"
+        format={CopyAsTextFormat.markdown}
         rows={rows}
         toastNotifications={toastNotifications}
         columns={columns}
@@ -322,7 +333,7 @@ export function DataTableDocumentToolbarBtn({
       button={
         <EuiDataGridToolbarControl
           iconSide="left"
-          iconType="arrowDown"
+          iconType="chevronSingleDown"
           onClick={toggleSelectionToolbar}
           data-selected-documents={selectedDocsCount}
           data-test-subj="unifiedDataTableSelectionBtn"
@@ -425,7 +436,7 @@ export const DataTableCompareToolbarBtn = ({
     <EuiContextMenuItem
       data-test-subj="unifiedDataTableCompareSelectedDocuments"
       disabled={isDisabled}
-      icon="diff"
+      icon="compare"
       onClick={() => {
         setIsCompareActive(true);
       }}

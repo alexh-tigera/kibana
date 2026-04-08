@@ -23,8 +23,9 @@
 
 import type { z } from '@kbn/zod/v4';
 import type { Logger } from '@kbn/logging';
+import type { CustomHostSettings, ProxySettings, SSLSettings } from '@kbn/actions-utils';
 import type { LicenseType } from '@kbn/licensing-types';
-import type { AxiosInstance } from 'axios';
+import type { AxiosHeaderValue, AxiosInstance } from 'axios';
 
 export { UISchemas } from './connector_spec_ui';
 
@@ -55,6 +56,7 @@ export interface ConnectorMetadata {
   description: string;
   docsUrl?: string;
   minimumLicense: LicenseType;
+  isTechnicalPreview?: boolean;
   supportedFeatureIds: Array<
     | 'alerting'
     | 'cases'
@@ -65,6 +67,7 @@ export interface ConnectorMetadata {
     | 'generativeAIForSearchPlayground'
     | 'endpointSecurity'
     | 'workflows'
+    | 'agentBuilder'
   >;
 }
 
@@ -75,25 +78,40 @@ export interface ConnectorMetadata {
 // OAuth2, SSL/mTLS, AWS SigV4 → Phase 2 (see connector_rfc.ts)
 
 // Auth schemas defined in ./auth_types
-
-export interface GetTokenOpts {
+export interface OAuthGetTokenOpts {
+  authType: 'oauth';
   tokenUrl: string;
   scope?: string;
   clientId: string;
   clientSecret: string;
   additionalFields?: Record<string, unknown>;
+  tokenEndpointAuthMethod?: 'client_secret_post' | 'client_secret_basic';
 }
 
+export interface EarsGetTokenOpts {
+  authType: 'ears';
+  provider: string;
+  scope?: string;
+}
+
+export type GetTokenOpts = OAuthGetTokenOpts | EarsGetTokenOpts;
+
 export interface AuthContext {
+  getCustomHostSettings: (url: string) => CustomHostSettings | undefined;
   getToken: (opts: GetTokenOpts) => Promise<string | null>;
   logger: Logger;
+  proxySettings?: ProxySettings;
+  sslSettings: SSLSettings;
 }
+
+export type AuthMode = 'per-user' | 'shared';
 
 export interface AuthTypeSpec<T extends Record<string, unknown>> {
   id: string;
   schema: z.ZodObject<Record<string, z.ZodType>>;
   normalizeSchema?: (defaults?: Record<string, unknown>) => z.ZodObject<Record<string, z.ZodType>>;
   configure: (ctx: AuthContext, axiosInstance: AxiosInstance, secret: T) => Promise<AxiosInstance>;
+  authMode?: AuthMode;
 }
 
 export type NormalizedAuthType = AuthTypeSpec<Record<string, unknown>>;
@@ -103,7 +121,6 @@ export type NormalizedAuthType = AuthTypeSpec<Record<string, unknown>>;
 // ============================================================================
 // - OAuth2 (clientId, clientSecret, token refresh)
 // - SSL/mTLS (certificate-based authentication)
-// - AWS SigV4 (AWS service authentication)
 // - Custom (connector-specific auth flows)
 
 // ============================================================================
@@ -239,7 +256,10 @@ export interface AuthTypeDef {
 export interface ConnectorSpec {
   metadata: ConnectorMetadata;
 
-  authTypes?: Array<string | AuthTypeDef>;
+  auth?: {
+    types: Array<string | AuthTypeDef>;
+    headers?: Record<string, AxiosHeaderValue>;
+  };
 
   // Single unified schema for all connector fields (config + secrets)
   // Mark sensitive fields with withUIMeta({ sensitive: true })
@@ -251,11 +271,17 @@ export interface ConnectorSpec {
 
   policies?: ConnectorPolicies;
 
-  actions: Record<string, ActionDefinition>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- record of actions with different input types (contravariance)
+  actions: Record<string, ActionDefinition<any, any, any>>;
 
   test?: ConnectorTest;
 
   transformations?: Transformations;
+
+  // Optional skill content for Agent Builder. When present, this string is
+  // included in the connector's agent attachment representation so the LLM
+  // has richer context about how to use the connector's sub-actions.
+  skill?: string;
 }
 
 // ============================================================================

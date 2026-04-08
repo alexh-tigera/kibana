@@ -5,8 +5,7 @@
  * 2.0.
  */
 
-import zodToJsonSchema from 'zod-to-json-schema';
-import type { z } from '@kbn/zod';
+import { z } from '@kbn/zod';
 import type { TestElasticsearchUtils, TestKibanaUtils } from '@kbn/core-test-helpers-kbn-server';
 import type { ActionTypeRegistry } from '../action_type_registry';
 import { setupTestServers } from './lib';
@@ -14,6 +13,7 @@ import { connectorTypes } from './mocks/connector_types';
 import { actionsConfigMock } from '../actions_config.mock';
 import { loggerMock } from '@kbn/logging-mocks';
 import type { ActionTypeConfig, Services } from '../types';
+import { connectorsSpecs } from '@kbn/connector-specs';
 
 jest.mock('../action_type_registry', () => {
   const actual = jest.requireActual('../action_type_registry');
@@ -68,7 +68,10 @@ describe('Connector type config checks', () => {
   });
 
   test('ensure connector types list up to date', () => {
-    expect(connectorTypes.sort()).toEqual(actionTypeRegistry.getAllTypes().sort());
+    const connectorSpecIds = Object.values(connectorsSpecs).map(({ metadata }) => metadata.id);
+    expect([...connectorTypes, ...connectorSpecIds].sort()).toEqual(
+      actionTypeRegistry.getAllTypes().sort()
+    );
   });
 
   for (const connectorTypeId of connectorTypes) {
@@ -99,6 +102,11 @@ describe('Connector type config checks', () => {
           connectorConfig = {
             apiUrl: 'https://_face_api_.com',
           };
+        } else if (connectorTypeId === '.mcp') {
+          connectorConfig = {
+            serverUrl: 'https://_fake_mcp_.com',
+            hasAuth: false,
+          };
         }
 
         const subActions = getService({
@@ -119,15 +127,17 @@ describe('Connector type config checks', () => {
         });
       }
 
-      expect(
-        zodToJsonSchema(config.schema as z.ZodType, { name: 'config', $refStrategy: 'none' })
-      ).toMatchSnapshot();
-      expect(
-        zodToJsonSchema(secrets.schema as z.ZodType, { name: 'secrets', $refStrategy: 'none' })
-      ).toMatchSnapshot();
-      expect(
-        zodToJsonSchema(params.schema as z.ZodType, { name: 'params', $refStrategy: 'none' })
-      ).toMatchSnapshot();
+      const toJsonSchema = (schema: unknown) => {
+        const { $schema, ...jsonSchema } = z.toJSONSchema(schema as z.ZodType, {
+          unrepresentable: 'any',
+          io: 'input',
+        }) as Record<string, unknown>;
+        return jsonSchema;
+      };
+
+      expect(toJsonSchema(config.schema as z.ZodType)).toMatchSnapshot();
+      expect(toJsonSchema(secrets.schema as z.ZodType)).toMatchSnapshot();
+      expect(toJsonSchema(params!.schema as z.ZodType)).toMatchSnapshot();
     });
   }
 });

@@ -90,7 +90,7 @@ export default ({ getPageObject, getService }: FtrProviderContext) => {
   const validateAttachment = async (type: string, attachmentId?: string | null) => {
     await testSubjects.existOrFail(`comment-${type}-.test`);
     await testSubjects.existOrFail(`copy-link-${attachmentId}`);
-    await testSubjects.existOrFail(`attachment-.test-${attachmentId}-arrowRight`);
+    await testSubjects.existOrFail(`attachment-.test-${attachmentId}-chevronSingleRight`);
   };
 
   /**
@@ -274,7 +274,8 @@ export default ({ getPageObject, getService }: FtrProviderContext) => {
         });
       });
 
-      describe('Modal', () => {
+      // FLAKY: https://github.com/elastic/kibana/issues/240166
+      describe.skip('Modal', () => {
         const createdCases = new Map<string, string>();
 
         const openModal = async () => {

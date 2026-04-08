@@ -22,10 +22,11 @@ interface Props {
 
 export function ObservabilityOnboardingHeaderActionMenu({ setHeaderActionMenu, theme$ }: Props) {
   const {
-    services: { context },
+    services: { context, notifications },
   } = useKibana<ObservabilityOnboardingAppServices>();
   const location = useLocation();
   const normalizedPathname = location.pathname.replace(/\/$/, '');
+  const isFeedbackEnabled = notifications?.feedback?.isEnabled() ?? true;
 
   const isRootPage = normalizedPathname === '';
 
@@ -33,7 +34,7 @@ export function ObservabilityOnboardingHeaderActionMenu({ setHeaderActionMenu, t
     defaultMessage: 'Give feedback',
   });
 
-  if (!context.isServerless && !isRootPage) {
+  if (!context.isServerless && !isRootPage && isFeedbackEnabled) {
     return (
       <HeaderMenuPortal setHeaderActionMenu={setHeaderActionMenu} theme$={theme$}>
         <EuiButtonEmpty
@@ -41,7 +42,7 @@ export function ObservabilityOnboardingHeaderActionMenu({ setHeaderActionMenu, t
           aria-label={feedbackButtonLabel}
           href={LOGS_ONBOARDING_FEEDBACK_LINK}
           size="s"
-          iconType="popout"
+          iconType="external"
           iconSide="right"
           target="_blank"
           color="primary"

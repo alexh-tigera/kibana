@@ -11,6 +11,11 @@ const CODES = Object.freeze({
   // -----------------------------------------------------------------
   // GET-FILE CODES
   // -----------------------------------------------------------------
+  'ra_get-file_error_canceled': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.getFile.canceled',
+    { defaultMessage: 'Response action was canceled' }
+  ),
+
   /** file not found */
   'ra_get-file_error_not-found': i18n.translate(
     'xpack.securitySolution.endpointActionResponseCodes.getFile.notFound',
@@ -134,6 +139,11 @@ const CODES = Object.freeze({
   // EXECUTE CODES
   // -----------------------------------------------------------------
 
+  ra_execute_error_canceled: i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.execute.canceled',
+    { defaultMessage: 'Response action was canceled' }
+  ),
+
   // Dev:
   // Something interrupted preparing the zip: file read error, zip error. I think these should be rare,
   // and should succeed on retry by the user or result in file-not-found. We might implement some retries
@@ -225,6 +235,11 @@ const CODES = Object.freeze({
   // UPLOAD CODES
   // -----------------------------------------------------------------
 
+  ra_upload_error_canceled: i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.upload.canceled',
+    { defaultMessage: 'Response action was canceled' }
+  ),
+
   // Dev:
   // generic failure (rare corner case, software bug, etc)
   ra_upload_error_failure: i18n.translate(
@@ -292,6 +307,16 @@ const CODES = Object.freeze({
   // SCAN CODES
   // -----------------------------------------------------------------
 
+  ra_scan_error_canceled: i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.scan.canceled',
+    { defaultMessage: 'Response action was canceled' }
+  ),
+
+  ra_scan_error_disabled: i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.scan.disabled',
+    { defaultMessage: 'Malware protection is disabled.' }
+  ),
+
   'ra_scan_error_invalid-input': i18n.translate(
     'xpack.securitySolution.endpointActionResponseCodes.scan.invalidInput',
     { defaultMessage: 'Invalid absolute file path provided' }
@@ -336,6 +361,10 @@ const CODES = Object.freeze({
   // -----------------------------------------------------------------
   // MEMORY-DUMP CODES
   // -----------------------------------------------------------------
+  'ra_memory-dump_error_canceled': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.memoryDump.canceled',
+    { defaultMessage: 'Response action was canceled' }
+  ),
   'ra_memory-dump_error_failure': i18n.translate(
     'xpack.securitySolution.endpointActionResponseCodes.memoryDump.failure',
     { defaultMessage: 'Unknown failure while capturing memory dump' }
@@ -392,6 +421,80 @@ const CODES = Object.freeze({
   'ra_memory-dump_error_not-enough-free-space': i18n.translate(
     'xpack.securitySolution.endpointActionResponseCodes.memoryDump.insufficientDiskSpaceError',
     { defaultMessage: 'Host does not have sufficient disk space to capture a memory dump' }
+  ),
+
+  // -----------------------------------------------------------------
+  // RUNSCRIPT CODES
+  // -----------------------------------------------------------------
+  ra_runscript_error_failure: i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.errorFailure',
+    { defaultMessage: 'Unknown failure while executing runscript' }
+  ),
+  ra_runscript_success_done: i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.success',
+    { defaultMessage: 'Runscript completed' }
+  ),
+  'ra_runscript_error_not-found': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.notFound',
+    { defaultMessage: 'Script not found' }
+  ),
+  'ra_runscript_error_invalid-command': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.invalidCommand',
+    { defaultMessage: 'The runscript command is invalid' }
+  ),
+  'ra_runscript_error_invalid-input': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.invalidInput',
+    { defaultMessage: 'Script action input is invalid' }
+  ),
+  'ra_runscript_error_not-permitted': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.notPermitted',
+    { defaultMessage: 'Misconfiguration - no permission to use Fleet API for script retrieval' }
+  ),
+  'ra_runscript_error_too-big': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.tooBig',
+    { defaultMessage: 'Script too large' }
+  ),
+  // DEV: was too long in queue, because of no network, other action instance was stuck, etc
+  'ra_runscript_error_queue-timeout': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.queueTimeout',
+    { defaultMessage: 'Action timed out' }
+  ),
+  'ra_runscript_error_download-failed': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.downloadFailed',
+    { defaultMessage: 'Failed to download script for execution' }
+  ),
+  'ra_runscript_error_api-unreachable': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.unreachable',
+    { defaultMessage: 'Unable to download script for execution - Fleet Server API not reachable' }
+  ),
+  'ra_runscript_error_not-enough-free-space': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.notEnoughFreeSpace',
+    { defaultMessage: 'Unable to execute script due to insufficient free space on host' }
+  ),
+  ra_runscript_error_canceled: i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.canceled',
+    { defaultMessage: 'Runscript was canceled' }
+  ),
+  ra_runscript_error_processing: i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.processing',
+    { defaultMessage: 'Error occurred during action processing' }
+  ),
+  'ra_runscript_error_upload-timeout': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.uploadTimeout',
+    { defaultMessage: 'Runscript failed to upload script execution output' }
+  ),
+  'ra_runscript_error_processing-timeout': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.processingTimeout',
+    { defaultMessage: 'Action processing timeout has been reached' }
+  ),
+  // DEV: reboot, etc
+  'ra_runscript_error_processing-interrupted': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.processingInterrupted',
+    { defaultMessage: 'Action has been interrupted' }
+  ),
+  'ra_runscript_error_disk-quota': i18n.translate(
+    'xpack.securitySolution.endpointActionResponseCodes.runscript.diskQuota',
+    { defaultMessage: 'Too many actions' }
   ),
 });
 

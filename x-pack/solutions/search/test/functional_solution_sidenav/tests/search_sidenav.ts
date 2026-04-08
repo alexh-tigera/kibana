@@ -38,11 +38,6 @@ export default function ({ getPageObjects, getService }: FtrProviderContext) {
         await solutionNavigation.expectExists();
         await solutionNavigation.breadcrumbs.expectExists();
 
-        // check side nav links
-        await solutionNavigation.sidenav.expectLinkActive({
-          deepLinkId: 'searchHomepage',
-        });
-
         await solutionNavigation.sidenav.clickLink({
           deepLinkId: 'discover',
         });
@@ -54,42 +49,29 @@ export default function ({ getPageObjects, getService }: FtrProviderContext) {
 
         // navigate to a different section
         await solutionNavigation.sidenav.clickLink({
-          deepLinkId: 'searchPlayground',
+          deepLinkId: 'agent_builder',
         });
         await solutionNavigation.sidenav.expectLinkActive({
-          deepLinkId: 'searchPlayground',
+          deepLinkId: 'agent_builder',
         });
-        await solutionNavigation.breadcrumbs.expectBreadcrumbExists({ text: 'Build' });
-        await solutionNavigation.breadcrumbs.expectBreadcrumbExists({ text: 'Playground' });
-
+        await solutionNavigation.sidenav.expectLinkActive({
+          deepLinkId: 'agent_builder',
+        });
         await solutionNavigation.sidenav.clickLink({ navId: 'stack_management' });
         await solutionNavigation.sidenav.expectLinkActive({ navId: 'stack_management' });
 
+        // navigate to getting started page
+        await solutionNavigation.sidenav.clickLink({
+          deepLinkId: 'searchGettingStarted',
+        });
+        await solutionNavigation.sidenav.expectLinkActive({
+          deepLinkId: 'searchGettingStarted',
+        });
         // navigate back to the home page using header logo
         await solutionNavigation.clickLogo();
         await solutionNavigation.sidenav.expectLinkActive({
           deepLinkId: 'searchHomepage',
         });
-      });
-
-      it('renders a feedback callout', async function () {
-        await solutionNavigation.sidenav.clickLink({ navId: 'stack_management' });
-        await solutionNavigation.sidenav.feedbackCallout.expectExists();
-        await solutionNavigation.sidenav.feedbackCallout.dismiss();
-        await solutionNavigation.sidenav.feedbackCallout.expectMissing();
-        await browser.refresh();
-        await solutionNavigation.sidenav.feedbackCallout.expectMissing();
-      });
-
-      it('renders tour', async () => {
-        await solutionNavigation.sidenav.tour.reset();
-        await solutionNavigation.sidenav.tour.expectTourStepVisible('sidenav-home');
-        await solutionNavigation.sidenav.tour.nextStep();
-        await solutionNavigation.sidenav.tour.expectTourStepVisible('sidenav-manage-data');
-        await solutionNavigation.sidenav.tour.nextStep();
-        await solutionNavigation.sidenav.tour.expectHidden();
-        await browser.refresh();
-        await solutionNavigation.sidenav.tour.expectHidden();
       });
 
       it('opens panel on legacy management landing page', async () => {

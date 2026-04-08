@@ -7,6 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
+import agent from 'elastic-apm-node';
 import type { CoreStart } from '@kbn/core/server';
 import type {
   EsWorkflowExecution,
@@ -15,7 +16,7 @@ import type {
   WorkflowContext,
   WorkflowExecutionContext,
 } from '@kbn/workflows';
-import { ExecutionStatus } from '@kbn/workflows';
+import { ExecutionStatus, TerminalExecutionStatuses } from '@kbn/workflows';
 import type { GraphNodeUnion, WorkflowGraph } from '@kbn/workflows/graph';
 import type { IWorkflowEventLogger } from '../../workflow_event_logger';
 import { buildWorkflowContext } from '../build_workflow_context';
@@ -212,6 +213,78 @@ describe('WorkflowExecutionRuntimeManager', () => {
         tags: ['workflow', 'execution', 'start'],
       });
     });
+
+    describe('task manager APM labels (event-driven)', () => {
+      let mockTransaction: {
+        addLabels: jest.Mock;
+        ids: Record<string, string>;
+        outcome: string;
+        _labels: Record<string, unknown>;
+      };
+
+      beforeEach(() => {
+        mockTransaction = {
+          addLabels: jest.fn(),
+          ids: { 'transaction.id': 'txn-1', 'trace.id': 'trace-1' },
+          outcome: 'success',
+          _labels: {},
+        };
+        Object.defineProperty(agent, 'currentTransaction', {
+          configurable: true,
+          enumerable: true,
+          get: () => mockTransaction,
+        });
+      });
+
+      afterEach(() => {
+        Reflect.deleteProperty(agent, 'currentTransaction');
+        workflowExecution.triggeredBy = undefined;
+        workflowExecution.context = {} as EsWorkflowExecution['context'];
+      });
+
+      it('adds event_trigger_id when triggeredBy is an event trigger id', async () => {
+        workflowExecution.triggeredBy = 'cases.caseCreated';
+        workflowExecution.context = {
+          event: { eventChainDepth: 2 },
+        } as EsWorkflowExecution['context'];
+
+        await underTest.start();
+
+        expect(mockTransaction.addLabels.mock.calls[0][0]).toMatchObject({
+          triggered_by: 'task_manager',
+          event_trigger_id: 'cases.caseCreated',
+        });
+        expect(mockTransaction.addLabels.mock.calls[0][0]).not.toHaveProperty('event_chain_depth');
+      });
+
+      it('adds event_trigger_id when context.event has no chain depth', async () => {
+        workflowExecution.triggeredBy = 'my.custom.trigger';
+        workflowExecution.context = {} as EsWorkflowExecution['context'];
+
+        await underTest.start();
+
+        expect(mockTransaction.addLabels.mock.calls[0][0]).toMatchObject({
+          triggered_by: 'task_manager',
+          event_trigger_id: 'my.custom.trigger',
+        });
+        expect(mockTransaction.addLabels.mock.calls[0][0]).not.toHaveProperty('event_chain_depth');
+      });
+
+      it('does not add event labels for well-known triggeredBy values', async () => {
+        workflowExecution.triggeredBy = 'scheduled';
+        workflowExecution.context = {} as EsWorkflowExecution['context'];
+
+        await underTest.start();
+
+        const labels = mockTransaction.addLabels.mock.calls[0][0] as Record<string, unknown>;
+        expect(labels).toMatchObject({
+          triggered_by: 'task_manager',
+          workflow_execution_id: workflowExecution.id,
+        });
+        expect(labels).not.toHaveProperty('event_trigger_id');
+        expect(labels).not.toHaveProperty('event_chain_depth');
+      });
+    });
   });
 
   describe('resume', () => {
@@ -367,13 +440,7 @@ describe('WorkflowExecutionRuntimeManager', () => {
       });
     });
 
-    describe.each([
-      ExecutionStatus.COMPLETED,
-      ExecutionStatus.FAILED,
-      ExecutionStatus.CANCELLED,
-      ExecutionStatus.SKIPPED,
-      ExecutionStatus.TIMED_OUT,
-    ])('for status %s', (status) => {
+    describe.each(TerminalExecutionStatuses)('for status %s', (status) => {
       beforeEach(() => {
         (workflowExecutionState.getWorkflowExecution as jest.Mock).mockReturnValue({
           startedAt: '2025-08-05T00:00:00.000Z',

@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React from 'react';
+import React, { type MouseEventHandler } from 'react';
 import {
   EuiIconTip,
   euiButtonSizeMap,
@@ -53,6 +53,8 @@ export const SplitButtonWithNotification = ({
   const buttonSizes = euiButtonSizeMap(euiThemeContext);
   const secondaryButtonWidth = buttonSizes[size]?.height;
 
+  const disableIndicatorOnClick = splitButtonProps?.isDisabled || splitButtonProps?.isLoading;
+
   return (
     <div css={styles.buttonWrapper}>
       <SplitButton {...splitButtonProps} />
@@ -66,6 +68,7 @@ export const SplitButtonWithNotification = ({
             left: notificationIndicatorPosition?.left,
             bottom: notificationIndicatorPosition?.bottom,
             zIndex: 1,
+            pointerEvents: 'none',
             ...(notificationIndicatorHasStroke && {
               '& svg': {
                 stroke: 'white',
@@ -75,12 +78,19 @@ export const SplitButtonWithNotification = ({
             }),
           }}
         >
-          <EuiIconTip
-            type="dot"
-            size={notificationIndicatorSize}
-            color={notificationIndicatorColor}
-            content={notifcationIndicatorTooltipContent}
-          />
+          <span css={{ pointerEvents: 'auto' }}>
+            <EuiIconTip
+              type="dot"
+              size={notificationIndicatorSize}
+              color={notificationIndicatorColor}
+              content={notifcationIndicatorTooltipContent}
+              iconProps={{
+                onClick: disableIndicatorOnClick
+                  ? undefined
+                  : (splitButtonProps?.onClick as MouseEventHandler<SVGElement> | undefined),
+              }}
+            />
+          </span>
         </div>
       )}
     </div>

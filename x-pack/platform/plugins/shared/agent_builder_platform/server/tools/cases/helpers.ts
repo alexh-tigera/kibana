@@ -5,23 +5,20 @@
  * 2.0.
  */
 
-import { createErrorResult } from '@kbn/onechat-server';
-import { ToolResultType } from '@kbn/onechat-common/tools/tool_result';
+import { createErrorResult } from '@kbn/agent-builder-server';
+import { ToolResultType } from '@kbn/agent-builder-common/tools/tool_result';
 import type { CoreStart } from '@kbn/core/server';
 import type { Logger } from '@kbn/logging';
 import type { KibanaRequest } from '@kbn/core-http-server';
 import type { CasesClient } from '@kbn/cases-plugin/server/client';
 import type { SpacesPluginStart } from '@kbn/spaces-plugin/server';
 import { addSpaceIdToPath } from '@kbn/spaces-plugin/server';
-import type {
-  Case,
-  Attachment,
-  RelatedCase,
-  UserCommentAttachment,
-} from '@kbn/cases-plugin/common/types/domain';
-import type { CasesSearchRequest } from '@kbn/cases-plugin/common/types/api';
-import { getCurrentSpaceId } from '@kbn/onechat-plugin/server/utils/spaces';
+import type { Case, AttachmentV2, RelatedCase } from '@kbn/cases-plugin/common/types/domain';
+import type { CasesFindRequest } from '@kbn/cases-plugin/common/types/api';
+import { getCurrentSpaceId } from '@kbn/agent-builder-plugin/server/utils/spaces';
 import { getCaseViewPath } from '@kbn/cases-plugin/server/common/utils';
+import { isLegacyCommentAttachment } from '@kbn/cases-plugin/common/utils/attachments/v1_type_guards';
+import { isUnifiedCommentAttachment } from '@kbn/cases-plugin/common/utils/attachments/v2_type_guards';
 import type { PluginStartDependencies } from '../../types';
 
 export interface CommentSummary {
@@ -127,14 +124,16 @@ export const createResult = (
  * @param comment - The attachment/comment object from the cases API
  * @returns A CommentSummary object with id, comment text, creator, and timestamp
  */
-export const createCommentSummary = (comment: Attachment): CommentSummary => {
-  const commentText =
-    comment.type === 'user' && 'comment' in comment
-      ? (comment as UserCommentAttachment).comment?.substring(0, 200) || ''
-      : '';
+export const createCommentSummary = (comment: AttachmentV2): CommentSummary => {
+  const commentText = isLegacyCommentAttachment(comment)
+    ? comment.comment
+    : isUnifiedCommentAttachment(comment)
+    ? comment.data.content
+    : '';
+
   return {
     id: comment.id,
-    comment: commentText,
+    comment: commentText?.substring(0, 200) || '',
     created_by: comment.created_by.username ?? comment.created_by.email ?? null,
     created_at: comment.created_at || null,
   };
@@ -147,9 +146,9 @@ export const createCommentSummary = (comment: Attachment): CommentSummary => {
  * @param comments - Array of attachment objects from the cases API
  * @returns Array of CommentSummary objects (max 5 user comments)
  */
-export const createCommentSummariesFromArray = (comments: Attachment[]): CommentSummary[] => {
+export const createCommentSummariesFromArray = (comments: AttachmentV2[]): CommentSummary[] => {
   return comments
-    .filter((att) => att.type === 'user')
+    .filter((att) => att.type === 'user' || att.type === 'comment')
     .slice(0, 5)
     .map(createCommentSummary);
 };
@@ -165,7 +164,7 @@ export const createCommentSummariesFromArray = (comments: Attachment[]): Comment
  */
 export const fetchAllPages = async (
   casesClient: CasesClient,
-  searchParams: CasesSearchRequest,
+  searchParams: CasesFindRequest,
   maxPages: number = 10
 ): Promise<Case[]> => {
   const allCases: Case[] = [];
@@ -174,7 +173,7 @@ export const fetchAllPages = async (
 
   while (hasMorePages && currentPage <= maxPages) {
     searchParams.page = currentPage;
-    const searchResult = await casesClient.cases.search(searchParams);
+    const searchResult = await casesClient.cases.find(searchParams);
 
     if (searchResult.cases.length === 0) {
       break;
