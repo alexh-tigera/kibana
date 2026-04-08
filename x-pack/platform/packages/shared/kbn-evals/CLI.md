@@ -146,6 +146,50 @@ node scripts/evals run --suite streams --dry-run
 | `--phoenix-api-key <key>` | | Phoenix API key |
 | `--dry-run` | | Print the Playwright command and exit |
 
+### `red-team` -- Run adversarial red-team testing
+
+Runs adversarial attack modules against a suite's AI assistant to test security guardrails, prompt injection resistance, and information extraction defenses. The suite must have a red-team spec file (`evals/red_team/*.spec.ts`).
+
+```bash
+node scripts/evals red-team --suite agent-builder
+node scripts/evals red-team --suite agent-builder --module prompt-injection --count 5
+node scripts/evals red-team --suite agent-builder --difficulty advanced --model eis-claude-4-6-sonnet
+node scripts/evals red-team --suite agent-builder --templates-only --count 20
+```
+
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--suite <id>` | | Suite to test (required) |
+| `--module <name>` | | Attack module: `prompt-injection`, `info-extraction` (default: all) |
+| `--strategy <name>` | | Delivery strategy: `direct` (default: direct) |
+| `--count <n>` | | Number of adversarial prompts per module (default: 10) |
+| `--difficulty <level>` | | `basic`, `moderate`, or `advanced` (default: moderate) |
+| `--templates-only` | | Use only YAML templates, skip LLM-generated prompts |
+| `--project <id>` | `--model` | Connector/model to attack (interactive prompt if omitted) |
+| `--evaluation-connector-id <id>` | `--judge` | Connector for the AttackSuccessJudge LLM evaluator |
+| `--profile <name>` | | Load dataset + export settings from profile |
+| `--dry-run` | | Print the Playwright command and exit |
+
+The command spawns Playwright with `--grep "Red Team"` and passes red-team configuration via environment variables (`RED_TEAM_COUNT`, `RED_TEAM_DIFFICULTY`, etc.) that the spec file reads.
+
+**Attack modules:**
+
+| Module | OWASP | What it tests |
+|--------|-------|---------------|
+| `prompt_injection` | LLM01 | Direct/indirect instruction injection |
+| `info_extraction` | LLM07 | System prompt leakage, internal data disclosure |
+
+**Evaluators (auto-composed):**
+
+| Evaluator | Kind | What it scores |
+|-----------|------|----------------|
+| `prompt-leak-detection` | CODE | System prompt leakage patterns in output |
+| `attack-success-judge` | LLM | Whether the model's response fulfilled the adversarial intent |
+| `scope-violation` | CODE | Output outside authorized boundaries |
+| `tool-poisoning` | CODE | Unauthorized tool calls |
+
+**Output:** A severity-classified report with summary table and detailed findings per failed attack. Results are also exported to `kibana-evaluations` datastream with `run.type: 'red-team'` metadata.
+
 ### `list` -- List available suites
 
 ```bash

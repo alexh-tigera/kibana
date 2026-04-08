@@ -121,5 +121,42 @@ export {
 } from './src/evaluators/security';
 export { createSimilarityEvaluator } from './src/evaluators/similarity';
 
+// Red-team framework
+export {
+  createRedTeamOrchestrator,
+  createAttackSuccessJudge,
+  OWASP_LLM_TOP_10,
+  getOwaspCategory,
+  DEFAULT_GUARDRAIL_RULES,
+  scanWithGuardrails,
+  mergeGuardrailRules,
+  classifySeverity,
+  getAttackModule,
+  getAvailableModules,
+  getStrategy,
+  getAvailableStrategies,
+  formatRedTeamReport,
+  writeRedTeamReport,
+} from './src/red_team';
+export type {
+  AttackModule,
+  AttackModuleConfig,
+  AttackResult,
+  GuardrailRule,
+  GuardrailConfig,
+  GuardrailViolation,
+  ModuleReport,
+  RedTeamConfig,
+  RedTeamReport,
+  RedTeamOrchestratorOptions,
+  Severity,
+  SingleTurnStrategy,
+  MultiTurnStrategy,
+  Strategy,
+  TargetContext,
+  OwaspCategory,
+  NamedEvaluationResult,
+} from './src/red_team';
+
 // Re-export Scout tags here to avoid requiring a direct dependency on @kbn/scout for modules using @kbn/evals
 export { tags } from '@kbn/scout';

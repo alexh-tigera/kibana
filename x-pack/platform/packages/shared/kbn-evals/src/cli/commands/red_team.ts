@@ -1,0 +1,202 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0; you may not use this file except in compliance with the Elastic License
+ * 2.0.
+ */
+
+import { spawn } from 'child_process';
+import { createFlagError } from '@kbn/dev-cli-errors';
+import type { Command } from '@kbn/dev-cli-runner';
+import { resolveEvalSuites } from '../suites';
+import { promptForConnector, promptForProject, isTTY } from '../prompts';
+import { getAvailableModules } from '../../red_team/modules';
+import { defaultExportProfile, envFromDatasetsProfile, envFromExportProfile } from '../profiles';
+
+const DIFFICULTIES = ['basic', 'moderate', 'advanced'] as const;
+const SEVERITIES = ['critical', 'high', 'medium', 'low'] as const;
+
+export const redTeamCmd: Command<void> = {
+  name: 'red-team',
+  description: `
+  Run red-team adversarial testing against an evaluation suite.
+
+  Requires the suite to have a red-team spec file (evals/red_team/*.spec.ts).
+  The spec file uses the RedTeamOrchestrator with the suite's task function.
+
+  Examples:
+    node scripts/evals red-team --suite agent-builder
+    node scripts/evals red-team --suite agent-builder --module prompt-injection
+    node scripts/evals red-team --suite agent-builder --templates-only
+    node scripts/evals red-team --suite agent-builder --count 20 --difficulty advanced
+    node scripts/evals red-team --suite agent-builder --judge bedrock-claude
+  `,
+  flags: {
+    string: [
+      'suite',
+      'module',
+      'strategy',
+      'count',
+      'difficulty',
+      'severity-threshold',
+      'evaluation-connector-id',
+      'project',
+      'profile',
+      'datasets-profile',
+      'export-profile',
+    ],
+    boolean: ['templates-only', 'dry-run'],
+    alias: { model: 'project', judge: 'evaluation-connector-id' },
+    default: {
+      'templates-only': false,
+      'dry-run': false,
+    },
+  },
+  run: async ({ log, flagsReader }) => {
+    const repoRoot = process.cwd();
+    const suiteId = flagsReader.string('suite');
+
+    if (!suiteId) {
+      throw createFlagError('Missing required --suite flag.');
+    }
+
+    // Resolve suite
+    const suites = resolveEvalSuites(repoRoot, log);
+    const suite = suites.find((s) => s.id === suiteId);
+    if (!suite) {
+      const available = suites.map((s) => s.id).join(', ');
+      throw createFlagError(`Unknown suite "${suiteId}". Available: ${available || 'none found'}`);
+    }
+
+    // Parse red-team specific flags
+    const moduleName = flagsReader.string('module');
+    const strategyName = flagsReader.string('strategy');
+    const countStr = flagsReader.string('count');
+    const count = countStr ? parseInt(countStr, 10) : 10;
+    const difficulty =
+      (flagsReader.enum('difficulty', [...DIFFICULTIES]) as
+        | 'basic'
+        | 'moderate'
+        | 'advanced'
+        | undefined) ?? 'moderate';
+    const severityThreshold = flagsReader.enum('severity-threshold', [...SEVERITIES]) ?? 'low';
+    const templatesOnly = flagsReader.boolean('templates-only');
+
+    if (countStr && (isNaN(count) || count < 1)) {
+      throw createFlagError('--count must be a positive integer.');
+    }
+
+    // Build environment overrides for red-team config
+    const envOverrides: Record<string, string> = {
+      EVAL_SUITE_ID: suiteId,
+    };
+
+    // Red-team specific env vars (read by the spec file)
+    envOverrides.RED_TEAM_ENABLED = 'true';
+    envOverrides.RED_TEAM_COUNT = String(count);
+    envOverrides.RED_TEAM_DIFFICULTY = difficulty;
+    envOverrides.RED_TEAM_SEVERITY_THRESHOLD = severityThreshold;
+
+    if (moduleName) {
+      envOverrides.RED_TEAM_MODULES = moduleName.replace(/-/g, '_');
+    }
+    if (strategyName) {
+      envOverrides.RED_TEAM_STRATEGY = strategyName.replace(/-/g, '_');
+    }
+    if (templatesOnly) {
+      envOverrides.RED_TEAM_TEMPLATES_ONLY = 'true';
+    }
+
+    // Connection params (same pattern as run command)
+    let evaluationConnectorId =
+      flagsReader.string('evaluation-connector-id') ?? process.env.EVALUATION_CONNECTOR_ID;
+
+    if (!evaluationConnectorId) {
+      if (isTTY()) {
+        evaluationConnectorId = await promptForConnector(repoRoot, log);
+      } else {
+        throw createFlagError(
+          'EVALUATION_CONNECTOR_ID is required. Set --evaluation-connector-id or env.'
+        );
+      }
+    }
+
+    envOverrides.EVALUATION_CONNECTOR_ID = evaluationConnectorId;
+
+    // Profile handling (same as run command)
+    const baseProfile = flagsReader.string('profile') ?? undefined;
+    const datasetsProfile = flagsReader.string('datasets-profile') ?? baseProfile;
+    const exportProfile =
+      flagsReader.string('export-profile') ?? baseProfile ?? defaultExportProfile(repoRoot);
+
+    Object.assign(envOverrides, envFromDatasetsProfile(repoRoot, datasetsProfile));
+    Object.assign(
+      envOverrides,
+      envFromExportProfile(repoRoot, exportProfile, {
+        defaultTracingExporters: exportProfile === 'local',
+      })
+    );
+
+    log.info(`Red-team testing suite: ${suiteId}`);
+    log.info(`  Modules: ${moduleName?.replace(/-/g, '_') ?? getAvailableModules().join(', ')}`);
+    log.info(`  Strategy: ${strategyName ?? 'direct'}`);
+    log.info(`  Count: ${count} | Difficulty: ${difficulty} | Templates only: ${templatesOnly}`);
+
+    // Resolve model/project selection (same pattern as start command)
+    let projects: string[] = [];
+    const project = flagsReader.string('project');
+    if (project) {
+      projects = project.split(',').map((p) => p.trim());
+    } else if (isTTY()) {
+      projects = await promptForProject(repoRoot, log);
+    }
+
+    // Spawn Playwright targeting the suite's red-team spec files
+    const args = [
+      'scripts/playwright',
+      'test',
+      '--config',
+      suite.absoluteConfigPath,
+      '--grep',
+      'Red Team',
+    ];
+
+    for (const p of projects) {
+      args.push('--project', p);
+    }
+
+    const commandPreview = Object.entries(envOverrides)
+      .filter(([key]) => key.startsWith('RED_TEAM'))
+      .map(([key, value]) => `${key}=${value}`)
+      .join(' ');
+    log.info(`Running: ${commandPreview} node ${args.join(' ')}`);
+
+    if (flagsReader.boolean('dry-run')) {
+      return;
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      const childEnv: Record<string, string> = {
+        ...process.env,
+        ...envOverrides,
+      } as Record<string, string>;
+      delete childEnv.NO_COLOR;
+
+      const child = spawn('node', args, {
+        cwd: repoRoot,
+        stdio: 'inherit',
+        env: childEnv,
+      });
+
+      child.on('exit', (code) => {
+        if (code === 0) {
+          resolve();
+          return;
+        }
+        reject(new Error(`Playwright exited with code ${code}`));
+      });
+
+      child.on('error', reject);
+    });
+  },
+};
