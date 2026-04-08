@@ -353,7 +353,11 @@ export const QueryBarTopRow = React.memo(
     const [autoRefresh, setAutoRefresh] = useState<AutoRefreshSettings>(() => {
       const isConfigured = props.refreshInterval != null && props.refreshInterval > 0;
       return {
-        isEnabled: isConfigured,
+        // Only show the auto-refresh UI when the timer is actively running on load.
+        // When paused or unconfigured, isEnabled starts false; the user must re-enable
+        // from Settings. This avoids the UI reappearing after a page reload when the
+        // user had disabled it.
+        isEnabled: isAutoRefreshEnabled,
         isPaused: isConfigured && (props.isRefreshPaused ?? false),
         intervalMs: isConfigured ? props.refreshInterval! : 60_000,
         intervalDisplayUnit: 's',
@@ -628,21 +632,25 @@ export const QueryBarTopRow = React.memo(
 
         if (nextAutoRefresh) {
           setAutoRefresh((prev) => {
-            const isEnabledChanged = prev.isEnabled !== nextAutoRefresh.isEnabled;
-            const intervalChanged = prev.intervalMs !== nextAutoRefresh.intervalMs;
-            const isPausedChanged = prev.isPaused !== nextAutoRefresh.isPaused;
+            // When enabling auto-refresh, also clear isPaused so the timer starts immediately
+            // without requiring a second click on the play button.
+            const resolved: AutoRefreshSettings =
+              !prev.isEnabled && nextAutoRefresh.isEnabled
+                ? { ...nextAutoRefresh, isPaused: false }
+                : nextAutoRefresh;
+
+            const isEnabledChanged = prev.isEnabled !== resolved.isEnabled;
+            const intervalChanged = prev.intervalMs !== resolved.intervalMs;
+            const isPausedChanged = prev.isPaused !== resolved.isPaused;
 
             if (isEnabledChanged || intervalChanged || isPausedChanged) {
               propsOnRefreshChange?.({
-                isPaused: !nextAutoRefresh.isEnabled || nextAutoRefresh.isPaused,
-                // refreshInterval=0 encodes "feature disabled" in the URL state, matching the
-                // EuiSuperDatePicker convention. This lets the initial state correctly set
-                // isEnabled=false on page reload (interval=0 → isConfigured=false → isEnabled=false).
-                refreshInterval: nextAutoRefresh.isEnabled ? nextAutoRefresh.intervalMs : 0,
+                isPaused: !resolved.isEnabled || resolved.isPaused,
+                refreshInterval: resolved.intervalMs,
               });
             }
 
-            return nextAutoRefresh;
+            return resolved;
           });
         }
       },
