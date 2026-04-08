@@ -128,5 +128,4 @@ describe('Rule Monitoring API Client', () => {
       );
     });
   });
-
 });
