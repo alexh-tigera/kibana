@@ -127,6 +127,7 @@ dependsOn:
   - '@kbn/core-http-server-mocks'
   - '@kbn/core-http-browser'
   - '@kbn/core-chrome-browser'
+  - '@kbn/lens-common'
 tags:
   - plugin
   - prod
