@@ -6,11 +6,11 @@
  */
 
 import {
-    createRedTeamOrchestrator,
-    formatRedTeamReport,
-    writeRedTeamReport,
-    type RedTeamConfig,
-    type Severity,
+  createRedTeamOrchestrator,
+  formatRedTeamReport,
+  writeRedTeamReport,
+  type RedTeamConfig,
+  type Severity,
 } from '@kbn/evals';
 import { tags } from '@kbn/scout';
 import { evaluate } from '../../src/evaluate';
