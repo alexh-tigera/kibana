@@ -130,7 +130,6 @@ describe('RuleDetailsTabGuard', () => {
       );
       expect(getExpectedLandingTab(RuleDetailTabs.executionResults)).toBeInTheDocument();
     });
-
   });
 
   describe('when user does not have access to a tab', () => {

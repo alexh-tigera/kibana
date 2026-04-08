@@ -236,12 +236,7 @@ export const RuleDetailsPage = connector(
     clearEventsLoading,
     clearSelected,
   }: DetectionEngineComponentProps) {
-    const {
-      application,
-      cps,
-      timelines: timelinesUi,
-      spaces: spacesApi,
-    } = useKibana().services;
+    const { application, cps, timelines: timelinesUi, spaces: spacesApi } = useKibana().services;
     const {
       navigateToApp,
       capabilities: { actions },

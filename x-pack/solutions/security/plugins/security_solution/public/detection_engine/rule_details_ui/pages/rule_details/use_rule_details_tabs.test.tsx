@@ -201,5 +201,4 @@ describe('useRuleDetailsTabs', () => {
 
     expect(tabsNames).not.toContain(RuleDetailTabs.endpointExceptions);
   });
-
 });
