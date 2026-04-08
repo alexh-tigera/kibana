@@ -4,7 +4,7 @@ description: >
 value:
   type: pie
   title: Traffic by operating system
-  donut_hole: medium
+  donut_hole: m
   filters: []
   dataset:
     type: index
@@ -14,9 +14,9 @@ value:
     query: ''
     language: kuery
   legend:
-    visible: auto
+    visibility: auto
     size: auto
-  value_display:
+  values:
     mode: percentage
     percent_decimals: 1
   metrics:
