@@ -89,7 +89,7 @@ export class ElasticAssistantPublicPlugin
     // HeaderNavControls (registerRight mount points). Remove the registerRight call once
     // Chrome Next is the only chrome. See https://github.com/elastic/kibana/issues/260010
     coreStart.chrome.next.aiButton.register({
-      content: (target: HTMLDivElement) => {
+      content: (target: HTMLElement) => {
         const startService = startServices();
         return this.mountAIAssistantButton(target, coreStart, startService);
       },
