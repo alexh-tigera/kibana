@@ -7,6 +7,20 @@
 
 import { i18n } from '@kbn/i18n';
 
+export const TABLE_TITLE = i18n.translate(
+  'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.tableTitle',
+  {
+    defaultMessage: 'Execution log',
+  }
+);
+
+export const TABLE_SUBTITLE = i18n.translate(
+  'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.tableSubtitle',
+  {
+    defaultMessage: 'A log of rule execution results',
+  }
+);
+
 export const TABLE_CAPTION = i18n.translate(
   'xpack.securitySolution.detectionEngine.ruleDetails.executionResults.tableCaption',
   {
