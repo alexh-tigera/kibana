@@ -94,79 +94,79 @@ actions:
 
         To create ES|QL visualizations through the API, embed them inline as `vis` panels. Only index/data view mode is supported through the Visualizations API endpoints.
 
-        For `metric` charts, `data_source` is at the top level of `attributes` and `metrics` references columns by name:
+        - **`metric` charts**: `data_source` goes at the top level of `attributes`. Reference query result columns in `metrics` using `operation: "value"` and `column`:
 
-        ```json
-        {
-          "type": "vis",
-          "grid": { "x": 0, "y": 0, "w": 12, "h": 6 },
-          "config": {
-            "attributes": {
-              "type": "metric",
-              "title": "Total requests",
-              "data_source": {
-                "type": "esql",
-                "query": "FROM logs-* | STATS count = COUNT()"
-              },
-              "metrics": [
-                { "type": "primary", "operation": "value", "column": "count" }
-              ]
+          ```json
+          {
+            "type": "vis",
+            "grid": { "x": 0, "y": 0, "w": 12, "h": 6 },
+            "config": {
+              "attributes": {
+                "type": "metric",
+                "title": "Total requests",
+                "data_source": {
+                  "type": "esql",
+                  "query": "FROM logs-* | STATS count = COUNT()"
+                },
+                "metrics": [
+                  { "type": "primary", "operation": "value", "column": "count" }
+                ]
+              }
             }
           }
-        }
-        ```
+          ```
 
-        For `xy` charts, `data_source` goes inside each layer. Use `BUCKET(@timestamp, 75, ?_tstart, ?_tend)` for time-series charts to align bucket intervals with the dashboard's selected time range:
+        - **`xy` charts**: `data_source` goes inside each layer. Use `BUCKET(@timestamp, 75, ?_tstart, ?_tend)` for time-series charts to align bucket intervals with the dashboard's selected time range:
 
-        ```json
-        {
-          "type": "vis",
-          "grid": { "x": 0, "y": 0, "w": 48, "h": 12 },
-          "config": {
-            "attributes": {
-              "type": "xy",
-              "title": "Requests over time",
-              "layers": [
-                {
-                  "type": "line",
-                  "data_source": {
-                    "type": "esql",
-                    "query": "FROM logs-* | STATS count = COUNT() BY bucket = BUCKET(@timestamp, 75, ?_tstart, ?_tend)"
-                  },
-                  "x": { "operation": "value", "column": "bucket" },
-                  "y": [{ "operation": "value", "column": "count" }]
-                }
-              ]
+          ```json
+          {
+            "type": "vis",
+            "grid": { "x": 0, "y": 0, "w": 48, "h": 12 },
+            "config": {
+              "attributes": {
+                "type": "xy",
+                "title": "Requests over time",
+                "layers": [
+                  {
+                    "type": "line",
+                    "data_source": {
+                      "type": "esql",
+                      "query": "FROM logs-* | STATS count = COUNT() BY bucket = BUCKET(@timestamp, 75, ?_tstart, ?_tend)"
+                    },
+                    "x": { "operation": "value", "column": "bucket" },
+                    "y": [{ "operation": "value", "column": "count" }]
+                  }
+                ]
+              }
             }
           }
-        }
-        ```
+          ```
 
-        For a bar chart breaking down by a categorical field:
+          For a categorical breakdown (no time bucketing needed):
 
-        ```json
-        {
-          "type": "vis",
-          "grid": { "x": 0, "y": 0, "w": 24, "h": 12 },
-          "config": {
-            "attributes": {
-              "type": "xy",
-              "title": "Top hosts by bytes",
-              "layers": [
-                {
-                  "type": "bar_horizontal",
-                  "data_source": {
-                    "type": "esql",
-                    "query": "FROM logs-* | STATS total_bytes = SUM(bytes) BY host.name | SORT total_bytes DESC | LIMIT 10"
-                  },
-                  "x": { "operation": "value", "column": "host.name" },
-                  "y": [{ "operation": "value", "column": "total_bytes" }]
-                }
-              ]
+          ```json
+          {
+            "type": "vis",
+            "grid": { "x": 0, "y": 0, "w": 24, "h": 12 },
+            "config": {
+              "attributes": {
+                "type": "xy",
+                "title": "Top hosts by bytes",
+                "layers": [
+                  {
+                    "type": "bar_horizontal",
+                    "data_source": {
+                      "type": "esql",
+                      "query": "FROM logs-* | STATS total_bytes = SUM(bytes) BY host.name | SORT total_bytes DESC | LIMIT 10"
+                    },
+                    "x": { "operation": "value", "column": "host.name" },
+                    "y": [{ "operation": "value", "column": "total_bytes" }]
+                  }
+                ]
+              }
             }
           }
-        }
-        ```
+          ```
 
         ### Sections
 
