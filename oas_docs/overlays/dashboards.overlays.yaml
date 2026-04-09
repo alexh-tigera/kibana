@@ -18,7 +18,7 @@ actions:
         > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
         > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
 
-        A [dashboard](https://www.elastic.co/docs/explore-analyze/dashboards) request body has the following top-level fields:
+        A [dashboard](https://www.elastic.co/docs/explore-analyze/dashboards) is structured as follows:
 
         - **`title`** (required): the display name of the dashboard.
         - **`panels`**: array of content panels placed on the grid. Each panel has a `type`, a `grid` position (`x`, `y`, `w`, `h`), and a `config`. Two panel shapes are supported:
