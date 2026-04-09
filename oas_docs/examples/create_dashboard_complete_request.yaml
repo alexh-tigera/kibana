@@ -1,0 +1,186 @@
+summary: Create a dashboard (complete)
+description: >
+  Creates a fully structured dashboard with metric panels, XY charts, a data table, two
+  collapsible sections, and pinned controls. Uses the Kibana sample web logs dataset
+  (`kibana_sample_data_logs`).
+value:
+  title: Operations overview
+  description: Full operations dashboard with metrics, trends, and top sources.
+  time_range:
+    from: now-7d
+    to: now
+  options:
+    use_margins: true
+    hide_panel_titles: false
+    hide_panel_borders: false
+    auto_apply_filters: true
+    sync_colors: true
+    sync_cursor: true
+    sync_tooltips: false
+  pinned_panels:
+    - type: options_list_control
+      width: medium
+      grow: true
+      config:
+        title: Response code
+        data_view_id: 90943e30-9a47-11e8-b64d-95841ca0b247
+        field_name: response.keyword
+    - type: range_slider_control
+      width: medium
+      grow: true
+      config:
+        title: Response size (bytes)
+        data_view_id: 90943e30-9a47-11e8-b64d-95841ca0b247
+        field_name: bytes
+  panels:
+    - type: vis
+      grid:
+        x: 0
+        y: 0
+        w: 24
+        h: 8
+      config:
+        attributes:
+          type: metric
+          title: Total requests
+          data_source:
+            type: data_view_spec
+            index_pattern: kibana_sample_data_logs
+            time_field: timestamp
+          query:
+            query: ''
+            language: kuery
+          metrics:
+            - type: primary
+              operation: count
+              format:
+                type: number
+                decimals: 0
+                compact: true
+    - type: vis
+      grid:
+        x: 24
+        y: 0
+        w: 24
+        h: 8
+      config:
+        attributes:
+          type: metric
+          title: Average response size
+          data_source:
+            type: data_view_spec
+            index_pattern: kibana_sample_data_logs
+            time_field: timestamp
+          query:
+            query: ''
+            language: kuery
+          metrics:
+            - type: primary
+              operation: average
+              field: bytes
+              format:
+                type: number
+                decimals: 0
+                compact: true
+    - title: Traffic trends
+      collapsed: false
+      grid:
+        y: 8
+      panels:
+        - type: vis
+          grid:
+            x: 0
+            y: 0
+            w: 24
+            h: 12
+          config:
+            attributes:
+              type: xy
+              title: Requests over time
+              data_source:
+                type: data_view_spec
+                index_pattern: kibana_sample_data_logs
+                time_field: timestamp
+              query:
+                query: ''
+                language: kuery
+              layers:
+                - type: line
+                  data_source:
+                    type: data_view_spec
+                    index_pattern: kibana_sample_data_logs
+                    time_field: timestamp
+                  x:
+                    operation: date_histogram
+                    field: timestamp
+                  y:
+                    - operation: count
+                      format:
+                        type: number
+                        decimals: 0
+        - type: vis
+          grid:
+            x: 24
+            y: 0
+            w: 24
+            h: 12
+          config:
+            attributes:
+              type: xy
+              title: Bytes transferred over time
+              data_source:
+                type: data_view_spec
+                index_pattern: kibana_sample_data_logs
+                time_field: timestamp
+              query:
+                query: ''
+                language: kuery
+              layers:
+                - type: area
+                  data_source:
+                    type: data_view_spec
+                    index_pattern: kibana_sample_data_logs
+                    time_field: timestamp
+                  x:
+                    operation: date_histogram
+                    field: timestamp
+                  y:
+                    - operation: sum
+                      field: bytes
+                      format:
+                        type: bytes
+                        decimals: 0
+    - title: Top sources
+      collapsed: false
+      grid:
+        y: 20
+      panels:
+        - type: vis
+          grid:
+            x: 0
+            y: 0
+            w: 48
+            h: 12
+          config:
+            attributes:
+              type: data_table
+              title: Top client IPs by request count
+              data_source:
+                type: data_view_spec
+                index_pattern: kibana_sample_data_logs
+                time_field: timestamp
+              query:
+                query: ''
+                language: kuery
+              density:
+                mode: default
+              metrics:
+                - operation: count
+                  format:
+                    type: number
+                    decimals: 0
+              rows:
+                - operation: terms
+                  fields:
+                    - clientip
+                  limit: 10

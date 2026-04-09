@@ -1,0 +1,71 @@
+summary: Create a dashboard (simple)
+description: >
+  Creates a dashboard with three visualization panels: a DSL-based line chart embedded
+  inline, an ES|QL-based line chart embedded inline, and a visualization linked from the
+  library by saved object ID. Uses the Kibana sample web logs dataset
+  (`kibana_sample_data_logs`).
+value:
+  title: Web logs overview
+  description: Traffic overview using web logs sample data.
+  panels:
+    - type: vis
+      grid:
+        x: 0
+        y: 0
+        w: 24
+        h: 12
+      config:
+        attributes:
+          type: xy
+          title: Requests over time (DSL)
+          data_source:
+            type: data_view_spec
+            index_pattern: kibana_sample_data_logs
+            time_field: timestamp
+          query:
+            query: ''
+            language: kuery
+          layers:
+            - type: line
+              data_source:
+                type: data_view_spec
+                index_pattern: kibana_sample_data_logs
+                time_field: timestamp
+              x:
+                operation: date_histogram
+                field: timestamp
+              y:
+                - operation: count
+                  format:
+                    type: number
+                    decimals: 0
+    - type: vis
+      grid:
+        x: 24
+        y: 0
+        w: 24
+        h: 12
+      config:
+        attributes:
+          type: xy
+          title: Requests over time (ES|QL)
+          layers:
+            - type: line
+              data_source:
+                type: esql
+                query: >-
+                  FROM kibana_sample_data_logs | STATS count = COUNT() BY bucket = BUCKET(@timestamp, 75, ?_tstart, ?_tend)
+              x:
+                operation: value
+                column: bucket
+              y:
+                - operation: value
+                  column: count
+    - type: vis
+      grid:
+        x: 0
+        y: 12
+        w: 48
+        h: 10
+      config:
+        savedObjectId: 1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d

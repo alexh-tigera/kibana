@@ -277,8 +277,10 @@ actions:
         content:
           application/json:
             examples:
-              createDashboardWithVisPanel:
-                $ref: '../examples/create_dashboard_request.yaml'
+              createDashboardSimple:
+                $ref: '../examples/create_dashboard_simple_request.yaml'
+              createDashboardComplete:
+                $ref: '../examples/create_dashboard_complete_request.yaml'
       responses:
         201:
           content:
@@ -295,30 +297,13 @@ actions:
               -H "kbn-xsrf: true" \
               -H "Content-Type: application/json" \
               -d '{
-              "title": "Web logs overview",
+              "title": "My dashboard",
               "panels": [
                 {
                   "type": "vis",
-                  "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                  "grid": { "x": 0, "y": 0, "w": 48, "h": 10 },
                   "config": {
-                    "attributes": {
-                      "type": "metric",
-                      "title": "Average response bytes",
-                      "data_source": {
-                        "type": "data_view_spec",
-                        "index_pattern": "kibana_sample_data_logs",
-                        "time_field": "timestamp"
-                      },
-                      "query": { "query": "" },
-                      "metrics": [
-                        {
-                          "type": "primary",
-                          "operation": "average",
-                          "field": "bytes",
-                          "format": { "type": "number", "decimals": 0, "compact": true }
-                        }
-                      ]
-                    }
+                    "savedObjectId": "<visualization-id>"
                   }
                 }
               ]
@@ -328,30 +313,13 @@ actions:
           source: |
             POST kbn:/api/dashboards
             {
-              "title": "Web logs overview",
+              "title": "My dashboard",
               "panels": [
                 {
                   "type": "vis",
-                  "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                  "grid": { "x": 0, "y": 0, "w": 48, "h": 10 },
                   "config": {
-                    "attributes": {
-                      "type": "metric",
-                      "title": "Average response bytes",
-                      "data_source": {
-                        "type": "data_view_spec",
-                        "index_pattern": "kibana_sample_data_logs",
-                        "time_field": "timestamp"
-                      },
-                      "query": { "query": "" },
-                      "metrics": [
-                        {
-                          "type": "primary",
-                          "operation": "average",
-                          "field": "bytes",
-                          "format": { "type": "number", "decimals": 0, "compact": true }
-                        }
-                      ]
-                    }
+                    "savedObjectId": "<visualization-id>"
                   }
                 }
               ]
