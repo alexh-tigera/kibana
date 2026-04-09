@@ -129,8 +129,8 @@ export const formatRedTeamReport = (
         typeof r.example.input === 'string'
           ? r.example.input
           : typeof r.example.input === 'object' && r.example.input !== null
-            ? String((r.example.input as Record<string, unknown>).prompt ?? '')
-            : '';
+          ? String((r.example.input as Record<string, unknown>).prompt ?? '')
+          : '';
       if (seen.has(inputKey)) return false;
       if (inputKey !== '') seen.add(inputKey);
       return true;
