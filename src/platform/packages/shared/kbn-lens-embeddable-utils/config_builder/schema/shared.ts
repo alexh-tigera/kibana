@@ -57,7 +57,7 @@ export const sharedPanelInfoSchema = {
     schema.arrayOf(asCodeFilterSchema, {
       maxSize: 100,
       meta: {
-        id: 'lensPanelFilters',
+        id: 'panel-filters',
         description: 'Filters applied to this panel only, in addition to any dashboard-level filters.',
       },
     })

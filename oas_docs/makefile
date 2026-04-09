@@ -18,6 +18,14 @@ api-docs: ## Generate Serverless and ESS Kibana OpenAPI bundles
 	$(MAKE) merge-api-docs
 	$(MAKE) api-docs-overlay
 	$(MAKE) space-aware-api-docs
+	$(MAKE) api-docs-postprocess
+
+.PHONY: api-docs-postprocess
+api-docs-postprocess: ## Post-process OAS bundles for API reference rendering
+	@node scripts/strip_additional_properties.js oas_docs/output/kibana.yaml
+	@node scripts/strip_discriminators.js oas_docs/output/kibana.yaml
+	@node scripts/strip_additional_properties.js oas_docs/output/kibana.serverless.yaml
+	@node scripts/strip_discriminators.js oas_docs/output/kibana.serverless.yaml
 
 .PHONY: space-aware-api-docs
 space-aware-api-docs: ## Add special space aware description entries

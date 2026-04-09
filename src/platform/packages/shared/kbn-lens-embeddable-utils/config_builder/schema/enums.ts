@@ -37,7 +37,7 @@ class BuilderEnums {
     schema.oneOf(
       [schema.literal('horizontal'), schema.literal('vertical'), schema.literal('angled')],
       withDefaults(opts, {
-        id: 'vis_api_orientation',
+        id: 'orientation',
         description: 'Orientation',
       })
     );
@@ -45,7 +45,7 @@ class BuilderEnums {
     schema.oneOf(
       [schema.literal('horizontal'), schema.literal('vertical')],
       withDefaults(opts, {
-        id: 'vis_api_simple_orientation',
+        id: 'simple-orientation',
         description: 'Orientation',
       })
     );
@@ -53,7 +53,7 @@ class BuilderEnums {
     schema.oneOf(
       [schema.literal('asc'), schema.literal('desc')],
       withDefaults(opts, {
-        id: 'vis_api_direction',
+        id: 'direction',
         description: 'Direction',
       })
     );
