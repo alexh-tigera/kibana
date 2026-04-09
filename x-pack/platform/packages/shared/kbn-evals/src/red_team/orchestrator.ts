@@ -328,13 +328,32 @@ export const createRedTeamOrchestrator = (
         passed += counts.passed;
         failed += counts.failed;
       } else {
-        // Multi-turn strategy: run multiple conversation turns per example
-        for (let exIdx = 0; exIdx < examples.length; exIdx++) {
+        // Multi-turn strategy: run example conversations in parallel
+        const exConcurrency = config.exampleConcurrency ?? 3;
+
+        const processExample = async (
+          exIdx: number
+        ): Promise<{
+          passed: number;
+          failed: number;
+          results: AttackResult[];
+          bySeverity: Record<Severity, number>;
+        }> => {
+          const exResults: AttackResult[] = [];
+          const exBySeverity: Record<Severity, number> = {
+            critical: 0,
+            high: 0,
+            medium: 0,
+            low: 0,
+          };
+          let exPassed = 0;
+          let exFailed = 0;
+
           const example = examples[exIdx];
-          const attackPrompt = ((example.input as Record<string, unknown>)?.prompt as string) ?? '';
+          const attackPrompt =
+            ((example.input as Record<string, unknown>)?.prompt as string) ?? '';
           const conversationHistory: ConversationTurn[] = [];
 
-          // Generate the first turn prompt from the strategy
           let currentPrompt: string | null = strategy.generateFirstTurn(attackPrompt);
           let turnNumber = 0;
           let finalEvaluated = false;
@@ -349,7 +368,6 @@ export const createRedTeamOrchestrator = (
             };
             lastTurnExample = turnExample;
 
-            // Run intermediate turns without evaluators
             const turnDataset: EvaluationDataset = {
               name: `red-team-${module.name}-${strategy.name}-ex${exIdx}-turn${turnNumber}`,
               description: `Red team attack: ${module.description} (turn ${turnNumber})`,
@@ -361,17 +379,14 @@ export const createRedTeamOrchestrator = (
               []
             );
 
-            // Extract the target's response and add to conversation history
             const turnRuns = Object.values(turnExperiment.runs);
             const targetOutput = turnRuns.length > 0 ? turnRuns[0].output : '';
             const targetText = extractTextFromOutput(targetOutput);
             conversationHistory.push({ role: 'target', content: targetText });
 
-            // Check if the strategy wants another turn (with full history including target response)
             const nextTurn = strategy.generateNextTurn(attackPrompt, conversationHistory);
 
             if (nextTurn === null) {
-              // This was the final turn — re-run the same prompt with evaluators to score the output
               const finalDataset: EvaluationDataset = {
                 name: `red-team-${module.name}-${strategy.name}-ex${exIdx}-final`,
                 description: `Red team attack: ${module.description} (final evaluation)`,
@@ -390,11 +405,11 @@ export const createRedTeamOrchestrator = (
                 strategy,
                 guardrailRules,
                 severityThresholds: config.severityThresholds,
-                results,
-                bySeverity,
+                results: exResults,
+                bySeverity: exBySeverity,
               });
-              passed += counts.passed;
-              failed += counts.failed;
+              exPassed += counts.passed;
+              exFailed += counts.failed;
               finalEvaluated = true;
             }
 
@@ -402,8 +417,6 @@ export const createRedTeamOrchestrator = (
             turnNumber++;
           }
 
-          // If the loop exhausted maxTurns without generateNextTurn returning null,
-          // the final evaluation was never run — do it now on the last prompt/output.
           if (!finalEvaluated && lastTurnExample !== null) {
             const finalDataset: EvaluationDataset = {
               name: `red-team-${module.name}-${strategy.name}-ex${exIdx}-final`,
@@ -423,11 +436,47 @@ export const createRedTeamOrchestrator = (
               strategy,
               guardrailRules,
               severityThresholds: config.severityThresholds,
-              results,
-              bySeverity,
+              results: exResults,
+              bySeverity: exBySeverity,
             });
-            passed += counts.passed;
-            failed += counts.failed;
+            exPassed += counts.passed;
+            exFailed += counts.failed;
+          }
+
+          return { passed: exPassed, failed: exFailed, results: exResults, bySeverity: exBySeverity };
+        };
+
+        // Run examples with bounded concurrency
+        const executing = new Set<Promise<void>>();
+        const exampleOutcomes: Array<{
+          passed: number;
+          failed: number;
+          results: AttackResult[];
+          bySeverity: Record<Severity, number>;
+        }> = [];
+
+        for (let exIdx = 0; exIdx < examples.length; exIdx++) {
+          const p = processExample(exIdx)
+            .then((outcome) => {
+              exampleOutcomes.push(outcome);
+            })
+            .finally(() => {
+              executing.delete(p);
+            });
+          executing.add(p);
+          if (executing.size >= exConcurrency) {
+            await Promise.race(executing);
+          }
+        }
+        await Promise.all(executing);
+
+        // Aggregate results from all examples
+        for (const outcome of exampleOutcomes) {
+          passed += outcome.passed;
+          failed += outcome.failed;
+          results.push(...outcome.results);
+          for (const sev of Object.keys(outcome.bySeverity) as Severity[]) {
+            bySeverity[sev] += outcome.bySeverity[sev];
           }
         }
       }

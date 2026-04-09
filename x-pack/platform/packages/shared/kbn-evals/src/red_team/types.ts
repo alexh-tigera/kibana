@@ -108,6 +108,8 @@ export interface RedTeamConfig {
   guardrails?: GuardrailConfig;
   severityThresholds?: Record<string, Severity>;
   targetContext?: TargetContext;
+  /** Max number of adversarial examples to run in parallel for multi-turn strategies. Defaults to 3. */
+  exampleConcurrency?: number;
 }
 
 export interface ModuleReport {
