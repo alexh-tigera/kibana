@@ -79,7 +79,7 @@ export const statisticsOptionsSize = 17;
 const domainRoundingSchema = schema.boolean({
   defaultValue: true,
   meta: {
-    id: 'xy-domain-rounding',
+    id: 'vis_api_domain_rounding',
     description:
       'Whether to round axis domain bounds outward to readable “nice” values (for example 1, 5, 10, 100) instead of exact data min/max.',
   },
@@ -92,7 +92,7 @@ const domainFullConfigSchema = schema.object(
   },
   {
     meta: {
-      id: 'xy-domain-full',
+      id: 'vis_api_domain_full',
       description:
         'Uses the full chart domain, including baseline expansion when applicable (for example, includes zero for bar-like series).',
     },
@@ -106,7 +106,7 @@ const domainFitConfigSchema = schema.object(
   },
   {
     meta: {
-      id: 'xy-domain-fit',
+      id: 'vis_api_domain_fit',
       description:
         'Uses tight domain bounds from the observed data minimum to maximum, without baseline expansion.',
     },
@@ -122,7 +122,7 @@ const domainCustomConfigSchema = schema.object(
   },
   {
     meta: {
-      id: 'xy-domain-custom',
+      id: 'vis_api_domain_custom',
       description: 'Uses explicitly provided domain bounds (min and max).',
     },
   }
@@ -577,7 +577,7 @@ const xySharedSettings = {
       },
       {
         meta: {
-          id: 'xy-axis-config',
+          id: 'vis_api_xy_axis_config',
           title: 'Axis',
           description:
             'Axis configuration for X, primary Y, and secondary Y axes. The primary Y axis defaults to the start (leading) side, and the secondary Y axis defaults to the end (trailing) side.',

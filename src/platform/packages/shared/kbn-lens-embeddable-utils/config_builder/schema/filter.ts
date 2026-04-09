@@ -14,37 +14,33 @@ export const filterSchema = schema.object(
     language: schema.oneOf([schema.literal('kql'), schema.literal('lucene')], {
       defaultValue: 'kql',
     }),
-    /**
-     * Filter query string in KQL or Lucene syntax. For example, `response.status_code >= 400`.
-     */
     expression: schema.string({
       meta: {
-        description:
-          'Filter query string in KQL or Lucene syntax. For example, `response.status_code >= 400`.',
+        description: 'A query expression in KQL or Lucene syntax',
       },
     }),
   },
-  { meta: { id: 'filter-simple', title: 'Filter' } }
+  { meta: { id: 'filterSimple', title: 'Filter' } }
 );
 
 export const filterWithLabelSchema = schema.object(
   {
     /**
-     * Filter definition with language and query string.
+     * Filter query
      */
     filter: filterSchema,
     /**
-     * Display label for this filter in the chart legend.
+     * Label for the filter
      */
     label: schema.maybe(
       schema.string({
         meta: {
-          description: 'Display label for this filter in the chart legend.',
+          description: 'Label for the filter',
         },
       })
     ),
   },
-  { meta: { id: 'filter-with-label', title: 'Filter with Label' } }
+  { meta: { id: 'filterWithLabel', title: 'Filter with Label' } }
 );
 
 export type LensApiFilterType = typeof filterSchema.type;

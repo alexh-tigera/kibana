@@ -20,12 +20,12 @@ import { filterSchema } from './filter';
 
 export const labelSharedProp = {
   /**
-   * Display name shown in the chart legend and tooltips.
+   * Label for the operation
    */
   label: schema.maybe(
     schema.string({
       meta: {
-        description: 'Display name shown in the chart legend and tooltips.',
+        description: 'Label for the operation',
       },
     })
   ),
@@ -33,23 +33,31 @@ export const labelSharedProp = {
 
 export const sharedPanelInfoSchema = {
   /**
-   * Title displayed in the panel header.
+   * The title of the chart displayed in the panel.
+   *
+   * Optional. If not provided, the chart will not have a title.
+   *
+   * Possible values: Any string value, or undefined if omitted.
    */
   title: schema.maybe(
     schema.string({
       meta: {
-        description: 'Title displayed in the panel header.',
+        description:
+          'The title of the chart displayed in the panel. Optional. Any string value or undefined.',
       },
     })
   ),
   /**
-   * Description displayed in the panel header, providing additional context about the visualization.
+   * The description of the chart, providing additional context or information.
+   *
+   * Optional. If not provided, the chart will not have a description.
+   *
+   * Possible values: Any string value, or undefined if omitted.
    */
   description: schema.maybe(
     schema.string({
       meta: {
-        description:
-          'Description displayed in the panel header, providing additional context about the visualization.',
+        description: 'The description of the chart. Optional. Any string value or undefined.',
       },
     })
   ),
@@ -57,8 +65,8 @@ export const sharedPanelInfoSchema = {
     schema.arrayOf(asCodeFilterSchema, {
       maxSize: 100,
       meta: {
-        id: 'panel-filters',
-        description: 'Filters applied to this panel only, in addition to any dashboard-level filters.',
+        id: 'lensPanelFilters',
+        description: 'Filters applied to the panel',
       },
     })
   ),
@@ -83,7 +91,7 @@ export const ignoringGlobalFiltersSchemaRaw = {
     defaultValue: LENS_IGNORE_GLOBAL_FILTERS_DEFAULT_VALUE,
     meta: {
       description:
-        'When `true`, ignores filters from the dashboard filter bar and time picker. The visualization uses only its own panel-level filters.',
+        'If true, ignore global filters when fetching data for this layer. Default is false.',
     },
   }),
 };
@@ -133,8 +141,7 @@ export const collapseBySchema = schema.oneOf(
   {
     meta: {
       id: 'collapseBy',
-      description:
-        'Aggregation function used to collapse a breakdown dimension into a single value. Choose `avg`, `sum`, `max`, or `min`.',
+      description: 'Collapse by function description',
     },
   }
 );
@@ -146,8 +153,8 @@ const layerSettingsSchemaWrapped = schema.object(layerSettingsSchema);
 export type LayerSettingsSchema = TypeOf<typeof layerSettingsSchemaWrapped>;
 
 export const axisTitleSchemaProps = {
-  text: schema.maybe(schema.string({ defaultValue: '', meta: { description: 'Custom text for the axis title. When empty, defaults to the field name.' } })),
-  visible: schema.maybe(schema.boolean({ meta: { description: 'When `true`, displays the axis title.' } })),
+  text: schema.maybe(schema.string({ defaultValue: '', meta: { description: 'Axis title text' } })),
+  visible: schema.maybe(schema.boolean({ meta: { description: 'Show the title' } })),
 };
 
 export const legendTruncateAfterLinesSchema = schema.maybe(
@@ -156,7 +163,7 @@ export const legendTruncateAfterLinesSchema = schema.maybe(
     min: 1,
     max: 10,
     meta: {
-      description: 'Maximum lines before truncating legend items. Accepts 1 to 10.',
+      description: 'Maximum lines before truncating legend items (1-10)',
       id: 'legendTruncateAfterLines',
     },
   })
