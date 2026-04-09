@@ -126,21 +126,9 @@ const singleConditionSchema = baseConditionSchema.extends(
     operator: schema.literal(ASCODE_FILTER_OPERATOR.IS),
     value: schema.oneOf(
       [
-        schema.string({
-          meta: {
-            title: 'value',
-          },
-        }),
-        schema.number({
-          meta: {
-            title: 'value',
-          },
-        }),
-        schema.boolean({
-          meta: {
-            title: 'value',
-          },
-        }),
+        schema.string({ meta: { title: 'value' } }),
+        schema.number({ meta: { title: 'value' } }),
+        schema.boolean({ meta: { title: 'value' } }),
       ],
       {
         meta: { description: 'Value to match. Must be a string, number, or boolean.' },
@@ -149,7 +137,7 @@ const singleConditionSchema = baseConditionSchema.extends(
   },
   {
     meta: {
-      description: 'Condition: is',
+      description: 'Matches documents where `field` equals a single value.',
       title: 'Condition: is',
       id: 'kbn-as-code-filters-schema_condition_is',
     },
@@ -173,7 +161,7 @@ const oneOfConditionSchema = baseConditionSchema.extends(
   },
   {
     meta: {
-      description: 'Condition: is one of',
+      description: 'Matches documents where `field` equals any value in a list.',
       title: 'Condition: is one of',
       id: 'kbn-as-code-filters-schema_condition_is_one_of',
     },
@@ -190,7 +178,7 @@ const rangeConditionSchema = baseConditionSchema.extends(
   },
   {
     meta: {
-      description: 'Condition: range',
+      description: 'Matches documents where `field` falls within a numeric or date range.',
       title: 'Condition: range',
       id: 'kbn-as-code-filters-schema_condition_range',
     },
@@ -207,7 +195,7 @@ const existsConditionSchema = baseConditionSchema.extends(
   },
   {
     meta: {
-      description: 'Condition: exists',
+      description: 'Matches documents where `field` exists (has any non-null value). No `value` field is needed.',
       title: 'Condition: exists',
       id: 'kbn-as-code-filters-schema_condition_exists',
     },
@@ -222,7 +210,7 @@ const conditionSchema = schema.discriminatedUnion(
   [singleConditionSchema, oneOfConditionSchema, rangeConditionSchema, existsConditionSchema],
   {
     meta: {
-      description: 'A filter condition. The `operator` field determines which value shape is expected.',
+      description: 'A field-level filter condition. The `operator` value determines the shape of `value`: `is` (single value), `is_one_of` (array), `range` (bounds object), or `exists` (no value needed).',
       id: 'kbn-as-code-filters-schema_conditionSchema',
     },
   }
