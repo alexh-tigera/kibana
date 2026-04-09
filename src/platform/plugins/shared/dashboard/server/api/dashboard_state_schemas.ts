@@ -46,7 +46,7 @@ export const panelGridSchema = schema.object(
   },
   {
     meta: {
-      id: 'kbn-dashboard-panel-grid',
+      id: 'dashboard-panel-grid',
     },
   }
 );
@@ -143,7 +143,7 @@ export function getSectionSchema(isDashboardAppRequest: boolean) {
     {
       meta: {
         description: 'Collapsible section.',
-        id: 'kbn-dashboard-section',
+        id: 'dashboard-section',
         title: 'Section',
       },
     }
@@ -186,7 +186,7 @@ export const optionsSchema = schema.object(
   {
     defaultValue: DEFAULT_DASHBOARD_OPTIONS,
     meta: {
-      id: 'kbn-dashboard-options',
+      id: 'dashboard-options',
     },
   }
 );
@@ -260,7 +260,7 @@ export function getDashboardStateSchema(isDashboardAppRequest: boolean) {
     },
     {
       meta: {
-        id: isDashboardAppRequest ? 'kbn-dashboard-app-data' : 'kbn-dashboard-data',
+        id: isDashboardAppRequest ? 'dashboard-app-data' : 'dashboard-data',
       },
     }
   );
