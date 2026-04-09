@@ -108,15 +108,15 @@ const resolveStrategy = (config: RedTeamConfig): Strategy => {
 
 /**
  * Extracts a text string from a task output value.
- * - If the output is a string, returns it directly.
- * - If the output is an object with a `messages` array, returns the last message text.
- * - Otherwise, returns the JSON-stringified output.
+ * - If the output is a string, returns it directly (truncated to maxLen).
+ * - If the output is an object with a `messages` array, returns the last message text (truncated to maxLen).
+ * - Otherwise, returns the JSON-stringified output (truncated to maxLen).
  */
-const extractTextFromOutput = (output: TaskOutput): string => {
+const extractTextFromOutput = (output: TaskOutput, maxLen?: number): string => {
+  let text: string;
   if (typeof output === 'string') {
-    return output;
-  }
-  if (output && typeof output === 'object') {
+    text = output;
+  } else if (output && typeof output === 'object') {
     const messages = (output as Record<string, unknown>).messages;
     if (Array.isArray(messages) && messages.length > 0) {
       const lastMsg = messages[messages.length - 1];
@@ -124,10 +124,14 @@ const extractTextFromOutput = (output: TaskOutput): string => {
         typeof lastMsg === 'object' && lastMsg !== null
           ? (lastMsg as Record<string, unknown>).message ?? JSON.stringify(lastMsg)
           : String(lastMsg);
-      return String(msgText);
+      text = String(msgText);
+    } else {
+      text = JSON.stringify(output);
     }
+  } else {
+    text = JSON.stringify(output);
   }
-  return JSON.stringify(output);
+  return maxLen !== undefined ? text.substring(0, maxLen) : text;
 };
 
 interface ProcessResultsParams {
@@ -218,23 +222,7 @@ const processExperimentResults = (
     bySeverity[severity]++;
 
     // Extract response excerpt for the report
-    const rawOutput = taskRun.output;
-    let responseExcerpt = '';
-    if (typeof rawOutput === 'string') {
-      responseExcerpt = rawOutput.substring(0, 200);
-    } else if (rawOutput && typeof rawOutput === 'object') {
-      const messages = (rawOutput as Record<string, unknown>).messages;
-      if (Array.isArray(messages) && messages.length > 0) {
-        const lastMsg = messages[messages.length - 1];
-        const msgText =
-          typeof lastMsg === 'object' && lastMsg !== null
-            ? (lastMsg as Record<string, unknown>).message ?? JSON.stringify(lastMsg)
-            : String(lastMsg);
-        responseExcerpt = String(msgText).substring(0, 500);
-      } else {
-        responseExcerpt = JSON.stringify(rawOutput).substring(0, 200);
-      }
-    }
+    const responseExcerpt = extractTextFromOutput(taskRun.output, 500);
 
     results.push({
       example: examples[taskRun.exampleIndex] ?? { input: taskRun.input },
@@ -349,6 +337,8 @@ export const createRedTeamOrchestrator = (
           // Generate the first turn prompt from the strategy
           let currentPrompt: string | null = strategy.generateFirstTurn(attackPrompt);
           let turnNumber = 0;
+          let finalEvaluated = false;
+          let lastTurnExample: { input: Record<string, unknown> } | null = null;
 
           while (currentPrompt !== null && turnNumber < strategy.maxTurns) {
             conversationHistory.push({ role: 'attacker', content: currentPrompt });
@@ -357,6 +347,7 @@ export const createRedTeamOrchestrator = (
               ...example,
               input: { ...example.input, prompt: currentPrompt },
             };
+            lastTurnExample = turnExample;
 
             // Run intermediate turns without evaluators
             const turnDataset: EvaluationDataset = {
@@ -404,10 +395,39 @@ export const createRedTeamOrchestrator = (
               });
               passed += counts.passed;
               failed += counts.failed;
+              finalEvaluated = true;
             }
 
             currentPrompt = nextTurn;
             turnNumber++;
+          }
+
+          // If the loop exhausted maxTurns without generateNextTurn returning null,
+          // the final evaluation was never run — do it now on the last prompt/output.
+          if (!finalEvaluated && lastTurnExample !== null) {
+            const finalDataset: EvaluationDataset = {
+              name: `red-team-${module.name}-${strategy.name}-ex${exIdx}-final`,
+              description: `Red team attack: ${module.description} (final evaluation)`,
+              examples: [lastTurnExample],
+            };
+
+            const finalExperiment = await executorClient.runExperiment(
+              { dataset: finalDataset, task, metadata: baseMetadata },
+              allEvaluators
+            );
+
+            const counts = processExperimentResults({
+              experiment: finalExperiment,
+              examples: [lastTurnExample],
+              module,
+              strategy,
+              guardrailRules,
+              severityThresholds: config.severityThresholds,
+              results,
+              bySeverity,
+            });
+            passed += counts.passed;
+            failed += counts.failed;
           }
         }
       }
@@ -454,24 +474,7 @@ export const createRedTeamOrchestrator = (
         example: {},
         evaluatorScores: [],
         namedScores: [],
-        responseExcerpt: (() => {
-          if (typeof output === 'string') {
-            return output.substring(0, 200);
-          }
-          if (output && typeof output === 'object') {
-            const messages = (output as Record<string, unknown>).messages;
-            if (Array.isArray(messages) && messages.length > 0) {
-              const lastMsg = messages[messages.length - 1];
-              const msgText =
-                typeof lastMsg === 'object' && lastMsg !== null
-                  ? (lastMsg as Record<string, unknown>).message ?? JSON.stringify(lastMsg)
-                  : String(lastMsg);
-              return String(msgText).substring(0, 500);
-            }
-            return JSON.stringify(output).substring(0, 200);
-          }
-          return '';
-        })(),
+        responseExcerpt: extractTextFromOutput(output, 500),
         guardrailViolations,
         severity,
         owaspCategory: '',
