@@ -26,7 +26,7 @@ actions:
           - **Control**: an interactive filter (dropdown, slider). Controls in `panels` apply only to panels in the same section. See [Controls](#controls).
           - **Section**: groups panels and controls under a collapsible `title`. A section has a `grid.y` position and its own nested `panels` array.
         - **`pinned_panels`**: controls pinned at the top of the dashboard that apply to all panels. See [Controls](#controls).
-        - **`filters`**, **`query`**, **`time_range`**: applied across all panels at once. See [Dashboard-level filters](#dashboard-level-filters) and the [Dashboards documentation](https://www.elastic.co/docs/explore-analyze/dashboards).
+        - **`filters`**, **`query`**, **`time_range`**: filter the data displayed across all panels. See [Dashboard-level filters](#dashboard-level-filters).
 
         For a complete request example, see [Create a dashboard](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createdashboard).
 
