@@ -129,7 +129,7 @@ const extractTextFromOutput = (output: TaskOutput, maxLen?: number): string => {
       text = JSON.stringify(output);
     }
   } else {
-    text = JSON.stringify(output);
+    text = String(JSON.stringify(output) ?? output);
   }
   return maxLen !== undefined ? text.substring(0, maxLen) : text;
 };
