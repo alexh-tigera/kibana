@@ -20,6 +20,38 @@ actions:
 
         A dashboard contains **panels** on a grid, grouped into **sections**, with optional **controls** for interactive filtering.
 
+        A dashboard request body has this structure:
+
+        ```json
+        {
+          "title": "My dashboard",
+
+          // Panels: visualizations, maps, search sessions, and other content
+          "panels": [
+            { "type": "vis", "grid": { "x": 0, "y": 0, "w": 24, "h": 10 }, "config": { "..." } },
+            {
+              // A section groups panels and can be collapsed
+              "title": "Section title",
+              "collapsed": false,
+              "grid": { "y": 10 },
+              "panels": [
+                { "type": "vis", "grid": { "x": 0, "y": 0, "w": 12, "h": 8 }, "config": { "..." } }
+              ]
+            }
+          ],
+
+          // Controls pinned at the top apply to all panels
+          "pinned_panels": [
+            { "type": "options_list_control", "width": "medium", "grow": true, "config": { "..." } }
+          ],
+
+          // Dashboard-level filters, query, and time range apply to all panels
+          "filters": [],
+          "query": { "query": "", "language": "kuery" },
+          "time_range": { "from": "now-7d", "to": "now" }
+        }
+        ```
+
         All examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To use your own data, replace the `index_pattern` and field names.
 
         ### Panel types
