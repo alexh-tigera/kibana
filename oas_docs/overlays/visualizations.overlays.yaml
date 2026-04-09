@@ -10,14 +10,7 @@ actions:
     description: Add tag description with getting started content, externalDocs, and displayName
     update:
       description: |
-        Create, retrieve, update, and delete individual [Kibana visualizations](https://www.elastic.co/docs/explore-analyze/visualize/lens). Use this API to manage visualizations as code, automate their lifecycle, or build tooling around chart creation.
-
-        Visualizations created through this API can be added to dashboards using the Kibana UI or the Dashboards API.
-
-        ## When to use the Visualizations API vs. the Dashboards API
-
-        - Use the Visualizations API to create and manage individual charts (bar, metric, pie, and so on) as reusable saved objects in your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library).
-        - Use the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards) to create and manage dashboards and the panels they contain. The Dashboards API also supports creating ES|QL-based visualizations inline, which this API does not yet support (see [Data source modes](#data-source-modes)).
+        Create, retrieve, update, and delete [Kibana visualizations](https://www.elastic.co/docs/explore-analyze/visualize/lens). Visualizations created through this API are saved to your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library) and can be added to dashboards as linked panels.
 
         ## Get started
         > info
@@ -25,9 +18,7 @@ actions:
         > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
         > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
 
-        For general guidance on building visualizations in Kibana, see the [visualizations documentation](https://www.elastic.co/docs/explore-analyze/visualize/lens) and the [chart type reference](https://www.elastic.co/docs/explore-analyze/visualize/charts).
-
-        Each visualization has a `type` field that determines the chart to render and a `data_source` field that controls how data is fetched. The sections below cover the available chart types and data source modes.
+        Every visualization requires a `type` (which chart to render) and a `data_source` (how data is fetched), plus chart-specific fields that vary by type.
 
         ### Chart types
 
@@ -47,19 +38,19 @@ actions:
         | `mosaic` | Mosaic | [Mosaic](https://www.elastic.co/docs/explore-analyze/visualize/charts/mosaic-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/mosaic-charts#mosaic-chart-examples) |
         | `region_map` | Region map (choropleth) | [Region map](https://www.elastic.co/docs/explore-analyze/visualize/charts/region-map-charts) | [Examples](https://www.elastic.co/docs/explore-analyze/visualize/charts/region-map-charts#region-map-chart-examples) |
 
-        All chart types require `type`, `title`, `data_source`, and `query`. Chart-specific fields (metrics, layers, group_by, etc.) vary by type.
+        All chart types require `type`, `title`, `data_source`, and `query`.
 
         ### Data source modes
 
-        Set `data_source.type` to choose how the visualization fetches data. Each mode has a different structure for defining metrics and breakdowns.
+        Set `data_source.type` to control how the visualization fetches data. Use index/data view mode for standard Kibana aggregations (count, average, terms breakdowns). Use ES|QL mode when you need custom query logic or transformations that aggregations don't support.
 
         #### Index/data view mode
 
         `data_source.type: "data_view_reference"` or `"data_view_spec"`
 
-        Uses Kibana aggregations. Define metrics with operations like `count`, `average`, `sum` and breakdowns with `terms`, `date_histogram`, etc. Requires a `query` field for KQL or Lucene filtering.
+        Uses Kibana aggregations: a declarative syntax for metrics (`count`, `average`, `sum`) and breakdowns (`terms`, `date_histogram`, and so on). Requires a `query` field for KQL or Lucene filtering.
 
-        - **`"type": "data_view_spec"`** — use with an index pattern and time field for ad-hoc access:
+        - **`"type": "data_view_spec"`**: use with an index pattern and time field for ad-hoc access:
 
           ```json
           {
@@ -68,7 +59,7 @@ actions:
           }
           ```
 
-        - **`"type": "data_view_reference"`** — use with the ID of an existing Kibana data view:
+        - **`"type": "data_view_reference"`**: use with the ID of an existing Kibana data view:
 
           ```json
           {
@@ -81,7 +72,7 @@ actions:
 
         `data_source.type: "esql"`
 
-        Lets you write an ES|QL query and reference result columns directly using `operation: "value"` with a `column` name. Best for complex transformations or when you prefer a query-first workflow.
+        Write an ES|QL query and reference result columns directly in metrics using `operation: "value"` with a `column` name.
 
         ```json
         {
@@ -92,22 +83,30 @@ actions:
         }
         ```
 
-        > info
-        > ES|QL mode is available when building visualizations inline through the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards). The Visualizations API endpoints support index/data view mode only.
+        > warn
+        > The Visualizations API supports index/data view mode only. To create ES|QL visualizations programmatically, use the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards) and embed them inline.
 
-        All request examples on this page and the chart type pages use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `data_source.index_pattern` (or `data_source.ref_id` for data views) and update `field` names in metrics and breakdowns to match your index mapping.
+        All examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To use your own data, replace the index pattern and field names.
 
         ### Error handling
 
-        If a request returns a `400 Bad Request`, the response body contains a validation error message. Because the request body uses a `oneOf` discriminator on the `type` field, the error may list every chart type that didn't match. Look for the branch that matches your intended `type` — the relevant error message will describe the missing or invalid field. Common causes include:
+        Common error responses:
 
-        - **Missing required fields** for the chart type (for example, `metrics[0].type: "primary"` and `labels` for metric charts)
-        - **Setting optional fields to `null`** instead of omitting them entirely — the API rejects `null` values; omit the field instead
-        - **Unrecognized `type` value** — check the chart types table above for valid values
+        - **`400 Bad Request`**: validation failed. The request body uses a `oneOf` discriminator on the `type` field, so the error may mention multiple chart types. Find the message for your `type` value; it describes the missing or invalid field. Common causes:
+          - Missing required fields for the chart type.
+          - `null` values for optional fields: omit the field instead.
+          - Unrecognized `type` value: check the chart types table above.
+        - **`401 Unauthorized`**: missing or invalid credentials.
+        - **`404 Not Found`**: the visualization ID does not exist (GET, PUT, DELETE).
+
+        ## When to use the Visualizations API vs. the Dashboards API
+
+        - Use the Visualizations API to create reusable charts saved to your library. You can then embed them in dashboards as **linked from library** panels using the visualization ID.
+        - Use the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards) when you want to define the full dashboard in one request, or when you need ES|QL-based visualizations.
 
         ## Next steps
 
-        Once you have created a visualization, use the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards) to add it to a dashboard as a panel. You can embed it **linked from library** (using the visualization ID) or **inline** (copying the full configuration into the dashboard panel `config`). The Dashboards API also supports building ES|QL visualizations inline.
+        Add your visualization to a dashboard using the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards). For chart-specific configuration options, see the [chart type documentation](https://www.elastic.co/docs/explore-analyze/visualize/charts).
       externalDocs:
         description: Visualizations documentation
         url: https://www.elastic.co/docs/explore-analyze/visualize/lens
