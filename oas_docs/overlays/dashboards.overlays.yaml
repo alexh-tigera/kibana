@@ -138,7 +138,7 @@ actions:
           }
           ```
 
-          For a categorical breakdown (no time bucketing needed):
+          - For a categorical breakdown (no time bucketing needed):
 
           ```json
           {
@@ -254,16 +254,13 @@ actions:
           - `null` values for optional fields: omit the field instead of setting it to `null`.
           - `access_control` sent on `PUT`: this field can only be set at creation. Use [`POST`](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createdashboard) with an explicit ID instead.
         - **`401 Unauthorized`**: missing or invalid credentials.
-        - **`404 Not Found`**: the dashboard ID does not exist.
+        - **`403 Forbidden`**: your role does not have permission to perform this operation.
+        - **`404 Not Found`**: the dashboard ID does not exist (GET, PUT, DELETE).
 
         ## When to use the Dashboards API vs. the Visualizations API
 
         - Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create reusable charts saved to your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library). Those visualizations can then be embedded in dashboards as linked panels.
         - Use the Dashboards API when you want to define the full dashboard (panels, filters, controls) in a single request, or when you need ES|QL-based visualizations (inline only).
-
-        ## Next steps
-
-        To manage individual visualizations as reusable saved objects, use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization). For chart-specific configuration options, see the [chart type documentation](https://www.elastic.co/docs/explore-analyze/visualize/charts).
       externalDocs:
         description: Dashboards documentation
         url: https://www.elastic.co/docs/explore-analyze/dashboards
@@ -511,3 +508,14 @@ actions:
           label: Delete a dashboard - Console
           source: |
             DELETE kbn:/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
+
+  # ──────────────────────────────────────────────
+  # Remove additionalProperties: false from all schemas
+  # This flag is used for server-side validation but renders
+  # as a confusing "Additional properties are NOT allowed"
+  # row in API reference renderers like bump.sh / Redocly.
+  # ──────────────────────────────────────────────
+  - target: '$.components.schemas[*]'
+    description: Remove additionalProperties false to clean up rendered docs
+    remove:
+      additionalProperties
