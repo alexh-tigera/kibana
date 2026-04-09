@@ -8,10 +8,12 @@
 import type { AttackModule } from '../types';
 import { createPromptInjectionModule } from './prompt_injection';
 import { createInfoExtractionModule } from './info_extraction';
+import { createJailbreakingModule } from './jailbreaking';
 
 const ATTACK_MODULES: Record<string, () => AttackModule> = {
   prompt_injection: createPromptInjectionModule,
   info_extraction: createInfoExtractionModule,
+  jailbreaking: createJailbreakingModule,
 };
 
 export const getAttackModule = (name: string): AttackModule => {

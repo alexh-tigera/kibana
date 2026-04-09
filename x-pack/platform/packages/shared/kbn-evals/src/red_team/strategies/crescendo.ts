@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import type { MultiTurnStrategy, ConversationTurn } from '../types';
+import type { MultiTurnStrategy } from '../types';
 
 const TOPIC_KEYWORDS: ReadonlyArray<[string, string]> = [
   ['hack', 'hacking and cybersecurity'],
