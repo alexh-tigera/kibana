@@ -50,45 +50,41 @@ actions:
 
         Visualization panels can be embedded **inline** (full config stored in the dashboard) or **linked from library** (references a saved visualization by ID).
 
-        #### Inline
+        - **Inline**: use when the visualization is specific to this dashboard or must work across Kibana spaces. The visualization configuration goes inside `config.attributes`:
 
-        Use inline when the visualization is specific to this dashboard or must work across Kibana spaces. The visualization configuration goes inside `config.attributes`:
-
-        ```json
-        {
-          "type": "vis",
-          "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
-          "config": {
-            "attributes": {
-              "type": "metric",
-              "title": "Average bytes",
-              "data_source": {
-                "type": "data_view_spec",
-                "index_pattern": "kibana_sample_data_logs",
-                "time_field": "timestamp"
-              },
-              "query": { "query": "" },
-              "metrics": [
-                { "type": "primary", "operation": "average", "field": "bytes" }
-              ]
+          ```json
+          {
+            "type": "vis",
+            "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+            "config": {
+              "attributes": {
+                "type": "metric",
+                "title": "Average bytes",
+                "data_source": {
+                  "type": "data_view_spec",
+                  "index_pattern": "kibana_sample_data_logs",
+                  "time_field": "timestamp"
+                },
+                "query": { "query": "" },
+                "metrics": [
+                  { "type": "primary", "operation": "average", "field": "bytes" }
+                ]
+              }
             }
           }
-        }
-        ```
+          ```
 
-        #### Linked from library
+        - **Linked from library**: references a saved visualization by its ID. The visualization must already exist in your library:
 
-        References a saved visualization by its ID. The visualization must already exist in your library:
-
-        ```json
-        {
-          "type": "vis",
-          "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
-          "config": {
-            "savedObjectId": "1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d"
+          ```json
+          {
+            "type": "vis",
+            "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+            "config": {
+              "savedObjectId": "1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d"
+            }
           }
-        }
-        ```
+          ```
 
         ### ES|QL visualizations
 
@@ -189,7 +185,10 @@ actions:
 
         ### Controls
 
-        Controls are interactive filters. Place them in `pinned_panels` to fix them at the top of the dashboard (applies to all panels). Place them inside a section's `panels` array to scope them to that section.
+        Controls are interactive filters. Two placement options:
+
+        - **`pinned_panels`**: controls are fixed at the top of the dashboard and apply to all panels.
+        - **`panels` (inside a section)**: controls apply only to panels within that section.
 
         Four control types are supported:
 
