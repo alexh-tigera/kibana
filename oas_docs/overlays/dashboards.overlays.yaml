@@ -509,13 +509,3 @@ actions:
           source: |
             DELETE kbn:/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
 
-  # ──────────────────────────────────────────────
-  # Remove additionalProperties: false from all schemas
-  # This flag is used for server-side validation but renders
-  # as a confusing "Additional properties are NOT allowed"
-  # row in API reference renderers like bump.sh / Redocly.
-  # ──────────────────────────────────────────────
-  - target: '$.components.schemas[*]'
-    description: Remove additionalProperties false to clean up rendered docs
-    remove:
-      additionalProperties
