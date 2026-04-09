@@ -21,10 +21,11 @@ actions:
         A [dashboard](https://www.elastic.co/docs/explore-analyze/dashboards) is structured as follows:
 
         - **`title`** (required): the display name of the dashboard.
-        - **`panels`**: array of content panels placed on the grid. Each panel has a `type`, a `grid` position (`x`, `y`, `w`, `h`), and a `config`. Two panel shapes are supported:
+        - **`panels`**: array of items placed on the grid. Each item has a `type`, a `grid` position (`x`, `y`, `w`, `h`), and a `config`. Three item shapes are supported:
           - **Regular panel**: embeds a visualization, map, search session, or other content. See [Panel types](#panel-types) and [Embedding visualizations](#embedding-visualizations).
-          - **Section**: groups panels under a collapsible `title`. A section has a `grid.y` position and its own nested `panels` array.
-        - **`pinned_panels`**: controls (dropdowns, sliders) pinned at the top of the dashboard. They apply to all panels. See [Controls](#controls).
+          - **Control**: an interactive filter (dropdown, slider). Controls in `panels` apply only to panels in the same section. See [Controls](#controls).
+          - **Section**: groups panels and controls under a collapsible `title`. A section has a `grid.y` position and its own nested `panels` array.
+        - **`pinned_panels`**: controls pinned at the top of the dashboard that apply to all panels. See [Controls](#controls).
         - **`filters`**, **`query`**, **`time_range`**: applied across all panels at once. See [Dashboard-level filters](#dashboard-level-filters) and the [Dashboards documentation](https://www.elastic.co/docs/explore-analyze/dashboards).
 
         For a complete request example, see [Create a dashboard](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createdashboard).
