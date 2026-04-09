@@ -107,7 +107,7 @@ actions:
 
         ## Next steps
 
-        Add your visualization to a dashboard using the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards). For chart-specific configuration options, see the [chart type documentation](https://www.elastic.co/docs/explore-analyze/visualize/charts).
+        Add your visualization to a dashboard using the [Dashboards API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-searchdashboards).
       externalDocs:
         description: Visualizations documentation
         url: https://www.elastic.co/docs/explore-analyze/visualize/lens
@@ -380,10 +380,3 @@ actions:
           source: |
             DELETE kbn:/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d
 
-  # ──────────────────────────────────────────────
-  # Remove additionalProperties: false from all schemas
-  # ──────────────────────────────────────────────
-  - target: '$.components.schemas[*]'
-    description: Remove additionalProperties false to clean up rendered docs
-    remove:
-      additionalProperties
