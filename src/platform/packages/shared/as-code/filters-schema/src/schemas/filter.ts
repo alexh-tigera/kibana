@@ -139,7 +139,7 @@ const singleConditionSchema = baseConditionSchema.extends(
     meta: {
       description: 'Matches documents where `field` equals a single value.',
       title: 'Condition: is',
-      id: 'filter-condition-is',
+      id: 'kbn-as-code-filters-schema_condition_is',
     },
   }
 );
@@ -163,7 +163,7 @@ const oneOfConditionSchema = baseConditionSchema.extends(
     meta: {
       description: 'Matches documents where `field` equals any value in a list.',
       title: 'Condition: is one of',
-      id: 'filter-condition-is-one-of',
+      id: 'kbn-as-code-filters-schema_condition_is_one_of',
     },
   }
 );
@@ -180,7 +180,7 @@ const rangeConditionSchema = baseConditionSchema.extends(
     meta: {
       description: 'Matches documents where `field` falls within a numeric or date range.',
       title: 'Condition: range',
-      id: 'filter-condition-range',
+      id: 'kbn-as-code-filters-schema_condition_range',
     },
   }
 );
@@ -197,7 +197,7 @@ const existsConditionSchema = baseConditionSchema.extends(
     meta: {
       description: 'Matches documents where `field` exists (has any non-null value). No `value` field is needed.',
       title: 'Condition: exists',
-      id: 'filter-condition-exists',
+      id: 'kbn-as-code-filters-schema_condition_exists',
     },
   }
 );
@@ -211,7 +211,7 @@ const conditionSchema = schema.discriminatedUnion(
   {
     meta: {
       description: 'A field-level filter condition. The `operator` value determines the shape of `value`: `is` (single value), `is_one_of` (array), `range` (bounds object), or `exists` (no value needed).',
-      id: 'filter-condition',
+      id: 'kbn-as-code-filters-schema_conditionSchema',
     },
   }
 );
@@ -239,7 +239,7 @@ export const asCodeConditionFilterSchema = commonBasePropertiesSchema.extends(
     meta: {
       description: 'Condition filter',
       title: 'Condition filter',
-      id: 'filter-condition-type',
+      id: 'kbn-as-code-filters-schema_asCodeConditionFilterSchema',
     },
   }
 );
@@ -248,7 +248,7 @@ export const asCodeConditionFilterSchema = commonBasePropertiesSchema.extends(
  * Schema for logical filter groups with recursive structure
  * Uses lazy schema to handle recursive references
  */
-const GROUP_FILTER_ID = 'filter-group-conditions';
+const GROUP_FILTER_ID = 'kbn-as-code-filters-schema_groupFilter';
 export const asCodeGroupFilterSchema = commonBasePropertiesSchema.extends(
   {
     type: schema.literal(ASCODE_FILTER_TYPE.GROUP),
@@ -269,7 +269,6 @@ export const asCodeGroupFilterSchema = commonBasePropertiesSchema.extends(
         meta: {
           description: 'Logical group combining conditions with AND or OR. Groups can be nested.',
           id: GROUP_FILTER_ID,
-          title: 'Filter group',
         },
       }
     ),
@@ -278,7 +277,7 @@ export const asCodeGroupFilterSchema = commonBasePropertiesSchema.extends(
     meta: {
       description: 'Grouped condition filter',
       title: 'Group filter',
-      id: 'filter-group-type',
+      id: 'kbn-as-code-filters-schema_asCodeGroupFilterSchema',
     },
   }
 );
@@ -314,7 +313,7 @@ export const asCodeDSLFilterSchema = commonBasePropertiesSchema.extends(
     meta: {
       description: 'DSL filter',
       title: 'DSL filter',
-      id: 'filter-dsl-type',
+      id: 'kbn-as-code-filters-schema_asCodeDSLFilterSchema',
     },
   }
 );
@@ -334,7 +333,7 @@ export const asCodeSpatialFilterSchema = commonBasePropertiesSchema.extends(
     meta: {
       description: 'Spatial filter',
       title: 'Spatial filter',
-      id: 'filter-spatial-type',
+      id: 'kbn-as-code-filters-schema_asCodeSpatialFilterSchema',
     },
   }
 );
@@ -354,7 +353,7 @@ export const asCodeFilterSchema = schema.discriminatedUnion(
   {
     meta: {
       description: 'A filter. The `type` field determines the shape: `condition` for field-level filters, `group` for AND/OR logic, `dsl` for raw Elasticsearch queries, or `spatial` for geo filters.',
-      id: 'filter',
+      id: 'kbn-as-code-filters-schema_asCodeFilterSchema',
     },
   }
 );

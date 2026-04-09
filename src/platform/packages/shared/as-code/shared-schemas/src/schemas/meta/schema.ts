@@ -38,7 +38,7 @@ export const asCodeMetaSchema = schema.object(
   },
   {
     meta: {
-      id: 'object-meta',
+      id: 'kbn-as-code-meta',
     },
   }
 );
