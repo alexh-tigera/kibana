@@ -63,6 +63,42 @@
       "method": "put",
       "reason": "Optional package policy stream data_stream.type in 200 responses for OTel inputs with dynamic_signal_types (composable integrations).",
       "approvedBy": "elastic/fleet"
+    },
+    {
+      "path": "/api/security/role/{name}",
+      "method": "get",
+      "reason": "Request params and query schemas now use meta IDs, changing inline objects to $ref components. Data shape is identical.",
+      "approvedBy": "@elastic/kibana-security"
+    },
+    {
+      "path": "/api/security/role/{name}",
+      "method": "put",
+      "reason": "Request params, query, and body schemas now use meta IDs, changing inline objects to $ref components. Data shape is identical.",
+      "approvedBy": "@elastic/kibana-security"
+    },
+    {
+      "path": "/api/security/role/{name}",
+      "method": "delete",
+      "reason": "Request params schema now uses meta ID, changing inline object to $ref component. Data shape is identical.",
+      "approvedBy": "@elastic/kibana-security"
+    },
+    {
+      "path": "/api/security/role",
+      "method": "get",
+      "reason": "Request query schema now uses meta ID, changing inline object to $ref component. Data shape is identical.",
+      "approvedBy": "@elastic/kibana-security"
+    },
+    {
+      "path": "/api/security/roles",
+      "method": "post",
+      "reason": "Request body schema now uses meta ID, changing inline object to $ref component. Data shape is identical.",
+      "approvedBy": "@elastic/kibana-security"
+    },
+    {
+      "path": "/api/security/role/_query",
+      "method": "post",
+      "reason": "Request body schema now uses meta ID, changing inline object to $ref component. Data shape is identical.",
+      "approvedBy": "@elastic/kibana-security"
     }
   ]
 }

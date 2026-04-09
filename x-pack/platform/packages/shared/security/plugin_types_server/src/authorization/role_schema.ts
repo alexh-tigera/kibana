@@ -15,241 +15,253 @@ import { GLOBAL_RESOURCE } from './constants';
  * Elasticsearch specific portion of the role definition.
  * See more details at https://www.elastic.co/guide/en/elasticsearch/reference/master/security-api.html#security-role-apis.
  */
-export const elasticsearchRoleSchema = schema.object({
-  /**
-   * An optional list of cluster privileges. These privileges define the cluster level actions that
-   * users with this role are able to execute
-   */
-  cluster: schema.maybe(
-    schema.arrayOf(
-      schema.string({
-        meta: {
-          description:
-            'Cluster privileges that define the cluster level actions that users can perform.',
-        },
-      }),
-      { maxSize: 100 }
-    )
-  ),
-  /**
-   * An optional list of remote cluster privileges. These privileges define the remote cluster level actions that
-   * users with this role are able to execute
-   */
-  remote_cluster: schema.maybe(
-    schema.arrayOf(
-      schema.object({
-        privileges: schema.arrayOf(
-          schema.string({
-            meta: {
-              description:
-                'The cluster level privileges for the remote cluster. The allowed values are a subset of the cluster privileges.',
-            },
-          }),
-          { minSize: 1, maxSize: 100 }
-        ),
-        clusters: schema.arrayOf(
-          schema.string({
-            meta: {
-              description:
-                'A list of remote cluster aliases. It supports literal strings as well as wildcards and regular expressions.',
-            },
-          }),
-          { minSize: 1, maxSize: 100 }
-        ),
-      }),
-      { maxSize: 100 }
-    )
-  ),
-
-  /**
-   * An optional list of indices permissions entries.
-   */
-  indices: schema.maybe(
-    schema.arrayOf(
-      schema.object({
-        /**
-         * Required list of indices (or index name patterns) to which the permissions in this
-         * entry apply.
-         */
-        names: schema.arrayOf(
-          schema.string({
-            meta: {
-              description:
-                'The data streams, indices, and aliases to which the permissions in this entry apply. It supports wildcards (*).',
-            },
-          }),
-          { minSize: 1, maxSize: 100 }
-        ),
-
-        /**
-         * An optional set of the document fields that the owners of the role have read access to.
-         */
-        field_security: schema.maybe(
-          schema.recordOf(
-            schema.oneOf([schema.literal('grant'), schema.literal('except')]),
-            schema.arrayOf(
+export const elasticsearchRoleSchema = schema.object(
+  {
+    /**
+     * An optional list of cluster privileges. These privileges define the cluster level actions that
+     * users with this role are able to execute
+     */
+    cluster: schema.maybe(
+      schema.arrayOf(
+        schema.string({
+          meta: {
+            description:
+              'Cluster privileges that define the cluster level actions that users can perform.',
+          },
+        }),
+        { maxSize: 100 }
+      )
+    ),
+    /**
+     * An optional list of remote cluster privileges. These privileges define the remote cluster level actions that
+     * users with this role are able to execute
+     */
+    remote_cluster: schema.maybe(
+      schema.arrayOf(
+        schema.object(
+          {
+            privileges: schema.arrayOf(
               schema.string({
                 meta: {
-                  description: 'The document fields that the role members have read access to.',
+                  description:
+                    'The cluster level privileges for the remote cluster. The allowed values are a subset of the cluster privileges.',
                 },
               }),
-              { maxSize: 1000 }
-            )
-          )
-        ),
-
-        /**
-         * Required list of the index level privileges that the owners of the role have on the
-         * specified indices.
-         */
-        privileges: schema.arrayOf(
-          schema.string({
-            meta: {
-              description:
-                'The index level privileges that the role members have for the data streams and indices.',
-            },
-          }),
-          { minSize: 1, maxSize: 100 }
-        ),
-
-        /**
-         * An optional search query that defines the documents the owners of the role have read access
-         * to. A document within the specified indices must match this query in order for it to be
-         * accessible by the owners of the role.
-         */
-        query: schema.maybe(
-          schema.string({
-            meta: {
-              description:
-                'A search query that defines the documents the role members have read access to. A document within the specified data streams and indices must match this query in order for it to be accessible by the role members.',
-            },
-          })
-        ),
-
-        /**
-         * An optional flag used to indicate if index pattern wildcards or regexps should cover
-         * restricted indices.
-         */
-        allow_restricted_indices: schema.maybe(
-          schema.boolean({
-            meta: {
-              description:
-                'Restricted indices are a special category of indices that are used internally to store configuration data and should not be directly accessed. Only internal system roles should normally grant privileges over the restricted indices. Toggling this flag is very strongly discouraged because it could effectively grant unrestricted operations on critical data, making the entire system unstable or leaking sensitive information. If for administrative purposes you need to create a role with privileges covering restricted indices, however, you can set this property to true. In that case, the names field covers the restricted indices too.',
-            },
-          })
-        ),
-      }),
-      { maxSize: 1000 }
-    )
-  ),
-
-  /**
-   * An optional list of remote indices permissions entries.
-   */
-  remote_indices: schema.maybe(
-    schema.arrayOf(
-      schema.object({
-        /**
-         * Required list of remote clusters to which the permissions in this entry apply.
-         */
-        clusters: schema.arrayOf(
-          schema.string({
-            meta: {
-              description:
-                'A list of remote cluster aliases. It supports literal strings as well as wildcards and regular expressions.',
-            },
-          }),
-          { minSize: 1, maxSize: 100 }
-        ),
-
-        /**
-         * Required list of remote indices (or index name patterns) to which the permissions in this
-         * entry apply.
-         */
-        names: schema.arrayOf(
-          schema.string({
-            meta: {
-              description:
-                'A list of remote aliases, data streams, or indices to which the permissions apply. It supports wildcards (*).',
-            },
-          }),
-          { minSize: 1, maxSize: 100 }
-        ),
-
-        /**
-         * An optional set of the document fields that the owners of the role have read access to.
-         */
-        field_security: schema.maybe(
-          schema.recordOf(
-            schema.oneOf([schema.literal('grant'), schema.literal('except')]),
-            schema.arrayOf(
+              { minSize: 1, maxSize: 100 }
+            ),
+            clusters: schema.arrayOf(
               schema.string({
                 meta: {
-                  description: 'The document fields that the role members have read access to.',
+                  description:
+                    'A list of remote cluster aliases. It supports literal strings as well as wildcards and regular expressions.',
                 },
               }),
-              { maxSize: 1000 }
-            )
-          )
+              { minSize: 1, maxSize: 100 }
+            ),
+          },
+          { meta: { id: 'security_role_remote_cluster_privilege' } }
         ),
+        { maxSize: 100 }
+      )
+    ),
 
-        /**
-         * Required list of the index level privileges that the owners of the role have on the
-         * specified indices.
-         */
-        privileges: schema.arrayOf(
-          schema.string({
-            meta: {
-              description:
-                'The index level privileges that role members have for the specified indices.',
-            },
-          }),
-          { minSize: 1, maxSize: 100 }
+    /**
+     * An optional list of indices permissions entries.
+     */
+    indices: schema.maybe(
+      schema.arrayOf(
+        schema.object(
+          {
+            /**
+             * Required list of indices (or index name patterns) to which the permissions in this
+             * entry apply.
+             */
+            names: schema.arrayOf(
+              schema.string({
+                meta: {
+                  description:
+                    'The data streams, indices, and aliases to which the permissions in this entry apply. It supports wildcards (*).',
+                },
+              }),
+              { minSize: 1, maxSize: 100 }
+            ),
+
+            /**
+             * An optional set of the document fields that the owners of the role have read access to.
+             */
+            field_security: schema.maybe(
+              schema.recordOf(
+                schema.oneOf([schema.literal('grant'), schema.literal('except')]),
+                schema.arrayOf(
+                  schema.string({
+                    meta: {
+                      description: 'The document fields that the role members have read access to.',
+                    },
+                  }),
+                  { maxSize: 1000 }
+                )
+              )
+            ),
+
+            /**
+             * Required list of the index level privileges that the owners of the role have on the
+             * specified indices.
+             */
+            privileges: schema.arrayOf(
+              schema.string({
+                meta: {
+                  description:
+                    'The index level privileges that the role members have for the data streams and indices.',
+                },
+              }),
+              { minSize: 1, maxSize: 100 }
+            ),
+
+            /**
+             * An optional search query that defines the documents the owners of the role have read access
+             * to. A document within the specified indices must match this query in order for it to be
+             * accessible by the owners of the role.
+             */
+            query: schema.maybe(
+              schema.string({
+                meta: {
+                  description:
+                    'A search query that defines the documents the role members have read access to. A document within the specified data streams and indices must match this query in order for it to be accessible by the role members.',
+                },
+              })
+            ),
+
+            /**
+             * An optional flag used to indicate if index pattern wildcards or regexps should cover
+             * restricted indices.
+             */
+            allow_restricted_indices: schema.maybe(
+              schema.boolean({
+                meta: {
+                  description:
+                    'Restricted indices are a special category of indices that are used internally to store configuration data and should not be directly accessed. Only internal system roles should normally grant privileges over the restricted indices. Toggling this flag is very strongly discouraged because it could effectively grant unrestricted operations on critical data, making the entire system unstable or leaking sensitive information. If for administrative purposes you need to create a role with privileges covering restricted indices, however, you can set this property to true. In that case, the names field covers the restricted indices too.',
+                },
+              })
+            ),
+          },
+          { meta: { id: 'security_role_index_privilege' } }
         ),
+        { maxSize: 1000 }
+      )
+    ),
 
-        /**
-         * An optional search query that defines the documents the owners of the role have read access
-         * to. A document within the specified indices must match this query in order for it to be
-         * accessible by the owners of the role.
-         */
-        query: schema.maybe(
-          schema.string({
-            meta: {
-              description:
-                'A search query that defines the documents the role members have read access to. A document within the specified data streams and indices must match this query in order for it to be accessible by the role members. ',
-            },
-          })
+    /**
+     * An optional list of remote indices permissions entries.
+     */
+    remote_indices: schema.maybe(
+      schema.arrayOf(
+        schema.object(
+          {
+            /**
+             * Required list of remote clusters to which the permissions in this entry apply.
+             */
+            clusters: schema.arrayOf(
+              schema.string({
+                meta: {
+                  description:
+                    'A list of remote cluster aliases. It supports literal strings as well as wildcards and regular expressions.',
+                },
+              }),
+              { minSize: 1, maxSize: 100 }
+            ),
+
+            /**
+             * Required list of remote indices (or index name patterns) to which the permissions in this
+             * entry apply.
+             */
+            names: schema.arrayOf(
+              schema.string({
+                meta: {
+                  description:
+                    'A list of remote aliases, data streams, or indices to which the permissions apply. It supports wildcards (*).',
+                },
+              }),
+              { minSize: 1, maxSize: 100 }
+            ),
+
+            /**
+             * An optional set of the document fields that the owners of the role have read access to.
+             */
+            field_security: schema.maybe(
+              schema.recordOf(
+                schema.oneOf([schema.literal('grant'), schema.literal('except')]),
+                schema.arrayOf(
+                  schema.string({
+                    meta: {
+                      description: 'The document fields that the role members have read access to.',
+                    },
+                  }),
+                  { maxSize: 1000 }
+                )
+              )
+            ),
+
+            /**
+             * Required list of the index level privileges that the owners of the role have on the
+             * specified indices.
+             */
+            privileges: schema.arrayOf(
+              schema.string({
+                meta: {
+                  description:
+                    'The index level privileges that role members have for the specified indices.',
+                },
+              }),
+              { minSize: 1, maxSize: 100 }
+            ),
+
+            /**
+             * An optional search query that defines the documents the owners of the role have read access
+             * to. A document within the specified indices must match this query in order for it to be
+             * accessible by the owners of the role.
+             */
+            query: schema.maybe(
+              schema.string({
+                meta: {
+                  description:
+                    'A search query that defines the documents the role members have read access to. A document within the specified data streams and indices must match this query in order for it to be accessible by the role members. ',
+                },
+              })
+            ),
+
+            /**
+             * An optional flag used to indicate if index pattern wildcards or regexps should cover
+             * restricted indices.
+             */
+            allow_restricted_indices: schema.maybe(
+              schema.boolean({
+                meta: {
+                  description:
+                    'Restricted indices are a special category of indices that are used internally to store configuration data and should not be directly accessed. Only internal system roles should normally grant privileges over the restricted indices. Toggling this flag is very strongly discouraged because it could effectively grant unrestricted operations on critical data, making the entire system unstable or leaking sensitive information. If for administrative purposes you need to create a role with privileges covering restricted indices, however, you can set this property to true. In that case, the names field will cover the restricted indices too.',
+                },
+              })
+            ),
+          },
+          { meta: { id: 'security_role_remote_index_privilege' } }
         ),
+        { maxSize: 1000 }
+      )
+    ),
 
-        /**
-         * An optional flag used to indicate if index pattern wildcards or regexps should cover
-         * restricted indices.
-         */
-        allow_restricted_indices: schema.maybe(
-          schema.boolean({
-            meta: {
-              description:
-                'Restricted indices are a special category of indices that are used internally to store configuration data and should not be directly accessed. Only internal system roles should normally grant privileges over the restricted indices. Toggling this flag is very strongly discouraged because it could effectively grant unrestricted operations on critical data, making the entire system unstable or leaking sensitive information. If for administrative purposes you need to create a role with privileges covering restricted indices, however, you can set this property to true. In that case, the names field will cover the restricted indices too.',
-            },
-          })
-        ),
-      }),
-      { maxSize: 1000 }
-    )
-  ),
-
-  /**
-   * An optional list of users that the owners of this role can impersonate.
-   */
-  run_as: schema.maybe(
-    schema.arrayOf(
-      schema.string({
-        meta: { description: 'A user name that the role member can impersonate.' },
-      }),
-      { maxSize: 100 }
-    )
-  ),
-});
+    /**
+     * An optional list of users that the owners of this role can impersonate.
+     */
+    run_as: schema.maybe(
+      schema.arrayOf(
+        schema.string({
+          meta: { description: 'A user name that the role member can impersonate.' },
+        }),
+        { maxSize: 100 }
+      )
+    ),
+  },
+  { meta: { id: 'security_role_elasticsearch_privileges' } }
+);
 
 const allSpacesSchema = schema.arrayOf(schema.literal(GLOBAL_RESOURCE), {
   minSize: 1,
@@ -380,6 +392,7 @@ export const getKibanaRoleSchema = (
             return `definition of [feature] isn't allowed when non-empty [base] is defined.`;
           }
         },
+        meta: { id: 'security_role_kibana_privileges_entry' },
       }
     ),
     {

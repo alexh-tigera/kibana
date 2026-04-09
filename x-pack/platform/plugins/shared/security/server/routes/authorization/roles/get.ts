@@ -38,23 +38,29 @@ export function defineGetRolesRoutes({
         version: API_VERSIONS.roles.public.v1,
         validate: {
           request: {
-            params: schema.object({
-              name: schema.string({
-                minLength: 1,
-                meta: { description: 'The role name.' },
-              }),
-            }),
+            params: schema.object(
+              {
+                name: schema.string({
+                  minLength: 1,
+                  meta: { description: 'The role name.' },
+                }),
+              },
+              { meta: { id: 'security_get_role_params' } }
+            ),
             query: schema.maybe(
-              schema.object({
-                replaceDeprecatedPrivileges: schema.maybe(
-                  schema.boolean({
-                    meta: {
-                      description:
-                        'If `true` and the response contains any privileges that are associated with deprecated features, they are omitted in favor of details about the appropriate replacement feature privileges.',
-                    },
-                  })
-                ),
-              })
+              schema.object(
+                {
+                  replaceDeprecatedPrivileges: schema.maybe(
+                    schema.boolean({
+                      meta: {
+                        description:
+                          'If `true` and the response contains any privileges that are associated with deprecated features, they are omitted in favor of details about the appropriate replacement feature privileges.',
+                      },
+                    })
+                  ),
+                },
+                { meta: { id: 'security_get_role_query' } }
+              )
             ),
           },
           response: {

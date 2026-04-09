@@ -43,22 +43,25 @@ export function defineQueryRolesRoutes({
         version: API_VERSIONS.roles.public.v1,
         validate: {
           request: {
-            body: schema.object({
-              query: schema.maybe(schema.string()),
-              from: schema.maybe(schema.number()),
-              size: schema.maybe(schema.number()),
-              sort: schema.maybe(
-                schema.object({
-                  field: schema.string(),
-                  direction: schema.oneOf([schema.literal('asc'), schema.literal('desc')]),
-                })
-              ),
-              filters: schema.maybe(
-                schema.object({
-                  showReservedRoles: schema.maybe(schema.boolean({ defaultValue: true })),
-                })
-              ),
-            }),
+            body: schema.object(
+              {
+                query: schema.maybe(schema.string()),
+                from: schema.maybe(schema.number()),
+                size: schema.maybe(schema.number()),
+                sort: schema.maybe(
+                  schema.object({
+                    field: schema.string(),
+                    direction: schema.oneOf([schema.literal('asc'), schema.literal('desc')]),
+                  })
+                ),
+                filters: schema.maybe(
+                  schema.object({
+                    showReservedRoles: schema.maybe(schema.boolean({ defaultValue: true })),
+                  })
+                ),
+              },
+              { meta: { id: 'security_query_roles_request' } }
+            ),
           },
           response: {
             200: {
