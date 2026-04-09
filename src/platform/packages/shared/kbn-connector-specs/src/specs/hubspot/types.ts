@@ -51,7 +51,7 @@ export const SearchCrmObjectsInputSchema = z.object({
     .boolean()
     .optional()
     .describe(
-      'Only for objectType "contacts". When true, runs an extra associations read so the response includes `{ contacts, associated_deals }` instead of the normal search/list payload.'
+      'Only for objectType "contacts". When true, runs an extra associations read so the response includes `{ contacts, associated_deals }` also'
     ),
 });
 export type SearchCrmObjectsInput = z.infer<typeof SearchCrmObjectsInputSchema>;
