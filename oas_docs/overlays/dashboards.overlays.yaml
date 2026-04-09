@@ -15,7 +15,7 @@ actions:
         ## When to use the Dashboards API vs. the Visualizations API
 
         - Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create and manage individual charts (bar, metric, pie, and so on) as reusable saved objects in your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library).
-        - Use the Dashboards API to create and manage dashboards, including the visualizations and panels they contain. Panels can embed saved visualizations as linked panels or define their configuration inline, or when you need to add ES|QL-based visualizations to a dashboard (see [ES|QL visualizations](#esql-visualizations) below).
+        - Use the Dashboards API to create and manage dashboards and their panels. Panels can embed saved visualizations by reference (linked from library) or define their configuration inline. ES|QL-based visualizations can only be created through the Dashboards API (see [ES|QL visualizations](#esql-visualizations) below).
 
         ## Get started
         > info
@@ -26,8 +26,6 @@ actions:
         For general guidance on building dashboards in Kibana, see the [Dashboards documentation](https://www.elastic.co/docs/explore-analyze/dashboards).
 
         A dashboard is built from **panels** arranged on a grid, each embedding a visualization, Discover session results, map, or more static content such as links and images. Panels can be grouped into collapsible **sections**. **Controls** (options lists, range sliders, time sliders) add interactive filtering and can be pinned at the top of the dashboard or placed as panels anywhere in the dashboard. The `filters`, `query`, and `time_range` fields apply across all panels at once.
-
-        You can also create and modify dashboards using natural language through the [dashboards agent skill](https://github.com/elastic/elastic-agent-skills) or the [Agent Builder dashboard tools](https://www.elastic.co/docs/explore-analyze/ai-assistant/agent-builder).
 
         All request examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `data_source.index_pattern` and field names to match your index mapping.
 
@@ -61,9 +59,15 @@ actions:
             "attributes": {
               "type": "metric",
               "title": "Average bytes",
-              "data_source": { "type": "data_view_spec", "index_pattern": "kibana_sample_data_logs", "time_field": "timestamp" },
+              "data_source": {
+                "type": "data_view_spec",
+                "index_pattern": "kibana_sample_data_logs",
+                "time_field": "timestamp"
+              },
               "query": { "query": "" },
-              "metrics": [{ "type": "primary", "operation": "average", "field": "bytes" }]
+              "metrics": [
+                { "type": "primary", "operation": "average", "field": "bytes" }
+              ]
             }
           }
         }
@@ -77,7 +81,9 @@ actions:
         {
           "type": "vis",
           "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
-          "config": { "savedObjectId": "1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d" }
+          "config": {
+            "savedObjectId": "1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d"
+          }
         }
         ```
 
@@ -99,7 +105,9 @@ actions:
                 "type": "esql",
                 "query": "FROM logs-* | STATS count = COUNT()"
               },
-              "metrics": [{ "type": "primary", "operation": "value", "column": "count" }]
+              "metrics": [
+                { "type": "primary", "operation": "value", "column": "count" }
+              ]
             }
           }
         }
@@ -115,15 +123,17 @@ actions:
             "attributes": {
               "type": "xy",
               "title": "Requests over time",
-              "layers": [{
-                "type": "line",
-                "data_source": {
-                  "type": "esql",
-                  "query": "FROM logs-* | STATS count = COUNT() BY bucket = BUCKET(@timestamp, 75, ?_tstart, ?_tend)"
-                },
-                "x": { "operation": "value", "column": "bucket" },
-                "y": [{ "operation": "value", "column": "count" }]
-              }]
+              "layers": [
+                {
+                  "type": "line",
+                  "data_source": {
+                    "type": "esql",
+                    "query": "FROM logs-* | STATS count = COUNT() BY bucket = BUCKET(@timestamp, 75, ?_tstart, ?_tend)"
+                  },
+                  "x": { "operation": "value", "column": "bucket" },
+                  "y": [{ "operation": "value", "column": "count" }]
+                }
+              ]
             }
           }
         }
@@ -139,15 +149,17 @@ actions:
             "attributes": {
               "type": "xy",
               "title": "Top hosts by bytes",
-              "layers": [{
-                "type": "bar_horizontal",
-                "data_source": {
-                  "type": "esql",
-                  "query": "FROM logs-* | STATS total_bytes = SUM(bytes) BY host.name | SORT total_bytes DESC | LIMIT 10"
-                },
-                "x": { "operation": "value", "column": "host.name" },
-                "y": [{ "operation": "value", "column": "total_bytes" }]
-              }]
+              "layers": [
+                {
+                  "type": "bar_horizontal",
+                  "data_source": {
+                    "type": "esql",
+                    "query": "FROM logs-* | STATS total_bytes = SUM(bytes) BY host.name | SORT total_bytes DESC | LIMIT 10"
+                  },
+                  "x": { "operation": "value", "column": "host.name" },
+                  "y": [{ "operation": "value", "column": "total_bytes" }]
+                }
+              ]
             }
           }
         }
@@ -160,7 +172,12 @@ actions:
         ```json
         {
           "title": "Web logs overview",
-          "filters": [{ "meta": { "type": "phrase", "field": "response", "params": { "query": "200" } }, "query": { "match_phrase": { "response": "200" } } }],
+          "filters": [
+            {
+              "meta": { "type": "phrase", "field": "response", "params": { "query": "200" } },
+              "query": { "match_phrase": { "response": "200" } }
+            }
+          ],
           "query": { "query": "extension : (\"css\" or \"js\")", "language": "kuery" },
           "time_range": { "from": "now-7d", "to": "now" }
         }
@@ -176,7 +193,11 @@ actions:
           "collapsed": false,
           "grid": { "y": 0 },
           "panels": [
-            { "type": "vis", "grid": { "x": 0, "y": 0, "w": 24, "h": 15 }, "config": { ... } }
+            {
+              "type": "vis",
+              "grid": { "x": 0, "y": 0, "w": 24, "h": 15 },
+              "config": { "..." : "..." }
+            }
           ]
         }
         ```
@@ -268,28 +289,32 @@ actions:
               -H "Content-Type: application/json" \
               -d '{
               "title": "Web logs overview",
-              "panels": [{
-                "type": "vis",
-                "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
-                "config": {
-                  "attributes": {
-                    "type": "metric",
-                    "title": "Average response bytes",
-                    "data_source": {
-                      "type": "data_view_spec",
-                      "index_pattern": "kibana_sample_data_logs",
-                      "time_field": "timestamp"
-                    },
-                    "query": { "query": "" },
-                    "metrics": [{
-                      "type": "primary",
-                      "operation": "average",
-                      "field": "bytes",
-                      "format": { "type": "number", "decimals": 0, "compact": true }
-                    }]
+              "panels": [
+                {
+                  "type": "vis",
+                  "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                  "config": {
+                    "attributes": {
+                      "type": "metric",
+                      "title": "Average response bytes",
+                      "data_source": {
+                        "type": "data_view_spec",
+                        "index_pattern": "kibana_sample_data_logs",
+                        "time_field": "timestamp"
+                      },
+                      "query": { "query": "" },
+                      "metrics": [
+                        {
+                          "type": "primary",
+                          "operation": "average",
+                          "field": "bytes",
+                          "format": { "type": "number", "decimals": 0, "compact": true }
+                        }
+                      ]
+                    }
                   }
                 }
-              }]
+              ]
             }'
         - lang: Console
           label: Create a dashboard - Console
@@ -297,28 +322,32 @@ actions:
             POST kbn:/api/dashboards
             {
               "title": "Web logs overview",
-              "panels": [{
-                "type": "vis",
-                "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
-                "config": {
-                  "attributes": {
-                    "type": "metric",
-                    "title": "Average response bytes",
-                    "data_source": {
-                      "type": "data_view_spec",
-                      "index_pattern": "kibana_sample_data_logs",
-                      "time_field": "timestamp"
-                    },
-                    "query": { "query": "" },
-                    "metrics": [{
-                      "type": "primary",
-                      "operation": "average",
-                      "field": "bytes",
-                      "format": { "type": "number", "decimals": 0, "compact": true }
-                    }]
+              "panels": [
+                {
+                  "type": "vis",
+                  "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                  "config": {
+                    "attributes": {
+                      "type": "metric",
+                      "title": "Average response bytes",
+                      "data_source": {
+                        "type": "data_view_spec",
+                        "index_pattern": "kibana_sample_data_logs",
+                        "time_field": "timestamp"
+                      },
+                      "query": { "query": "" },
+                      "metrics": [
+                        {
+                          "type": "primary",
+                          "operation": "average",
+                          "field": "bytes",
+                          "format": { "type": "number", "decimals": 0, "compact": true }
+                        }
+                      ]
+                    }
                   }
                 }
-              }]
+              ]
             }
 
   # ──────────────────────────────────────────────
@@ -394,28 +423,32 @@ actions:
               -H "Content-Type: application/json" \
               -d '{
               "title": "Web logs overview (updated)",
-              "panels": [{
-                "type": "vis",
-                "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
-                "config": {
-                  "attributes": {
-                    "type": "metric",
-                    "title": "Average response bytes",
-                    "data_source": {
-                      "type": "data_view_spec",
-                      "index_pattern": "kibana_sample_data_logs",
-                      "time_field": "timestamp"
-                    },
-                    "query": { "query": "" },
-                    "metrics": [{
-                      "type": "primary",
-                      "operation": "average",
-                      "field": "bytes",
-                      "format": { "type": "number", "decimals": 1 }
-                    }]
+              "panels": [
+                {
+                  "type": "vis",
+                  "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                  "config": {
+                    "attributes": {
+                      "type": "metric",
+                      "title": "Average response bytes",
+                      "data_source": {
+                        "type": "data_view_spec",
+                        "index_pattern": "kibana_sample_data_logs",
+                        "time_field": "timestamp"
+                      },
+                      "query": { "query": "" },
+                      "metrics": [
+                        {
+                          "type": "primary",
+                          "operation": "average",
+                          "field": "bytes",
+                          "format": { "type": "number", "decimals": 1 }
+                        }
+                      ]
+                    }
                   }
                 }
-              }]
+              ]
             }'
         - lang: Console
           label: Upsert dashboard - Console
@@ -423,28 +456,32 @@ actions:
             PUT kbn:/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
             {
               "title": "Web logs overview (updated)",
-              "panels": [{
-                "type": "vis",
-                "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
-                "config": {
-                  "attributes": {
-                    "type": "metric",
-                    "title": "Average response bytes",
-                    "data_source": {
-                      "type": "data_view_spec",
-                      "index_pattern": "kibana_sample_data_logs",
-                      "time_field": "timestamp"
-                    },
-                    "query": { "query": "" },
-                    "metrics": [{
-                      "type": "primary",
-                      "operation": "average",
-                      "field": "bytes",
-                      "format": { "type": "number", "decimals": 1 }
-                    }]
+              "panels": [
+                {
+                  "type": "vis",
+                  "grid": { "x": 0, "y": 0, "w": 24, "h": 10 },
+                  "config": {
+                    "attributes": {
+                      "type": "metric",
+                      "title": "Average response bytes",
+                      "data_source": {
+                        "type": "data_view_spec",
+                        "index_pattern": "kibana_sample_data_logs",
+                        "time_field": "timestamp"
+                      },
+                      "query": { "query": "" },
+                      "metrics": [
+                        {
+                          "type": "primary",
+                          "operation": "average",
+                          "field": "bytes",
+                          "format": { "type": "number", "decimals": 1 }
+                        }
+                      ]
+                    }
                   }
                 }
-              }]
+              ]
             }
 
   # ──────────────────────────────────────────────
