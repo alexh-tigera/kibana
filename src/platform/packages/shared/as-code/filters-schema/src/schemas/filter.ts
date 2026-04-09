@@ -269,6 +269,7 @@ export const asCodeGroupFilterSchema = commonBasePropertiesSchema.extends(
         meta: {
           description: 'Logical group combining conditions with AND or OR. Groups can be nested.',
           id: GROUP_FILTER_ID,
+          title: 'Filter group',
         },
       }
     ),
