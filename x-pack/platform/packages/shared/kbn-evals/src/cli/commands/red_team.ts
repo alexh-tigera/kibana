@@ -27,6 +27,8 @@ export const redTeamCmd: Command<void> = {
   Examples:
     node scripts/evals red-team --suite agent-builder
     node scripts/evals red-team --suite agent-builder --module prompt-injection
+    node scripts/evals red-team --suite agent-builder --strategy jailbreak-wrapper
+    node scripts/evals red-team --suite agent-builder --strategy crescendo
     node scripts/evals red-team --suite agent-builder --templates-only
     node scripts/evals red-team --suite agent-builder --count 20 --difficulty advanced
     node scripts/evals red-team --suite agent-builder --judge bedrock-claude

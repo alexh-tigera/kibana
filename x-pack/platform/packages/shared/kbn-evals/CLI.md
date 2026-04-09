@@ -148,11 +148,13 @@ node scripts/evals run --suite streams --dry-run
 
 ### `red-team` -- Run adversarial red-team testing
 
-Runs adversarial attack modules against a suite's AI assistant to test security guardrails, prompt injection resistance, and information extraction defenses. The suite must have a red-team spec file (`evals/red_team/*.spec.ts`).
+Runs adversarial attack modules against a suite's AI assistant to test security guardrails, prompt injection resistance, information extraction defenses, jailbreaking, and privilege escalation. The suite must have a red-team spec file (`evals/red_team/*.spec.ts`).
 
 ```bash
 node scripts/evals red-team --suite agent-builder
 node scripts/evals red-team --suite agent-builder --module prompt-injection --count 5
+node scripts/evals red-team --suite agent-builder --strategy jailbreak-wrapper
+node scripts/evals red-team --suite agent-builder --strategy crescendo
 node scripts/evals red-team --suite agent-builder --difficulty advanced --model eis-anthropic-claude-4-6-sonnet
 node scripts/evals red-team --suite agent-builder --templates-only --count 20
 ```
@@ -160,8 +162,8 @@ node scripts/evals red-team --suite agent-builder --templates-only --count 20
 | Flag | Alias | Description |
 |------|-------|-------------|
 | `--suite <id>` | | Suite to test (required) |
-| `--module <name>` | | Attack module: `prompt-injection`, `info-extraction` (default: all) |
-| `--strategy <name>` | | Delivery strategy: `direct` (default: direct) |
+| `--module <name>` | | Attack module: `prompt-injection`, `info-extraction`, `jailbreaking`, `privilege-escalation` (default: all) |
+| `--strategy <name>` | | Delivery strategy: `direct`, `base64`, `leetspeak`, `jailbreak-wrapper`, `crescendo` (default: direct) |
 | `--count <n>` | | Number of adversarial prompts per module (default: 10) |
 | `--difficulty <level>` | | `basic`, `moderate`, or `advanced` (default: moderate) |
 | `--templates-only` | | Use only YAML templates, skip LLM-generated prompts |
@@ -178,6 +180,8 @@ The command spawns Playwright with `--grep "Red Team"` and passes red-team confi
 |--------|-------|---------------|
 | `prompt_injection` | LLM01 | Direct/indirect instruction injection |
 | `info_extraction` | LLM07 | System prompt leakage, internal data disclosure |
+| `jailbreaking` | LLM01 | Safety guideline bypass |
+| `privilege_escalation` | LLM06 | Unauthorized tool/data access |
 
 **Evaluators (auto-composed):**
 
