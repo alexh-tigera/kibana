@@ -18,7 +18,7 @@ actions:
         > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
         > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
 
-        A dashboard contains **panels** on a grid, grouped into **sections**, with optional **controls** for interactive filtering. The `filters`, `query`, and `time_range` fields apply to all panels at once.
+        A dashboard contains **panels** on a grid, grouped into **sections**, with optional **controls** for interactive filtering.
 
         All examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To use your own data, replace the `index_pattern` and field names.
 
