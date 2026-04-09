@@ -37,7 +37,6 @@ export const registerLensVisualizationsUpdateAPIRoute: RegisterAPIRouteFn = (
   const updateRoute = router.put({
     path: `${LENS_VIS_API_PATH}/{id}`,
     access: LENS_API_ACCESS,
-    enableQueryVersion: true,
     summary: 'Update visualization',
     description: [
       'Replaces the full configuration of an existing visualization. Partial updates are not supported.',
