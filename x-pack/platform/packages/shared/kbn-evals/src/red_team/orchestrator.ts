@@ -357,6 +357,7 @@ export const createRedTeamOrchestrator = (
           let turnNumber = 0;
           let finalEvaluated = false;
           let lastTurnExample: { input: Record<string, unknown> } | null = null;
+          let lastTargetOutput: TaskOutput = '';
 
           while (currentPrompt !== null && turnNumber < strategy.maxTurns) {
             conversationHistory.push({ role: 'attacker', content: currentPrompt });
@@ -380,6 +381,7 @@ export const createRedTeamOrchestrator = (
 
             const turnRuns = Object.values(turnExperiment.runs);
             const targetOutput = turnRuns.length > 0 ? turnRuns[0].output : '';
+            lastTargetOutput = targetOutput;
             const targetText = extractTextFromOutput(targetOutput);
             conversationHistory.push({ role: 'target', content: targetText });
 
@@ -392,8 +394,15 @@ export const createRedTeamOrchestrator = (
                 examples: [turnExample],
               };
 
+              // Use cached output to avoid re-running the task (LLM responses are
+              // non-deterministic, so re-running would evaluate a different output
+              // than the one that drove the conversation).
+              const cachedOutput = lastTargetOutput;
+              const cachedTask: ExperimentTask<Example, TaskOutput> = () =>
+                Promise.resolve(cachedOutput);
+
               const finalExperiment = await executorClient.runExperiment(
-                { dataset: finalDataset, task, metadata: baseMetadata },
+                { dataset: finalDataset, task: cachedTask, metadata: baseMetadata },
                 allEvaluators
               );
 
@@ -423,8 +432,13 @@ export const createRedTeamOrchestrator = (
               examples: [lastTurnExample],
             };
 
+            // Use cached output — same rationale as the in-loop evaluation above.
+            const cachedOutput = lastTargetOutput;
+            const cachedTask: ExperimentTask<Example, TaskOutput> = () =>
+              Promise.resolve(cachedOutput);
+
             const finalExperiment = await executorClient.runExperiment(
-              { dataset: finalDataset, task, metadata: baseMetadata },
+              { dataset: finalDataset, task: cachedTask, metadata: baseMetadata },
               allEvaluators
             );
 
