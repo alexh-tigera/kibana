@@ -92,6 +92,7 @@ export function getPanelSchema(isDashboardAppRequest: boolean) {
             id: `kbn-dashboard-panel-type-${type}`,
             title: type
               .replace(/_/g, ' ')
+              .replace(/\bvis\b/i, 'Visualization')
               .replace(/\besql\b/i, 'ES|QL')
               .replace(/\bslo\b/i, 'SLO')
               .replace(/^./, (c) => c.toUpperCase()),
