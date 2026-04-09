@@ -97,6 +97,7 @@ actions:
           - `null` values for optional fields: omit the field instead.
           - Unrecognized `type` value: check the chart types table above.
         - **`401 Unauthorized`**: missing or invalid credentials.
+        - **`403 Forbidden`**: your role does not have permission to perform this operation.
         - **`404 Not Found`**: the visualization ID does not exist (GET, PUT, DELETE).
 
         ## When to use the Visualizations API vs. the Dashboards API
@@ -378,3 +379,11 @@ actions:
           label: Delete a visualization - Console
           source: |
             DELETE kbn:/api/visualizations/1e4f0a30-b3c5-11ef-bd7a-2b6b1a8c0f3d
+
+  # ──────────────────────────────────────────────
+  # Remove additionalProperties: false from all schemas
+  # ──────────────────────────────────────────────
+  - target: '$.components.schemas[*]'
+    description: Remove additionalProperties false to clean up rendered docs
+    remove:
+      additionalProperties
