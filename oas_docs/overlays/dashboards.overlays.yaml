@@ -10,12 +10,7 @@ actions:
     description: Add tag description with getting started content, externalDocs, and displayName
     update:
       description: |
-        Create, retrieve, update, and delete [Kibana dashboards](https://www.elastic.co/docs/explore-analyze/dashboards). Use this API to manage dashboards as code, automate their lifecycle, or build tooling around dashboard creation.
-
-        ## When to use the Dashboards API vs. the Visualizations API
-
-        - Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create and manage individual charts (bar, metric, pie, and so on) as reusable saved objects in your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library).
-        - Use the Dashboards API to create and manage dashboards and their panels. Panels can embed saved visualizations by reference (linked from library) or define their configuration inline. ES|QL-based visualizations can only be created through the Dashboards API (see [ES|QL visualizations](#esql-visualizations) below).
+        Create, retrieve, update, and delete [Kibana dashboards](https://www.elastic.co/docs/explore-analyze/dashboards).
 
         ## Get started
         > info
@@ -23,11 +18,9 @@ actions:
         > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
         > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
 
-        For general guidance on building dashboards in Kibana, see the [Dashboards documentation](https://www.elastic.co/docs/explore-analyze/dashboards).
+        A dashboard contains **panels** on a grid, grouped into **sections**, with optional **controls** for interactive filtering. The `filters`, `query`, and `time_range` fields apply to all panels at once.
 
-        A dashboard is built from **panels** arranged on a grid, each embedding a visualization, Discover session results, map, or more static content such as links and images. Panels can be grouped into collapsible **sections**. **Controls** (options lists, range sliders, time sliders) add interactive filtering and can be pinned at the top of the dashboard or placed as panels anywhere in the dashboard. The `filters`, `query`, and `time_range` fields apply across all panels at once.
-
-        All request examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) that you can install in your Kibana instance (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To adapt an example to your own data, replace `data_source.index_pattern` and field names to match your index mapping.
+        All examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To use your own data, replace the `index_pattern` and field names.
 
         ### Panel types
 
@@ -45,11 +38,11 @@ actions:
 
         ### Embedding visualizations
 
-        Visualization panels can be embedded **inline** (full config in the dashboard) or **linked from library** (reference to a saved visualization).
+        Visualization panels can be embedded **inline** (full config stored in the dashboard) or **linked from library** (references a saved visualization by ID).
 
         #### Inline
 
-        The full visualization configuration is stored inside the dashboard. Best for one-off visualizations or when portability across spaces matters. The visualization configuration goes inside `config.attributes`:
+        Use inline when the visualization is specific to this dashboard or must work across Kibana spaces. The visualization configuration goes inside `config.attributes`:
 
         ```json
         {
@@ -75,7 +68,7 @@ actions:
 
         #### Linked from library
 
-        References a saved visualization by ID. The visualization must exist before creating the dashboard. Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create it first:
+        References a saved visualization by ID. The visualization must exist before you create the dashboard. Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create it first:
 
         ```json
         {
@@ -89,7 +82,7 @@ actions:
 
         ### ES|QL visualizations
 
-        ES|QL-based visualizations can be created by embedding them inline as `vis` panels in a dashboard. This is the way to create ES|QL visualizations through the API. The [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) supports index/data view mode only; for ES|QL, use the Dashboards API.
+        To create ES|QL visualizations through the API, embed them inline as `vis` panels. The [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) supports index/data view mode only.
 
         For `metric` charts, `data_source` is at the top level of `attributes` and `metrics` references columns by name:
 
@@ -113,7 +106,7 @@ actions:
         }
         ```
 
-        For `xy` charts, `data_source` goes inside each layer. Use `BUCKET(@timestamp, 75, ?_tstart, ?_tend)` for time-series charts so the bucket size automatically adapts to the dashboard time range:
+        For `xy` charts, `data_source` goes inside each layer. Use `BUCKET(@timestamp, 75, ?_tstart, ?_tend)` for time-series charts to align bucket intervals with the dashboard's selected time range:
 
         ```json
         {
@@ -204,7 +197,7 @@ actions:
 
         ### Controls
 
-        Controls are interactive filters that can be placed anywhere in a dashboard. Use the `pinned_panels` field to pin controls at the top of the dashboard, where they apply to all panels. Controls placed inside a section (as part of that section's `panels` array) apply only to the panels within that section.
+        Controls are interactive filters. Place them in `pinned_panels` to fix them at the top of the dashboard (applies to all panels). Place them inside a section's `panels` array to scope them to that section.
 
         Four control types are supported:
 
@@ -244,16 +237,24 @@ actions:
 
         ### Error handling
 
-        If a request returns a `400 Bad Request`, the response body contains a validation error message. Common causes:
+        Common error responses:
 
-        - **Missing required `title`**: every dashboard requires a `title` field.
-        - **Invalid panel `type`**: must match a supported panel type for your deployment.
-        - **`null` values** instead of omitting optional fields: the API rejects `null`; omit the field instead.
-        - **`access_control` on update**: the `access_control` field is not accepted on [`PUT`](https://www.elastic.co/docs/api/doc/kibana/operation/operation-updatedashboard); use [`POST`](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createdashboard) with an explicit ID to set it.
+        - **`400 Bad Request`**: validation failed. Common causes:
+          - Missing required `title`.
+          - Invalid panel `type`: check the panel types table above.
+          - `null` values for optional fields: omit the field instead of setting it to `null`.
+          - `access_control` sent on `PUT`: this field can only be set at creation. Use [`POST`](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createdashboard) with an explicit ID instead.
+        - **`401 Unauthorized`**: missing or invalid credentials.
+        - **`404 Not Found`**: the dashboard ID does not exist.
+
+        ## When to use the Dashboards API vs. the Visualizations API
+
+        - Use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) to create reusable charts saved to your [visualization library](https://www.elastic.co/docs/explore-analyze/visualize/visualize-library). Those visualizations can then be embedded in dashboards as linked panels.
+        - Use the Dashboards API when you want to define the full dashboard (panels, filters, controls) in a single request, or when you need ES|QL-based visualizations (inline only).
 
         ## Next steps
 
-        Once you have created a dashboard, you can manage individual visualizations as reusable saved objects using the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization) and embed them as linked panels. For chart-specific configuration options, see the [chart type documentation](https://www.elastic.co/docs/explore-analyze/visualize/charts).
+        To manage individual visualizations as reusable saved objects, use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization). For chart-specific configuration options, see the [chart type documentation](https://www.elastic.co/docs/explore-analyze/visualize/charts).
       externalDocs:
         description: Dashboards documentation
         url: https://www.elastic.co/docs/explore-analyze/dashboards
