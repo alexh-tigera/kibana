@@ -126,11 +126,13 @@ export const formatRedTeamReport = (
 
       // Deduplicate by input prompt
       const inputKey =
-        typeof r.example.input === 'object' && r.example.input !== null
-          ? String((r.example.input as Record<string, unknown>).prompt ?? '')
-          : '';
+        typeof r.example.input === 'string'
+          ? r.example.input
+          : typeof r.example.input === 'object' && r.example.input !== null
+            ? String((r.example.input as Record<string, unknown>).prompt ?? '')
+            : '';
       if (seen.has(inputKey)) return false;
-      if (inputKey) seen.add(inputKey);
+      if (inputKey !== '') seen.add(inputKey);
       return true;
     })
   );

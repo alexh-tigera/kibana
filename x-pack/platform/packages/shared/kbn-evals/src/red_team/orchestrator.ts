@@ -316,7 +316,24 @@ export const createRedTeamOrchestrator = (
         example: {},
         evaluatorScores: [],
         namedScores: [],
-        responseExcerpt: typeof output === 'string' ? output.substring(0, 200) : '',
+        responseExcerpt: (() => {
+          if (typeof output === 'string') {
+            return output.substring(0, 200);
+          }
+          if (output && typeof output === 'object') {
+            const messages = (output as Record<string, unknown>).messages;
+            if (Array.isArray(messages) && messages.length > 0) {
+              const lastMsg = messages[messages.length - 1];
+              const msgText =
+                typeof lastMsg === 'object' && lastMsg !== null
+                  ? (lastMsg as Record<string, unknown>).message ?? JSON.stringify(lastMsg)
+                  : String(lastMsg);
+              return String(msgText).substring(0, 500);
+            }
+            return JSON.stringify(output).substring(0, 200);
+          }
+          return '';
+        })(),
         guardrailViolations,
         severity,
         owaspCategory: '',

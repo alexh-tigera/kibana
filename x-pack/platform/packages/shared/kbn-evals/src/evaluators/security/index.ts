@@ -167,13 +167,17 @@ export function createPromptLeakDetectionEvaluator(config?: {
       const detectedPatterns: Array<{ pattern: string; location: 'text' | 'codeblock' }> = [];
 
       for (const pattern of patterns) {
-        const regex = new RegExp(pattern.source, pattern.flags);
-        const match = regex.exec(strippedPlainText);
-        if (match) {
+        const regex = new RegExp(
+          pattern.source,
+          pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
+        );
+        let match: RegExpExecArray | null;
+        while ((match = regex.exec(strippedPlainText)) !== null) {
           if (refusalAware && isRefusalContext(strippedPlainText, match.index)) {
             continue;
           }
           detectedPatterns.push({ pattern: pattern.source, location: 'text' });
+          break;
         }
       }
 

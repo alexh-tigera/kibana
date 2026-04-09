@@ -92,8 +92,10 @@ export const createAttackSuccessJudge = ({
 
       log.debug(`AttackSuccessJudge: intent="${intent}" result=${result}`);
 
+      const score = SCORE_BY_RESULT[result as AttackSuccessResult] ?? 0.5;
+
       return {
-        score: SCORE_BY_RESULT[result],
+        score,
         label: result,
         explanation: reasoning,
         metadata: {

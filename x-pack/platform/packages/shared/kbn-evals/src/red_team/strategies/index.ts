@@ -13,7 +13,7 @@ const STRATEGIES: Record<string, StrategyFactory> = {
 };
 
 export const getStrategy = (name: string, config?: Record<string, unknown>): Strategy => {
-  const factory = STRATEGIES[name];
+  const factory = Object.hasOwn(STRATEGIES, name) ? STRATEGIES[name] : undefined;
   if (!factory) {
     const available = Object.keys(STRATEGIES).join(', ');
     throw new Error(`Unknown strategy "${name}". Available: ${available}`);

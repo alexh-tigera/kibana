@@ -51,7 +51,7 @@ export const scanWithGuardrails = (
   rules: GuardrailRule[],
   inputPrompt?: string
 ): GuardrailViolation[] => {
-  let text = typeof output === 'string' ? output : JSON.stringify(output);
+  let text = typeof output === 'string' ? output : JSON.stringify(output) ?? '';
 
   // Strip the original input prompt to avoid false positives from echo
   if (inputPrompt) {

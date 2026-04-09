@@ -28,7 +28,7 @@ export const loadTemplates = (moduleName: string, config: AttackModuleConfig): E
   const raw = readFileSync(templatePath, 'utf-8');
   const template = load(raw) as TemplateFile;
 
-  const prompts = template.prompts[config.difficulty];
+  const prompts = template.prompts?.[config.difficulty];
   if (!prompts || prompts.length === 0) {
     return [];
   }

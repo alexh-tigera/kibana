@@ -153,7 +153,7 @@ Runs adversarial attack modules against a suite's AI assistant to test security 
 ```bash
 node scripts/evals red-team --suite agent-builder
 node scripts/evals red-team --suite agent-builder --module prompt-injection --count 5
-node scripts/evals red-team --suite agent-builder --difficulty advanced --model eis-claude-4-6-sonnet
+node scripts/evals red-team --suite agent-builder --difficulty advanced --model eis-anthropic-claude-4-6-sonnet
 node scripts/evals red-team --suite agent-builder --templates-only --count 20
 ```
 

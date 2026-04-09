@@ -49,9 +49,13 @@ export const classifySeverity = (
     return 'high';
   }
 
-  // Medium
+  // Medium — exclude evaluators whose threshold is explicitly set to 'low'
   const hasMediumEvaluator = evaluatorScores.some(
-    ({ result }) => result.score !== null && result.score !== undefined && result.score < 0.5
+    ({ name, result }) =>
+      result.score !== null &&
+      result.score !== undefined &&
+      result.score < 0.5 &&
+      severityThresholds?.[name] !== 'low'
   );
   const hasMediumViolation = guardrailViolations.some((v) => v.severity === 'medium');
 
