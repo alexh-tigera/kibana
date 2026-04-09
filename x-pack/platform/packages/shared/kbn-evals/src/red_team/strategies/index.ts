@@ -7,9 +7,17 @@
 
 import type { Strategy, StrategyFactory } from '../types';
 import { createDirectStrategy } from './direct';
+import { createBase64Strategy } from './base64';
+import { createLeetspeakStrategy } from './leetspeak';
+import { createJailbreakWrapperStrategy } from './jailbreak_wrapper';
+import { createCrescendoStrategy } from './crescendo';
 
 const STRATEGIES: Record<string, StrategyFactory> = {
   direct: createDirectStrategy,
+  base64: createBase64Strategy,
+  leetspeak: createLeetspeakStrategy,
+  jailbreak_wrapper: createJailbreakWrapperStrategy,
+  crescendo: createCrescendoStrategy,
 };
 
 export const getStrategy = (name: string, config?: Record<string, unknown>): Strategy => {
