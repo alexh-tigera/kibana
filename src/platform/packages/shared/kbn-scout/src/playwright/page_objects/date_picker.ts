@@ -151,10 +151,12 @@ export class DatePicker {
     await controlButton.waitFor({ state: 'visible' });
 
     // Close any open suggestion lists that might block the date picker button
-    const isSuggestionListVisible = await this.page.locator('div.kbnTypeahead').isVisible();
+    const getLocator = (selector: string) =>
+      containerLocator ? containerLocator.locator(selector) : this.page.locator(selector);
+    const isSuggestionListVisible = await getLocator('div.kbnTypeahead').isVisible();
     if (isSuggestionListVisible) {
-      await this.getTestSubjLocator('unifiedTabs_tabsBar').click();
-      await this.page.locator('div.kbnTypeahead').waitFor({ state: 'hidden' });
+      await this.getTestSubjLocator('unifiedTabs_tabsBar', containerLocator).click();
+      await getLocator('div.kbnTypeahead').waitFor({ state: 'hidden' });
     }
   }
 
