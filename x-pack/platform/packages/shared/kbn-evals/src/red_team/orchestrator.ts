@@ -350,8 +350,7 @@ export const createRedTeamOrchestrator = (
           let exFailed = 0;
 
           const example = examples[exIdx];
-          const attackPrompt =
-            ((example.input as Record<string, unknown>)?.prompt as string) ?? '';
+          const attackPrompt = ((example.input as Record<string, unknown>)?.prompt as string) ?? '';
           const conversationHistory: ConversationTurn[] = [];
 
           let currentPrompt: string | null = strategy.generateFirstTurn(attackPrompt);
@@ -443,7 +442,12 @@ export const createRedTeamOrchestrator = (
             exFailed += counts.failed;
           }
 
-          return { passed: exPassed, failed: exFailed, results: exResults, bySeverity: exBySeverity };
+          return {
+            passed: exPassed,
+            failed: exFailed,
+            results: exResults,
+            bySeverity: exBySeverity,
+          };
         };
 
         // Run examples with bounded concurrency
