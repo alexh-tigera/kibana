@@ -179,4 +179,80 @@ describe('RedTeamOrchestrator', () => {
     // With clean responses, all should pass
     expect(report.overallPassRate).toBe(100);
   });
+
+  describe('multi-turn strategy (crescendo)', () => {
+    const multiTurnConfig: RedTeamConfig = {
+      count: 1,
+      difficulty: 'basic',
+      templateOnly: true,
+      modules: ['prompt_injection'],
+      strategies: ['crescendo'],
+    };
+
+    it('runs multiple experiment calls for a multi-turn strategy', async () => {
+      const executorClient = createMockExecutorClient();
+      const log = createMockLog();
+
+      const orchestrator = createRedTeamOrchestrator({
+        config: multiTurnConfig,
+        executorClient,
+        log: log as any,
+      });
+
+      const task = jest.fn().mockResolvedValue('Safe response');
+      const report = await orchestrator.run(task);
+
+      // Crescendo uses 5 attacker turns + 1 final evaluation = 6 runExperiment calls per example
+      // (each intermediate turn + final re-run with evaluators)
+      expect(executorClient.runExperiment.mock.calls.length).toBeGreaterThan(1);
+      expect(report).toBeDefined();
+      expect(report.strategy).toBe('crescendo');
+      expect(report.modules).toHaveLength(1);
+      expect(report.modules[0].total).toBe(1);
+    });
+
+    it('only applies evaluators on the final experiment call', async () => {
+      const executorClient = createMockExecutorClient();
+      const log = createMockLog();
+
+      const orchestrator = createRedTeamOrchestrator({
+        config: multiTurnConfig,
+        executorClient,
+        log: log as any,
+      });
+
+      const task = jest.fn().mockResolvedValue('Safe response');
+      await orchestrator.run(task);
+
+      const calls = executorClient.runExperiment.mock.calls;
+      // All intermediate calls should have empty evaluators
+      for (let i = 0; i < calls.length - 1; i++) {
+        expect(calls[i][1]).toEqual([]);
+      }
+      // The final call (evaluation run) should have evaluators
+      const lastCall = calls[calls.length - 1];
+      expect(lastCall[1].length).toBeGreaterThan(0);
+    });
+
+    it('processes multi-turn results correctly', async () => {
+      const executorClient = createMockExecutorClient();
+      const log = createMockLog();
+
+      const orchestrator = createRedTeamOrchestrator({
+        config: multiTurnConfig,
+        executorClient,
+        log: log as any,
+      });
+
+      const task = jest.fn().mockResolvedValue('Clean response');
+      const report = await orchestrator.run(task);
+
+      // Clean responses should all pass
+      expect(report.overallPassRate).toBe(100);
+      expect(report.modules[0].passed).toBe(1);
+      expect(report.modules[0].failed).toBe(0);
+      expect(report.modules[0].results).toHaveLength(1);
+      expect(report.modules[0].results[0].strategy).toBe('crescendo');
+    });
+  });
 });
