@@ -10,7 +10,7 @@ actions:
     description: Add tag description with getting started content, externalDocs, and displayName
     update:
       description: |
-        A [dashboard](https://www.elastic.co/docs/explore-analyze/dashboards) is a collection of panels (visualizations, maps, Discover sessions, and more) arranged on a grid. Use this API to create and manage dashboards programmatically. To create the individual visualizations that go inside a dashboard, use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization).
+        A [dashboard](https://www.elastic.co/docs/explore-analyze/dashboards) is a collection of panels (visualizations, maps, Discover sessions, and more) arranged on a grid. Use this API to create and manage dashboards programmatically. To create reusable visualizations saved to your library and embeddable across multiple dashboards, use the [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization).
 
         ## Get started
         > info
