@@ -168,24 +168,6 @@ actions:
         }
         ```
 
-        ### Dashboard-level filters
-
-        The `filters`, `query`, `time_range`, and `refresh_interval` fields apply across all panels:
-
-        ```json
-        {
-          "title": "Web logs overview",
-          "filters": [
-            {
-              "meta": { "type": "phrase", "field": "response", "params": { "query": "200" } },
-              "query": { "match_phrase": { "response": "200" } }
-            }
-          ],
-          "query": { "query": "extension : (\"css\" or \"js\")", "language": "kuery" },
-          "time_range": { "from": "now-7d", "to": "now" }
-        }
-        ```
-
         ### Sections
 
         Sections are collapsible panel groups. A section has a `title`, `collapsed` state, `grid.y` position, and a nested `panels` array. Panels inside a section use the same structure as top-level panels:
@@ -242,6 +224,24 @@ actions:
               }
             }
           ]
+        }
+        ```
+
+        ### Dashboard-level filters
+
+        The `filters`, `query`, `time_range`, and `refresh_interval` fields apply across all panels:
+
+        ```json
+        {
+          "title": "Web logs overview",
+          "filters": [
+            {
+              "meta": { "type": "phrase", "field": "response", "params": { "query": "200" } },
+              "query": { "match_phrase": { "response": "200" } }
+            }
+          ],
+          "query": { "query": "extension : (\"css\" or \"js\")", "language": "kuery" },
+          "time_range": { "from": "now-7d", "to": "now" }
         }
         ```
 
