@@ -125,6 +125,41 @@ describe('HubSpotConnector', () => {
       expect(mockClient.post).toHaveBeenCalledTimes(1);
       expect(result).toEqual({ contacts: [], associated_deals: [] });
     });
+
+    it('should search notes when objectType is notes and a query is provided', async () => {
+      const mockResponse = {
+        data: {
+          total: 1,
+          results: [{ id: '301', properties: { hs_note_body: 'Follow up call' } }],
+        },
+      };
+      mockClient.post.mockResolvedValue(mockResponse);
+
+      const result = await HubSpotConnector.actions.searchCrmObjects.handler(mockContext, {
+        objectType: 'notes',
+        query: 'follow up',
+      });
+
+      expect(mockClient.post).toHaveBeenCalledWith(
+        'https://api.hubapi.com/crm/v3/objects/notes/search',
+        { query: 'follow up', limit: 10 }
+      );
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it('should list emails when objectType is emails and no query is provided', async () => {
+      const mockResponse = { data: { results: [] } };
+      mockClient.get.mockResolvedValue(mockResponse);
+
+      await HubSpotConnector.actions.searchCrmObjects.handler(mockContext, {
+        objectType: 'emails',
+        limit: 5,
+      });
+
+      expect(mockClient.get).toHaveBeenCalledWith('https://api.hubapi.com/crm/v3/objects/emails', {
+        params: { limit: 5 },
+      });
+    });
   });
 
   describe('getCrmObject action', () => {
@@ -163,43 +198,6 @@ describe('HubSpotConnector', () => {
         'https://api.hubapi.com/crm/v3/objects/deals/200',
         { params: { properties: 'dealname,amount' } }
       );
-    });
-  });
-
-  describe('searchEngagements action', () => {
-    it('should search notes when a query is provided', async () => {
-      const mockResponse = {
-        data: {
-          total: 1,
-          results: [{ id: '301', properties: { hs_note_body: 'Follow up call' } }],
-        },
-      };
-      mockClient.post.mockResolvedValue(mockResponse);
-
-      const result = await HubSpotConnector.actions.searchEngagements.handler(mockContext, {
-        query: 'follow up',
-        engagementType: 'notes',
-      });
-
-      expect(mockClient.post).toHaveBeenCalledWith(
-        'https://api.hubapi.com/crm/v3/objects/notes/search',
-        { query: 'follow up', limit: 10 }
-      );
-      expect(result).toEqual(mockResponse.data);
-    });
-
-    it('should list emails when no query is provided', async () => {
-      const mockResponse = { data: { results: [] } };
-      mockClient.get.mockResolvedValue(mockResponse);
-
-      await HubSpotConnector.actions.searchEngagements.handler(mockContext, {
-        engagementType: 'emails',
-        limit: 5,
-      });
-
-      expect(mockClient.get).toHaveBeenCalledWith('https://api.hubapi.com/crm/v3/objects/emails', {
-        params: { limit: 5 },
-      });
     });
   });
 

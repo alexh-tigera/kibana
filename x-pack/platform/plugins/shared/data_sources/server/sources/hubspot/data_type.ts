@@ -25,8 +25,4 @@ export const hubspotDataSource: DataSource = {
       config: {},
     },
   ],
-
-  workflows: {
-    directory: __dirname + '/workflows',
-  },
 };

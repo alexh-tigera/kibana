@@ -28,14 +28,16 @@ You can test connectors while creating or editing them in {{kib}}.
 The HubSpot connector has the following actions:
 
 **Search CRM Objects**
-:   Search HubSpot CRM records by keyword across contacts, companies, deals, or tickets.
-    - **Object Type** (required): The type of CRM record to search (`contacts`, `companies`, `deals`, or `tickets`).
-    - **Query** (required): The search keyword to match against record properties.
+:   Search or list one HubSpot CRM object type. Omit **Query** to page through records.
+    - **Object Type** (required): `contacts`, `companies`, `deals`, `tickets`, or an engagement type: `calls`, `emails`, `meetings`, `notes`, or `tasks`.
+    - **Query** (optional): Keyword for search; omit to list records (with pagination).
+    - **Properties** (optional): Property names to return (where supported).
     - **Limit** (optional): Maximum number of results to return (default: 10).
+    - **Include Associated Deals** (optional): For `contacts` only—also returns linked deal IDs.
 
 **Get CRM Object**
 :   Retrieve the full details of a specific CRM record by its ID.
-    - **Object Type** (required): The type of CRM record (`contacts`, `companies`, `deals`, or `tickets`).
+    - **Object Type** (required): Same values as **Search CRM Objects** (`contacts`, `companies`, `deals`, `tickets`, `calls`, `emails`, `meetings`, `notes`, or `tasks`).
     - **Object ID** (required): The unique HubSpot object ID of the record.
     - **Properties** (optional): Comma-separated list of property names to include in the response.
 
@@ -45,12 +47,6 @@ The HubSpot connector has the following actions:
     - **Owner ID** (optional): HubSpot owner ID (`hubspot_owner_id`) to filter deals by. Use the **List Owners** action to resolve an owner name to their ID.
     - **Pipeline** (optional): The HubSpot pipeline ID to filter deals by (for example, `default`). Use the **List Pipelines** action to discover valid pipeline IDs.
     - **Deal Stage** (optional): The deal stage ID to filter by (for example, `closedwon`, `closedlost`). Use the **List Pipelines** action to discover valid stage IDs.
-    - **Limit** (optional): Maximum number of results to return (default: 10).
-
-**Search Engagements**
-:   Search or list HubSpot engagement records such as notes, emails, calls, meetings, or tasks.
-    - **Engagement Type** (optional): The type of engagement (`calls`, `emails`, `meetings`, `notes`, or `tasks`). Defaults to `notes`.
-    - **Query** (optional): Search keyword to filter engagements.
     - **Limit** (optional): Maximum number of results to return (default: 10).
 
 **List Owners**
@@ -91,7 +87,7 @@ Service Keys are managed under **Development** in HubSpot and can call the same 
 
 ### Private App (legacy) [hubspot-private-app-legacy]
 
-Creating a Private App (app integration) is the **legacy** way to obtain a token. Use this option if you need **Search Engagements** (notes, calls, emails, meetings, tasks), or if Service Keys are not available for your account. HubSpot may restrict or remove the ability to create new Private Apps in some accounts.
+Creating a Private App (app integration) is the **legacy** way to obtain a token. Use this option if you need engagement read scopes (notes, calls, emails, meetings, tasks via **Search CRM Objects**), or if Service Keys are not available for your account. HubSpot may restrict or remove the ability to create new Private Apps in some accounts.
 
 1. Log in to your [HubSpot account](https://app.hubspot.com/).
 2. Select the **Settings** icon in the top navigation bar.
@@ -104,7 +100,7 @@ Creating a Private App (app integration) is the **legacy** way to obtain a token
    - `crm.objects.deals.read`
    - `crm.objects.tickets.read`
    - `crm.objects.owners.read`
-   For **Search Engagements**, also add scopes such as `sales-email-read` (emails) and any engagement read scopes your account offers for notes, calls, and meetings.
+   For engagement types in **Search CRM Objects**, also add scopes such as `sales-email-read` (emails) and any engagement read scopes your account offers for notes, calls, and meetings.
 7. Select **Create app** and confirm by selecting **Continue Creating**.
 8. On the confirmation dialog, copy the **Access Token** (starts with `pat-`).
 9. Use this token as the **Private App Access Token** when configuring the connector in {{kib}}.

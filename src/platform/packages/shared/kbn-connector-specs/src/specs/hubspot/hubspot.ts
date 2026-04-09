@@ -8,12 +8,10 @@
  */
 
 import { i18n } from '@kbn/i18n';
-import { z } from '@kbn/zod/v4';
 import type { ConnectorSpec } from '../../connector_spec';
 import {
   SearchCrmObjectsInputSchema,
   GetCrmObjectInputSchema,
-  SearchEngagementsInputSchema,
   ListOwnersInputSchema,
   SearchDealsInputSchema,
   SearchBroadInputSchema,
@@ -22,7 +20,6 @@ import {
 import type {
   SearchCrmObjectsInput,
   GetCrmObjectInput,
-  SearchEngagementsInput,
   ListOwnersInput,
   SearchDealsInput,
   SearchBroadInput,
@@ -36,10 +33,13 @@ export const HubSpotConnector: ConnectorSpec = {
     id: '.hubspot',
     displayName: 'HubSpot',
     description: i18n.translate('core.kibanaConnectorSpecs.hubspot.metadata.description', {
-      defaultMessage: 'Connect to HubSpot to search contacts, companies, deals, and tickets.',
+      defaultMessage:
+        'Search and list CRM records, search across object types, filter deals, list pipelines and owners, ' +
+        'fetch records by ID, and search engagements.',
     }),
     minimumLicense: 'enterprise',
-    supportedFeatureIds: ['workflows'],
+    isTechnicalPreview: true,
+    supportedFeatureIds: ['workflows', 'agentBuilder'],
   },
 
   auth: {
@@ -58,7 +58,8 @@ export const HubSpotConnector: ConnectorSpec = {
               }),
               helpText: i18n.translate('core.kibanaConnectorSpecs.hubspot.auth.token.helpText', {
                 defaultMessage:
-                  'HubSpot Service Key (recommended) from Development > Keys, or a Private App access token (pat- prefix) from Settings > Integrations > Private Apps.',
+                  'HubSpot Service Key (recommended) from Development > Keys, or a Private App access token ' +
+                  '(pat- prefix) from Settings > Integrations > Private Apps.',
               }),
               placeholder: 'pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
             },
@@ -68,12 +69,13 @@ export const HubSpotConnector: ConnectorSpec = {
     ],
   },
 
-  // No additional configuration fields needed — Service Key or Private App token covers auth
-  schema: z.object({}),
-
   actions: {
     searchCrmObjects: {
-      isTool: false,
+      isTool: true,
+      description:
+        'Search or list one HubSpot CRM object type: contacts, companies, deals, tickets, or engagements ' +
+        '(calls, emails, meetings, notes, tasks). Omit query to list pages. For contacts with includeAssociatedDeals, ' +
+        'the response includes linked deal IDs.',
       input: SearchCrmObjectsInputSchema,
       handler: async (ctx, input: SearchCrmObjectsInput) => {
         let contacts: Array<{ id: string; properties: Record<string, unknown> }> | undefined;
@@ -134,7 +136,10 @@ export const HubSpotConnector: ConnectorSpec = {
     },
 
     getCrmObject: {
-      isTool: false,
+      isTool: true,
+      description:
+        'Retrieve one CRM record by object type and ID. For tickets, fetches linked notes (body text) when ' +
+        'CRM scopes allow.',
       input: GetCrmObjectInputSchema,
       handler: async (ctx, input: GetCrmObjectInput) => {
         const params: Record<string, unknown> = {};
@@ -209,43 +214,11 @@ export const HubSpotConnector: ConnectorSpec = {
       },
     },
 
-    searchEngagements: {
-      isTool: false,
-      input: SearchEngagementsInputSchema,
-      handler: async (ctx, input: SearchEngagementsInput) => {
-        const objectType = input.engagementType ?? 'notes';
-
-        if (input.query) {
-          const body: Record<string, unknown> = {
-            query: input.query,
-            limit: input.limit ?? 10,
-          };
-          if (input.after) {
-            body.after = input.after;
-          }
-          const response = await ctx.client.post(
-            `${HUBSPOT_API_BASE}/crm/v3/objects/${objectType}/search`,
-            body
-          );
-          return response.data;
-        } else {
-          const params: Record<string, unknown> = {
-            limit: input.limit ?? 10,
-          };
-          if (input.after) {
-            params.after = input.after;
-          }
-          const response = await ctx.client.get(
-            `${HUBSPOT_API_BASE}/crm/v3/objects/${objectType}`,
-            { params }
-          );
-          return response.data;
-        }
-      },
-    },
-
     listOwners: {
-      isTool: false,
+      isTool: true,
+      description:
+        'List HubSpot owners (CRM users). Use to resolve names or emails to hubspot_owner_id for deal ' +
+        'filters.',
       input: ListOwnersInputSchema,
       handler: async (ctx, input: ListOwnersInput) => {
         const params: Record<string, unknown> = {
@@ -261,7 +234,10 @@ export const HubSpotConnector: ConnectorSpec = {
     },
 
     searchDeals: {
-      isTool: false,
+      isTool: true,
+      description:
+        'Search deals with optional keyword, owner, pipeline, and stage. Discover IDs via listPipelines ' +
+        'and listOwners before filtering.',
       input: SearchDealsInputSchema,
       handler: async (ctx, input: SearchDealsInput) => {
         const body: Record<string, unknown> = {
@@ -299,7 +275,10 @@ export const HubSpotConnector: ConnectorSpec = {
     },
 
     searchBroad: {
-      isTool: false,
+      isTool: true,
+      description:
+        'Run one keyword search across contacts, companies, deals, and tickets in parallel (per-type limit, ' +
+        'default 5).',
       input: SearchBroadInputSchema,
       handler: async (ctx, input: SearchBroadInput) => {
         const limit = input.limit ?? 5;
@@ -318,7 +297,10 @@ export const HubSpotConnector: ConnectorSpec = {
     },
 
     listPipelines: {
-      isTool: false,
+      isTool: true,
+      description:
+        'List HubSpot pipelines and stages for deals or tickets. Use returned pipeline and stage IDs with ' +
+        'searchDeals.',
       input: ListPipelinesInputSchema,
       handler: async (ctx, input: ListPipelinesInput) => {
         const objectType = input.objectType ?? 'deals';
@@ -343,7 +325,9 @@ export const HubSpotConnector: ConnectorSpec = {
         }
         return {
           ok: false,
-          message: `HubSpot API returned status ${response.status}. Check that your Service Key or Private App token is valid and has the crm.objects.contacts.read scope.`,
+          message:
+            `HubSpot API returned status ${response.status}. Check that your Service Key or Private App ` +
+            `token is valid and has the crm.objects.contacts.read scope.`,
         };
       } catch (error) {
         const err = error as { message?: string };
@@ -351,4 +335,27 @@ export const HubSpotConnector: ConnectorSpec = {
       }
     },
   },
+
+  skill: [
+    '## HubSpot connector — LLM usage guide',
+    '',
+    '### Single type vs all types',
+    'Use `searchCrmObjects` when the object type is known. Omit `query` there to page through records of ' +
+      'that type.',
+    'Engagements are normal CRM object types here: set `objectType` to calls, emails, meetings, notes, or tasks.',
+    'Use `searchBroad` when the same keyword should hit contacts, companies, deals, and tickets at once; ' +
+      'the response is keyed by object type.',
+    '',
+    '### Deal filters depend on portal-specific IDs',
+    'Call `listPipelines` before supplying `pipeline` or `dealStage` to `searchDeals`, and `listOwners` to ' +
+      'turn a name or email into `ownerId` (hubspot_owner_id).',
+    '',
+    '### Contacts with related deals',
+    'Only when `objectType` is `contacts` and `includeAssociatedDeals` is true does `searchCrmObjects` ' +
+      'return `{ contacts, associated_deals }` instead of the normal search/list body.',
+    '',
+    '### Tickets include notes when allowed',
+    '`getCrmObject` for `tickets` adds an array of note bodies when association and note read scopes ' +
+      'succeed; otherwise notes may be empty.',
+  ].join('\n'),
 };

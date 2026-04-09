@@ -15,86 +15,107 @@ import { z } from '@kbn/zod/v4';
 
 export const SearchCrmObjectsInputSchema = z.object({
   objectType: z
-    .enum(['contacts', 'companies', 'deals', 'tickets'])
-    .describe('The type of CRM record to search or list.'),
+    .enum([
+      'contacts',
+      'companies',
+      'deals',
+      'tickets',
+      'calls',
+      'emails',
+      'meetings',
+      'notes',
+      'tasks',
+    ])
+    .describe(
+      'CRM object type to search or list (standard objects or engagements: calls, emails, meetings, notes, tasks). ' +
+        'To search contacts, companies, deals, and tickets at once, use searchBroad.'
+    ),
   query: z
     .string()
     .optional()
     .describe(
-      'Keyword to search CRM records by name, email, company, or other text. Omit to list all records.'
+      'Search keyword for the given object type, or omit to list records (pagination via `after`).'
     ),
   properties: z
     .array(z.string())
     .optional()
     .describe(
-      'List of property names to include in the response (e.g. ["firstname","email","phone"]).'
+      'Property internal names to return (e.g. ["firstname","email","phone"]). Omit to let HubSpot return default properties.'
     ),
-  limit: z.number().optional().describe('Maximum number of results to return (default: 10).'),
-  after: z.string().optional().describe('Pagination cursor returned in a previous response.'),
+  limit: z.number().optional().describe('Max results for this request (default: 10).'),
+  after: z
+    .string()
+    .optional()
+    .describe('Pagination cursor (`paging.next.after`) from a previous response.'),
   includeAssociatedDeals: z
     .boolean()
     .optional()
     .describe(
-      'Only applies when objectType is "contacts". When true, also fetches deal IDs associated with the matching contacts and returns {contacts, associated_deals} instead of the standard paginated response.'
+      'Only for objectType "contacts". When true, runs an extra associations read so the response includes `{ contacts, associated_deals }` instead of the normal search/list payload.'
     ),
 });
 export type SearchCrmObjectsInput = z.infer<typeof SearchCrmObjectsInputSchema>;
 
 export const GetCrmObjectInputSchema = z.object({
   objectType: z
-    .enum(['contacts', 'companies', 'deals', 'tickets'])
-    .describe('The type of CRM record to retrieve.'),
-  objectId: z.string().describe('The HubSpot object ID of the record to retrieve.'),
+    .enum([
+      'contacts',
+      'companies',
+      'deals',
+      'tickets',
+      'calls',
+      'emails',
+      'meetings',
+      'notes',
+      'tasks',
+    ])
+    .describe('CRM object type to retrieve when you already have the record ID.'),
+  objectId: z.string().describe('HubSpot internal object ID for the record.'),
   properties: z
     .string()
     .optional()
     .describe(
-      'Comma-separated list of property names to include in the response (for example, "firstname,lastname,email").'
+      'Optional comma-separated property internal names (e.g. "firstname,lastname,email"). Omit for default properties.'
     ),
 });
 export type GetCrmObjectInput = z.infer<typeof GetCrmObjectInputSchema>;
 
-export const SearchEngagementsInputSchema = z.object({
-  query: z.string().optional().describe('Search keyword to filter engagement records.'),
-  engagementType: z
-    .enum(['calls', 'emails', 'meetings', 'notes', 'tasks'])
+export const ListOwnersInputSchema = z.object({
+  limit: z
+    .number()
     .optional()
     .describe(
-      'Type of engagement to search or list. Defaults to "notes". Allowed: calls, emails, meetings, notes, tasks.'
+      'Max owners to return (default: 20). Use for resolving names/emails to hubspot_owner_id.'
     ),
-  limit: z.number().optional().describe('Maximum number of results to return (default: 10).'),
-  after: z.string().optional().describe('Pagination cursor returned in a previous response.'),
-});
-export type SearchEngagementsInput = z.infer<typeof SearchEngagementsInputSchema>;
-
-export const ListOwnersInputSchema = z.object({
-  limit: z.number().optional().describe('Maximum number of owners to return (default: 20).'),
-  after: z.string().optional().describe('Pagination cursor returned in a previous response.'),
+  after: z.string().optional().describe('Pagination cursor from a previous response.'),
 });
 export type ListOwnersInput = z.infer<typeof ListOwnersInputSchema>;
 
 export const SearchDealsInputSchema = z.object({
-  query: z.string().optional().describe('Keyword to search for in deal names or properties.'),
+  query: z
+    .string()
+    .optional()
+    .describe('Keyword to match deal names or other indexed deal properties.'),
   pipeline: z
     .string()
     .optional()
     .describe(
-      'Pipeline ID to filter by (for example, "default"). Use list_pipelines to discover valid IDs.'
+      'Pipeline ID to match (e.g. "default"). Call listPipelines first to list valid pipeline and stage IDs.'
     ),
   dealStage: z
     .string()
     .optional()
     .describe(
-      'Deal stage ID to filter by (for example, "appointmentscheduled", "closedwon", "closedlost"). Use list_pipelines to discover valid stage IDs.'
+      'Deal stage ID (e.g. "appointmentscheduled", "closedwon", "closedlost"). IDs are portal-specific; use listPipelines.'
     ),
   ownerId: z
     .string()
     .optional()
     .describe(
-      'HubSpot owner ID (hubspot_owner_id) to filter deals by. Use list_owners to resolve an owner name to their ID.'
+      'Numeric hubspot_owner_id. Use listOwners to map from an owner name or email when unknown.'
     ),
-  limit: z.number().optional().describe('Maximum number of results to return (default: 10).'),
-  after: z.string().optional().describe('Pagination cursor returned in a previous response.'),
+  limit: z.number().optional().describe('Max deals to return (default: 10).'),
+  after: z.string().optional().describe('Pagination cursor from a previous response.'),
 });
 export type SearchDealsInput = z.infer<typeof SearchDealsInputSchema>;
 
@@ -102,9 +123,12 @@ export const SearchBroadInputSchema = z.object({
   query: z
     .string()
     .describe(
-      'Search term to look for across all HubSpot CRM object types (contacts, companies, deals, tickets).'
+      'Single keyword or phrase applied in parallel to contacts, companies, deals, and tickets.'
     ),
-  limit: z.number().optional().describe('Maximum number of results per object type (default: 5).'),
+  limit: z
+    .number()
+    .optional()
+    .describe('Max hits per object type in the combined response (default: 5).'),
 });
 export type SearchBroadInput = z.infer<typeof SearchBroadInputSchema>;
 
@@ -113,7 +137,7 @@ export const ListPipelinesInputSchema = z.object({
     .enum(['deals', 'tickets'])
     .optional()
     .describe(
-      'The CRM object type to list pipelines for. Defaults to "deals". Use "tickets" for support ticket pipelines.'
+      'Which pipeline family to return. Defaults to "deals"; use "tickets" for support ticket pipelines. Response includes stage IDs and labels needed for searchDeals filters.'
     ),
 });
 export type ListPipelinesInput = z.infer<typeof ListPipelinesInputSchema>;
