@@ -810,6 +810,30 @@ describe('QueryBarTopRowTopRow', () => {
         ).not.toBeInTheDocument();
       });
     });
+
+    it('Should hide ES|QL UI when query input is disabled', async () => {
+      render(
+        wrapWithPicker({
+          query: esqlQuery,
+          isDirty: false,
+          screenTitle: 'SQL Screen',
+          timeHistory: mockTimeHistory,
+          indexPatterns: [stubIndexPattern],
+          showQueryInput: false,
+          showDatePicker: true,
+          showQueryMenu: false,
+          dateRangeFrom: 'now-7d',
+          dateRangeTo: 'now',
+        })
+      );
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('esql-menu-button')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('unifiedTextLangEditor')).not.toBeInTheDocument();
+        expect(screen.getByTestId(pickerButtonTestSubj)).toBeInTheDocument();
+        expect(within(screen.getByTestId('querySubmitButton')).getByText('Refresh')).toBeVisible();
+      });
+    });
   });
 });
 
