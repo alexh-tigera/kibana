@@ -477,3 +477,20 @@ actions:
           source: |
             DELETE kbn:/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
 
+  # ──────────────────────────────────────────────
+  # Simplify the visualization panel inline config schema
+  # The full lensApiState schema is large and causes rendering
+  # issues in API reference tools. Replace attributes with a
+  # description-only object and a link to the Visualizations API.
+  # ──────────────────────────────────────────────
+  - target: "$.components.schemas['Kibana_HTTP_APIs_kbn-dashboard-panel-lens'].properties.config.anyOf[0].properties.attributes"
+    description: Replace full lensApiState ref with lightweight description
+    update:
+      type: object
+      description: >-
+        The full visualization configuration. The shape depends on the `type` field
+        (for example, `metric`, `xy`, `pie`, `gauge`). For the complete schema and
+        examples for each chart type, see the
+        [Visualizations API](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createvisualization).
+      additionalProperties: true
+
