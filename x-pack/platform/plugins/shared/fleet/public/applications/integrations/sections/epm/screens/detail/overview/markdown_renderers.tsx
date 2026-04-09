@@ -104,9 +104,15 @@ export const markdownRenderers = (
         {children}
       </EuiLink>
     ),
-    // FIXME: https://github.com/remarkjs/react-markdown/blob/main/changelog.md#remove-extra-props-passed-to-certain-components
-    code: ({ className, children, inline }) => {
-      let parsedLang = /language-(\w+)/.exec(className || '')?.[1] ?? '';
+    code: ({ className, children }) => {
+      const langMatch = /language-(\w+)/.exec(className || '');
+
+      // No language class means inline code
+      if (!langMatch) {
+        return <EuiCode>{children}</EuiCode>;
+      }
+
+      let parsedLang = langMatch[1] ?? '';
 
       // Some integrations export code block content that includes language tags that have since
       // been removed or deprecated in `prism.js`, the upstream depedency that handles syntax highlighting
@@ -117,9 +123,6 @@ export const markdownRenderers = (
         parsedLang = languageOverride;
       }
 
-      if (inline) {
-        return <EuiCode>{children}</EuiCode>;
-      }
       return (
         <EuiCodeBlock language={parsedLang} overflowHeight={500} isCopyable>
           {children}
