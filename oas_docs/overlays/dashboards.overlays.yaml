@@ -18,39 +18,16 @@ actions:
         > - **Write operations** (`POST`, `PUT`, `DELETE`) also require the `kbn-xsrf: true` header.
         > - **Spaces:** If you use non-default [Kibana spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces), prepend `s/{space_id}/` to the path.
 
-        A dashboard contains **panels** on a grid, grouped into **sections**, with optional **controls** for interactive filtering.
+        A [dashboard](https://www.elastic.co/docs/explore-analyze/dashboards) request body has the following top-level fields:
 
-        A dashboard request body has this structure:
+        - **`title`** (required): the display name of the dashboard.
+        - **`panels`**: array of content panels placed on the grid. Each panel has a `type`, a `grid` position (`x`, `y`, `w`, `h`), and a `config`. Two panel shapes are supported:
+          - **Regular panel**: embeds a visualization, map, search session, or other content. See [Panel types](#panel-types) and [Embedding visualizations](#embedding-visualizations).
+          - **Section**: groups panels under a collapsible `title`. A section has a `grid.y` position and its own nested `panels` array.
+        - **`pinned_panels`**: controls (dropdowns, sliders) pinned at the top of the dashboard. They apply to all panels. See [Controls](#controls).
+        - **`filters`**, **`query`**, **`time_range`**: applied across all panels at once. See [Dashboard-level filters](#dashboard-level-filters) and the [Dashboards documentation](https://www.elastic.co/docs/explore-analyze/dashboards).
 
-        ```json
-        {
-          "title": "My dashboard",
-
-          // Panels: visualizations, maps, search sessions, and other content
-          "panels": [
-            { "type": "vis", "grid": { "x": 0, "y": 0, "w": 24, "h": 10 }, "config": { "..." } },
-            {
-              // A section groups panels and can be collapsed
-              "title": "Section title",
-              "collapsed": false,
-              "grid": { "y": 10 },
-              "panels": [
-                { "type": "vis", "grid": { "x": 0, "y": 0, "w": 12, "h": 8 }, "config": { "..." } }
-              ]
-            }
-          ],
-
-          // Controls pinned at the top apply to all panels
-          "pinned_panels": [
-            { "type": "options_list_control", "width": "medium", "grow": true, "config": { "..." } }
-          ],
-
-          // Dashboard-level filters, query, and time range apply to all panels
-          "filters": [],
-          "query": { "query": "", "language": "kuery" },
-          "time_range": { "from": "now-7d", "to": "now" }
-        }
-        ```
+        For a complete request example, see [Create a dashboard](https://www.elastic.co/docs/api/doc/kibana/operation/operation-createdashboard).
 
         All examples on this page use [Kibana sample datasets](https://www.elastic.co/docs/explore-analyze/index#add-sample-data) (`kibana_sample_data_logs`, `kibana_sample_data_ecommerce`, `kibana_sample_data_flights`). To use your own data, replace the `index_pattern` and field names.
 
