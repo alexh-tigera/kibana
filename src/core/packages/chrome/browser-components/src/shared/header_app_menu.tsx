@@ -7,7 +7,8 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useMemo } from 'react';
+import type { AppMenuItemType } from '@kbn/core-chrome-app-menu-components';
 import { useAppMenu } from './chrome_hooks';
 
 const AppMenu = lazy(async () => {
@@ -15,16 +16,34 @@ const AppMenu = lazy(async () => {
   return { default: AppMenuComponent };
 });
 
-export const HeaderAppMenu = () => {
+interface HeaderAppMenuProps {
+  baseItems?: AppMenuItemType[];
+}
+
+export const HeaderAppMenu = ({ baseItems }: HeaderAppMenuProps) => {
   const menuConfig = useAppMenu();
 
-  if (!menuConfig) {
+  const mergedConfig = useMemo(() => {
+    const hasBaseItems = baseItems && baseItems.length > 0;
+    if (!menuConfig) {
+      return hasBaseItems ? { layout: 'chromeBarV2' as const, overflowOnlyItems: baseItems } : null;
+    }
+    if (!hasBaseItems) {
+      return menuConfig;
+    }
+    return {
+      ...menuConfig,
+      overflowOnlyItems: [...(menuConfig.overflowOnlyItems ?? []), ...baseItems],
+    };
+  }, [menuConfig, baseItems]);
+
+  if (!mergedConfig) {
     return null;
   }
 
   return (
     <Suspense>
-      <AppMenu config={menuConfig} />
+      <AppMenu config={mergedConfig} />
     </Suspense>
   );
 };

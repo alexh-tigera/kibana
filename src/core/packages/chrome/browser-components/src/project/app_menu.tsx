@@ -21,7 +21,7 @@ import {
 import React, { useLayoutEffect, useMemo, useRef } from 'react';
 import { i18n } from '@kbn/i18n';
 import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
-import type { AppMenuHeaderTab } from '@kbn/core-chrome-app-menu-components';
+import type { AppMenuHeaderTab, AppMenuItemType } from '@kbn/core-chrome-app-menu-components';
 import { useLayoutUpdate } from '@kbn/core-chrome-layout-components';
 import { HeaderAppMenu } from '../shared/header_app_menu';
 import { HeaderActionMenu } from '../shared/header_action_menu';
@@ -30,12 +30,13 @@ import { HeaderPageAnnouncer } from '../shared/header_page_announcer';
 import { ProjectHeaderBadgeGroup } from './project_header_badge_group';
 import {
   useAppMenu,
-  useHasAppMenuConfig,
   useProjectBreadcrumbs,
   useNavigateToUrl,
   useBasePath,
   useNavLinks,
   useCurrentAppId,
+  useDocLinks,
+  useHasLegacyActionMenu,
 } from '../shared/chrome_hooks';
 
 const getAccessibleTitleFromBreadcrumb = (
@@ -258,7 +259,7 @@ export const AppMenuBar = React.memo(() => {
     Boolean(parentBreadcrumb) &&
     canNavigateToParent(parentBreadcrumb);
   const styles = useAppMenuBarStyles(euiTheme, hasSecondaryRow, showBackToParent, hasHeaderTabs);
-  const hasAppMenuConfig = useHasAppMenuConfig();
+  const hasLegacyActionMenu = useHasLegacyActionMenu();
 
   useLayoutEffect(() => {
     const el = projectHeaderRef.current;
@@ -285,6 +286,42 @@ export const AppMenuBar = React.memo(() => {
   }, [updateLayout]);
   const navigateToUrl = useNavigateToUrl();
   const basePath = useBasePath();
+  const docLinks = useDocLinks();
+  const globalOverflowItems = useMemo(
+    (): AppMenuItemType[] => [
+      {
+        id: 'global-add-data',
+        label: i18n.translate('core.ui.chrome.appMenu.addDataLabel', {
+          defaultMessage: 'Add data',
+        }),
+        iconType: 'plusInCircle',
+        order: 100,
+        separator: 'above',
+        run: () => navigateToUrl(basePath.prepend('/app/integrations')),
+      },
+      {
+        id: 'global-documentation',
+        label: i18n.translate('core.ui.chrome.appMenu.documentationLabel', {
+          defaultMessage: 'Documentation',
+        }),
+        iconType: 'documentation',
+        order: 101,
+        href: docLinks.links.elasticStackGetStarted,
+        target: '_blank',
+      },
+      {
+        id: 'global-feedback',
+        label: i18n.translate('core.ui.chrome.appMenu.feedbackLabel', {
+          defaultMessage: 'Feedback',
+        }),
+        iconType: 'editorComment',
+        order: 102,
+        href: 'https://www.elastic.co/kibana/feedback',
+        target: '_blank',
+      },
+    ],
+    [navigateToUrl, basePath, docLinks]
+  );
   const navLinks = useNavLinks();
   const currentAppId = useCurrentAppId();
   const currentAppTitleFromNav = useMemo(() => {
@@ -437,7 +474,8 @@ export const AppMenuBar = React.memo(() => {
           </div>
           <div css={styles.menuSection} data-test-subj="kibanaProjectHeaderActionMenu">
             <HeaderProjectAppBarNavControls />
-            {hasAppMenuConfig ? <HeaderAppMenu /> : <HeaderActionMenu />}
+            {hasLegacyActionMenu && <HeaderActionMenu />}
+            <HeaderAppMenu baseItems={globalOverflowItems} />
           </div>
         </div>
         {hasHeaderMetadata ? (
