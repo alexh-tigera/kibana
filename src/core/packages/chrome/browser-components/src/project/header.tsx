@@ -10,7 +10,8 @@
 import type { EuiThemeComputed } from '@elastic/eui';
 import { EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, useEuiTheme } from '@elastic/eui';
 import { css } from '@emotion/react';
-import React, { useCallback } from 'react';
+import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
+import React, { useCallback, useMemo } from 'react';
 import { Breadcrumbs } from './breadcrumbs';
 import { HeaderHelpMenu } from '../shared/header_help_menu';
 import {
@@ -39,12 +40,11 @@ const getHeaderCss = ({ size, colors }: EuiThemeComputed) => ({
     `,
   },
   leftHeaderSection: css`
-    // needed to enable breadcrumbs truncation
     min-width: 0;
     flex-shrink: 1;
   `,
   breadcrumbsSectionItem: css`
-    min-width: 0; // needed to enable breadcrumbs truncation
+    min-width: 0;
   `,
   leftNavcontrols: css`
     .navcontrols__separator {
@@ -67,6 +67,17 @@ const getHeaderCss = ({ size, colors }: EuiThemeComputed) => ({
 
 type HeaderCss = ReturnType<typeof getHeaderCss>;
 
+const isProjectRootBreadcrumb = (crumb: ChromeBreadcrumb | undefined): boolean => {
+  if (!crumb) {
+    return false;
+  }
+  return (
+    crumb['data-test-subj'] === 'deploymentCrumb' ||
+    crumb.popoverContent != null ||
+    crumb.popoverProps != null
+  );
+};
+
 /** POC: compact header action hit targets (~32px) vs default EUI header chip (~40px / size.xxl). */
 const PROJECT_HEADER_ACTION_BUTTON_PX = 32;
 const PROJECT_HEADER_ACTION_ICON_PX = 16;
@@ -74,7 +85,6 @@ const PROJECT_HEADER_ACTION_ICON_PX = 16;
 const getProjectHeaderRightActionsCss = (_euiTheme: EuiThemeComputed) => css`
   gap: 4px;
 
-  .euiHeaderSectionItem {
   .euiHeaderSectionItemButton {
     box-sizing: border-box;
     width: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
@@ -135,6 +145,11 @@ export const ProjectHeader = React.memo(() => {
   const headerCss = getHeaderCss(euiTheme);
   const { logo: logoCss } = headerCss;
 
+  const rootBreadcrumbsOnly = useMemo(() => {
+    const first = breadcrumbs[0];
+    return isProjectRootBreadcrumb(first) ? [first] : [];
+  }, [breadcrumbs]);
+
   const topBarStyles = css`
     box-shadow: none !important;
     background-color: ${euiTheme.colors.backgroundTransparent};
@@ -160,11 +175,13 @@ export const ProjectHeader = React.memo(() => {
                 />
               </EuiHeaderSectionItem>
 
-              <EuiHeaderSectionItem css={headerCss.breadcrumbsSectionItem}>
-                <BreadcrumbsWithExtensionsWrapper>
-                  <Breadcrumbs breadcrumbs={breadcrumbs} />
-                </BreadcrumbsWithExtensionsWrapper>
-              </EuiHeaderSectionItem>
+              {rootBreadcrumbsOnly.length > 0 ? (
+                <EuiHeaderSectionItem css={headerCss.breadcrumbsSectionItem}>
+                  <BreadcrumbsWithExtensionsWrapper>
+                    <Breadcrumbs breadcrumbs={rootBreadcrumbsOnly} />
+                  </BreadcrumbsWithExtensionsWrapper>
+                </EuiHeaderSectionItem>
+              ) : null}
             </EuiHeaderSection>
 
             <EuiHeaderSection side="right" css={getProjectHeaderRightActionsCss(euiTheme)}>
