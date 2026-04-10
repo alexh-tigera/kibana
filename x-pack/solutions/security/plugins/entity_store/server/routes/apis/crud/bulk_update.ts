@@ -25,7 +25,7 @@ const bodySchema = z.object({
         doc: z.preprocess((val) => unflattenObject(val as Record<string, unknown>), Entity),
       })
     )
-    .describe('The entities to create or update.'),
+    .describe('The entities to update.'),
 });
 
 const querySchema = z.object({
@@ -40,8 +40,7 @@ export function registerCRUDBulkUpdate(router: EntityStorePluginRouter) {
       path: ENTITY_STORE_ROUTES.public.CRUD_BULK_UPDATE,
       access: 'public',
       summary: 'Bulk update entities',
-      description:
-        'Create or update multiple entity records in the Entity Store in a single request.',
+      description: 'Update multiple entity records in the Entity Store in a single request.',
       options: {
         tags: ['oas-tag:Security Entity Store'],
       },

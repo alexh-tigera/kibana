@@ -4,7 +4,7 @@ requestBody:
       examples:
         bulkUpdateExample:
           summary: "Bulk update multiple entities"
-          description: "Create or update a host entity and a user entity in a single request."
+          description: "Update a host entity and a user entity in a single request."
           value:
             entities:
               - type: host
@@ -35,7 +35,7 @@ responses:
         examples:
           bulkUpdateSuccessExample:
             summary: "All entities updated"
-            description: "All entities were successfully created or updated with no errors."
+            description: "All entities were successfully updated with no errors."
             value:
               ok: true
               errors: []
