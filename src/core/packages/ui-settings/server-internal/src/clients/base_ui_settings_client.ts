@@ -64,9 +64,11 @@ export abstract class BaseUiSettingsClient implements IUiSettingsClient {
 
     if (isCacheable) {
       // Check cache first
-      const cached = this.perSettingCache.get<T>(this.namespace, key);
-      if (cached !== null) {
-        return cached;
+      if (this.perSettingCache.has(this.namespace, key)) {
+        const cached = this.perSettingCache.get<T>(this.namespace, key);
+        if (cached !== null) {
+          return cached;
+        }
       }
 
       // Check if there's already an in-flight request for this setting
