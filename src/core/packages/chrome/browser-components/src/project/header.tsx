@@ -45,21 +45,26 @@ const getHeaderCss = ({ size, colors }: EuiThemeComputed) => ({
   `,
   breadcrumbsSectionItem: css`
     min-width: 0;
+    /* Override EUI breadcrumb separator: remove rotation, enforce height */
+    .euiBreadcrumb:not(:last-of-type)::after {
+      block-size: 20px;
+      transform: none;
+    }
   `,
   leftNavcontrols: css`
     .navcontrols__separator {
       display: flex;
       margin-right: ${size.xs};
       &:after {
-        background: ${colors.lightShade};
+        background: ${colors.borderBaseSubdued};
         content: '';
         flex-shrink: 0;
         margin-block-start: ${size.xs};
         margin-block-end: 0;
         margin-inline: ${size.s};
-        block-size: 16px;
+        block-size: 20px;
         inline-size: 1px;
-        transform: translateY(-1px) rotate(15deg);
+        transform: none;
       }
     }
   `,
