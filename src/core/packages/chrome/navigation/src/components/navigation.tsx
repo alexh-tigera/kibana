@@ -7,11 +7,11 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { useMemo, useState, type ReactNode } from 'react';
+import React, { useState, type ReactNode } from 'react';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { css } from '@emotion/react';
 import { i18n } from '@kbn/i18n';
-import { useEuiTheme, useIsWithinBreakpoints } from '@elastic/eui';
+import { useIsWithinBreakpoints } from '@elastic/eui';
 
 import type { NavigationStructure, SideNavLogo, MenuItem, SecondaryMenuItem } from '../../types';
 import {
@@ -74,14 +74,6 @@ export interface NavigationProps {
    * (optional) data-test-subj attribute for testing purposes.
    */
   'data-test-subj'?: string;
-  /**
-   * Renders above the solution logo (e.g. project chrome: Elastic logo, space, search).
-   */
-  projectChromeTop?: ReactNode;
-  /**
-   * Renders after solution footer items, before the collapse control (e.g. profile + help).
-   */
-  projectChromeFooter?: ReactNode;
 }
 
 export const Navigation = ({
@@ -93,11 +85,8 @@ export const Navigation = ({
   onToggleCollapsed,
   setWidth,
   sidePanelFooter,
-  projectChromeTop,
-  projectChromeFooter,
   ...rest
 }: NavigationProps) => {
-  const { euiTheme } = useEuiTheme();
   const forcedCollapsed = useIsWithinBreakpoints(['xs', 's']);
   const isCollapsed = forcedCollapsed || isCollapsedProp;
   const popoverItemPrefix = `${NAVIGATION_SELECTOR_PREFIX}-popoverItem`;
@@ -129,16 +118,6 @@ export const Navigation = ({
 
   useLayoutWidth({ isCollapsed, isSidePanelOpen, setWidth });
 
-  const projectChromeLogoClusterStyles = useMemo(
-    () => css`
-      display: flex;
-      flex-direction: column;
-      gap: ${euiTheme.size.xs};
-      width: 100%;
-    `,
-    [euiTheme]
-  );
-
   // Create the collapse button if a toggle callback is provided or if the navigation is not forced to be collapsed (e.g. on mobile)
   const collapseButton =
     onToggleCollapsed && !forcedCollapsed ? (
@@ -152,27 +131,13 @@ export const Navigation = ({
       id={NAVIGATION_ROOT_SELECTOR}
     >
       <SideNav isCollapsed={isCollapsed}>
-        {projectChromeTop ? (
-          <div css={projectChromeLogoClusterStyles}>
-            {projectChromeTop}
-            <SideNav.Logo
-              isCollapsed={isCollapsed}
-              isCurrent={actualActiveItemId === logo.id}
-              isHighlighted={visuallyActivePageId === logo.id}
-              hasProjectChromeAbove
-              onClick={() => onItemClick?.(logo)}
-              {...logo}
-            />
-          </div>
-        ) : (
-          <SideNav.Logo
-            isCollapsed={isCollapsed}
-            isCurrent={actualActiveItemId === logo.id}
-            isHighlighted={visuallyActivePageId === logo.id}
-            onClick={() => onItemClick?.(logo)}
-            {...logo}
-          />
-        )}
+        <SideNav.Logo
+          isCollapsed={isCollapsed}
+          isCurrent={actualActiveItemId === logo.id}
+          isHighlighted={visuallyActivePageId === logo.id}
+          onClick={() => onItemClick?.(logo)}
+          {...logo}
+        />
 
         <SideNav.PrimaryMenu ref={primaryMenuRef} isCollapsed={isCollapsed}>
           {({ mainNavigationInstructionsId }) => (
@@ -376,11 +341,7 @@ export const Navigation = ({
           )}
         </SideNav.PrimaryMenu>
 
-        <SideNav.Footer
-          isCollapsed={isCollapsed}
-          collapseButton={collapseButton}
-          chromeFooter={projectChromeFooter}
-        >
+        <SideNav.Footer isCollapsed={isCollapsed} collapseButton={collapseButton}>
           {({ footerNavigationInstructionsId }) => (
             <>
               {items.footerItems.slice(0, MAX_FOOTER_ITEMS).map((item, index) => {

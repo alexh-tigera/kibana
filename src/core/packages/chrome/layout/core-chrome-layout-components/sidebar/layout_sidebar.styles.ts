@@ -9,14 +9,12 @@
 
 import { css } from '@emotion/react';
 import { layoutVar, layoutLevels } from '@kbn/core-chrome-layout-constants';
-import type { EmotionFn } from '../types';
 
-const root: EmotionFn = ({ euiTheme }) => css`
+const root = css`
   grid-area: sidebar;
   display: flex;
   flex-direction: column;
-  margin-top: ${euiTheme.size.s};
-  height: calc(100% - ${layoutVar('application.marginBottom')} - ${euiTheme.size.s});
+  height: calc(100% - ${layoutVar('application.marginBottom')});
   width: calc(100% - ${layoutVar('application.marginRight')});
   z-index: ${layoutLevels.sidebar};
   min-height: 0; // to allow flex children to shrink properly

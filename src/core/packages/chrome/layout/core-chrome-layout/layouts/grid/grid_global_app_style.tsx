@@ -23,8 +23,10 @@ const globalLayoutStyles = (euiThemeContext: UseEuiTheme) => {
       // TODO: these variables are legacy and we keep them for backward compatibility
       // https://github.com/elastic/kibana/issues/225264
 
-      // there is no fixed header in the grid layout, so we want to set the offset to 0
-      --euiFixedHeadersOffset: 0px;
+      // Banner plus global header (project + classic grid); `header.height` is 0 when project POC hid the bar
+      --euiFixedHeadersOffset: calc(
+        ${layoutVar('banner.height', '0px')} + ${layoutVar('header.height', '0px')}
+      );
 
       // height of the header banner
       --kbnHeaderBannerHeight: ${layoutVar('banner.height', '0px')};
@@ -118,14 +120,14 @@ const globalTempHackStyles = (_euiTheme: UseEuiTheme['euiTheme'], chromeStyle: C
   .kbnBody {
     // adjust position of the classic side-navigation
     .euiFlyout.euiCollapsibleNav {
-      ${logicalCSS('top', `calc(${layoutVar('application.top', '0px')} + 8px)`)};
+      ${logicalCSS('top', layoutVar('application.top', '0px'))};
       ${logicalCSS('left', layoutVar('application.left', '0px'))};
       ${logicalCSS('bottom', layoutVar('application.bottom', '0px'))};
     }
 
     // overlay mask "belowHeader" should only cover the application area
     .euiOverlayMask[data-relative-to-header='below'] {
-      ${logicalCSS('top', `calc(${layoutVar('application.top', '0px')} + 8px)`)};
+      ${logicalCSS('top', layoutVar('application.top', '0px'))};
       ${logicalCSS('left', layoutVar('application.left', '0px'))};
       ${logicalCSS('right', layoutVar('application.right', '0px'))};
       ${logicalCSS('bottom', layoutVar('application.bottom', '0px'))};

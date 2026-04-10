@@ -96,7 +96,7 @@ export const SecurityNavControl: FunctionComponent<SecurityNavControlProps> = ({
       })}
       onClick={() => setIsPopoverOpen((value) => (currentUser.value ? !value : false))}
       data-test-subj="userMenuButton"
-      style={{ lineHeight: 'normal', paddingInline: 0 }}
+      style={{ lineHeight: 'normal' }}
     >
       {userProfile.value ? (
         <UserAvatar
@@ -173,12 +173,11 @@ export const SecurityNavControl: FunctionComponent<SecurityNavControlProps> = ({
       ownFocus
       button={button}
       isOpen={isPopoverOpen}
-      anchorPosition="rightUp"
+      anchorPosition="downRight"
       repositionOnScroll
       closePopover={() => setIsPopoverOpen(false)}
       panelPaddingSize="none"
       buffer={0}
-      aria-label="User menu"
     >
       <EuiContextMenu
         className="chrNavControl__userMenu"

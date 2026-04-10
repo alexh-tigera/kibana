@@ -11,7 +11,12 @@ import { css } from '@emotion/react';
 import { EuiHeaderSectionItem } from '@elastic/eui';
 import React from 'react';
 import type { ChromeNavControl } from '@kbn/core-chrome-browser';
-import { useNavControls, type NavControlPosition } from './chrome_hooks';
+import {
+  useNavControls,
+  useProjectChromeRightControls,
+  useProjectHeaderRightNavControls,
+  type NavControlPosition,
+} from './chrome_hooks';
 import { HeaderExtension } from './header_extension';
 
 interface Props {
@@ -19,9 +24,12 @@ interface Props {
   append?: JSX.Element | null;
 }
 
-export function HeaderNavControls({ position, append = null }: Props) {
-  const navControls = useNavControls(position);
+interface NavControlItemsProps {
+  navControls: ChromeNavControl[];
+  append?: JSX.Element | null;
+}
 
+export function HeaderNavControlItems({ navControls, append = null }: NavControlItemsProps) {
   if (!navControls || navControls.length === 0) {
     return null;
   }
@@ -46,4 +54,21 @@ export function HeaderNavControls({ position, append = null }: Props) {
       {append}
     </>
   );
+}
+
+export function HeaderNavControls({ position, append = null }: Props) {
+  const navControls = useNavControls(position);
+  return <HeaderNavControlItems navControls={navControls} append={append} />;
+}
+
+/** Project global header (first bar): right-side controls except `projectChrome: 'appBar'`. */
+export function HeaderProjectHeaderRightNavControls() {
+  const navControls = useProjectHeaderRightNavControls();
+  return <HeaderNavControlItems navControls={navControls} />;
+}
+
+/** Project application top bar (second row): `projectChrome: 'appBar'` right-side controls. */
+export function HeaderProjectAppBarNavControls() {
+  const navControls = useProjectChromeRightControls('appBar');
+  return <HeaderNavControlItems navControls={navControls} />;
 }

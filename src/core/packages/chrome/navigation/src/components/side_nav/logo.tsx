@@ -25,11 +25,6 @@ export interface LogoProps extends Omit<HTMLAttributes<HTMLAnchorElement>, 'onCl
   isCurrent?: boolean;
   isHighlighted: boolean;
   onClick?: () => void;
-  /**
-   * When project chrome (Elastic logo, space, search) renders above this row, top padding is 0 —
-   * spacing is handled by the cluster wrapper gap instead.
-   */
-  hasProjectChromeAbove?: boolean;
 }
 
 export const Logo = ({
@@ -37,7 +32,6 @@ export const Logo = ({
   isCurrent,
   isHighlighted,
   label,
-  hasProjectChromeAbove = false,
   ...props
 }: LogoProps): JSX.Element => {
   const euiThemeContext = useEuiTheme();
@@ -57,11 +51,7 @@ export const Logo = ({
    */
   const wrapperStyles = css`
     position: relative;
-    padding-top: ${hasProjectChromeAbove
-      ? 0
-      : isCollapsed
-        ? euiTheme.size.s
-        : euiTheme.size.m};
+    padding-top: ${isCollapsed ? euiTheme.size.s : euiTheme.size.m};
     padding-bottom: ${isCollapsed ? euiTheme.size.s : euiTheme.size.m};
 
     ${getHighContrastSeparator(euiThemeContext)}

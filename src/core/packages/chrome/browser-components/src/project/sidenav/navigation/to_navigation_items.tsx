@@ -118,8 +118,7 @@ export const toNavigationItems = (
 
   const logoItem: SideNavLogo = {
     href: warnIfMissing(logoNode, 'href', '/missing-href-😭'),
-    // POC: use generic home glyph in sidenav; solution artwork comes from getIcon(logoNode) otherwise
-    iconType: 'home',
+    iconType: getIcon(logoNode),
     id: warnIfMissing(logoNode, 'id', 'kibana'),
     label: warnIfMissing(logoNode, 'title', 'Kibana'),
     'data-test-subj': logoNode ? getTestSubj(logoNode, ['nav-item-home']) : undefined,

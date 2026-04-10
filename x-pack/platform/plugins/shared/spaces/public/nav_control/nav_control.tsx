@@ -59,7 +59,7 @@ export function initSpacesNavControl(
           <LazyNavControlPopover
             spacesManager={spacesManager}
             serverBasePath={core.http.basePath.serverBasePath}
-            anchorPosition="rightUp"
+            anchorPosition="downLeft"
             capabilities={core.application.capabilities}
             navigateToApp={core.application.navigateToApp}
             navigateToUrl={core.application.navigateToUrl}

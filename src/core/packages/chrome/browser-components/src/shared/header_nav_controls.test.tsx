@@ -14,7 +14,11 @@ import { BehaviorSubject } from 'rxjs';
 import type { ChromeNavControl } from '@kbn/core-chrome-browser';
 import { chromeServiceMock } from '@kbn/core-chrome-browser-mocks';
 import { TestChromeProviders } from '../test_helpers';
-import { HeaderNavControls } from './header_nav_controls';
+import {
+  HeaderNavControls,
+  HeaderProjectAppBarNavControls,
+  HeaderProjectHeaderRightNavControls,
+} from './header_nav_controls';
 
 const renderWithChrome = (position: 'left' | 'center' | 'right', controls: ChromeNavControl[]) => {
   const chrome = chromeServiceMock.createStartContract();
@@ -93,5 +97,75 @@ describe('HeaderNavControls', () => {
     expect(screen.getByTestId('react-control')).toBeInTheDocument();
     expect(screen.getByTestId('react-control-2')).toBeInTheDocument();
     expect(mountSpy).toHaveBeenCalledWith(expect.any(HTMLElement));
+  });
+});
+
+describe('HeaderProjectHeaderRightNavControls', () => {
+  it('omits projectChrome appBar controls from the global project header strip', () => {
+    const chrome = chromeServiceMock.createStartContract();
+    const controls$ = new BehaviorSubject<ChromeNavControl[]>([
+      { projectChrome: 'appBar', content: <span data-test-subj="app-bar-only">App bar</span> },
+      {
+        projectChrome: 'projectHeader',
+        content: <span data-test-subj="project-header-only">Project header</span>,
+      },
+    ]);
+    chrome.navControls.getRight$.mockReturnValue(controls$);
+    render(
+      <TestChromeProviders chrome={chrome}>
+        <HeaderProjectHeaderRightNavControls />
+      </TestChromeProviders>
+    );
+    expect(screen.queryByTestId('app-bar-only')).toBeNull();
+    expect(screen.getByTestId('project-header-only')).toBeInTheDocument();
+  });
+
+  it('omits controls with omitted projectChrome (defaults to appBar)', () => {
+    const chrome = chromeServiceMock.createStartContract();
+    const controls$ = new BehaviorSubject<ChromeNavControl[]>([
+      { content: <span data-test-subj="default-app-bar">Default placement</span> },
+    ]);
+    chrome.navControls.getRight$.mockReturnValue(controls$);
+    render(
+      <TestChromeProviders chrome={chrome}>
+        <HeaderProjectHeaderRightNavControls />
+      </TestChromeProviders>
+    );
+    expect(screen.queryByTestId('default-app-bar')).toBeNull();
+  });
+});
+
+describe('HeaderProjectAppBarNavControls', () => {
+  it('renders only projectChrome appBar controls in the application top bar', () => {
+    const chrome = chromeServiceMock.createStartContract();
+    const controls$ = new BehaviorSubject<ChromeNavControl[]>([
+      { projectChrome: 'appBar', content: <span data-test-subj="app-bar-only">App bar</span> },
+      {
+        projectChrome: 'projectHeader',
+        content: <span data-test-subj="project-header-only">Project header</span>,
+      },
+    ]);
+    chrome.navControls.getRight$.mockReturnValue(controls$);
+    render(
+      <TestChromeProviders chrome={chrome}>
+        <HeaderProjectAppBarNavControls />
+      </TestChromeProviders>
+    );
+    expect(screen.getByTestId('app-bar-only')).toBeInTheDocument();
+    expect(screen.queryByTestId('project-header-only')).toBeNull();
+  });
+
+  it('treats omitted projectChrome as appBar (application top bar)', () => {
+    const chrome = chromeServiceMock.createStartContract();
+    const controls$ = new BehaviorSubject<ChromeNavControl[]>([
+      { content: <span data-test-subj="default-app-bar">Default placement</span> },
+    ]);
+    chrome.navControls.getRight$.mockReturnValue(controls$);
+    render(
+      <TestChromeProviders chrome={chrome}>
+        <HeaderProjectAppBarNavControls />
+      </TestChromeProviders>
+    );
+    expect(screen.getByTestId('default-app-bar')).toBeInTheDocument();
   });
 });

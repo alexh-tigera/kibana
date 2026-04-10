@@ -121,7 +121,6 @@ const NavControlPopoverUI = ({
           data-test-subj="spacesNavSelector"
           title={linkTitle}
           onClick={toggleSpaceSelector}
-          style={{ paddingInline: 0 }}
         >
           {linkIcon}
           <p id="spacesNavDetails" hidden>

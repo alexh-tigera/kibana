@@ -15,8 +15,6 @@ import type { SolutionId } from '@kbn/core-chrome-browser';
 import { useObservable } from '@kbn/use-observable';
 import { useChromeService } from '@kbn/core-chrome-browser-context';
 import { KibanaSectionErrorBoundary } from '@kbn/shared-ux-error-boundary';
-import { ProjectChromeNavFooter } from '../../project_chrome_nav_footer';
-import { ProjectChromeNavTop } from '../../project_chrome_nav_top';
 import { useBasePath } from '../../../shared/chrome_hooks';
 import type { NavigationItems } from './to_navigation_items';
 import { toNavigationItems } from './to_navigation_items';
@@ -47,8 +45,6 @@ export const Navigation = (props: ChromeNavigationProps) => {
         onToggleCollapsed={props.onToggleCollapsed}
         activeItemId={activeItemId}
         data-test-subj={classnames(`${solutionId}SideNav`, 'projectSideNav', 'projectSideNavV2')}
-        projectChromeTop={<ProjectChromeNavTop />}
-        projectChromeFooter={<ProjectChromeNavFooter />}
       />
     </KibanaSectionErrorBoundary>
   );

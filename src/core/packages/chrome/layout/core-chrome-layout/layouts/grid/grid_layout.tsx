@@ -14,6 +14,7 @@ import { ChromeLayout, ChromeLayoutConfigProvider } from '@kbn/core-chrome-layou
 import {
   ChromeComponentsProvider,
   ClassicHeader,
+  ProjectHeader,
   GridLayoutProjectSideNav,
   HeaderTopBanner,
   ChromelessHeader,
@@ -44,13 +45,11 @@ const layoutConfigs: { classic: ChromeLayoutConfig; project: ChromeLayoutConfig 
   },
   project: {
     chromeStyle: 'project',
-    /** Global header removed in project mode; chrome lives in sidenav + AppBar. */
-    headerHeight: 0,
+    headerHeight: 48,
     bannerHeight: 32,
 
     /** The application top bar renders the app specific menu */
     /** we use it only in project style, because in classic it is included as part of the global header */
-    /** Default height for the title row; `AppMenuBar` grows this when `headerTabs` are present. */
     applicationTopBarHeight: 48,
     applicationMarginRight: 8,
     applicationMarginBottom: 8,
@@ -106,8 +105,8 @@ export class GridLayout implements LayoutService {
         if (chromeStyle === 'classic') {
           header = <ClassicHeader />;
         } else {
+          header = <ProjectHeader />;
           applicationTopBar = <AppMenuBar />;
-
           navigation = <GridLayoutProjectSideNav />;
         }
       }

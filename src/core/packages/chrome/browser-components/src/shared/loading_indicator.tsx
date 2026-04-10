@@ -42,7 +42,6 @@ export const LoadingIndicator = ({ showAsBar = false, customLogo }: LoadingIndic
     <EuiIcon
       type={'logoElastic'}
       size="l"
-      color="text"
       data-test-subj={testSubj}
       aria-label={i18n.translate('core.ui.chrome.headerGlobalNav.logoAriaLabel', {
         defaultMessage: 'Elastic Logo',

@@ -180,6 +180,27 @@ export function useProjectChromeRightControls(
   return useObservable(controls$, []);
 }
 
+/**
+ * Right-side nav controls for the project global header (first bar): every `projectChrome`
+ * placement except `appBar` (application top bar / second row).
+ */
+export function useProjectHeaderRightNavControls(): ChromeNavControl[] {
+  const chrome = useChromeService();
+  const controls$ = useMemo(
+    () =>
+      chrome.navControls.getRight$().pipe(
+        map((controls) =>
+          sortBy(
+            controls.filter((c) => getProjectChromePlacement(c) !== 'appBar'),
+            'order'
+          )
+        )
+      ),
+    [chrome]
+  );
+  return useObservable(controls$, []);
+}
+
 interface HelpMenuState {
   menuLinks: ChromeHelpMenuLink[];
   extension: ChromeHelpExtension | undefined;

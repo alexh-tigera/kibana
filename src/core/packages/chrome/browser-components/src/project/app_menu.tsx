@@ -18,15 +18,14 @@ import {
   type UseEuiTheme,
 } from '@elastic/eui';
 
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { ChromeNavControl } from '@kbn/core-chrome-browser';
+import React, { useLayoutEffect, useMemo, useRef } from 'react';
 import { i18n } from '@kbn/i18n';
 import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
 import type { AppMenuHeaderTab } from '@kbn/core-chrome-app-menu-components';
 import { useLayoutUpdate } from '@kbn/core-chrome-layout-components';
 import { HeaderAppMenu } from '../shared/header_app_menu';
 import { HeaderActionMenu } from '../shared/header_action_menu';
-import { HeaderExtension } from '../shared/header_extension';
+import { HeaderProjectAppBarNavControls } from '../shared/header_nav_controls';
 import { HeaderPageAnnouncer } from '../shared/header_page_announcer';
 import { ProjectHeaderBadgeGroup } from './project_header_badge_group';
 import {
@@ -37,7 +36,6 @@ import {
   useBasePath,
   useNavLinks,
   useCurrentAppId,
-  useProjectChromeRightControls,
 } from '../shared/chrome_hooks';
 
 const getAccessibleTitleFromBreadcrumb = (
@@ -159,14 +157,7 @@ const useAppMenuBarStyles = (
       flexShrink: 0,
       display: 'flex',
       alignItems: 'center',
-    };
-
-    const appBarChrome = {
-      flexShrink: 0,
-      display: 'flex',
-      flexDirection: 'row' as const,
-      alignItems: 'center',
-      gap: euiTheme.size.xs,
+      gap: euiTheme.size.s,
       marginLeft: 'auto',
     };
 
@@ -214,84 +205,8 @@ const useAppMenuBarStyles = (
       titleEuiTitle,
       titleEuiTitleReact,
       menuSection,
-      appBarChrome,
     };
   }, [euiTheme, hasSecondaryRow, showBackToParent, hasHeaderTabs]);
-
-/**
- * Right-side nav controls use mount points; in project mode several plugins (e.g. per-solution AI
- * assistants) still register `projectChrome: 'appBar'` while their `NavControlInitiator` returns
- * `null` off-solution. The mount is truthy so we cannot filter at the data layer — collapse the
- * slot when the subtree has no layout or interactive content after mount.
- */
-function appBarSlotHasRenderableContent(host: HTMLElement): boolean {
-  const rect = host.getBoundingClientRect();
-  if (rect.width > 0 && rect.height > 0) {
-    return true;
-  }
-  return (
-    host.querySelector(
-      'button, [role="button"], a[href], input, select, textarea, iframe, canvas, svg, img, [tabindex]:not([tabindex="-1"])'
-    ) !== null
-  );
-}
-
-const AppBarNavControlSlot = React.memo(function AppBarNavControlSlot({
-  extension,
-}: {
-  extension: NonNullable<ChromeNavControl['content'] | ChromeNavControl['mount']>;
-}) {
-  const hostRef = useRef<HTMLDivElement>(null);
-  const [collapsed, setCollapsed] = useState(false);
-
-  useLayoutEffect(() => {
-    const host = hostRef.current;
-    if (!host) {
-      return;
-    }
-
-    const schedule = () => {
-      setCollapsed(!appBarSlotHasRenderableContent(host));
-    };
-
-    const ro = new ResizeObserver(schedule);
-    ro.observe(host);
-    const mo = new MutationObserver(schedule);
-    mo.observe(host, { subtree: true, childList: true, attributes: true });
-
-    const rafId = requestAnimationFrame(() => {
-      requestAnimationFrame(schedule);
-    });
-
-    schedule();
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      ro.disconnect();
-      mo.disconnect();
-    };
-  }, [extension]);
-
-  return (
-    <div
-      ref={hostRef}
-      css={{
-        display: collapsed ? 'none' : 'flex',
-        alignItems: 'center',
-      }}
-    >
-      <HeaderExtension extension={extension} />
-    </div>
-  );
-});
-
-const AppBarNavControl = ({ control }: { control: ChromeNavControl }) => {
-  const extension = control.content ?? control.mount;
-  if (extension == null) {
-    return null;
-  }
-  return <AppBarNavControlSlot extension={extension} />;
-};
 
 const AppMenuBarHeaderTabs = ({ tabs }: { tabs: AppMenuHeaderTab[] }) => (
   <EuiTabs
@@ -344,15 +259,6 @@ export const AppMenuBar = React.memo(() => {
     canNavigateToParent(parentBreadcrumb);
   const styles = useAppMenuBarStyles(euiTheme, hasSecondaryRow, showBackToParent, hasHeaderTabs);
   const hasAppMenuConfig = useHasAppMenuConfig();
-  const appBarControls = useProjectChromeRightControls('appBar');
-  const appBarControlsWithExtension = useMemo(
-    () =>
-      appBarControls.filter((control) => {
-        const extension = control.content ?? control.mount;
-        return extension != null;
-      }),
-    [appBarControls]
-  );
 
   useLayoutEffect(() => {
     const el = projectHeaderRef.current;
@@ -530,15 +436,9 @@ export const AppMenuBar = React.memo(() => {
             </div>
           </div>
           <div css={styles.menuSection} data-test-subj="kibanaProjectHeaderActionMenu">
+            <HeaderProjectAppBarNavControls />
             {hasAppMenuConfig ? <HeaderAppMenu /> : <HeaderActionMenu />}
           </div>
-          {appBarControlsWithExtension.length > 0 ? (
-            <div css={styles.appBarChrome} data-test-subj="kibanaProjectHeaderAppBarChrome">
-              {appBarControlsWithExtension.map((control, index) => (
-                <AppBarNavControl key={index} control={control} />
-              ))}
-            </div>
-          ) : null}
         </div>
         {hasHeaderMetadata ? (
           <EuiFlexGroup

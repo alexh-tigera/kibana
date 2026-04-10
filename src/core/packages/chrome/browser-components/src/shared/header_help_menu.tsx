@@ -7,13 +7,12 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { Fragment, useState, useCallback, useMemo, type ReactNode } from 'react';
+import React, { Fragment, useState, useCallback, useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import type { EuiButtonEmptyProps } from '@elastic/eui';
 import {
   EuiButtonEmpty,
-  EuiButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiHeaderSectionItemButton,
@@ -71,7 +70,7 @@ const createCustomLink = (
 ) => {
   return (
     <Fragment key={`helpButton${index}`}>
-      <EuiButtonEmpty {...buttonProps} size="s" flush="left" color="text">
+      <EuiButtonEmpty {...buttonProps} size="s" flush="left">
         {text}
       </EuiButtonEmpty>
       {addSpacer && <EuiSpacer size="xs" />}
@@ -79,21 +78,7 @@ const createCustomLink = (
   );
 };
 
-export interface HeaderHelpMenuProps {
-  /**
-   * Extra content rendered in the menu (e.g. news + feedback in project sidenav).
-   */
-  projectChromeExtras?: ReactNode;
-  /**
-   * `navFooter` uses a compact trigger suited to the project sidenav footer.
-   */
-  displayMode?: 'header' | 'navFooter';
-}
-
-export const HeaderHelpMenu = ({
-  projectChromeExtras,
-  displayMode = 'header',
-}: HeaderHelpMenuProps) => {
+export const HeaderHelpMenu = () => {
   const navigateToUrl = useNavigateToUrl();
   const docLinks = useDocLinks();
   const { euiTheme } = useEuiTheme();
@@ -134,7 +119,7 @@ export const HeaderHelpMenu = ({
   );
 
   const euiThemePadding = css`
-    padding: ${euiTheme.size.xs};
+    padding: ${euiTheme.size.s};
   `;
 
   const defaultContent = (
@@ -162,7 +147,6 @@ export const HeaderHelpMenu = ({
               onClick={onClick}
               size="s"
               flush="left"
-              color="text"
               data-test-subj={dataTestSubj}
             >
               {title}
@@ -241,47 +225,31 @@ export const HeaderHelpMenu = ({
     );
   }
 
-  const helpAriaLabel = i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuButtonAriaLabel', {
-    defaultMessage: 'Help menu',
-  });
-
-  const button =
-    displayMode === 'navFooter' ? (
-      <EuiButtonIcon
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-        aria-label={helpAriaLabel}
-        color="text"
-        data-test-subj="helpMenuButton"
-        display="empty"
-        iconType="question"
-        onClick={toggleMenu}
-        size="s"
-      />
-    ) : (
-      <EuiHeaderSectionItemButton
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-        aria-label={helpAriaLabel}
-        data-test-subj="helpMenuButton"
-        onClick={toggleMenu}
-      >
-        <EuiIcon type="question" size="m" aria-hidden={true} />
-      </EuiHeaderSectionItemButton>
-    );
+  const button = (
+    <EuiHeaderSectionItemButton
+      aria-expanded={isOpen}
+      aria-haspopup="true"
+      aria-label={i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuButtonAriaLabel', {
+        defaultMessage: 'Help menu',
+      })}
+      onClick={toggleMenu}
+    >
+      <EuiIcon type="question" size="m" aria-hidden={true} />
+    </EuiHeaderSectionItemButton>
+  );
 
   return (
     <EuiPopover
-      anchorPosition={displayMode === 'navFooter' ? 'rightDown' : 'downRight'}
+      anchorPosition="downRight"
       button={button}
       closePopover={closeMenu}
+      data-test-subj="helpMenuButton"
       id="headerHelpMenu"
       isOpen={isOpen}
       repositionOnScroll
-      aria-label="Help menu"
     >
       <EuiPopoverTitle>
-        <EuiFlexGroup gutterSize="none" responsive={false}>
+        <EuiFlexGroup responsive={false}>
           <EuiFlexItem>
             <h2>
               <FormattedMessage
@@ -307,11 +275,6 @@ export const HeaderHelpMenu = ({
       </EuiPopoverTitle>
 
       <div style={{ maxWidth: 240 }}>
-        {projectChromeExtras ? (
-          <>
-            {projectChromeExtras}
-          </>
-        ) : null}
         {globalCustomContent}
         {defaultContent}
         {customContent && (

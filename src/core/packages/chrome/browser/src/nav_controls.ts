@@ -19,6 +19,8 @@ import type { MountPoint } from '@kbn/core-mount-utils-browser';
 export type ChromeNavControlProjectChrome =
   | 'navFooterProfile'
   | 'helpMenuExtras'
+  /** Top global project header (first bar), e.g. next to Help — not the application AppBar row. */
+  | 'projectHeader'
   | 'appBar';
 
 /** @public */
@@ -34,7 +36,8 @@ export interface ChromeNavControl {
   mount?: MountPoint;
   /**
    * Placement for `chromeStyle === 'project'` (right-side controls only).
-   * When omitted, project mode treats the control as `appBar`.
+   * When omitted, project mode treats the control as `appBar` (application top bar / second row).
+   * Use `projectHeader` for controls that belong in the global header strip only.
    */
   projectChrome?: ChromeNavControlProjectChrome;
 }
