@@ -8,11 +8,11 @@ responses:
             summary: "Resolution group with linked entities"
             description: "Returns the resolution group for an entity, including all linked entity identifiers."
             value:
-              target_id: "arn:aws:iam::123456789012:user/jane.doe"
+              target_id: "user:jane.doe@example.com"
               entity_ids:
-                - "arn:aws:iam::123456789012:user/jane.doe"
-                - "arn:aws:iam::123456789012:user/jdoe"
-                - "arn:aws:iam::123456789012:user/j.doe"
+                - "user:jane.doe@example.com"
+                - "user:jdoe@example.com"
+                - "user:j.doe@example.com"
   400:
     description: "Bad request."
     content:
@@ -41,7 +41,7 @@ x-codeSamples:
   - lang: curl
     source: |
       curl -X GET -H "Authorization: ApiKey ${API_KEY}" \
-        "${KIBANA_URL}/api/security/entity_store/resolution/group?entity_id=arn%3Aaws%3Aiam%3A%3A123456789012%3Auser%2Fjane.doe"
+        "${KIBANA_URL}/api/security/entity_store/resolution/group?entity_id=user%3Ajane.doe%40example.com"
   - lang: Console
     source: |
-      GET kbn://api/security/entity_store/resolution/group?entity_id=arn:aws:iam::123456789012:user/jane.doe
+      GET kbn://api/security/entity_store/resolution/group?entity_id=user:jane.doe@example.com

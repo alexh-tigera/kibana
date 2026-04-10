@@ -10,7 +10,7 @@ requestBody:
               - type: host
                 doc:
                   entity:
-                    id: "arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678"
+                    id: "host:web-server-prod-01"
                     name: "web-server-prod-01"
                     type: "host"
                     attributes:
@@ -20,7 +20,7 @@ requestBody:
               - type: user
                 doc:
                   entity:
-                    id: "arn:aws:iam::123456789012:user/jane.doe"
+                    id: "user:jane.doe@example.com"
                     name: "jane.doe"
                     type: "user"
                     attributes:

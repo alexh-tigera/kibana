@@ -7,7 +7,7 @@ requestBody:
           description: "Update the attributes of an existing user entity."
           value:
             entity:
-              id: "arn:aws:iam::123456789012:user/jane.doe"
+              id: "user:jane.doe@example.com"
               name: "jane.doe"
               type: "user"
               attributes:
@@ -62,14 +62,14 @@ x-codeSamples:
     source: |
       curl -X PUT -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
         -H "Content-Type: application/json" \
-        -d '{"entity":{"id":"arn:aws:iam::123456789012:user/jane.doe","name":"jane.doe","type":"user","attributes":{"managed":true,"mfa_enabled":true}}}' \
+        -d '{"entity":{"id":"user:jane.doe@example.com","name":"jane.doe","type":"user","attributes":{"managed":true,"mfa_enabled":true}}}' \
         "${KIBANA_URL}/api/security/entity_store/entities/user"
   - lang: Console
     source: |
       PUT kbn://api/security/entity_store/entities/user
       {
         "entity": {
-          "id": "arn:aws:iam::123456789012:user/jane.doe",
+          "id": "user:jane.doe@example.com",
           "name": "jane.doe",
           "type": "user",
           "attributes": {

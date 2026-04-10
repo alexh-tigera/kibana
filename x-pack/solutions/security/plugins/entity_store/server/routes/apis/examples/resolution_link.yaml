@@ -6,10 +6,10 @@ requestBody:
           summary: "Link entities to a target"
           description: "Link two user entities to a target entity, creating a resolution group."
           value:
-            target_id: "arn:aws:iam::123456789012:user/jane.doe"
+            target_id: "user:jane.doe@example.com"
             entity_ids:
-              - "arn:aws:iam::123456789012:user/jdoe"
-              - "arn:aws:iam::123456789012:user/j.doe"
+              - "user:jdoe@example.com"
+              - "user:j.doe@example.com"
 responses:
   200:
     description: "Indicates a successful response."
@@ -21,7 +21,7 @@ responses:
             description: "The entities were successfully linked to the target entity."
             value:
               linked: 2
-              target_id: "arn:aws:iam::123456789012:user/jane.doe"
+              target_id: "user:jane.doe@example.com"
   400:
     description: "Bad request."
     content:
@@ -58,12 +58,12 @@ x-codeSamples:
     source: |
       curl -X POST -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
         -H "Content-Type: application/json" \
-        -d '{"target_id":"arn:aws:iam::123456789012:user/jane.doe","entity_ids":["arn:aws:iam::123456789012:user/jdoe"]}' \
+        -d '{"target_id":"user:jane.doe@example.com","entity_ids":["user:jdoe@example.com"]}' \
         "${KIBANA_URL}/api/security/entity_store/resolution/link"
   - lang: Console
     source: |
       POST kbn://api/security/entity_store/resolution/link
       {
-        "target_id": "arn:aws:iam::123456789012:user/jane.doe",
-        "entity_ids": ["arn:aws:iam::123456789012:user/jdoe"]
+        "target_id": "user:jane.doe@example.com",
+        "entity_ids": ["user:jdoe@example.com"]
       }

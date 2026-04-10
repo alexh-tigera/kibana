@@ -6,7 +6,7 @@ requestBody:
           summary: "Delete an entity by identifier"
           description: "Delete a single entity from the Entity Store using its entity identifier."
           value:
-            entityId: "arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678"
+            entityId: "host:web-server-prod-01"
 responses:
   200:
     description: "Indicates the entity was successfully deleted."
@@ -35,11 +35,11 @@ x-codeSamples:
     source: |
       curl -X DELETE -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
         -H "Content-Type: application/json" \
-        -d '{"entityId":"arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678"}' \
+        -d '{"entityId":"host:web-server-prod-01"}' \
         "${KIBANA_URL}/api/security/entity_store/entities/"
   - lang: Console
     source: |
       DELETE kbn://api/security/entity_store/entities/
       {
-        "entityId": "arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678"
+        "entityId": "host:web-server-prod-01"
       }

@@ -7,7 +7,7 @@ requestBody:
           description: "Create a new host entity record with basic host and entity fields."
           value:
             entity:
-              id: "arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678"
+              id: "host:web-server-prod-01"
               name: "web-server-prod-01"
               type: "host"
               source:
@@ -68,14 +68,14 @@ x-codeSamples:
     source: |
       curl -X POST -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
         -H "Content-Type: application/json" \
-        -d '{"entity":{"id":"arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678","name":"web-server-prod-01","type":"host"},"host":{"name":"web-server-prod-01"}}' \
+        -d '{"entity":{"id":"host:web-server-prod-01","name":"web-server-prod-01","type":"host"},"host":{"name":"web-server-prod-01"}}' \
         "${KIBANA_URL}/api/security/entity_store/entities/host"
   - lang: Console
     source: |
       POST kbn://api/security/entity_store/entities/host
       {
         "entity": {
-          "id": "arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678",
+          "id": "host:web-server-prod-01",
           "name": "web-server-prod-01",
           "type": "host"
         },

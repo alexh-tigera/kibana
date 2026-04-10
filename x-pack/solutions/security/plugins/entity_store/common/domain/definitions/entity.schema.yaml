@@ -25,7 +25,7 @@ components:
         id:
           type: string
           description: Unique identifier for this entity.
-          example: 'arn:aws:iam::123456789012:user/jane.doe'
+          example: 'user:jane.doe@example.com'
         name:
           type: string
           description: Human-readable name of the entity.

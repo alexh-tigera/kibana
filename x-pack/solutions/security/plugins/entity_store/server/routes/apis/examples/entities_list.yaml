@@ -11,7 +11,7 @@ responses:
               records:
                 - "@timestamp": "2026-04-10T08:30:00.000Z"
                   entity:
-                    id: "arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678"
+                    id: "host:web-server-prod-01"
                     name: "web-server-prod-01"
                     type: "host"
                     source:
@@ -45,14 +45,14 @@ responses:
               entities:
                 - "@timestamp": "2026-04-10T08:30:00.000Z"
                   entity:
-                    id: "arn:aws:iam::123456789012:user/jane.doe"
+                    id: "user:jane.doe@example.com"
                     name: "jane.doe"
                     type: "user"
                   user:
                     name: "jane.doe"
                     email:
                       - "jane.doe@example.com"
-              nextSearchAfter: "[1712736600000, \"arn:aws:iam::123456789012:user/jane.doe\"]"
+              nextSearchAfter: "[1712736600000, \"user:jane.doe@example.com\"]"
   400:
     description: "Bad request."
     content:

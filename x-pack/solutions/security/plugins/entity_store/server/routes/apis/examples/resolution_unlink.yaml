@@ -7,8 +7,8 @@ requestBody:
           description: "Remove entities from their resolution group, restoring them as standalone entities."
           value:
             entity_ids:
-              - "arn:aws:iam::123456789012:user/jdoe"
-              - "arn:aws:iam::123456789012:user/j.doe"
+              - "user:jdoe@example.com"
+              - "user:j.doe@example.com"
 responses:
   200:
     description: "Indicates a successful response."
@@ -37,11 +37,11 @@ x-codeSamples:
     source: |
       curl -X POST -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
         -H "Content-Type: application/json" \
-        -d '{"entity_ids":["arn:aws:iam::123456789012:user/jdoe"]}' \
+        -d '{"entity_ids":["user:jdoe@example.com"]}' \
         "${KIBANA_URL}/api/security/entity_store/resolution/unlink"
   - lang: Console
     source: |
       POST kbn://api/security/entity_store/resolution/unlink
       {
-        "entity_ids": ["arn:aws:iam::123456789012:user/jdoe"]
+        "entity_ids": ["user:jdoe@example.com"]
       }
