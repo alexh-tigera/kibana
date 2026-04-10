@@ -145,18 +145,28 @@ const navControlGetters: Record<
   right: (chrome) => chrome.navControls.getRight$(),
 };
 
+const getProjectChromePlacement = (control: ChromeNavControl): ChromeNavControlProjectChrome =>
+  control.projectChrome ?? 'appBar';
+
 /**
  * Returns the nav controls for a given position.
  * Used by `HeaderNavControls` (instantiated in both classic and project headers).
  */
 export function useNavControls(position: NavControlPosition): ChromeNavControl[] {
   const chrome = useChromeService();
-  const controls$ = useMemo(() => navControlGetters[position](chrome), [chrome, position]);
+  const controls$ = useMemo(() => {
+    const base$ = navControlGetters[position](chrome);
+    if (position !== 'right') {
+      return base$;
+    }
+    return base$.pipe(
+      map((controls) =>
+        controls.filter((c) => getProjectChromePlacement(c) !== 'helpMenuExtras')
+      )
+    );
+  }, [chrome, position]);
   return useObservable(controls$, []);
 }
-
-const getProjectChromePlacement = (control: ChromeNavControl): ChromeNavControlProjectChrome =>
-  control.projectChrome ?? 'appBar';
 
 /**
  * Right-side nav controls filtered by {@link ChromeNavControl.projectChrome} for project layout.
@@ -182,7 +192,8 @@ export function useProjectChromeRightControls(
 
 /**
  * Right-side nav controls for the project global header (first bar): every `projectChrome`
- * placement except `appBar` (application top bar / second row).
+ * placement except `appBar` (application top bar / second row) and `helpMenuExtras`
+ * (rendered inside the help menu popover).
  */
 export function useProjectHeaderRightNavControls(): ChromeNavControl[] {
   const chrome = useChromeService();
@@ -191,7 +202,10 @@ export function useProjectHeaderRightNavControls(): ChromeNavControl[] {
       chrome.navControls.getRight$().pipe(
         map((controls) =>
           sortBy(
-            controls.filter((c) => getProjectChromePlacement(c) !== 'appBar'),
+            controls.filter((c) => {
+              const placement = getProjectChromePlacement(c);
+              return placement !== 'appBar' && placement !== 'helpMenuExtras';
+            }),
             'order'
           )
         )
@@ -199,6 +213,13 @@ export function useProjectHeaderRightNavControls(): ChromeNavControl[] {
     [chrome]
   );
   return useObservable(controls$, []);
+}
+
+/**
+ * Right-side nav controls shown in the Help menu popover (`projectChrome: 'helpMenuExtras'`).
+ */
+export function useHelpMenuExtrasNavControls(): ChromeNavControl[] {
+  return useProjectChromeRightControls('helpMenuExtras');
 }
 
 interface HelpMenuState {

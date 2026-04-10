@@ -56,6 +56,7 @@ export class NewsfeedPublicPlugin
           newsfeedApi={api}
           hasCustomBranding$={core.customBranding.hasCustomBranding$}
           isServerless={this.isServerless}
+          variant="textLink"
         />
       ),
     });

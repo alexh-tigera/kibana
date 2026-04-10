@@ -31,7 +31,8 @@ import { useChromeStyle } from '@kbn/core-chrome-browser-hooks';
 
 import { css } from '@emotion/react';
 import { isModifiedOrPrevented } from './nav_link';
-import { useHelpMenu, useNavigateToUrl, useDocLinks } from './chrome_hooks';
+import { HeaderExtension } from './header_extension';
+import { useHelpMenu, useHelpMenuExtrasNavControls, useNavigateToUrl, useDocLinks } from './chrome_hooks';
 
 const buildDefaultContentLinks = ({
   kibanaDocLink,
@@ -95,6 +96,10 @@ export const HeaderHelpMenu = () => {
     supportUrl: helpSupportUrl,
     globalExtensionMenuLinks: globalHelpExtensionMenuLinks,
   } = useHelpMenu();
+
+  const helpMenuExtrasControls = useHelpMenuExtrasNavControls();
+  const hasHelpExtras = helpMenuExtrasControls.length > 0;
+  const hasGlobalCustomLinks = globalHelpExtensionMenuLinks.length > 0;
 
   const defaultContentLinks = useMemo(
     () =>
@@ -276,7 +281,19 @@ export const HeaderHelpMenu = () => {
 
       <div style={{ maxWidth: 240 }}>
         {globalCustomContent}
+        {hasGlobalCustomLinks ? <EuiSpacer size="xs" /> : null}
         {defaultContent}
+        {hasHelpExtras ? (
+          <>
+            <EuiSpacer size="xs" />
+            {helpMenuExtrasControls.map((control, index) => (
+              <Fragment key={index}>
+                <HeaderExtension extension={control.content ?? control.mount} />
+                {index < helpMenuExtrasControls.length - 1 ? <EuiSpacer size="xs" /> : null}
+              </Fragment>
+            ))}
+          </>
+        ) : null}
         {customContent && (
           <>
             <EuiPopoverFooter css={euiThemePadding} />

@@ -23,7 +23,7 @@ const globalLayoutStyles = (euiThemeContext: UseEuiTheme) => {
       // TODO: these variables are legacy and we keep them for backward compatibility
       // https://github.com/elastic/kibana/issues/225264
 
-      // Banner plus global header (project + classic grid); `header.height` is 0 when project POC hid the bar
+      // Banner plus global header (project + classic grid); header.height layout var is 0 when project POC hid the bar
       --euiFixedHeadersOffset: calc(
         ${layoutVar('banner.height', '0px')} + ${layoutVar('header.height', '0px')}
       );
