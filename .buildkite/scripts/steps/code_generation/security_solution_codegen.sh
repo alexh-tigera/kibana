@@ -21,4 +21,7 @@ echo -e "\n[Security Solution OpenAPI Code Generation] Endpoint Exceptions Commo
 echo -e "\n[Security Solution OpenAPI Code Generation] Security Solution Plugin\n"
 (cd x-pack/solutions/security/plugins/security_solution && yarn openapi:generate)
 
+echo -e "\n[Security Solution OpenAPI Code Generation] Entity Store Plugin\n"
+node scripts/generate_openapi.js --rootDir x-pack/solutions/security/plugins/entity_store/
+
 check_for_changed_files "yarn openapi:generate" true
