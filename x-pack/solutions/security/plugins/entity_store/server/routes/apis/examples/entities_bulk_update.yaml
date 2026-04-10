@@ -1,0 +1,86 @@
+requestBody:
+  content:
+    application/json:
+      examples:
+        bulkUpdateExample:
+          summary: "Bulk update multiple entities"
+          description: "Create or update a host entity and a user entity in a single request."
+          value:
+            entities:
+              - type: host
+                doc:
+                  entity:
+                    id: "arn:aws:ec2:us-east-1:123456789012:instance/i-0abcd1234efgh5678"
+                    name: "web-server-prod-01"
+                    type: "host"
+                    attributes:
+                      asset: true
+                  host:
+                    name: "web-server-prod-01"
+              - type: user
+                doc:
+                  entity:
+                    id: "arn:aws:iam::123456789012:user/jane.doe"
+                    name: "jane.doe"
+                    type: "user"
+                    attributes:
+                      managed: true
+                  user:
+                    name: "jane.doe"
+responses:
+  200:
+    description: "Indicates a successful response."
+    content:
+      application/json:
+        examples:
+          bulkUpdateSuccessExample:
+            summary: "All entities updated"
+            description: "All entities were successfully created or updated with no errors."
+            value:
+              ok: true
+              errors: []
+          bulkUpdatePartialExample:
+            summary: "Partial success with errors"
+            description: "Some entities were updated but others encountered errors."
+            value:
+              ok: true
+              errors:
+                - message: "Entity not found"
+                  statusCode: 404
+  400:
+    description: "Bad request."
+    content:
+      application/json:
+        examples:
+          badRequestExample:
+            summary: "Invalid request body"
+            description: "The request body contains invalid entity data."
+            value:
+              statusCode: 400
+              error: "Bad Request"
+              message: "Invalid entity record"
+x-codeSamples:
+  - lang: curl
+    source: |
+      curl -X PUT -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
+        -H "Content-Type: application/json" \
+        -d '{"entities":[{"type":"host","doc":{"entity":{"id":"i-0abcd1234efgh5678","name":"web-server-prod-01","type":"host"},"host":{"name":"web-server-prod-01"}}}]}' \
+        "${KIBANA_URL}/api/security/entity_store/entities/bulk"
+  - lang: Console
+    source: |
+      PUT kbn://api/security/entity_store/entities/bulk
+      {
+        "entities": [
+          {
+            "type": "host",
+            "doc": {
+              "entity": {
+                "id": "i-0abcd1234efgh5678",
+                "name": "web-server-prod-01",
+                "type": "host"
+              },
+              "host": { "name": "web-server-prod-01" }
+            }
+          }
+        ]
+      }

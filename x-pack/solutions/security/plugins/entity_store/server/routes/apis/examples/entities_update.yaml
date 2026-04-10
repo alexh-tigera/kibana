@@ -1,0 +1,80 @@
+requestBody:
+  content:
+    application/json:
+      examples:
+        updateEntityAttributesExample:
+          summary: "Update entity attributes"
+          description: "Update the attributes of an existing user entity."
+          value:
+            entity:
+              id: "arn:aws:iam::123456789012:user/jane.doe"
+              name: "jane.doe"
+              type: "user"
+              attributes:
+                managed: true
+                mfa_enabled: true
+              lifecycle:
+                last_activity: "2026-04-10T14:30:00.000Z"
+            user:
+              name: "jane.doe"
+              email:
+                - "jane.doe@example.com"
+              roles:
+                - "admin"
+                - "analyst"
+responses:
+  200:
+    description: "Indicates the entity was successfully updated."
+    content:
+      application/json:
+        examples:
+          updateSuccessExample:
+            summary: "Entity updated"
+            description: "The entity record was successfully updated."
+            value:
+              ok: true
+  400:
+    description: "Bad request."
+    content:
+      application/json:
+        examples:
+          badRequestExample:
+            summary: "Invalid update"
+            description: "The request body contains invalid fields or values."
+            value:
+              statusCode: 400
+              error: "Bad Request"
+              message: "Invalid entity record"
+  404:
+    description: "Entity not found."
+    content:
+      application/json:
+        examples:
+          notFoundExample:
+            summary: "Entity not found"
+            description: "No entity with the specified identifier exists."
+            value:
+              statusCode: 404
+              error: "Not Found"
+              message: "Entity not found"
+x-codeSamples:
+  - lang: curl
+    source: |
+      curl -X PUT -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
+        -H "Content-Type: application/json" \
+        -d '{"entity":{"id":"arn:aws:iam::123456789012:user/jane.doe","name":"jane.doe","type":"user","attributes":{"managed":true,"mfa_enabled":true}}}' \
+        "${KIBANA_URL}/api/security/entity_store/entities/user"
+  - lang: Console
+    source: |
+      PUT kbn://api/security/entity_store/entities/user
+      {
+        "entity": {
+          "id": "arn:aws:iam::123456789012:user/jane.doe",
+          "name": "jane.doe",
+          "type": "user",
+          "attributes": {
+            "managed": true,
+            "mfa_enabled": true
+          }
+        }
+      }
