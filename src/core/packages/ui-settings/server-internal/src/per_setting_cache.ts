@@ -20,10 +20,14 @@ interface PerSettingCacheEntry<T = unknown> {
  * Shared per-setting cache for UI settings with configurable TTLs.
  * Cache keys are in the format: `{namespace}:{settingKey}`
  *
+ * Includes request deduplication to prevent thundering herd when multiple
+ * concurrent requests are made for the same uncached setting.
+ *
  * @internal
  */
 export class PerSettingCache {
   private readonly entries = new Map<string, PerSettingCacheEntry>();
+  private readonly inflightRequests = new Map<string, Promise<unknown>>();
 
   /**
    * Get cached value for a specific namespace:key combination
@@ -32,6 +36,34 @@ export class PerSettingCache {
     const cacheKey = `${namespace}:${key}`;
     const entry = this.entries.get(cacheKey);
     return entry ? (entry.value as T) : null;
+  }
+
+  /**
+   * Get in-flight promise for a specific namespace:key combination.
+   * Used for request deduplication.
+   */
+  getInflight<T = unknown>(namespace: string, key: string): Promise<T> | null {
+    const cacheKey = `${namespace}:${key}`;
+    const promise = this.inflightRequests.get(cacheKey);
+    return promise ? (promise as Promise<T>) : null;
+  }
+
+  /**
+   * Set in-flight promise for a specific namespace:key combination.
+   * The promise is automatically removed when it resolves or rejects.
+   */
+  setInflight<T = unknown>(namespace: string, key: string, promise: Promise<T>): void {
+    const cacheKey = `${namespace}:${key}`;
+    this.inflightRequests.set(cacheKey, promise);
+
+    // Auto-cleanup when promise settles
+    promise
+      .then(() => {
+        this.inflightRequests.delete(cacheKey);
+      })
+      .catch(() => {
+        this.inflightRequests.delete(cacheKey);
+      });
   }
 
   /**

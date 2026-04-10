@@ -63,22 +63,34 @@ export abstract class BaseUiSettingsClient implements IUiSettingsClient {
       !this.isOverridden(key);
 
     if (isCacheable) {
+      // Check cache first
       const cached = this.perSettingCache.get<T>(this.namespace, key);
       if (cached !== null) {
         return cached;
       }
+
+      // Check if there's already an in-flight request for this setting
+      const inflight = this.perSettingCache.getInflight<T>(this.namespace, key);
+      if (inflight) {
+        return inflight;
+      }
+
+      // No cache and no in-flight request - create new request
+      const promise = this.getAll(context).then((all) => {
+        const value = all[key] as T;
+        this.perSettingCache!.set(this.namespace, key, value, definition.cacheTTL!);
+        return value;
+      });
+
+      // Store the in-flight promise for deduplication
+      this.perSettingCache.setInflight(this.namespace, key, promise);
+
+      return promise;
     }
 
-    // Cache miss or not cacheable - get all settings
+    // Not cacheable - get all settings directly
     const all = await this.getAll(context);
-    const value = all[key] as T;
-
-    // Cache the final merged value if cacheable
-    if (isCacheable) {
-      this.perSettingCache.set(this.namespace, key, value, definition.cacheTTL!);
-    }
-
-    return value;
+    return all[key] as T;
   }
 
   async getAll<T = any>(context?: GetUiSettingsContext) {

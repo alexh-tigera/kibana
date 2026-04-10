@@ -1211,5 +1211,143 @@ describe('ui settings', () => {
       expect(bar3).toBe('bar-value');
       expect(savedObjectsClient.get).toHaveBeenCalledTimes(1); // Still using per-setting cache
     });
+
+    it('deduplicates concurrent requests for the same uncached setting', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // Make 5 concurrent requests for the same setting
+      const promises = [
+        uiSettings.get('foo'),
+        uiSettings.get('foo'),
+        uiSettings.get('foo'),
+        uiSettings.get('foo'),
+        uiSettings.get('foo'),
+      ];
+
+      const results = await Promise.all(promises);
+
+      // All should get the same value
+      results.forEach((result) => {
+        expect(result).toBe('value');
+      });
+
+      // But ES should only be called once (not 5 times)
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('deduplicates concurrent requests across different client instances', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      // Create 3 different client instances sharing the same cache
+      const { uiSettings: client1, savedObjectsClient: soClient1 } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      const { uiSettings: client2 } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      const { uiSettings: client3 } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // Make concurrent requests from different clients
+      const promises = [client1.get('foo'), client2.get('foo'), client3.get('foo')];
+
+      const results = await Promise.all(promises);
+
+      // All should get the same value
+      results.forEach((result) => {
+        expect(result).toBe('value');
+      });
+
+      // ES should only be called once (from first client)
+      expect(soClient1.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not deduplicate requests for different settings', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'foo-value', bar: 'bar-value' };
+      const defaults = {
+        foo: {
+          value: 'default-foo',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+        bar: {
+          value: 'default-bar',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // Make concurrent requests for different settings
+      const [foo, bar] = await Promise.all([uiSettings.get('foo'), uiSettings.get('bar')]);
+
+      expect(foo).toBe('foo-value');
+      expect(bar).toBe('bar-value');
+
+      // Each setting triggers its own getAll since they're different keys
+      // (no deduplication across different settings)
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('cleans up in-flight promises after they resolve', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // Make a request
+      await uiSettings.get('foo');
+
+      // Verify in-flight promise is cleaned up
+      expect(sharedCache.getInflight('default', 'foo')).toBeNull();
+    });
   });
 });

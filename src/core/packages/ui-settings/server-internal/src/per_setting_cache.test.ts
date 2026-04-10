@@ -212,4 +212,88 @@ describe('PerSettingCache', () => {
       expect(cache.get('default', 'key1')).toBeNull();
     });
   });
+
+  describe('in-flight promise tracking', () => {
+    it('stores and retrieves in-flight promises', () => {
+      const promise = Promise.resolve('test-value');
+      cache.setInflight('default', 'key1', promise);
+
+      const retrieved = cache.getInflight('default', 'key1');
+      expect(retrieved).toBe(promise);
+    });
+
+    it('returns null for non-existent in-flight promises', () => {
+      expect(cache.getInflight('default', 'nonexistent')).toBeNull();
+    });
+
+    it('isolates in-flight promises by namespace', () => {
+      const promise1 = Promise.resolve('value1');
+      const promise2 = Promise.resolve('value2');
+
+      cache.setInflight('space1', 'key1', promise1);
+      cache.setInflight('space2', 'key1', promise2);
+
+      expect(cache.getInflight('space1', 'key1')).toBe(promise1);
+      expect(cache.getInflight('space2', 'key1')).toBe(promise2);
+    });
+
+    it('auto-removes in-flight promise after it resolves', async () => {
+      // Use real timers for this test since it involves actual promise resolution
+      jest.useRealTimers();
+
+      const promise = Promise.resolve('test-value');
+      cache.setInflight('default', 'key1', promise);
+
+      expect(cache.getInflight('default', 'key1')).toBe(promise);
+
+      // Wait for promise to resolve and cleanup to run
+      await promise;
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(cache.getInflight('default', 'key1')).toBeNull();
+
+      // Restore fake timers for other tests
+      jest.useFakeTimers();
+    });
+
+    it('auto-removes in-flight promise after it rejects', async () => {
+      // Use real timers for this test since it involves actual promise resolution
+      jest.useRealTimers();
+
+      const promise = Promise.reject(new Error('test error'));
+      cache.setInflight('default', 'key1', promise);
+
+      expect(cache.getInflight('default', 'key1')).toBe(promise);
+
+      // Wait for promise to reject (and catch to prevent unhandled rejection)
+      await promise.catch(() => {});
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(cache.getInflight('default', 'key1')).toBeNull();
+
+      // Restore fake timers for other tests
+      jest.useFakeTimers();
+    });
+
+    it('allows multiple concurrent in-flight promises for different keys', () => {
+      const promise1 = Promise.resolve('value1');
+      const promise2 = Promise.resolve('value2');
+
+      cache.setInflight('default', 'key1', promise1);
+      cache.setInflight('default', 'key2', promise2);
+
+      expect(cache.getInflight('default', 'key1')).toBe(promise1);
+      expect(cache.getInflight('default', 'key2')).toBe(promise2);
+    });
+
+    it('replaces in-flight promise when setting same key again', () => {
+      const promise1 = Promise.resolve('value1');
+      const promise2 = Promise.resolve('value2');
+
+      cache.setInflight('default', 'key1', promise1);
+      cache.setInflight('default', 'key1', promise2);
+
+      expect(cache.getInflight('default', 'key1')).toBe(promise2);
+    });
+  });
 });
