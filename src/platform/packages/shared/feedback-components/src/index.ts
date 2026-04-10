@@ -8,3 +8,4 @@
  */
 
 export { FeedbackTriggerButton } from './components';
+export { FeedbackContainer } from './components/feedback_container';

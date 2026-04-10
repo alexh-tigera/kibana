@@ -95,6 +95,8 @@ const createStartContractMock = () => {
       initNavigation: jest.fn(),
       setBreadcrumbs: jest.fn(),
       setSpaceSwitcherBreadcrumb: jest.fn(),
+      registerGlobalOverflowItem: jest.fn().mockReturnValue(() => {}),
+      getGlobalOverflowItems$: jest.fn().mockReturnValue(new BehaviorSubject([])),
       getBreadcrumbs$: jest.fn().mockReturnValue(new BehaviorSubject([])),
       getNavigation$: jest.fn().mockReturnValue(new BehaviorSubject({} as any)),
       getProjectHome$: jest.fn().mockReturnValue(of('/')),

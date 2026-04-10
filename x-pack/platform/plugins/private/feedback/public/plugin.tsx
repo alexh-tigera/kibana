@@ -5,15 +5,19 @@
  * 2.0.
  */
 
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
+import { Subject } from 'rxjs';
+import { i18n } from '@kbn/i18n';
 import type { CoreSetup, CoreStart, Plugin } from '@kbn/core/public';
 import type { CloudSetup, CloudStart } from '@kbn/cloud-plugin/public';
 import type { TelemetryPluginStart } from '@kbn/telemetry-plugin/public';
 import type { SpacesPluginStart } from '@kbn/spaces-plugin/public';
 import type { FeedbackRegistryEntry } from '@kbn/feedback-registry';
 import { getFeedbackQuestionsForApp } from '@kbn/feedback-registry';
+import type { InternalChromeStart } from '@kbn/core-chrome-browser-internal';
 import type { FeedbackFormData } from '../common';
 import { getAppDetails } from './src/utils';
+import { FeedbackModalMount } from './src/feedback_modal_mount';
 
 interface FeedbackPluginSetupDependencies {
   cloud?: CloudSetup;
@@ -25,11 +29,6 @@ interface FeedbackPluginStartDependencies {
   spaces?: SpacesPluginStart;
 }
 
-const LazyFeedbackTriggerButton = lazy(() =>
-  import('@kbn/feedback-components').then(({ FeedbackTriggerButton }) => ({
-    default: FeedbackTriggerButton,
-  }))
-);
 
 export class FeedbackPlugin implements Plugin {
   private organizationId?: string;
@@ -90,33 +89,37 @@ export class FeedbackPlugin implements Plugin {
       }
     };
 
-    const checkTelemetryOptIn = async (): Promise<boolean> => {
-      try {
-        const telemetryConfig = await core.http.get<{ optIn: boolean | null }>(
-          '/internal/telemetry/config',
-          { version: '2' }
-        );
-        return telemetryConfig.optIn === true;
-      } catch {
-        return false;
-      }
-    };
+    // Subject bridges the AppMenu overflow item's run() callback to the modal's React state
+    const openFeedback$ = new Subject<void>();
 
+    // Headless modal controller — mounts in the app bar nav control slot but renders nothing
+    // until openFeedback$ emits, at which point the EuiModal appears
     core.chrome.navControls.registerRight({
       order: 1001,
-      projectChrome: 'helpMenuExtras',
+      projectChrome: 'appBar',
       content: (
         <Suspense fallback={null}>
-          <LazyFeedbackTriggerButton
+          <FeedbackModalMount
+            trigger$={openFeedback$}
             getQuestions={getQuestions}
             getAppDetails={getAppDetailsWrapper}
             getCurrentUserEmail={getCurrentUserEmail}
             sendFeedback={sendFeedback}
             showToast={showToast}
-            checkTelemetryOptIn={checkTelemetryOptIn}
           />
         </Suspense>
       ),
+    });
+
+    // Register the persistent overflow item — survives app navigation
+    const chrome = core.chrome as InternalChromeStart;
+    chrome.project.registerGlobalOverflowItem({
+      id: 'global-feedback',
+      label: i18n.translate('feedback.appMenu.feedbackLabel', { defaultMessage: 'Feedback' }),
+      iconType: 'editorComment',
+      order: 102,
+      separator: 'above',
+      run: () => openFeedback$.next(),
     });
 
     return {};

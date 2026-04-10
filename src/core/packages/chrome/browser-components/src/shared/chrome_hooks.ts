@@ -10,6 +10,7 @@
 import { useMemo } from 'react';
 import { combineLatest, debounceTime, map } from 'rxjs';
 import type { Observable } from 'rxjs';
+import type { AppMenuItemType } from '@kbn/core-chrome-app-menu-components';
 import { sortBy } from 'lodash';
 import type {
   ChromeBreadcrumb,
@@ -313,6 +314,13 @@ export function useAppMenu() {
   const chrome = useChromeService();
   const appMenu$ = useMemo(() => chrome.getAppMenu$(), [chrome]);
   return useObservable(appMenu$, undefined);
+}
+
+/** Returns the list of globally registered overflow items (persist across app navigation). */
+export function useGlobalOverflowItems(): AppMenuItemType[] {
+  const chrome = useChromeService();
+  const globalOverflowItems$ = useMemo(() => chrome.project.getGlobalOverflowItems$(), [chrome]);
+  return useObservable(globalOverflowItems$, []);
 }
 
 /**

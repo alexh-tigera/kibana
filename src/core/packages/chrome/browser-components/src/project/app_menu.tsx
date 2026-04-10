@@ -309,16 +309,6 @@ export const AppMenuBar = React.memo(() => {
         href: docLinks.links.elasticStackGetStarted,
         target: '_blank',
       },
-      {
-        id: 'global-feedback',
-        label: i18n.translate('core.ui.chrome.appMenu.feedbackLabel', {
-          defaultMessage: 'Feedback',
-        }),
-        iconType: 'editorComment',
-        order: 102,
-        href: 'https://www.elastic.co/kibana/feedback',
-        target: '_blank',
-      },
     ],
     [navigateToUrl, basePath, docLinks]
   );

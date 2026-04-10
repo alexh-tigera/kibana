@@ -9,7 +9,7 @@
 
 import React, { lazy, Suspense, useMemo } from 'react';
 import type { AppMenuItemType } from '@kbn/core-chrome-app-menu-components';
-import { useAppMenu } from './chrome_hooks';
+import { useAppMenu, useGlobalOverflowItems } from './chrome_hooks';
 
 const AppMenu = lazy(async () => {
   const { AppMenuComponent } = await import('@kbn/core-chrome-app-menu-components');
@@ -22,20 +22,27 @@ interface HeaderAppMenuProps {
 
 export const HeaderAppMenu = ({ baseItems }: HeaderAppMenuProps) => {
   const menuConfig = useAppMenu();
+  const globalItems = useGlobalOverflowItems();
 
   const mergedConfig = useMemo(() => {
-    const hasBaseItems = baseItems && baseItems.length > 0;
+    const allOverflowItems = [
+      ...(baseItems ?? []),
+      ...globalItems,
+    ];
+    const hasOverflowItems = allOverflowItems.length > 0;
     if (!menuConfig) {
-      return hasBaseItems ? { layout: 'chromeBarV2' as const, overflowOnlyItems: baseItems } : null;
+      return hasOverflowItems
+        ? { layout: 'chromeBarV2' as const, overflowOnlyItems: allOverflowItems }
+        : null;
     }
-    if (!hasBaseItems) {
+    if (!hasOverflowItems) {
       return menuConfig;
     }
     return {
       ...menuConfig,
-      overflowOnlyItems: [...(menuConfig.overflowOnlyItems ?? []), ...baseItems],
+      overflowOnlyItems: [...(menuConfig.overflowOnlyItems ?? []), ...allOverflowItems],
     };
-  }, [menuConfig, baseItems]);
+  }, [menuConfig, baseItems, globalItems]);
 
   if (!mergedConfig) {
     return null;

@@ -20,6 +20,7 @@ import type {
   CloudLinks,
   SolutionId,
 } from '@kbn/core-chrome-browser';
+import type { AppMenuItemType } from '@kbn/core-chrome-app-menu-components';
 import {
   BehaviorSubject,
   Observable,
@@ -86,6 +87,7 @@ export class ProjectNavigationService {
       params: ChromeSetProjectBreadcrumbsParams;
     }>({ breadcrumbs: [], params: { absolute: false } });
     const spaceSwitcherBreadcrumb$ = new BehaviorSubject<ChromeBreadcrumb | undefined>(undefined);
+    const globalOverflowItems$ = new BehaviorSubject<AppMenuItemType[]>([]);
 
     const location$ = new Observable<Location>((subscriber) => {
       subscriber.next(history.location);
@@ -210,6 +212,15 @@ export class ProjectNavigationService {
       setSpaceSwitcherBreadcrumb: (crumb?: ChromeBreadcrumb) => {
         spaceSwitcherBreadcrumb$.next(crumb);
       },
+      registerGlobalOverflowItem: (item: AppMenuItemType) => {
+        globalOverflowItems$.next([...globalOverflowItems$.getValue(), item]);
+        return () => {
+          globalOverflowItems$.next(
+            globalOverflowItems$.getValue().filter((i) => i.id !== item.id)
+          );
+        };
+      },
+      getGlobalOverflowItems$: () => globalOverflowItems$.asObservable(),
       getProjectBreadcrumbs$: (): Observable<ChromeBreadcrumb[]> => {
         return combineLatest([
           projectBreadcrumbs$,

@@ -72,6 +72,8 @@ export function createChromeApi({ state, services, sidebar }: ChromeApiDeps): In
       }
       projectNavigation.setSpaceSwitcherBreadcrumb(crumb);
     },
+    registerGlobalOverflowItem: (item) => projectNavigation.registerGlobalOverflowItem(item),
+    getGlobalOverflowItems$: () => projectNavigation.getGlobalOverflowItems$(),
     getBreadcrumbs$: () => projectNavigation.getProjectBreadcrumbs$(),
     getProjectHome$: () => projectNavigation.getProjectHome$(),
   };

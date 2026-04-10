@@ -24,6 +24,7 @@ import type {
   CloudURLs,
   SolutionId,
 } from '@kbn/core-chrome-browser';
+import type { AppMenuItemType } from '@kbn/core-chrome-app-menu-components';
 
 /** @internal */
 export type InternalChromeSetup = ChromeSetup;
@@ -109,5 +110,14 @@ export interface InternalChromeStart extends ChromeStart {
      * typically used for the active space switcher in project chrome.
      */
     setSpaceSwitcherBreadcrumb(crumb?: ChromeBreadcrumb): void;
+
+    /**
+     * Register a persistent overflow item in the AppMenuBar that survives app navigation.
+     * Returns an unregister function to clean up on plugin stop.
+     */
+    registerGlobalOverflowItem(item: AppMenuItemType): () => void;
+
+    /** Get an observable of all registered global overflow items. */
+    getGlobalOverflowItems$(): Observable<AppMenuItemType[]>;
   };
 }
