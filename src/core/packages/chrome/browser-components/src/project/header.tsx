@@ -67,6 +67,24 @@ const getHeaderCss = ({ size, colors }: EuiThemeComputed) => ({
 
 type HeaderCss = ReturnType<typeof getHeaderCss>;
 
+/** POC: compact header action hit targets (~32px) vs default EUI header chip (~40px / size.xxl). */
+const PROJECT_HEADER_ACTION_BUTTON_PX = 32;
+const PROJECT_HEADER_ACTION_ICON_PX = 16;
+
+const getProjectHeaderRightActionsCss = (euiTheme: EuiThemeComputed) => css`
+  .euiHeaderSectionItemButton {
+    min-width: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+    min-height: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+    height: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+    padding-inline: ${euiTheme.size.xs};
+  }
+
+  .euiHeaderSectionItemButton svg {
+    width: ${PROJECT_HEADER_ACTION_ICON_PX}px;
+    height: ${PROJECT_HEADER_ACTION_ICON_PX}px;
+  }
+`;
+
 const Logo = ({ logoCss }: { logoCss: HeaderCss['logo'] }) => {
   const navigateToUrl = useNavigateToUrl();
   const basePath = useBasePath();
@@ -136,7 +154,7 @@ export const ProjectHeader = React.memo(() => {
               </EuiHeaderSectionItem>
             </EuiHeaderSection>
 
-            <EuiHeaderSection side="right">
+            <EuiHeaderSection side="right" css={getProjectHeaderRightActionsCss(euiTheme)}>
               <EuiHeaderSectionItem>
                 <HeaderNavControls position="center" />
               </EuiHeaderSectionItem>
