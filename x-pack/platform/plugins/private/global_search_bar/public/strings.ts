@@ -17,12 +17,15 @@ export const i18nStrings = {
   showSearchAriaText: i18n.translate('xpack.globalSearchBar.searchBar.showSearchAriaText', {
     defaultMessage: 'Show search bar',
   }),
+  typeToSearch: i18n.translate('xpack.globalSearchBar.searchBar.typeToSearch', {
+    defaultMessage: 'Search',
+  }),
   keyboardShortcutTooltip: {
     prefix: i18n.translate('xpack.globalSearchBar.searchBar.shortcutTooltip.description', {
       defaultMessage: 'Keyboard shortcut',
     }),
     onMac: i18n.translate('xpack.globalSearchBar.searchBar.shortcutTooltip.macCommandDescription', {
-      defaultMessage: 'Command + /',
+      defaultMessage: 'Cmd + /',
     }),
 
     onNotMac: i18n.translate(

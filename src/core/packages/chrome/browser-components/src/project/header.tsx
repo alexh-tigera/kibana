@@ -94,7 +94,7 @@ const PROJECT_HEADER_ACTION_BUTTON_PX = 32;
 const PROJECT_HEADER_ACTION_ICON_PX = 16;
 
 const getProjectHeaderRightActionsCss = (_euiTheme: EuiThemeComputed) => css`
-  gap: 4px;
+  gap: 8px;
 
   .euiHeaderSectionItemButton {
     box-sizing: border-box;

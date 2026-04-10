@@ -7,6 +7,8 @@
 
 import type { EuiSelectableTemplateSitewideOption } from '@elastic/eui';
 import {
+  EuiButton,
+  EuiCode,
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormLabel,
@@ -378,17 +380,32 @@ export const SearchBar: FC<SearchBarProps> = (opts) => {
 
   if (chromeStyle === 'project' && !isVisible) {
     return (
-      <EuiHeaderSectionItemButton
+      <EuiButton
         aria-label={i18nStrings.showSearchAriaText}
         buttonRef={visibilityButtonRef}
         color="text"
+        css={css`
+          background-color: transparent !important;
+          color: ${euiTheme.colors.textSubdued} !important;
+        `}
         data-test-subj="nav-search-reveal"
+        iconType="search"
+        size="s"
         onClick={() => {
           setIsVisible(true);
         }}
       >
-        <EuiIcon css={projectMagnifyIconCss} size="m" type="magnify" />
-      </EuiHeaderSectionItemButton>
+        {'Find content... '}
+        <EuiCode
+          css={css`
+            color: ${euiTheme.colors.subduedText} !important;
+          `}
+        >
+          {isMac
+            ? i18nStrings.keyboardShortcutTooltip.onMac
+            : i18nStrings.keyboardShortcutTooltip.onNotMac}
+        </EuiCode>
+      </EuiButton>
     );
   }
 

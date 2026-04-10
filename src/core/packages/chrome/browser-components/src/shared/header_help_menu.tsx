@@ -238,6 +238,10 @@ export const HeaderHelpMenu = () => {
       aria-label={i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuButtonAriaLabel', {
         defaultMessage: 'Help menu',
       })}
+      css={css`
+        border: 1px solid ${euiTheme.colors.borderBasePlain};
+        border-radius: ${euiTheme.border.radius.medium};
+      `}
       onClick={toggleMenu}
     >
       <EuiIcon type="question" size="m" aria-hidden={true} />
