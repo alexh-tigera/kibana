@@ -24,6 +24,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
   const kibanaServer = getService('kibanaServer');
   const toasts = getService('toasts');
   const dashboardExpect = getService('dashboardExpect');
+  const retry = getService('retry');
 
   describe('dashboard in space', () => {
     afterEach(async () => await clean());
@@ -52,6 +53,14 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         );
 
         if (!searchSessionItem) throw new Error(`Can\'t find session with id = ${savedSessionId}`);
+
+        // Wait for the session to complete before restoring, otherwise searches
+        // may not be served from cache and trigger "still running" warning toasts
+        await retry.waitFor('session should be in a completed status', async () => {
+          const updatedList = await searchSessionsManagement.getList();
+          const item = updatedList.find((session) => session.id === savedSessionId);
+          return item?.status === 'complete';
+        });
 
         // navigate to discover
         await searchSessionItem.view();
