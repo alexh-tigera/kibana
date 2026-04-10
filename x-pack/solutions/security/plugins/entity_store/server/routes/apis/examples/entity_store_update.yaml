@@ -21,6 +21,18 @@ responses:
             description: "The Entity Store configuration was successfully updated."
             value:
               ok: true
+  400:
+    description: "Bad request."
+    content:
+      application/json:
+        examples:
+          invalidDurationExample:
+            summary: "Invalid duration parameter"
+            description: "A log extraction parameter has an invalid duration format."
+            value:
+              statusCode: 400
+              error: "Bad Request"
+              message: "[request body]: logExtraction.frequency: must be a valid duration of at least 30 seconds (e.g. 1m, 30s)"
   404:
     description: "Entity Store not found."
     content:

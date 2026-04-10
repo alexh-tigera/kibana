@@ -6,7 +6,7 @@ responses:
         examples:
           runningStatusExample:
             summary: "Entity Store running"
-            description: "The Entity Store is running with two started engines."
+            description: "The Entity Store is running with two started engines using default settings."
             value:
               status: running
               engines:
@@ -14,9 +14,9 @@ responses:
                   status: started
                   filter: ""
                   delay: "1m"
-                  timeout: "180s"
-                  frequency: "1m"
-                  lookbackPeriod: "24h"
+                  timeout: "25s"
+                  frequency: "30s"
+                  lookbackPeriod: "3h"
                   fieldHistoryLength: 10
                   docsPerSecond: -1
                   indexPattern: ""
@@ -28,9 +28,9 @@ responses:
                   status: started
                   filter: ""
                   delay: "1m"
-                  timeout: "180s"
-                  frequency: "1m"
-                  lookbackPeriod: "24h"
+                  timeout: "25s"
+                  frequency: "30s"
+                  lookbackPeriod: "3h"
                   fieldHistoryLength: 10
                   docsPerSecond: -1
                   indexPattern: ""

@@ -41,43 +41,46 @@ responses:
               errors: []
           bulkUpdatePartialExample:
             summary: "Partial success with errors"
-            description: "Some entities were updated but others encountered errors."
+            description: "Some entities were updated but others encountered Elasticsearch-level errors."
             value:
               ok: true
               errors:
-                - message: "Entity not found"
-                  statusCode: 404
+                - _id: "5de9f93a68a72532e736bf5a6184b06300b9cabf"
+                  status: 404
+                  type: "document_missing_exception"
+                  reason: "[5de9f93a68a72532e736bf5a6184b06300b9cabf]: document missing"
   400:
     description: "Bad request."
     content:
       application/json:
         examples:
-          badRequestExample:
-            summary: "Invalid request body"
-            description: "The request body contains invalid entity data."
+          protectedFieldsExample:
+            summary: "Protected fields without force"
+            description: "The request attempts to update protected fields without the force query parameter."
             value:
               statusCode: 400
               error: "Bad Request"
-              message: "Invalid entity record"
+              message: "Bad request: The following attributes are not allowed to be updated without forcing it (?force=true): entity.name, entity.type"
 x-codeSamples:
   - lang: curl
     source: |
       curl -X PUT -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
         -H "Content-Type: application/json" \
-        -d '{"entities":[{"type":"host","doc":{"entity":{"id":"i-0abcd1234efgh5678","name":"web-server-prod-01","type":"host"},"host":{"name":"web-server-prod-01"}}}]}' \
-        "${KIBANA_URL}/api/security/entity_store/entities/bulk"
+        -d '{"entities":[{"type":"host","doc":{"entity":{"id":"host:web-server-prod-01","name":"web-server-prod-01","type":"host","attributes":{"asset":true}},"host":{"name":"web-server-prod-01"}}}]}' \
+        "${KIBANA_URL}/api/security/entity_store/entities/bulk?force=true"
   - lang: Console
     source: |
-      PUT kbn://api/security/entity_store/entities/bulk
+      PUT kbn://api/security/entity_store/entities/bulk?force=true
       {
         "entities": [
           {
             "type": "host",
             "doc": {
               "entity": {
-                "id": "i-0abcd1234efgh5678",
+                "id": "host:web-server-prod-01",
                 "name": "web-server-prod-01",
-                "type": "host"
+                "type": "host",
+                "attributes": { "asset": true }
               },
               "host": { "name": "web-server-prod-01" }
             }

@@ -4,7 +4,7 @@ requestBody:
       examples:
         createHostEntityExample:
           summary: "Create a host entity"
-          description: "Create a new host entity record with basic host and entity fields."
+          description: "Create a new host entity record with basic host and entity fields. The entity identifier must match the auto-generated format for the entity type."
           value:
             entity:
               id: "host:web-server-prod-01"
@@ -21,9 +21,6 @@ requestBody:
                 - "web-server-prod-01.example.com"
               ip:
                 - "10.0.1.42"
-              os:
-                name: "Ubuntu"
-                type: "linux"
             asset:
               environment: "production"
               criticality: "high_impact"
@@ -44,13 +41,13 @@ responses:
     content:
       application/json:
         examples:
-          badRequestExample:
-            summary: "Invalid entity"
-            description: "The request body does not match the expected entity schema."
+          euidMismatchExample:
+            summary: "Entity identifier mismatch"
+            description: "The supplied entity identifier does not match the auto-generated identifier derived from the entity fields."
             value:
               statusCode: 400
               error: "Bad Request"
-              message: "Invalid entity record"
+              message: "Bad request: Supplied ID my-custom-id does not match generated EUID host:web-server-prod-01"
   409:
     description: "Conflict."
     content:
@@ -62,13 +59,13 @@ responses:
             value:
               statusCode: 409
               error: "Conflict"
-              message: "Entity already exists"
+              message: "Entity ID 'host:web-server-prod-01' already exists"
 x-codeSamples:
   - lang: curl
     source: |
       curl -X POST -H "kbn-xsrf: true" -H "Authorization: ApiKey ${API_KEY}" \
         -H "Content-Type: application/json" \
-        -d '{"entity":{"id":"host:web-server-prod-01","name":"web-server-prod-01","type":"host"},"host":{"name":"web-server-prod-01"}}' \
+        -d '{"entity":{"id":"host:web-server-prod-01","name":"web-server-prod-01","type":"host","source":["manual"],"attributes":{"asset":true}},"host":{"name":"web-server-prod-01","ip":["10.0.1.42"]}}' \
         "${KIBANA_URL}/api/security/entity_store/entities/host"
   - lang: Console
     source: |
@@ -77,9 +74,12 @@ x-codeSamples:
         "entity": {
           "id": "host:web-server-prod-01",
           "name": "web-server-prod-01",
-          "type": "host"
+          "type": "host",
+          "source": ["manual"],
+          "attributes": { "asset": true }
         },
         "host": {
-          "name": "web-server-prod-01"
+          "name": "web-server-prod-01",
+          "ip": ["10.0.1.42"]
         }
       }

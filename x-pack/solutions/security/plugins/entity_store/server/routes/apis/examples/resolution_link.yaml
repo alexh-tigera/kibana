@@ -20,7 +20,10 @@ responses:
             summary: "Entities linked"
             description: "The entities were successfully linked to the target entity."
             value:
-              linked: 2
+              linked:
+                - "user:jdoe@example.com"
+                - "user:j.doe@example.com"
+              skipped: []
               target_id: "user:jane.doe@example.com"
   400:
     description: "Bad request."
@@ -33,7 +36,7 @@ responses:
             value:
               statusCode: 400
               error: "Bad Request"
-              message: "Cannot link an entity to itself"
+              message: "Cannot link entity 'user:jane.doe@example.com' to itself."
           mixedTypesExample:
             summary: "Mixed entity types"
             description: "All entities in a resolution group must be of the same type."
@@ -52,7 +55,7 @@ responses:
             value:
               statusCode: 404
               error: "Not Found"
-              message: "Entities not found"
+              message: "Entities not found: [user:nonexistent@example.com, user:also-nonexistent@example.com]"
 x-codeSamples:
   - lang: curl
     source: |

@@ -29,7 +29,7 @@ responses:
             value:
               statusCode: 404
               error: "Not Found"
-              message: "Entity not found"
+              message: "Entity ID 'host:web-server-prod-01' not found"
 x-codeSamples:
   - lang: curl
     source: |

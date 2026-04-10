@@ -4,9 +4,9 @@ responses:
     content:
       application/json:
         examples:
-          pageModeSingleHostExample:
+          pageModeExample:
             summary: "Page mode response with host entities"
-            description: "A paginated list of host entities sorted by timestamp in descending order."
+            description: "A paginated list of host entities sorted by timestamp in descending order, including query inspection data."
             value:
               records:
                 - "@timestamp": "2026-04-10T08:30:00.000Z"
@@ -16,6 +16,9 @@ responses:
                     type: "host"
                     source:
                       - "logs"
+                    attributes:
+                      asset: true
+                      managed: true
                     lifecycle:
                       first_seen: "2026-01-15T10:00:00.000Z"
                       last_activity: "2026-04-10T08:30:00.000Z"
@@ -38,6 +41,11 @@ responses:
               total: 1
               page: 1
               per_page: 10
+              inspect:
+                dsl:
+                  - '{"index":["entities-latest-default"],"body":{"terms":{"entity.EngineMetadata.Type":["host"]}}}'
+                response:
+                  - '{"took":1,"timed_out":false,"hits":{"total":{"value":1,"relation":"eq"}}}'
           searchAfterModeExample:
             summary: "Search-after mode response"
             description: "A cursor-based response with entities and a search_after token for the next page."
@@ -52,7 +60,17 @@ responses:
                     name: "jane.doe"
                     email:
                       - "jane.doe@example.com"
-              nextSearchAfter: "[1712736600000, \"user:jane.doe@example.com\"]"
+              nextSearchAfter:
+                - 1712736600000
+                - 1
+          emptyResultExample:
+            summary: "Empty result"
+            description: "No entities matched the query."
+            value:
+              records: []
+              total: 0
+              page: 1
+              per_page: 10
   400:
     description: "Bad request."
     content:
@@ -64,7 +82,14 @@ responses:
             value:
               statusCode: 400
               error: "Bad Request"
-              message: "Invalid filter: Expected field name but got end of input"
+              message: "Invalid filter: Expected \"(\", \"{\", value, whitespace but \":\" found.\ninvalid :: query\n---------^"
+          mixedModesExample:
+            summary: "Mixed pagination modes"
+            description: "Cannot combine page-based pagination with cursor-based pagination in the same request."
+            value:
+              statusCode: 400
+              error: "Bad Request"
+              message: "[request query]: Cannot combine page/per_page with searchAfter"
 x-codeSamples:
   - lang: curl
     source: |
