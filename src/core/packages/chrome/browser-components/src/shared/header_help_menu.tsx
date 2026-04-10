@@ -71,7 +71,7 @@ const createCustomLink = (
 ) => {
   return (
     <Fragment key={`helpButton${index}`}>
-      <EuiButtonEmpty {...buttonProps} size="s" flush="left">
+      <EuiButtonEmpty {...buttonProps} color="text" size="s" flush="left">
         {text}
       </EuiButtonEmpty>
       {addSpacer && <EuiSpacer size="xs" />}
@@ -150,6 +150,7 @@ export const HeaderHelpMenu = () => {
             <EuiButtonEmpty
               {...hrefProps}
               onClick={onClick}
+              color="text"
               size="s"
               flush="left"
               data-test-subj={dataTestSubj}

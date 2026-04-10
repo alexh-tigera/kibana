@@ -71,12 +71,22 @@ type HeaderCss = ReturnType<typeof getHeaderCss>;
 const PROJECT_HEADER_ACTION_BUTTON_PX = 32;
 const PROJECT_HEADER_ACTION_ICON_PX = 16;
 
-const getProjectHeaderRightActionsCss = (euiTheme: EuiThemeComputed) => css`
+const getProjectHeaderRightActionsCss = (_euiTheme: EuiThemeComputed) => css`
   .euiHeaderSectionItemButton {
+    box-sizing: border-box;
+    width: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
     min-width: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+    max-width: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
     min-height: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
     height: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
-    padding-inline: ${euiTheme.size.xs};
+    max-height: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+    min-inline-size: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+    max-inline-size: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+    /* No horizontal padding: xs + ~24px avatar was ~40px wide; square box centers content. */
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .euiHeaderSectionItemButton svg {
