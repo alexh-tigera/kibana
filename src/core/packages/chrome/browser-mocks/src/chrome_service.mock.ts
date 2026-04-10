@@ -94,6 +94,7 @@ const createStartContractMock = () => {
       setKibanaName: jest.fn(),
       initNavigation: jest.fn(),
       setBreadcrumbs: jest.fn(),
+      setSpaceSwitcherBreadcrumb: jest.fn(),
       getBreadcrumbs$: jest.fn().mockReturnValue(new BehaviorSubject([])),
       getNavigation$: jest.fn().mockReturnValue(new BehaviorSubject({} as any)),
       getProjectHome$: jest.fn().mockReturnValue(of('/')),

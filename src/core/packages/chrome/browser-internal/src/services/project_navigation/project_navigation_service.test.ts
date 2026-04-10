@@ -628,6 +628,23 @@ describe('breadcrumbs', () => {
     `);
   });
 
+  test('should include space switcher breadcrumb after root when set', async () => {
+    const { projectNavigation } = setupWithNavTree();
+
+    projectNavigation.setSpaceSwitcherBreadcrumb({
+      text: 'Space A',
+      'data-test-subj': 'spacesNavBreadcrumb',
+    });
+
+    const breadcrumbs = await firstValueFrom(projectNavigation.getProjectBreadcrumbs$());
+    expect(breadcrumbs[0]).toMatchObject({ text: 'Project' });
+    expect(breadcrumbs[1]).toEqual({
+      text: 'Space A',
+      'data-test-subj': 'spacesNavBreadcrumb',
+    });
+    expect(breadcrumbs[2]).toMatchObject({ text: 'Nav Item 1' });
+  });
+
   test('should skip the default navigation from project navigation when absolute: true is used', async () => {
     const { projectNavigation } = setupWithNavTree();
 

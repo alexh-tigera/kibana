@@ -24,11 +24,19 @@ import type {
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 
-function prependRootCrumb(rootCrumb: ChromeBreadcrumb | undefined, rest: ChromeBreadcrumb[]) {
+function prependRootAndOptionalSpace(
+  rootCrumb: ChromeBreadcrumb | undefined,
+  spaceSwitcherBreadcrumb: ChromeBreadcrumb | undefined,
+  rest: ChromeBreadcrumb[]
+) {
+  const prefix: ChromeBreadcrumb[] = [];
   if (rootCrumb) {
-    return [rootCrumb, ...rest];
+    prefix.push(rootCrumb);
   }
-  return rest;
+  if (spaceSwitcherBreadcrumb) {
+    prefix.push(spaceSwitcherBreadcrumb);
+  }
+  return [...prefix, ...rest];
 }
 
 export function buildBreadcrumbs({
@@ -38,6 +46,7 @@ export function buildBreadcrumbs({
   activeNodes,
   chromeBreadcrumbs,
   isServerless,
+  spaceSwitcherBreadcrumb,
 }: {
   kibanaName?: string;
   projectBreadcrumbs: {
@@ -48,6 +57,7 @@ export function buildBreadcrumbs({
   cloudLinks: CloudLinks;
   activeNodes: ChromeProjectNavigationNode[][];
   isServerless: boolean;
+  spaceSwitcherBreadcrumb?: ChromeBreadcrumb;
 }): ChromeBreadcrumb[] {
   const rootCrumb = buildRootCrumb({
     kibanaName,
@@ -56,7 +66,11 @@ export function buildBreadcrumbs({
   });
 
   if (projectBreadcrumbs.params.absolute) {
-    return prependRootCrumb(rootCrumb, projectBreadcrumbs.breadcrumbs);
+    return prependRootAndOptionalSpace(
+      rootCrumb,
+      spaceSwitcherBreadcrumb,
+      projectBreadcrumbs.breadcrumbs
+    );
   }
 
   // breadcrumbs take the first active path
@@ -74,7 +88,11 @@ export function buildBreadcrumbs({
 
   // if there are project breadcrumbs set, use them
   if (projectBreadcrumbs.breadcrumbs.length !== 0) {
-    return prependRootCrumb(rootCrumb, [...navBreadcrumbs, ...projectBreadcrumbs.breadcrumbs]);
+    return prependRootAndOptionalSpace(
+      rootCrumb,
+      spaceSwitcherBreadcrumb,
+      [...navBreadcrumbs, ...projectBreadcrumbs.breadcrumbs]
+    );
   }
 
   // otherwise try to merge legacy breadcrumbs with navigational project breadcrumbs using deeplinkid
@@ -92,9 +110,9 @@ export function buildBreadcrumbs({
   }
 
   if (chromeBreadcrumbStartIndex === -1) {
-    return prependRootCrumb(rootCrumb, navBreadcrumbs);
+    return prependRootAndOptionalSpace(rootCrumb, spaceSwitcherBreadcrumb, navBreadcrumbs);
   } else {
-    return prependRootCrumb(rootCrumb, [
+    return prependRootAndOptionalSpace(rootCrumb, spaceSwitcherBreadcrumb, [
       ...navBreadcrumbs.slice(0, navBreadcrumbEndIndex),
       ...chromeBreadcrumbs.slice(chromeBreadcrumbStartIndex),
     ]);

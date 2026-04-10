@@ -85,6 +85,7 @@ export class ProjectNavigationService {
       breadcrumbs: ChromeBreadcrumb[];
       params: ChromeSetProjectBreadcrumbsParams;
     }>({ breadcrumbs: [], params: { absolute: false } });
+    const spaceSwitcherBreadcrumb$ = new BehaviorSubject<ChromeBreadcrumb | undefined>(undefined);
 
     const location$ = new Observable<Location>((subscriber) => {
       subscriber.next(history.location);
@@ -206,6 +207,9 @@ export class ProjectNavigationService {
           params: { absolute: false, ...params },
         });
       },
+      setSpaceSwitcherBreadcrumb: (crumb?: ChromeBreadcrumb) => {
+        spaceSwitcherBreadcrumb$.next(crumb);
+      },
       getProjectBreadcrumbs$: (): Observable<ChromeBreadcrumb[]> => {
         return combineLatest([
           projectBreadcrumbs$,
@@ -213,17 +217,21 @@ export class ProjectNavigationService {
           chromeBreadcrumbs$,
           kibanaName$,
           cloudLinks$,
+          spaceSwitcherBreadcrumb$,
         ]).pipe(
-          map(([projectBreadcrumbs, nav, chromeBreadcrumbs, kibanaName, links]) => {
-            return buildBreadcrumbs({
-              kibanaName,
-              projectBreadcrumbs,
-              activeNodes: nav.activeNodes,
-              chromeBreadcrumbs,
-              cloudLinks: links,
-              isServerless: this.isServerless,
-            });
-          })
+          map(
+            ([projectBreadcrumbs, nav, chromeBreadcrumbs, kibanaName, links, spaceSwitcherBreadcrumb]) => {
+              return buildBreadcrumbs({
+                kibanaName,
+                projectBreadcrumbs,
+                activeNodes: nav.activeNodes,
+                chromeBreadcrumbs,
+                cloudLinks: links,
+                isServerless: this.isServerless,
+                spaceSwitcherBreadcrumb,
+              });
+            }
+          )
         );
       },
       getActiveSolutionNavId$: () => activeSolutionNavId$,

@@ -66,6 +66,12 @@ export function createChromeApi({ state, services, sidebar }: ChromeApiDeps): In
     getNavigation$: () => projectNavigation.getNavigation$(),
     setBreadcrumbs: (breadcrumbs, params) =>
       projectNavigation.setProjectBreadcrumbs(breadcrumbs, params),
+    setSpaceSwitcherBreadcrumb: (crumb) => {
+      if (crumb !== undefined) {
+        validateProjectStyle();
+      }
+      projectNavigation.setSpaceSwitcherBreadcrumb(crumb);
+    },
     getBreadcrumbs$: () => projectNavigation.getProjectBreadcrumbs$(),
     getProjectHome$: () => projectNavigation.getProjectHome$(),
   };

@@ -8,6 +8,7 @@
 import { EuiSkeletonRectangle } from '@elastic/eui';
 import { css } from '@emotion/react';
 import React, { lazy, Suspense } from 'react';
+import useObservable from 'react-use/lib/useObservable';
 
 import type { CoreStart } from '@kbn/core/public';
 import { QueryClient, QueryClientProvider } from '@kbn/react-query';
@@ -16,6 +17,8 @@ import { euiThemeVars } from '@kbn/ui-theme';
 import type { EventTracker } from '../analytics';
 import type { ConfigType } from '../config';
 import type { SpacesManager } from '../spaces_manager';
+
+import { SpaceProjectBreadcrumbRegistrar } from './space_project_breadcrumb_registrar';
 
 const LazyNavControlPopover = lazy(() =>
   import('./nav_control_popover').then(({ NavControlPopover }) => ({
@@ -39,6 +42,8 @@ export function initSpacesNavControl(
   });
 
   const SpacesNavControl = () => {
+    const chromeStyle = useObservable(core.chrome.getChromeStyle$(), core.chrome.getChromeStyle());
+
     if (core.http.anonymousPaths.isAnonymous(window.location.pathname)) {
       return null;
     }
@@ -56,17 +61,30 @@ export function initSpacesNavControl(
             />
           }
         >
-          <LazyNavControlPopover
-            spacesManager={spacesManager}
-            serverBasePath={core.http.basePath.serverBasePath}
-            anchorPosition="downLeft"
-            capabilities={core.application.capabilities}
-            navigateToApp={core.application.navigateToApp}
-            navigateToUrl={core.application.navigateToUrl}
-            allowSolutionVisibility={config.allowSolutionVisibility}
-            eventTracker={eventTracker}
-            areAnnouncementsEnabled={core.notifications.tours.isEnabled()}
-          />
+          {chromeStyle === 'project' ? (
+            <SpaceProjectBreadcrumbRegistrar
+              core={core}
+              spacesManager={spacesManager}
+              serverBasePath={core.http.basePath.serverBasePath}
+              capabilities={core.application.capabilities}
+              navigateToApp={core.application.navigateToApp}
+              navigateToUrl={core.application.navigateToUrl}
+              allowSolutionVisibility={config.allowSolutionVisibility}
+              eventTracker={eventTracker}
+            />
+          ) : (
+            <LazyNavControlPopover
+              spacesManager={spacesManager}
+              serverBasePath={core.http.basePath.serverBasePath}
+              anchorPosition="downLeft"
+              capabilities={core.application.capabilities}
+              navigateToApp={core.application.navigateToApp}
+              navigateToUrl={core.application.navigateToUrl}
+              allowSolutionVisibility={config.allowSolutionVisibility}
+              eventTracker={eventTracker}
+              areAnnouncementsEnabled={core.notifications.tours.isEnabled()}
+            />
+          )}
         </Suspense>
       </QueryClientProvider>
     );

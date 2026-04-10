@@ -78,6 +78,12 @@ const isProjectRootBreadcrumb = (crumb: ChromeBreadcrumb | undefined): boolean =
   );
 };
 
+/** Must match `SPACES_PROJECT_BREADCRUMB_TEST_SUBJ` in the spaces plugin (`space_project_breadcrumb_registrar.tsx`). */
+const SPACES_PROJECT_BREADCRUMB_TEST_SUBJ = 'spacesNavBreadcrumb';
+
+const isSpacesProjectBreadcrumb = (crumb: ChromeBreadcrumb | undefined): boolean =>
+  crumb?.['data-test-subj'] === SPACES_PROJECT_BREADCRUMB_TEST_SUBJ;
+
 /** POC: compact header action hit targets (~32px) vs default EUI header chip (~40px / size.xxl). */
 const PROJECT_HEADER_ACTION_BUTTON_PX = 32;
 const PROJECT_HEADER_ACTION_ICON_PX = 16;
@@ -145,9 +151,16 @@ export const ProjectHeader = React.memo(() => {
   const headerCss = getHeaderCss(euiTheme);
   const { logo: logoCss } = headerCss;
 
-  const rootBreadcrumbsOnly = useMemo(() => {
+  const globalHeaderBreadcrumbs = useMemo(() => {
     const first = breadcrumbs[0];
-    return isProjectRootBreadcrumb(first) ? [first] : [];
+    if (!isProjectRootBreadcrumb(first)) {
+      return [];
+    }
+    const second = breadcrumbs[1];
+    if (isSpacesProjectBreadcrumb(second)) {
+      return [first, second];
+    }
+    return [first];
   }, [breadcrumbs]);
 
   const topBarStyles = css`
@@ -175,10 +188,10 @@ export const ProjectHeader = React.memo(() => {
                 />
               </EuiHeaderSectionItem>
 
-              {rootBreadcrumbsOnly.length > 0 ? (
+              {globalHeaderBreadcrumbs.length > 0 ? (
                 <EuiHeaderSectionItem css={headerCss.breadcrumbsSectionItem}>
                   <BreadcrumbsWithExtensionsWrapper>
-                    <Breadcrumbs breadcrumbs={rootBreadcrumbsOnly} />
+                    <Breadcrumbs breadcrumbs={globalHeaderBreadcrumbs} />
                   </BreadcrumbsWithExtensionsWrapper>
                 </EuiHeaderSectionItem>
               ) : null}

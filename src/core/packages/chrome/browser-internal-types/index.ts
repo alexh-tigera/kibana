@@ -103,5 +103,11 @@ export interface InternalChromeStart extends ChromeStart {
       breadcrumbs: ChromeBreadcrumb[] | ChromeBreadcrumb,
       params?: Partial<ChromeSetProjectBreadcrumbsParams>
     ): void;
+
+    /**
+     * Register an optional breadcrumb rendered immediately after the root (deployment / project) crumb,
+     * typically used for the active space switcher in project chrome.
+     */
+    setSpaceSwitcherBreadcrumb(crumb?: ChromeBreadcrumb): void;
   };
 }
