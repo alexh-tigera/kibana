@@ -12,6 +12,7 @@ import { loggingSystemMock } from '@kbn/core-logging-server-mocks';
 import type { UiSettingsParams } from '@kbn/core-ui-settings-common';
 import { savedObjectsClientMock } from '@kbn/core-saved-objects-api-server-mocks';
 import { UiSettingsGlobalClient } from './ui_settings_global_client';
+import { PerSettingCache } from '../per_setting_cache';
 
 const logger = loggingSystemMock.create().get();
 
@@ -62,6 +63,8 @@ describe('ui settings global client', () => {
       savedObjectsClient,
       overrides,
       log: logger,
+      perSettingCache: new PerSettingCache(),
+      namespace: 'default',
     });
 
     return {

@@ -70,6 +70,14 @@ export abstract class UiSettingsClientCommon extends BaseUiSettingsClient {
     { handleWriteErrors }: { validateKeys?: boolean; handleWriteErrors?: boolean } = {}
   ) {
     this.cache.del();
+
+    // Invalidate shared per-setting cache for changed keys
+    if (this.perSettingCache) {
+      for (const key of Object.keys(changes)) {
+        this.perSettingCache.del(this.namespace, key);
+      }
+    }
+
     this.onWriteHook(changes);
     await this.write({ changes, handleWriteErrors });
   }

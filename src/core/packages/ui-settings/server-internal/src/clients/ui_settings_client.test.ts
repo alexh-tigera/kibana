@@ -19,6 +19,7 @@ import {
   ValidationBadValueError,
   ValidationSettingNotFoundError,
 } from '../ui_settings_errors';
+import { PerSettingCache } from '../per_setting_cache';
 
 const logger = loggingSystemMock.create().get();
 
@@ -31,11 +32,19 @@ interface SetupOptions {
   defaults?: Record<string, any>;
   esDocSource?: Record<string, any>;
   overrides?: Record<string, any>;
+  namespace?: string;
+  perSettingCache?: PerSettingCache;
 }
 
 describe('ui settings', () => {
   function setup(options: SetupOptions = {}) {
-    const { defaults = {}, overrides = {}, esDocSource = {} } = options;
+    const {
+      defaults = {},
+      overrides = {},
+      esDocSource = {},
+      namespace = 'default',
+      perSettingCache = new PerSettingCache(),
+    } = options;
 
     const savedObjectsClient = savedObjectsClientMock.create();
     savedObjectsClient.get.mockReturnValue({ attributes: esDocSource } as any);
@@ -48,11 +57,14 @@ describe('ui settings', () => {
       savedObjectsClient,
       overrides,
       log: logger,
+      perSettingCache,
+      namespace,
     });
 
     return {
       uiSettings,
       savedObjectsClient,
+      perSettingCache,
     };
   }
 
@@ -883,6 +895,321 @@ describe('ui settings', () => {
         await uiSettings.get('foo');
         expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
       });
+    });
+  });
+
+  describe('per-setting cache in get() method', () => {
+    beforeEach(() => {
+      jest.useFakeTimers({ legacyFakeTimers: true });
+    });
+
+    afterEach(() => {
+      jest.clearAllTimers();
+    });
+
+    it('caches final merged value on get() and returns from cache on subsequent calls', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'user-value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // First get() should fetch from ES
+      const value1 = await uiSettings.get('foo');
+      expect(value1).toBe('user-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Second get() should use cache and not hit ES
+      const value2 = await uiSettings.get('foo');
+      expect(value2).toBe('user-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1); // Still only 1 call
+    });
+
+    it('caches default value when user has not customized setting', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = {}; // No user customization
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // First get() should fetch from ES
+      const value1 = await uiSettings.get('foo');
+      expect(value1).toBe('default-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Second get() should use cache
+      const value2 = await uiSettings.get('foo');
+      expect(value2).toBe('default-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not cache settings without cacheTTL', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'value' };
+      const defaults = {
+        foo: {
+          value: 'default',
+          schema: schema.string(),
+          // No cacheTTL
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // First get()
+      await uiSettings.get('foo');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Advance time to clear per-request cache (5s TTL)
+      jest.advanceTimersByTime(10000);
+
+      // Second get() should fetch from ES again (per-setting cache not used)
+      await uiSettings.get('foo');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not cache overridden settings', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'user-value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+      const overrides = { foo: 'overridden-value' };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        overrides,
+        perSettingCache: sharedCache,
+      });
+
+      // First get()
+      const value1 = await uiSettings.get('foo');
+      expect(value1).toBe('overridden-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Advance time to clear per-request cache
+      jest.advanceTimersByTime(10000);
+
+      // Second get() should fetch from ES again (per-setting cache not used for overridden)
+      const value2 = await uiSettings.get('foo');
+      expect(value2).toBe('overridden-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('invalidates cache when setting is updated via set()', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'initial-value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // First get() caches the value
+      await uiSettings.get('foo');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Update the setting
+      await uiSettings.set('foo', 'updated-value');
+
+      // Next get() should fetch from ES (cache invalidated)
+      await uiSettings.get('foo');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('isolates cache by namespace for get() calls', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      // First client in space1
+      const { uiSettings: uiSettings1, savedObjectsClient: client1 } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+        namespace: 'space1',
+      });
+
+      await uiSettings1.get('foo');
+      expect(client1.get).toHaveBeenCalledTimes(1);
+
+      // Second client in space2 should not use space1's cache
+      const { uiSettings: uiSettings2, savedObjectsClient: client2 } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+        namespace: 'space2',
+      });
+
+      await uiSettings2.get('foo');
+      expect(client2.get).toHaveBeenCalledTimes(1);
+
+      // Third client in space1 should use cached value
+      const { uiSettings: uiSettings3, savedObjectsClient: client3 } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+        namespace: 'space1',
+      });
+
+      await uiSettings3.get('foo');
+      expect(client3.get).toHaveBeenCalledTimes(0); // Uses cache
+    });
+
+    it('respects TTL expiry for cached values in get()', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 5000, // 5 seconds
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // First get() caches the value
+      await uiSettings.get('foo');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Within TTL, should use cache
+      jest.advanceTimersByTime(4000);
+      await uiSettings.get('foo');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // After TTL expires, should fetch from ES
+      jest.advanceTimersByTime(1000);
+      await uiSettings.get('foo');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('works without perSettingCache (graceful degradation)', async () => {
+      const esDocSource = { foo: 'value' };
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      // No perSettingCache provided
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: undefined,
+      });
+
+      // Should work normally without per-setting cache
+      const value1 = await uiSettings.get('foo');
+      expect(value1).toBe('value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Second call within per-request cache window should not fetch again
+      const value2 = await uiSettings.get('foo');
+      expect(value2).toBe('value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1); // Per-request cache still active
+    });
+
+    it('caches different settings independently', async () => {
+      const sharedCache = new PerSettingCache();
+      const esDocSource = { foo: 'foo-value', bar: 'bar-value' };
+      const defaults = {
+        foo: {
+          value: 'default-foo',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+        bar: {
+          value: 'default-bar',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource,
+        perSettingCache: sharedCache,
+      });
+
+      // Get foo - caches it in per-setting cache
+      const foo1 = await uiSettings.get('foo');
+      expect(foo1).toBe('foo-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Get bar - uses per-request cache from first call (same getAll result)
+      const bar1 = await uiSettings.get('bar');
+      expect(bar1).toBe('bar-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1); // Still 1 due to per-request cache
+
+      // Get foo again - uses per-setting cache
+      const foo2 = await uiSettings.get('foo');
+      expect(foo2).toBe('foo-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Get bar again - uses per-setting cache
+      const bar2 = await uiSettings.get('bar');
+      expect(bar2).toBe('bar-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+      // Advance time to clear per-request cache
+      jest.advanceTimersByTime(10000);
+
+      // Both should still use per-setting cache (not expired yet)
+      const foo3 = await uiSettings.get('foo');
+      const bar3 = await uiSettings.get('bar');
+      expect(foo3).toBe('foo-value');
+      expect(bar3).toBe('bar-value');
+      expect(savedObjectsClient.get).toHaveBeenCalledTimes(1); // Still using per-setting cache
     });
   });
 });

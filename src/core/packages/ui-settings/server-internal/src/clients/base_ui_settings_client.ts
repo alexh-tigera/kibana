@@ -16,27 +16,33 @@ import type {
 } from '@kbn/core-ui-settings-common';
 import type { IUiSettingsClient } from '@kbn/core-ui-settings-server';
 import { ValidationBadValueError, ValidationSettingNotFoundError } from '../ui_settings_errors';
+import type { PerSettingCache } from '../per_setting_cache';
 
 export interface BaseUiSettingsDefaultsClientOptions {
   overrides?: Record<string, any>;
   defaults?: Record<string, UiSettingsParams>;
   log: Logger;
+  perSettingCache?: PerSettingCache;
+  namespace?: string;
 }
 
 /**
  * Base implementation of the {@link IUiSettingsClient}.
  */
 export abstract class BaseUiSettingsClient implements IUiSettingsClient {
-  private readonly defaults: Record<string, UiSettingsParams>;
+  protected readonly defaults: Record<string, UiSettingsParams>;
   protected readonly overrides: Record<string, any>;
   protected readonly log: Logger;
+  protected readonly perSettingCache?: PerSettingCache;
+  protected readonly namespace: string;
 
   protected constructor(options: BaseUiSettingsDefaultsClientOptions) {
-    const { defaults = {}, overrides = {}, log } = options;
+    const { defaults = {}, overrides = {}, log, perSettingCache, namespace = 'default' } = options;
     this.log = log;
     this.overrides = overrides;
-
     this.defaults = defaults;
+    this.perSettingCache = perSettingCache;
+    this.namespace = namespace;
   }
 
   getRegistered() {
@@ -48,8 +54,31 @@ export abstract class BaseUiSettingsClient implements IUiSettingsClient {
   }
 
   async get<T = any>(key: string, context?: GetUiSettingsContext): Promise<T> {
+    const definition = this.defaults[key];
+
+    const isCacheable =
+      this.perSettingCache &&
+      definition?.cacheTTL &&
+      definition.cacheTTL > 0 &&
+      !this.isOverridden(key);
+
+    if (isCacheable) {
+      const cached = this.perSettingCache.get<T>(this.namespace, key);
+      if (cached !== null) {
+        return cached;
+      }
+    }
+
+    // Cache miss or not cacheable - get all settings
     const all = await this.getAll(context);
-    return all[key] as T;
+    const value = all[key] as T;
+
+    // Cache the final merged value if cacheable
+    if (isCacheable) {
+      this.perSettingCache.set(this.namespace, key, value, definition.cacheTTL!);
+    }
+
+    return value;
   }
 
   async getAll<T = any>(context?: GetUiSettingsContext) {
@@ -130,7 +159,15 @@ export abstract class BaseUiSettingsClient implements IUiSettingsClient {
     return values;
   }
 
-  abstract getUserProvided<T = any>(): Promise<Record<string, UserProvidedValues<T>>>;
+  /**
+   * Gets user-provided values.
+   *
+   * If settingKey is included, it specifies a particular requested setting. If provided, the implementation can choose to optimize
+   * for returning the user value of that single setting (e.g. by checking a per-setting cache) rather than having to build the full record of all user values.
+   */
+  abstract getUserProvided<T = any>(
+    settingKey?: string
+  ): Promise<Record<string, UserProvidedValues<T>>>;
 
   abstract setMany(changes: Record<string, any>): Promise<void>;
 
