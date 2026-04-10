@@ -1349,5 +1349,125 @@ describe('ui settings', () => {
       // Verify in-flight promise is cleaned up
       expect(sharedCache.getInflight('default', 'foo')).toBeNull();
     });
+
+    it('clears in-flight promises when cache is invalidated via set()', async () => {
+      const sharedCache = new PerSettingCache();
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings } = setup({
+        defaults,
+        esDocSource: { foo: 'initial-value' },
+        perSettingCache: sharedCache,
+      });
+
+      // Start a get() request but don't await it yet
+      const promise1 = uiSettings.get('foo');
+
+      // Verify in-flight promise exists
+      expect(sharedCache.getInflight('default', 'foo')).toBeTruthy();
+
+      // Update the setting - this should clear both cache AND in-flight promises
+      await uiSettings.set('foo', 'new-value');
+
+      // Verify in-flight promise was cleared by set()
+      expect(sharedCache.getInflight('default', 'foo')).toBeNull();
+
+      // Complete the first request
+      await promise1;
+    });
+
+    it('prevents race condition: setMany() clears in-flight promises', async () => {
+      const sharedCache = new PerSettingCache();
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+        bar: {
+          value: 'default-bar',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings } = setup({
+        defaults,
+        esDocSource: { foo: 'old-foo', bar: 'old-bar' },
+        perSettingCache: sharedCache,
+      });
+
+      // Start get() requests but don't await
+      const promise1 = uiSettings.get('foo');
+      const promise2 = uiSettings.get('bar');
+
+      // Verify in-flight promises exist
+      expect(sharedCache.getInflight('default', 'foo')).toBeTruthy();
+      expect(sharedCache.getInflight('default', 'bar')).toBeTruthy();
+
+      // setMany() should clear in-flight promises for changed keys only
+      await uiSettings.setMany({ foo: 'new-foo' });
+
+      // foo's in-flight should be cleared, bar's should remain
+      expect(sharedCache.getInflight('default', 'foo')).toBeNull();
+      expect(sharedCache.getInflight('default', 'bar')).toBeTruthy();
+
+      // Complete promises
+      await Promise.all([promise1, promise2]);
+    });
+
+    it('prevents stale in-flight promise from caching after invalidation', async () => {
+      const sharedCache = new PerSettingCache();
+      const defaults = {
+        foo: {
+          value: 'default-value',
+          schema: schema.string(),
+          cacheTTL: 30000,
+        },
+      };
+
+      const { uiSettings, savedObjectsClient } = setup({
+        defaults,
+        esDocSource: { foo: 'old-value' },
+        perSettingCache: sharedCache,
+      });
+
+      // Create a promise that we can control when it resolves
+      let resolveGetAll: (value: any) => void;
+      const controlledPromise = new Promise((resolve) => {
+        resolveGetAll = resolve;
+      });
+
+      // Mock getAll to return our controlled promise
+      savedObjectsClient.get.mockReturnValueOnce(
+        controlledPromise.then(() => ({ attributes: { foo: 'old-value' } })) as any
+      );
+
+      // Start get() - this will create an in-flight promise
+      const getPromise = uiSettings.get('foo');
+
+      // Verify in-flight promise exists
+      expect(sharedCache.getInflight('default', 'foo')).toBeTruthy();
+
+      // Invalidate the cache BEFORE the promise resolves
+      await uiSettings.set('foo', 'new-value');
+
+      // In-flight promise should be cleared
+      expect(sharedCache.getInflight('default', 'foo')).toBeNull();
+
+      // Now let the original promise resolve with old data
+      resolveGetAll!({ attributes: { foo: 'old-value' } });
+      await getPromise;
+
+      // Verify the cache was NOT populated with stale data
+      // (The promise saw it was no longer in-flight and skipped caching)
+      expect(sharedCache.get('default', 'foo')).toBeNull();
+    });
   });
 });

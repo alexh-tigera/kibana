@@ -80,7 +80,11 @@ export abstract class BaseUiSettingsClient implements IUiSettingsClient {
       // No cache and no in-flight request - create new request
       const promise = this.getAll(context).then((all) => {
         const value = all[key] as T;
-        this.perSettingCache!.set(this.namespace, key, value, definition.cacheTTL!);
+        // Only cache if we're still the active in-flight promise (not invalidated)
+        // This prevents stale promises from caching data after invalidation
+        if (this.perSettingCache!.getInflight(this.namespace, key) === promise) {
+          this.perSettingCache!.set(this.namespace, key, value, definition.cacheTTL!);
+        }
         return value;
       });
 

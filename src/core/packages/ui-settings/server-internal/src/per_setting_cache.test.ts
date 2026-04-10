@@ -122,6 +122,28 @@ describe('PerSettingCache', () => {
       expect(cache.get('space1', 'key1')).toBeNull();
       expect(cache.get('space2', 'key1')).toBe('value2');
     });
+
+    it('clears in-flight promises when deleting', () => {
+      const promise = Promise.resolve('test-value');
+      cache.setInflight('default', 'key1', promise);
+
+      expect(cache.getInflight('default', 'key1')).toBe(promise);
+
+      cache.del('default', 'key1');
+
+      expect(cache.getInflight('default', 'key1')).toBeNull();
+    });
+
+    it('clears both cached value and in-flight promise', () => {
+      cache.set('default', 'key1', 'value1', 5000);
+      const promise = Promise.resolve('test-value');
+      cache.setInflight('default', 'key1', promise);
+
+      cache.del('default', 'key1');
+
+      expect(cache.get('default', 'key1')).toBeNull();
+      expect(cache.getInflight('default', 'key1')).toBeNull();
+    });
   });
 
   describe('delNamespace', () => {
@@ -150,6 +172,22 @@ describe('PerSettingCache', () => {
     it('handles deleting non-existent namespaces', () => {
       expect(() => cache.delNamespace('nonexistent')).not.toThrow();
     });
+
+    it('clears all in-flight promises for the namespace', () => {
+      const promise1 = Promise.resolve('value1');
+      const promise2 = Promise.resolve('value2');
+      const promise3 = Promise.resolve('value3');
+
+      cache.setInflight('space1', 'key1', promise1);
+      cache.setInflight('space1', 'key2', promise2);
+      cache.setInflight('space2', 'key1', promise3);
+
+      cache.delNamespace('space1');
+
+      expect(cache.getInflight('space1', 'key1')).toBeNull();
+      expect(cache.getInflight('space1', 'key2')).toBeNull();
+      expect(cache.getInflight('space2', 'key1')).toBe(promise3);
+    });
   });
 
   describe('clear', () => {
@@ -171,6 +209,19 @@ describe('PerSettingCache', () => {
       cache.clear();
 
       expect(clearTimeoutSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('clears all in-flight promises', () => {
+      const promise1 = Promise.resolve('value1');
+      const promise2 = Promise.resolve('value2');
+
+      cache.setInflight('space1', 'key1', promise1);
+      cache.setInflight('space2', 'key2', promise2);
+
+      cache.clear();
+
+      expect(cache.getInflight('space1', 'key1')).toBeNull();
+      expect(cache.getInflight('space2', 'key2')).toBeNull();
     });
   });
 

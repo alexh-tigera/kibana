@@ -81,22 +81,30 @@ export class PerSettingCache {
   }
 
   /**
-   * Delete cached value
+   * Delete cached value and clear any in-flight promises.
+   * This ensures cache invalidation also prevents stale in-flight requests.
    */
   del(namespace: string, key: string): void {
     const cacheKey = `${namespace}:${key}`;
+
+    // Clear cached value
     const entry = this.entries.get(cacheKey);
     if (entry) {
       clearTimeout(entry.timer);
       this.entries.delete(cacheKey);
     }
+
+    // Clear in-flight promise to prevent stale data
+    this.inflightRequests.delete(cacheKey);
   }
 
   /**
-   * Delete all cached values for a namespace
+   * Delete all cached values and in-flight promises for a namespace
    */
   delNamespace(namespace: string): void {
     const prefix = `${namespace}:`;
+
+    // Clear cached values
     for (const key of this.entries.keys()) {
       if (key.startsWith(prefix)) {
         const entry = this.entries.get(key);
@@ -106,16 +114,24 @@ export class PerSettingCache {
         this.entries.delete(key);
       }
     }
+
+    // Clear in-flight promises
+    for (const key of this.inflightRequests.keys()) {
+      if (key.startsWith(prefix)) {
+        this.inflightRequests.delete(key);
+      }
+    }
   }
 
   /**
-   * Clear all cached values
+   * Clear all cached values and in-flight promises
    */
   clear(): void {
     for (const entry of this.entries.values()) {
       clearTimeout(entry.timer);
     }
     this.entries.clear();
+    this.inflightRequests.clear();
   }
 
   /**
