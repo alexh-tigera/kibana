@@ -130,7 +130,7 @@ export class ObservabilityAIAssistantAppPlugin
 
     if (isEnabled) {
       coreStart.chrome.navControls.registerRight({
-        projectChrome: 'appBar',
+        projectChrome: 'projectHeader',
         mount: (element) => {
           ReactDOM.render(
             <NavControlInitiator
@@ -147,8 +147,8 @@ export class ObservabilityAIAssistantAppPlugin
             ReactDOM.unmountComponentAtNode(element);
           };
         },
-        // right before the user profile
-        order: 1001,
+        // Global header: before AI Agent (order 1001), before user profile
+        order: 1000,
       });
     }
 
