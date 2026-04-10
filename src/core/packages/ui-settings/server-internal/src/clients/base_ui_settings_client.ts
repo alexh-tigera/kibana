@@ -171,15 +171,7 @@ export abstract class BaseUiSettingsClient implements IUiSettingsClient {
     return values;
   }
 
-  /**
-   * Gets user-provided values.
-   *
-   * If settingKey is included, it specifies a particular requested setting. If provided, the implementation can choose to optimize
-   * for returning the user value of that single setting (e.g. by checking a per-setting cache) rather than having to build the full record of all user values.
-   */
-  abstract getUserProvided<T = any>(
-    settingKey?: string
-  ): Promise<Record<string, UserProvidedValues<T>>>;
+  abstract getUserProvided<T = any>(): Promise<Record<string, UserProvidedValues<T>>>;
 
   abstract setMany(changes: Record<string, any>): Promise<void>;
 
