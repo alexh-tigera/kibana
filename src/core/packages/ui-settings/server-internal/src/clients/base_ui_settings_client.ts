@@ -30,7 +30,7 @@ export interface BaseUiSettingsDefaultsClientOptions {
  * Base implementation of the {@link IUiSettingsClient}.
  */
 export abstract class BaseUiSettingsClient implements IUiSettingsClient {
-  protected readonly defaults: Record<string, UiSettingsParams>;
+  private readonly defaults: Record<string, UiSettingsParams>;
   protected readonly overrides: Record<string, any>;
   protected readonly log: Logger;
   protected readonly perSettingCache?: PerSettingCache;
