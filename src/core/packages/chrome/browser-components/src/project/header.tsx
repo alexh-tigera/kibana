@@ -8,7 +8,14 @@
  */
 
 import type { EuiThemeComputed } from '@elastic/eui';
-import { EuiHeader, EuiHeaderSection, EuiHeaderSectionItem, useEuiTheme } from '@elastic/eui';
+import {
+  EuiHeader,
+  EuiHeaderSection,
+  EuiHeaderSectionItem,
+  EuiHeaderSectionItemButton,
+  EuiIcon,
+  useEuiTheme,
+} from '@elastic/eui';
 import { css } from '@emotion/react';
 import type { ChromeBreadcrumb } from '@kbn/core-chrome-browser';
 import React, { useCallback, useMemo } from 'react';
@@ -200,6 +207,38 @@ export const ProjectHeader = React.memo(() => {
                   </BreadcrumbsWithExtensionsWrapper>
                 </EuiHeaderSectionItem>
               ) : null}
+
+              <EuiHeaderSectionItem css={headerCss.leftNavcontrols}>
+                <div
+                  className="navcontrols__separator"
+                  css={css`
+                    margin-right: 0 !important;
+                  `}
+                />
+                <EuiHeaderSectionItemButton
+                  aria-label="Search multiple"
+                  css={css`
+                    box-sizing: border-box;
+                    width: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+                    min-width: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+                    max-width: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+                    min-height: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+                    height: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+                    max-height: ${PROJECT_HEADER_ACTION_BUTTON_PX}px;
+                    padding: 0;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    svg {
+                      width: ${PROJECT_HEADER_ACTION_ICON_PX}px;
+                      height: ${PROJECT_HEADER_ACTION_ICON_PX}px;
+                    }
+                  `}
+                  onClick={() => {}}
+                >
+                  <EuiIcon type="crossProjectSearch" size="m" aria-hidden={true} />
+                </EuiHeaderSectionItemButton>
+              </EuiHeaderSectionItem>
             </EuiHeaderSection>
 
             <EuiHeaderSection side="right" css={getProjectHeaderRightActionsCss(euiTheme)}>
