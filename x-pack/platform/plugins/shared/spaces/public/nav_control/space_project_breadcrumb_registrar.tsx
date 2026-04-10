@@ -5,8 +5,9 @@
  * 2.0.
  */
 
-import { useEuiTheme } from '@elastic/eui';
-import React, { useEffect, useState } from 'react';
+import { EuiFlexGroup, EuiFlexItem, EuiIcon, useEuiTheme } from '@elastic/eui';
+import { css } from '@emotion/react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import type { ApplicationStart, Capabilities, CoreStart } from '@kbn/core/public';
 import type { InternalChromeStart } from '@kbn/core-chrome-browser-internal';
@@ -15,11 +16,16 @@ import { useSpaces } from './hooks/use_spaces';
 import type { Space } from '../../common';
 import type { EventTracker } from '../analytics';
 import type { SpacesManager } from '../spaces_manager';
+import { getSpaceSolutionIconType } from '../space_solution_badge';
 
 /** Matches `data-test-subj` on the raw chrome breadcrumb (before `prepareBreadcrumbs`). */
 export const SPACES_PROJECT_BREADCRUMB_TEST_SUBJ = 'spacesNavBreadcrumb';
 
 const popoutContentId = 'headerSpacesMenuBreadcrumbContent';
+
+const spaceBreadcrumbLabelCss = css`
+  min-width: 0;
+`;
 
 export interface SpaceProjectBreadcrumbRegistrarProps {
   core: CoreStart;
@@ -52,8 +58,35 @@ export function SpaceProjectBreadcrumbRegistrar({
     return () => sub.unsubscribe();
   }, [spacesManager]);
 
-  useEffect(() => {
+  const breadcrumbText = useMemo(() => {
     if (!activeSpace) {
+      return null;
+    }
+    if (!allowSolutionVisibility) {
+      return activeSpace.name;
+    }
+    return (
+      <EuiFlexGroup
+        gutterSize="s"
+        alignItems="center"
+        responsive={false}
+        css={spaceBreadcrumbLabelCss}
+        title={activeSpace.name}
+      >
+        <EuiFlexItem grow={false}>
+          <EuiIcon
+            type={getSpaceSolutionIconType(activeSpace.solution)}
+            size="s"
+            aria-hidden={true}
+          />
+        </EuiFlexItem>
+        <EuiFlexItem css={spaceBreadcrumbLabelCss}>{activeSpace.name}</EuiFlexItem>
+      </EuiFlexGroup>
+    );
+  }, [activeSpace, allowSolutionVisibility]);
+
+  useEffect(() => {
+    if (!activeSpace || breadcrumbText == null) {
       chrome.project.setSpaceSwitcherBreadcrumb(undefined);
       return () => {
         chrome.project.setSpaceSwitcherBreadcrumb(undefined);
@@ -61,7 +94,7 @@ export function SpaceProjectBreadcrumbRegistrar({
     }
 
     chrome.project.setSpaceSwitcherBreadcrumb({
-      text: activeSpace.name,
+      text: breadcrumbText,
       'data-test-subj': SPACES_PROJECT_BREADCRUMB_TEST_SUBJ,
       popoverContent: (closePopover) => (
         <SpacesMenu
@@ -82,7 +115,7 @@ export function SpaceProjectBreadcrumbRegistrar({
       popoverProps: {
         panelPaddingSize: 'none',
         zIndex: Number(euiTheme.levels.navigation) + 1,
-               panelProps: {
+        panelProps: {
           'data-test-subj': 'spaceMenuPopoverPanel',
         },
       },
@@ -93,7 +126,7 @@ export function SpaceProjectBreadcrumbRegistrar({
     };
   }, [
     activeSpace,
-    allowSolutionVisibility,
+    breadcrumbText,
     capabilities,
     chrome.project,
     data,

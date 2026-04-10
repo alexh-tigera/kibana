@@ -57,17 +57,26 @@ const SolutionOptions: Record<
   },
 };
 
+function resolveSolutionOptionKey(solution?: Space['solution']): NonNullable<Space['solution']> {
+  if (solution && solution in SolutionOptions) {
+    return solution as NonNullable<Space['solution']>;
+  }
+  return 'classic';
+}
+
+/** EUI icon type for the space solution view (aligned with {@link SpaceSolutionBadge}). */
+export function getSpaceSolutionIconType(solution?: Space['solution']): string {
+  return SolutionOptions[resolveSolutionOptionKey(solution)].iconType;
+}
+
 export type SpaceSolutionBadgeProps = Omit<EuiBadgeProps, 'iconType'> & {
   solution?: Space['solution'];
 };
 
 export const SpaceSolutionBadge = ({ solution, ...badgeProps }: SpaceSolutionBadgeProps) => {
   const { iconType, label } = useMemo(() => {
-    if (!solution || !SolutionOptions[solution]) {
-      return SolutionOptions.classic;
-    }
-
-    return SolutionOptions[solution];
+    const key = resolveSolutionOptionKey(solution);
+    return SolutionOptions[key];
   }, [solution]);
 
   return (
