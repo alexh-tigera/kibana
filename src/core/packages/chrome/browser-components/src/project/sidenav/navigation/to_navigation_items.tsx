@@ -118,7 +118,7 @@ export const toNavigationItems = (
 
   const logoItem: SideNavLogo = {
     href: warnIfMissing(logoNode, 'href', '/missing-href-😭'),
-    iconType: getIcon(logoNode),
+    iconType: 'home',
     id: warnIfMissing(logoNode, 'id', 'kibana'),
     label: warnIfMissing(logoNode, 'title', 'Kibana'),
     'data-test-subj': logoNode ? getTestSubj(logoNode, ['nav-item-home']) : undefined,
