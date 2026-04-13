@@ -20,7 +20,7 @@ This guide covers the widget set commonly flagged by **`@elastic/eui/no-unnamed-
 
 ## Tooltip + `EuiButtonIcon`
 
-When **`EuiToolTip`** wraps **`EuiButtonIcon`** and the tooltip **content** matches the control’s accessible name, set **`disableScreenReaderOutput`** on the tooltip so screen readers are not given the same string twice.
+When **`EuiToolTip`** wraps **`EuiButtonIcon`** and the tooltip **content** matches the control’s accessible name, set **`disableScreenReaderOutput`** on the tooltip so screen readers are not given the same string twice. For rule scope, i18n alignment, and ESLint **`@elastic/eui/sr-output-disabled-tooltip`**, see **`eui_tooltip_icon.md`**.
 
 ## Examples
 
@@ -92,11 +92,38 @@ const selectLabelId = useGeneratedHtmlId();
 />
 ```
 
+## Common mistakes
+
+**Both `aria-label` and `aria-labelledby` on the same control**
+
+```tsx
+// WRONG — use exactly one naming mechanism
+<EuiSelect aria-label="Format" aria-labelledby={labelId} />
+
+// RIGHT — prefer aria-labelledby when a visible label exists
+<EuiSelect aria-labelledby={labelId} />
+```
+
+**Redundant `aria-label` on a child of `EuiFormRow`**
+
+```tsx
+// WRONG — EuiFormRow already supplies the name
+<EuiFormRow label="Email">
+  <EuiFieldText aria-label="Email" />
+</EuiFormRow>
+
+// RIGHT — row handles it
+<EuiFormRow label="Email">
+  <EuiFieldText />
+</EuiFormRow>
+```
+
 ## Related ESLint rules
 
 | Rule ID | What it enforces |
 |--------|-------------------|
 | `@elastic/eui/no-unnamed-interactive-element` | Accessible name on listed interactive widgets. |
 | `@elastic/eui/badge-accessibility-rules` | Overlapping badge / unnamed interactive cases. |
+| `@elastic/eui/sr-output-disabled-tooltip` | Duplicate SR text for **`EuiToolTip`** + **`EuiButtonIcon`** — see **`eui_tooltip_icon.md`**. |
 
 ESLint quick ref: `../eslint/fix-no-unnamed-interactive-element.md`.

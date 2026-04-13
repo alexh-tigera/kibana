@@ -92,10 +92,37 @@ return (
 </EuiPopover>
 ```
 
-## Skip / defer (implementation)
+## Skip / defer
 
-- If the overlay is **`{...props}` spread only** and you cannot see `aria-labelledby` / title wiring, do not guess — inspect the spread source or escalate.
-- If adding a visible title would change product UX, flag for design / PM rather than inventing hidden-only names.
+- **`{...props}`** spread with no visible `aria-labelledby` / title wiring — inspect the spread source or escalate.
+- Adding a visible title would change UX — flag for design / PM.
+
+## Common mistakes
+
+**Using `aria-label` when a visible title already exists**
+
+```tsx
+// WRONG — duplicates the title as a hidden string
+<EuiModal aria-label="Settings">
+  <EuiModalTitle>Settings</EuiModalTitle>
+</EuiModal>
+
+// RIGHT — point at the visible title
+const modalTitleId = useGeneratedHtmlId();
+<EuiModal aria-labelledby={modalTitleId}>
+  <EuiModalTitle id={modalTitleId}>Settings</EuiModalTitle>
+</EuiModal>
+```
+
+**Forgetting `titleProps` on `EuiConfirmModal`**
+
+```tsx
+// WRONG — aria-labelledby points at nothing
+<EuiConfirmModal aria-labelledby={id} title="Delete?" />
+
+// RIGHT — titleProps wires the id to the rendered title
+<EuiConfirmModal aria-labelledby={id} title="Delete?" titleProps={{ id }} />
+```
 
 ## Related ESLint rules
 
@@ -103,4 +130,4 @@ return (
 |--------|-------------------|
 | `@elastic/eui/require-aria-label-for-modals` | Accessible name on modal, flyout, confirm modal, popover (`aria-labelledby` / `aria-label`, `titleProps` for confirm). |
 
-ESLint quick ref (same pack): `../eslint/fix-require-aria-label-for-modals.md`.
+ESLint quick ref: `../eslint/fix-require-aria-label-for-modals.md`.

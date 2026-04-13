@@ -56,6 +56,28 @@ If you add or change tooltip **`content`** / accessible names, use **`i18n.trans
 </EuiButton>
 ```
 
+## Common mistakes
+
+**`tabIndex={-1}` on an interactive control**
+
+```tsx
+// WRONG — removes button from tab order
+<EuiButton tabIndex={-1} onClick={onSave}>Save</EuiButton>
+
+// RIGHT — button is already focusable
+<EuiButton onClick={onSave}>Save</EuiButton>
+```
+
+**Missing `tabIndex={0}` on non-interactive tooltip anchor**
+
+```tsx
+// WRONG — keyboard users cannot reach the tooltip
+<EuiToolTip content="Details"><EuiIcon type="iInCircle" /></EuiToolTip>
+
+// RIGHT
+<EuiToolTip content="Details"><EuiIcon type="iInCircle" tabIndex={0} /></EuiToolTip>
+```
+
 ## Related ESLint rules
 
 | Rule ID | What it enforces |

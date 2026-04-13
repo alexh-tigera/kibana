@@ -34,10 +34,36 @@ Tables need a **caption** exposed to assistive technology so users understand wh
 
 If **`tableCaption`** is supplied only via **`{...tableProps}`**, fix it at the **source** of `tableProps` or merge explicitly at the callsite. Do not duplicate conflicting `tableCaption` values. If the spread is opaque, flag for manual review.
 
+## Common mistakes
+
+**Missing `tableCaption`**
+
+```tsx
+// WRONG
+<EuiBasicTable items={items} columns={columns} />
+
+// RIGHT
+<EuiBasicTable
+  tableCaption={i18n.translate('users.tableCaption', { defaultMessage: 'User accounts' })}
+  items={items}
+  columns={columns}
+/>
+```
+
+**Generic caption**
+
+```tsx
+// WRONG — "Table" tells assistive technology users nothing
+tableCaption="Table"
+
+// RIGHT — describes the dataset
+tableCaption={i18n.translate('users.tableCaption', { defaultMessage: 'User accounts' })}
+```
+
 ## Related ESLint rules
 
 | Rule ID | What it enforces |
 |--------|-------------------|
 | `@elastic/eui/require-table-caption` | `tableCaption` on `EuiBasicTable` / `EuiInMemoryTable`. |
 
-ESLint quick ref: `../eslint/fix-no-table-captions.md`.
+ESLint quick ref: `../eslint/fix-require-table-caption.md`.

@@ -1,6 +1,6 @@
 # EUI radio groups: `EuiRadio` and `EuiRadioGroup`
 
-Radio buttons are **grouped in the accessibility tree** by shared **`name`** values. Without a **`name`**, browsers and AT cannot treat options as one exclusive set.
+Radio buttons are **grouped in the accessibility tree** by shared **`name`** values. Without a **`name`**, browsers and assistive technology cannot treat options as one exclusive set.
 
 ## Correct usage
 
@@ -46,6 +46,28 @@ Radio buttons are **grouped in the accessibility tree** by shared **`name`** val
 ## Skip / defer
 
 - **`{...groupProps}`** — verify **`name`** in the spread source before adding another.
+
+## Common mistakes
+
+**Missing `name`**
+
+```tsx
+// WRONG — assistive technology cannot group these radios
+<EuiRadio label="Option A" checked={selected === 'a'} onChange={onChange} />
+
+// RIGHT
+<EuiRadio name="myChoice" label="Option A" checked={selected === 'a'} onChange={onChange} />
+```
+
+**Passing `name` through `i18n`**
+
+```tsx
+// WRONG — name is programmatic, not user-visible
+<EuiRadio name={i18n.translate('x.name', { defaultMessage: 'paymentMethod' })} />
+
+// RIGHT
+<EuiRadio name="paymentMethod" />
+```
 
 ## Related ESLint rules
 

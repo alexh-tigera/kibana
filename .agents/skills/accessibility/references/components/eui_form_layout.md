@@ -35,6 +35,22 @@ Change **only** the child’s **`isInvalid`**; do not alter unrelated props or t
 - Child is **`{...fieldProps}`** — confirm `isInvalid` is not already supplied by the spread.
 - Nested **`EuiFormRow`** — apply to the **innermost** parent–child pair first.
 
+## Common mistakes
+
+**Mismatched `isInvalid` between row and child**
+
+```tsx
+// WRONG — row shows error styling but child does not
+<EuiFormRow label="Name" isInvalid={!!errors.name} error={errors.name}>
+  <EuiFieldText value={name} onChange={setName} />
+</EuiFormRow>
+
+// RIGHT — same expression on both
+<EuiFormRow label="Name" isInvalid={!!errors.name} error={errors.name}>
+  <EuiFieldText value={name} onChange={setName} isInvalid={!!errors.name} />
+</EuiFormRow>
+```
+
 ## Related ESLint rules
 
 | Rule ID | What it enforces |

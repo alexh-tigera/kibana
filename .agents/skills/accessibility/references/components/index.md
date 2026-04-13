@@ -1,16 +1,20 @@
 # EUI component & pattern guides (index)
 
-Pick a file by **what you are editing**. Canonical usage, examples, and related ESLint rules live in each guide.
+**Directory:** `references/components/` (under pack root `.agents/skills/accessibility/`).
 
-| Topic | Primary EUI (examples) | File |
-|--------|-------------------------|------|
-| Modals, flyouts, confirm dialogs, popovers | `EuiModal`, `EuiFlyout`, `EuiFlyoutResizable`, `EuiConfirmModal`, `EuiPopover` | `eui_overlays.md` |
-| Data tables | `EuiBasicTable`, `EuiInMemoryTable` | `eui_data_tables.md` |
-| Form row + invalid state | `EuiFormRow` + field controls (`EuiFieldText`, `EuiComboBox`, `EuiSelect`, …) | `eui_form_layout.md` |
-| Radio groups | `EuiRadio`, `EuiRadioGroup` | `eui_radio_groups.md` |
-| Named interactive controls | `EuiButtonIcon`, `EuiComboBox`, `EuiSelect`, `EuiPagination`, `EuiBreadcrumbs`, … | `eui_interactive_widgets.md` |
-| Icons & icon tips | `EuiIcon`, `EuiIconTip`, `EuiToolTip` + icon | `eui_icons_and_tooltips.md` |
-| Focus & keyboard | Interactive controls + `EuiToolTip` anchors | `eui_focus_and_keyboard.md` |
+Pick a row by **what you are changing**. Each **File** links to canonical usage, examples, and related ESLint rules inside that guide.
+
+| File | Topic | EUI components |
+|------|--------|----------------|
+| `eui_callouts.md` | Callouts (conditional + SR) | `EuiCallOut` |
+| `eui_data_tables.md` | Data tables | `EuiBasicTable`, `EuiInMemoryTable` |
+| `eui_focus_and_keyboard.md` | Focus & keyboard | `EuiButton`, `EuiButtonIcon`, `EuiLink`, `EuiToolTip` |
+| `eui_form_layout.md` | Form row + invalid state | `EuiFormRow`, `EuiFieldText`, `EuiFieldNumber`, `EuiFilePicker`, `EuiComboBox`, `EuiTextArea`, `EuiSelect` |
+| `eui_icons_and_tooltips.md` | Icons & icon tips | `EuiIcon`, `EuiIconTip`, `EuiToolTip` |
+| `eui_interactive_widgets.md` | Named interactive controls | `EuiBetaBadge`, `EuiButtonIcon`, `EuiComboBox`, `EuiSelect`, `EuiSuperSelect`, `EuiPagination`, `EuiTreeView`, `EuiBreadcrumbs` |
+| `eui_overlays.md` | Modals, flyouts, popovers | `EuiModal`, `EuiFlyout`, `EuiFlyoutResizable`, `EuiConfirmModal`, `EuiPopover` |
+| `eui_radio_groups.md` | Radio groups | `EuiRadio`, `EuiRadioGroup` |
+| `eui_tooltip_icon.md` | Tooltips + icon controls | `EuiToolTip`, `EuiButtonIcon` |
 
 **Also read:** `../shared_principles.md` (full doc or **Quick path** at top).  
-**ESLint rule id → guides:** `../rule_to_skill_index.md`.
+**ESLint rule id → row:** `../rule_to_skill_index.md`.

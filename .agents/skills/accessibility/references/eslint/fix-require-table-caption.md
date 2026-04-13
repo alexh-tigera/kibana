@@ -1,5 +1,5 @@
 ---
-name: fix-no-table-captions
+name: fix-require-table-caption
 description: Fixes @elastic/eui/require-table-caption — add meaningful tableCaption to EuiBasicTable and EuiInMemoryTable.
 ---
 
