@@ -486,3 +486,33 @@ actions:
       description: >-
         Array of filters applied to the panel. Accepts KQL/Lucene expression filters, filter groups, or raw
         Elasticsearch DSL filters.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Bump.sh simplification — replace the 24-variant anyOf with links to the
+  # schema reference pages. The full field-level reference lives in the kibana
+  # docs; keeping the anyOf here just makes the Bump create/update pages
+  # unusably slow to render.
+  # ──────────────────────────────────────────────────────────────────────────
+  - target: "$.components.schemas['Kibana_HTTP_APIs_lensApiState'].anyOf"
+    description: Remove the 24-variant anyOf — replaced by description with links below
+    remove: true
+  - target: "$.components.schemas['Kibana_HTTP_APIs_lensApiState']"
+    description: Replace complex union with links to per-chart-type schema reference pages
+    update:
+      type: object
+      additionalProperties: true
+      description: |
+        Chart type configuration. One of 12 chart types — see the schema reference for full field details:
+
+        - [Metric](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/metric)
+        - [XY — line, area, bar](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/xy)
+        - [Gauge](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/gauge)
+        - [Heatmap](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/heatmap)
+        - [Data table](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/datatable)
+        - [Pie / donut](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/pie)
+        - [Mosaic](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/mosaic)
+        - [Treemap](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/treemap)
+        - [Waffle](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/waffle)
+        - [Tag cloud](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/tagcloud)
+        - [Region map](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/region-map)
+        - [Legacy metric](https://www.elastic.co/docs/reference/kibana/reference/visualizations-api/legacy-metric)
