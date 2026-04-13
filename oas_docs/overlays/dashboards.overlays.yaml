@@ -227,7 +227,6 @@ actions:
                   value:
                     id: 3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
                     data:
-                      title: Web logs overview
                       options:
                         hide_panel_titles: false
                         hide_panel_borders: false
@@ -242,8 +241,6 @@ actions:
                             y: 0
                             w: 12
                             h: 8
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000001
                           config:
                             type: metric
                             title: ""
@@ -254,13 +251,13 @@ actions:
                             metrics:
                               - type: primary
                                 operation: count
+                          id: a1b2c3d4-0001-4000-8000-000000000001
+                          type: vis
                         - grid:
                             x: 12
                             y: 0
                             w: 12
                             h: 8
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000002
                           config:
                             type: metric
                             title: ""
@@ -272,13 +269,13 @@ actions:
                               - type: primary
                                 operation: average
                                 field: bytes
+                          id: a1b2c3d4-0001-4000-8000-000000000002
+                          type: vis
                         - grid:
                             x: 0
                             y: 8
                             w: 24
                             h: 10
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000003
                           config:
                             type: xy
                             title: ""
@@ -291,7 +288,10 @@ actions:
                                   column: "@timestamp"
                                 y:
                                   - column: count
+                          id: a1b2c3d4-0001-4000-8000-000000000003
+                          type: vis
                       pinned_panels: []
+                      title: Web logs overview
                     meta:
                       created_at: "2026-04-13T10:00:00.000Z"
                       managed: false
@@ -814,10 +814,10 @@ actions:
                           version: WzEwMiwxXQ==
                       - id: 7f2a1c40-e83b-11ef-a641-7d5b3f9e1c2a
                         data:
-                          title: Operations overview
                           time_range:
                             from: now-7d
                             to: now
+                          title: Operations overview
                         meta:
                           created_at: "2026-04-12T08:00:00.000Z"
                           managed: false
@@ -854,7 +854,6 @@ actions:
                   value:
                     id: 3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
                     data:
-                      title: Web logs overview
                       options:
                         hide_panel_titles: false
                         hide_panel_borders: false
@@ -869,8 +868,6 @@ actions:
                             y: 0
                             w: 12
                             h: 8
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000001
                           config:
                             type: metric
                             title: ""
@@ -881,13 +878,13 @@ actions:
                             metrics:
                               - type: primary
                                 operation: count
+                          id: a1b2c3d4-0001-4000-8000-000000000001
+                          type: vis
                         - grid:
                             x: 12
                             y: 0
                             w: 12
                             h: 8
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000002
                           config:
                             type: metric
                             title: ""
@@ -899,13 +896,13 @@ actions:
                               - type: primary
                                 operation: average
                                 field: bytes
+                          id: a1b2c3d4-0001-4000-8000-000000000002
+                          type: vis
                         - grid:
                             x: 0
                             y: 8
                             w: 24
                             h: 10
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000003
                           config:
                             type: xy
                             title: ""
@@ -918,7 +915,10 @@ actions:
                                   column: "@timestamp"
                                 y:
                                   - column: count
+                          id: a1b2c3d4-0001-4000-8000-000000000003
+                          type: vis
                       pinned_panels: []
+                      title: Web logs overview
                     meta:
                       created_at: "2026-04-13T10:00:00.000Z"
                       managed: false
@@ -955,7 +955,6 @@ actions:
                   value:
                     id: 3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
                     data:
-                      title: Web logs overview
                       options:
                         hide_panel_titles: false
                         hide_panel_borders: false
@@ -970,8 +969,6 @@ actions:
                             y: 0
                             w: 12
                             h: 8
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000001
                           config:
                             type: metric
                             title: ""
@@ -982,13 +979,13 @@ actions:
                             metrics:
                               - type: primary
                                 operation: count
+                          id: a1b2c3d4-0001-4000-8000-000000000001
+                          type: vis
                         - grid:
                             x: 12
                             y: 0
                             w: 12
                             h: 8
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000002
                           config:
                             type: metric
                             title: ""
@@ -1000,13 +997,13 @@ actions:
                               - type: primary
                                 operation: average
                                 field: bytes
+                          id: a1b2c3d4-0001-4000-8000-000000000002
+                          type: vis
                         - grid:
                             x: 0
                             y: 8
                             w: 24
                             h: 10
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000003
                           config:
                             type: xy
                             title: ""
@@ -1019,13 +1016,13 @@ actions:
                                   column: "@timestamp"
                                 y:
                                   - column: count
+                          id: a1b2c3d4-0001-4000-8000-000000000003
+                          type: vis
                         - grid:
                             x: 24
                             y: 8
                             w: 24
                             h: 10
-                          type: vis
-                          id: a1b2c3d4-0001-4000-8000-000000000004
                           config:
                             type: metric
                             title: ""
@@ -1037,7 +1034,10 @@ actions:
                               - type: primary
                                 operation: unique_count
                                 field: clientip
+                          id: a1b2c3d4-0001-4000-8000-000000000004
+                          type: vis
                       pinned_panels: []
+                      title: Web logs overview
                     meta:
                       managed: false
                       updated_at: "2026-04-13T11:00:00.000Z"
