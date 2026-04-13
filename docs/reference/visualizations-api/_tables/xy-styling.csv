@@ -1,0 +1,19 @@
+Parameter,Description
+`areas`<br>_object_,Area-specific rendering settings.
+`areas.fill_opacity`<br>_number_,"Area fill opacity (0-1 typical, max 2 for legacy)."
+`bars`<br>_object_,Bar-specific rendering settings.
+`bars.data_labels`<br>_object_,Data label configuration for bar series.
+`bars.data_labels.visible`<br>_boolean_,Display value labels on bar data points. Default: `false`.
+`bars.minimum_height`<br>_number_,Minimum bar height in pixels.
+`fitting`<br>_object_,Missing data interpolation configuration for line and area series.
+`fitting.emphasize`<br>_boolean_,Visually distinguish fitted segments with a dashed line style and reduced area opacity.
+`fitting.extend`<br>_string_,"How to render line and area edges when data does not cover the full X domain. Possible values: `""none""`, `""zero""`, `""nearest""`."
+`fitting.type`<br>_string_<br>**required**,"Fitting function type for missing data. Possible values: `""none""`, `""zero""`, `""linear""`, `""carry""`, `""lookahead""`, `""average""`, `""nearest""`."
+`interpolation`<br>_string_,"Curve interpolation method for line and area series. Possible values: `""linear""`, `""smooth""`, `""stepped""`."
+`overlays`<br>_object_,Visual overlays drawn on top of the chart canvas.
+`overlays.current_time_marker`<br>_object_,Current time marker configuration.
+`overlays.current_time_marker.visible`<br>_boolean_,Show current time marker line. Default: `false`.
+`overlays.partial_buckets`<br>_object_,Partial (incomplete) bucket indicator configuration.
+`overlays.partial_buckets.visible`<br>_boolean_,Show partial bucket indicators at time range edges. Default: `false`.
+`points`<br>_object_,Data point marker settings for line and area series.
+`points.visibility`<br>_string_,"Data point marker visibility on line and area series. Possible values: `""auto""`, `""visible""`, `""hidden""`."

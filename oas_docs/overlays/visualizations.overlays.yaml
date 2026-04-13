@@ -1,0 +1,488 @@
+overlay: 1.0.0
+info:
+  title: Overlays for the Visualizations API
+  version: 0.0.1
+actions:
+  - target: $.components.schemas['Kibana_HTTP_APIs_categoricalColorMapping'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_categoricalColorMapping']
+    update:
+      required:
+        - mode
+        - palette
+        - mapping
+  - target: $.components.schemas['Kibana_HTTP_APIs_counterRateOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_counterRateOperation']
+    update:
+      required:
+        - filter
+        - field
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_countMetricOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_countMetricOperation']
+    update:
+      required:
+        - filter
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_cumulativeSumOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_cumulativeSumOperation']
+    update:
+      required:
+        - filter
+        - field
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_datatableESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_datatableESQL']
+    update:
+      required:
+        - type
+        - data_source
+  - target: $.components.schemas['Kibana_HTTP_APIs_datatableESQLMetric'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_datatableESQLMetric']
+    update:
+      required:
+        - column
+  - target: $.components.schemas['Kibana_HTTP_APIs_datatableNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_datatableNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_dateHistogramOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_dateHistogramOperation']
+    update:
+      required:
+        - operation
+        - field
+  - target: $.components.schemas['Kibana_HTTP_APIs_differencesOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_differencesOperation']
+    update:
+      required:
+        - filter
+        - operation
+        - of
+  - target: $.components.schemas['Kibana_HTTP_APIs_esqlDataSource'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_esqlDataSource']
+    update:
+      required:
+        - type
+  - target: $.components.schemas['Kibana_HTTP_APIs_filtersOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_filtersOperation']
+    update:
+      required:
+        - operation
+        - filters
+  - target: $.components.schemas['Kibana_HTTP_APIs_formulaOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_formulaOperation']
+    update:
+      required:
+        - operation
+        - formula
+        - filter
+  - target: $.components.schemas['Kibana_HTTP_APIs_gaugeESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_gaugeESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+  - target: $.components.schemas['Kibana_HTTP_APIs_gaugeNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_gaugeNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+  - target: $.components.schemas['Kibana_HTTP_APIs_gradientColorMapping'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_gradientColorMapping']
+    update:
+      required:
+        - mode
+        - palette
+  - target: $.components.schemas['Kibana_HTTP_APIs_heatmapAxes'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_heatmapAxes']
+    update:
+      required: []
+  - target: $.components.schemas['Kibana_HTTP_APIs_heatmapESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_heatmapESQL']
+    update:
+      required:
+        - type
+        - x
+        - data_source
+        - metric
+  - target: $.components.schemas['Kibana_HTTP_APIs_heatmapLegend'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_heatmapLegend']
+    update:
+      required: []
+  - target: $.components.schemas['Kibana_HTTP_APIs_heatmapNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_heatmapNoESQL']
+    update:
+      required:
+        - type
+        - x
+        - data_source
+        - metric
+  - target: $.components.schemas['Kibana_HTTP_APIs_histogramOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_histogramOperation']
+    update:
+      required:
+        - operation
+        - field
+  - target: $.components.schemas['Kibana_HTTP_APIs_lastValueOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_lastValueOperation']
+    update:
+      required:
+        - filter
+        - field
+        - operation
+        - time_field
+  - target: $.components.schemas['Kibana_HTTP_APIs_legacyMetricNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_legacyMetricNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+  - target: $.components.schemas['Kibana_HTTP_APIs_metricESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_metricESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_metricNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_metricNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_minMaxAvgMedianStdDevMetricOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_minMaxAvgMedianStdDevMetricOperation']
+    update:
+      required:
+        - filter
+        - field
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_mosaicESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_mosaicESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+  - target: $.components.schemas['Kibana_HTTP_APIs_mosaicLegend'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_mosaicLegend']
+    update:
+      required: []
+  - target: $.components.schemas['Kibana_HTTP_APIs_mosaicNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_mosaicNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+  - target: $.components.schemas['Kibana_HTTP_APIs_movingAverageOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_movingAverageOperation']
+    update:
+      required:
+        - filter
+        - operation
+        - of
+  - target: $.components.schemas['Kibana_HTTP_APIs_percentileOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_percentileOperation']
+    update:
+      required:
+        - filter
+        - field
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_percentileRanksOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_percentileRanksOperation']
+    update:
+      required:
+        - filter
+        - field
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_pieESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_pieESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_pieLegend'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_pieLegend']
+    update:
+      required: []
+  - target: $.components.schemas['Kibana_HTTP_APIs_pieNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_pieNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_rangesOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_rangesOperation']
+    update:
+      required:
+        - operation
+        - field
+        - ranges
+  - target: $.components.schemas['Kibana_HTTP_APIs_regionMapESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_regionMapESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+        - region
+  - target: $.components.schemas['Kibana_HTTP_APIs_regionMapNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_regionMapNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+        - region
+  - target: $.components.schemas['Kibana_HTTP_APIs_staticOperationDefinition'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_staticOperationDefinition']
+    update:
+      required:
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_sumMetricOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_sumMetricOperation']
+    update:
+      required:
+        - filter
+        - field
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_tagcloudESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_tagcloudESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+        - tag_by
+  - target: $.components.schemas['Kibana_HTTP_APIs_tagcloudNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_tagcloudNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metric
+        - tag_by
+  - target: $.components.schemas['Kibana_HTTP_APIs_termsOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_termsOperation']
+    update:
+      required:
+        - operation
+        - fields
+  - target: $.components.schemas['Kibana_HTTP_APIs_treemapESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_treemapESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_treemapLegend'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_treemapLegend']
+    update:
+      required: []
+  - target: $.components.schemas['Kibana_HTTP_APIs_treemapNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_treemapNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_uniqueCountMetricOperation'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_uniqueCountMetricOperation']
+    update:
+      required:
+        - filter
+        - field
+        - operation
+  - target: $.components.schemas['Kibana_HTTP_APIs_waffleESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_waffleESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_waffleLegend'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_waffleLegend']
+    update:
+      required: []
+  - target: $.components.schemas['Kibana_HTTP_APIs_waffleNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_waffleNoESQL']
+    update:
+      required:
+        - type
+        - data_source
+        - metrics
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyAnnotationManualEvent'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyAnnotationManualEvent']
+    update:
+      required:
+        - type
+        - timestamp
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyAnnotationManualRange'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyAnnotationManualRange']
+    update:
+      required:
+        - type
+        - interval
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyAnnotationQuery'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyAnnotationQuery']
+    update:
+      required:
+        - type
+        - time_field
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyChartESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyChartESQL']
+    update:
+      required:
+        - type
+        - layers
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyChartNoESQL'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyChartNoESQL']
+    update:
+      required:
+        - type
+        - layers
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyLegendOutsideVertical'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyLegendOutsideVertical']
+    update:
+      required: []
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyStyling'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_xyStyling']
+    update:
+      required: []
+  - target: $.components.schemas['Kibana_HTTP_APIs_kbn-dashboard-data'].required
+    description: Remove x-oas-optional / schema.maybe() fields from required
+    remove: true
+  - target: $.components.schemas['Kibana_HTTP_APIs_kbn-dashboard-data']
+    update:
+      required:
+        - options
+        - title
+  - target: $.components.schemas['Kibana_HTTP_APIs_lensPanelFilters']
+    description: Replace internal schema names with a plain description
+    update:
+      description: >-
+        Array of filters applied to the panel. Accepts KQL/Lucene expression filters, filter groups, or raw
+        Elasticsearch DSL filters.

@@ -1,0 +1,19 @@
+Parameter,Description
+`data_source`<br>_object_<br>**required**,"One of: `kbn-data-view-reference-schema`, `kbn-data-view-spec-schema`, `esqlDataSource`."
+`description`<br>_string_,
+[`drilldowns`](#drilldowns)<br>_array_,"Types: `""dashboard_drilldown""`, `""discover_drilldown""`, `""url_drilldown""`."
+`filters`<br>_object_,"Array of filters applied to the panel. Accepts KQL/Lucene expression filters, filter groups, or raw Elasticsearch DSL filters."
+`group_breakdown_by`<br>_array_,"Array of group breakdown dimensions (minimum 1). Items: `dateHistogramOperation`, `termsOperation`, `histogramOperation`, `rangesOperation`, `filtersOperation`."
+`group_by`<br>_array_,"Array of breakdown dimensions (minimum 1). Items: `dateHistogramOperation`, `termsOperation`, `histogramOperation`, `rangesOperation`, `filtersOperation`."
+`hide_border`<br>_boolean_,
+`hide_title`<br>_boolean_,
+`ignore_global_filters`<br>_boolean_,"If true, ignore global filters when fetching data for this layer. Default is false."
+[`legend`](#legend)<br>_object_,Legend configuration for mosaic chart appearance and behavior.
+`metric`<br>_object_<br>**required**,"One of: `countMetricOperation`, `uniqueCountMetricOperation`, `minMaxAvgMedianStdDevMetricOperation`, `sumMetricOperation`, `lastValueOperation`, `percentileOperation`, `percentileRanksOperation`, `differencesOperation`, `movingAverageOperation`, `cumulativeSumOperation`, `counterRateOperation`, `formulaOperation`."
+`query`<br>_object_,Not used with ES|QL data sources.
+`references`<br>_array_,Items: `kbn-content-management-utils-referenceSchema`.
+`sampling`<br>_number_,Sampling factor between 0 (no sampling) and 1 (full sampling). Default is 1.
+`time_range`<br>_object_,
+`title`<br>_string_,
+`type`<br>_string_<br>**required**,"Possible values: `""mosaic""`."
+`values`<br>_object_,Configure the visibility and the format of the values rendered on each chart partition section.

@@ -1,0 +1,15 @@
+project: 'Visualizations API reference'
+toc:
+  - file: index.md
+  - file: metric.md
+  - file: xy.md
+  - file: gauge.md
+  - file: heatmap.md
+  - file: datatable.md
+  - file: pie.md
+  - file: mosaic.md
+  - file: treemap.md
+  - file: waffle.md
+  - file: tagcloud.md
+  - file: region-map.md
+  - file: legacy-metric.md

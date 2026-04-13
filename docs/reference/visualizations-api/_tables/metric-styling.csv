@@ -1,0 +1,17 @@
+Parameter,Description
+`primary`<br>_object_,
+`primary.icon`<br>_object_<br>**required**,Icon configuration for the primary metric.
+`primary.icon.alignment`<br>_string_,"Icon alignment. Possible values: `""left""`, `""right""`."
+`primary.icon.name`<br>_string_<br>**required**,"Icon name. Possible values: `""alert""`, `""asterisk""`, `""bell""`, `""bolt""`, `""bug""`, `""compute""`, `""editor_comment""`, `""flag""`, `""globe""`, `""heart""`, `""map_marker""`, `""pin""`, `""sort_down""`, `""sort_up""`, `""star_empty""`, `""tag""`, `""temperature""`."
+`primary.labels`<br>_object_,Labels (title and subtitle) configuration.
+`primary.labels.alignment`<br>_string_,"Horizontal alignment for the title and subtitle text (left, center or right). Possible values: `""left""`, `""center""`, `""right""`."
+`primary.position`<br>_string_,"Position of the primary metric value (top, middle, or bottom). Possible values: `""top""`, `""middle""`, `""bottom""`."
+`primary.value`<br>_object_,Primary metric value configuration.
+`primary.value.alignment`<br>_string_,"Alignment for the primary metric value (left, center or right). Possible values: `""left""`, `""center""`, `""right""`."
+`primary.value.sizing`<br>_string_,"Controls how the primary value text is sized within the panel. 'auto' selects a font size from predefined breakpoints based on panel height, then shrinks if the text overflows horizontally. 'fill' scales the text to be as large as possible, filling all available space. Possible values: `""auto""`, `""fill""`."
+`secondary`<br>_object_,
+`secondary.label`<br>_object_,
+`secondary.label.placement`<br>_string_,"Label placement relative to the secondary metric value (before or after). Possible values: `""before""`, `""after""`."
+`secondary.label.visible`<br>_boolean_,Whether to display the label.
+`secondary.value`<br>_object_,Secondary metric value configuration.
+`secondary.value.alignment`<br>_string_,"Alignment for secondary values (left, center or right). Possible values: `""left""`, `""center""`, `""right""`."

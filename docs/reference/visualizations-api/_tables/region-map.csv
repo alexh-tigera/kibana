@@ -1,0 +1,16 @@
+Parameter,Description
+`data_source`<br>_object_<br>**required**,"One of: `kbn-data-view-reference-schema`, `kbn-data-view-spec-schema`, `esqlDataSource`."
+`description`<br>_string_,
+[`drilldowns`](#drilldowns)<br>_array_,"Types: `""dashboard_drilldown""`, `""discover_drilldown""`, `""url_drilldown""`."
+`filters`<br>_object_,"Array of filters applied to the panel. Accepts KQL/Lucene expression filters, filter groups, or raw Elasticsearch DSL filters."
+`hide_border`<br>_boolean_,
+`hide_title`<br>_boolean_,
+`ignore_global_filters`<br>_boolean_,"If true, ignore global filters when fetching data for this layer. Default is false."
+`metric`<br>_object_<br>**required**,"One of: `fieldMetricOperations`, `formulaOperation`."
+`query`<br>_object_,Not used with ES|QL data sources.
+`references`<br>_array_,Items: `kbn-content-management-utils-referenceSchema`.
+`region`<br>_object_<br>**required**,"One of: `dateHistogramOperation`, `termsOperation`, `histogramOperation`, `rangesOperation`, `filtersOperation`."
+`sampling`<br>_number_,Sampling factor between 0 (no sampling) and 1 (full sampling). Default is 1.
+`time_range`<br>_object_,
+`title`<br>_string_,
+`type`<br>_string_<br>**required**,"Possible values: `""region_map""`."

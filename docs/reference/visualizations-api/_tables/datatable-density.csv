@@ -1,0 +1,5 @@
+Parameter,Description
+`height`<br>_object_,
+`height.header`<br>_object_,"Maximum number of lines to use before header is truncated. Types: `""auto""`, `""custom""`."
+`height.value`<br>_object_,"Number of lines to display per table body cell. Types: `""auto""`, `""custom""`."
+`mode`<br>_string_,"Density mode. Possible values: `""compact""`, `""default""`, `""expanded""`."

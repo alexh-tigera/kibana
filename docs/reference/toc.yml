@@ -1,6 +1,7 @@
 project: 'Kibana reference'
 toc:
   - file: index.md
+  - toc: visualizations-api
   - file: kibana-accessibility-statement.md
   - file: configuration-reference.md
     children:

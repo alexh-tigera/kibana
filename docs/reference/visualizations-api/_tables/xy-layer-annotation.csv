@@ -1,0 +1,5 @@
+Parameter,Description
+`data_source`<br>_object_<br>**required**,"One of: `kbn-data-view-reference-schema`, `kbn-data-view-spec-schema`."
+`events`<br>_array_<br>**required**,"Array of annotation configurations. Items: `xyAnnotationQuery`, `xyAnnotationManualEvent`, `xyAnnotationManualRange`."
+`ignore_global_filters`<br>_boolean_,"If true, ignore global filters when fetching data for this layer. Default is false."
+`type`<br>_string_<br>**required**,"Possible values: `""annotations""`."

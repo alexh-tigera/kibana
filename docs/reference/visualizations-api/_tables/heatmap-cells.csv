@@ -1,0 +1,3 @@
+Parameter,Description
+`labels`<br>_object_,
+`labels.visible`<br>_boolean_,Show cell labels.

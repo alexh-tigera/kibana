@@ -1,0 +1,17 @@
+Parameter,Description
+`x`<br>_object_,X axis configuration.
+`x.labels`<br>_object_,
+`x.labels.orientation`<br>_object_<br>**required**,"Orientation of the tagcloud. Possible values: `""horizontal""`, `""vertical""`, `""angled""`."
+`x.labels.visible`<br>_boolean_,Show axis labels.
+`x.scale`<br>_string_<br>**required**,"X-axis scale type. Use 'temporal' for timestamp/date fields (e.g., @timestamp, DATE_TRUNC results). Use 'ordinal' for categorical/text fields. Use 'linear' for numeric fields. Possible values: `""ordinal""`, `""temporal""`, `""linear""`."
+`x.sort`<br>_string_,"Axis sort order; omit or use undefined for no sorting. Possible values: `""asc""`, `""desc""`."
+`x.title`<br>_object_,
+`x.title.text`<br>_string_,Axis title text.
+`x.title.visible`<br>_boolean_,Show the title.
+`y`<br>_object_,Y axis configuration.
+`y.labels`<br>_object_,
+`y.labels.visible`<br>_boolean_,Show axis labels.
+`y.sort`<br>_string_,"Axis sort order; omit or use undefined for no sorting. Possible values: `""asc""`, `""desc""`."
+`y.title`<br>_object_,
+`y.title.text`<br>_string_,Axis title text.
+`y.title.visible`<br>_boolean_,Show the title.

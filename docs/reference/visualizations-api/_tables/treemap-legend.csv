@@ -1,0 +1,5 @@
+Parameter,Description
+`nested`<br>_boolean_,Show nested legend with hierarchical breakdown levels.
+`size`<br>_object_,"Legend size. Possible values: `""auto""`, `""s""`, `""m""`, `""l""`, `""xl""`."
+`truncate_after_lines`<br>_number_,Maximum lines before truncating legend items (1-10).
+`visibility`<br>_string_,"Legend visibility. Possible values: `""auto""`, `""visible""`, `""hidden""`."

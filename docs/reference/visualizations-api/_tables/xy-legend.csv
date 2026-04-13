@@ -1,0 +1,12 @@
+Parameter,Description
+`layout`<br>_object_,"Types: `""grid""`, `""list""`."
+`placement`<br>_string_,"Possible values: `""outside""`."
+`position`<br>_string_,"Possible values: `""top""`, `""bottom""`."
+`statistics`<br>_array_,Statistics to display in legend.
+`visibility`<br>_string_,"Legend visibility. Possible values: `""auto""`, `""visible""`, `""hidden""`."
+`layout.truncate`<br>_object_,
+`layout.truncate.enabled`<br>_boolean_,Enable truncation of legend items.
+`layout.truncate.max_lines`<br>_number_,Maximum lines before truncating legend items (1-10).
+`layout.type`<br>_string_<br>**required**,"Possible values: `""grid""`."
+`size`<br>_object_,"Legend size. Possible values: `""auto""`, `""s""`, `""m""`, `""l""`, `""xl""`. Outside vertical legend only."
+`columns`<br>_number_,Number of legend columns. Inside legend only.

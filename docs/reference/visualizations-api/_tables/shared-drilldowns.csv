@@ -1,0 +1,10 @@
+Parameter,Description
+`dashboard_id`<br>_string_,
+`label`<br>_string_,
+`open_in_new_tab`<br>_boolean_,"When enabled, the dashboard opens in a new browser tab. Default: `false`."
+`trigger`<br>_string_,"Possible values: `""on_apply_filter""`, `""on_click_row""`, `""on_click_value""`, `""on_open_panel_menu""`, `""on_select_range""`."
+`type`<br>_string_,"Possible values: `""dashboard_drilldown""`, `""discover_drilldown""`, `""url_drilldown""`."
+`use_filters`<br>_boolean_,"When enabled, filters are passed to the opening dashboard. Default: `true`."
+`use_time_range`<br>_boolean_,"When enabled, time range is passed to the opening dashboard. Default: `true`."
+`encode_url`<br>_boolean_,"When true, URL is escaped using percent encoding. Default: `true`."
+`url`<br>_string_,Templated Url. Variables documented at https://www.elastic.co/docs/explore-analyze/dashboards/drilldowns#url-template-variable.

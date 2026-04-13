@@ -1,0 +1,15 @@
+Parameter,Description
+[`axis`](#axis)<br>_object_,"Axis configuration for X, primary Y, and secondary Y axes. The primary Y axis defaults to the start (leading) side, and the secondary Y axis defaults to the end (trailing) side."
+`description`<br>_string_,
+[`drilldowns`](#drilldowns)<br>_array_,"Types: `""dashboard_drilldown""`, `""discover_drilldown""`, `""url_drilldown""`."
+`filters`<br>_object_,"Array of filters applied to the panel. Accepts KQL/Lucene expression filters, filter groups, or raw Elasticsearch DSL filters."
+`hide_border`<br>_boolean_,
+`hide_title`<br>_boolean_,
+[`layers`](#layers)<br>_array_<br>**required**,"Chart layers. Items: `xyLayerNoESQL`, `xyReferenceLineLayerNoESQL`, `xyAnnotationLayerNoESQL`, `xyAnnotationByRefLayer`."
+[`legend`](#legend)<br>_object_,"Legend configuration for XY chart. One of: `xyLegendOutsideHorizontal`, `xyLegendOutsideVertical`, `xyLegendInside`."
+`query`<br>_object_,Not used with ES|QL data sources.
+`references`<br>_array_,Items: `kbn-content-management-utils-referenceSchema`.
+[`styling`](#styling)<br>_object_,Visual styling options for the chart.
+`time_range`<br>_object_,
+`title`<br>_string_,
+`type`<br>_string_<br>**required**,"Possible values: `""xy""`."

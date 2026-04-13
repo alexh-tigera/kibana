@@ -1,0 +1,39 @@
+Parameter,Description
+`secondary_y`<br>_object_,"Y-axis configuration with optional anchor, scale, and bounds. The anchor controls which side of the chart the axis renders on."
+`secondary_y.anchor`<br>_string_,"Position of the Y-axis relative to the chart orientation: start places it on the leading side (left in vertical charts), end on the trailing side (right in vertical charts). Possible values: `""start""`, `""end""`."
+`secondary_y.domain`<br>_object_<br>**required**,"Y-axis domain configuration. One of: `vis_api_domain_full`, `vis_api_domain_fit`, `vis_api_domain_custom`."
+`secondary_y.grid`<br>_object_,Axis grid lines configuration.
+`secondary_y.grid.visible`<br>_boolean_<br>**required**,Show grid lines for this axis.
+`secondary_y.labels`<br>_object_,Label configuration.
+`secondary_y.labels.orientation`<br>_object_<br>**required**,"Orientation of the tagcloud. Possible values: `""horizontal""`, `""vertical""`, `""angled""`."
+`secondary_y.scale`<br>_string_,"Y-axis scale type for data transformation. Possible values: `""linear""`, `""log""`, `""sqrt""`."
+`secondary_y.ticks`<br>_object_,Axis tick marks configuration.
+`secondary_y.ticks.visible`<br>_boolean_<br>**required**,Show tick marks on the axis.
+`secondary_y.title`<br>_object_,Axis title configuration.
+`secondary_y.title.text`<br>_string_,Axis title text.
+`secondary_y.title.visible`<br>_boolean_,Show the title.
+`x`<br>_object_,X-axis configuration.
+`x.domain`<br>_object_,"X-axis domain configuration. One of: `vis_api_domain_fit`, `vis_api_domain_custom`."
+`x.grid`<br>_object_,Axis grid lines configuration.
+`x.grid.visible`<br>_boolean_<br>**required**,Show grid lines for this axis.
+`x.labels`<br>_object_,Label configuration.
+`x.labels.orientation`<br>_object_<br>**required**,"Orientation of the tagcloud. Possible values: `""horizontal""`, `""vertical""`, `""angled""`."
+`x.scale`<br>_string_,"X-axis scale type. Use 'temporal' for timestamp/date fields (e.g., @timestamp, DATE_TRUNC results). Use 'ordinal' for categorical/text fields. Use 'linear' for numeric fields. Possible values: `""ordinal""`, `""temporal""`, `""linear""`."
+`x.ticks`<br>_object_,Axis tick marks configuration.
+`x.ticks.visible`<br>_boolean_<br>**required**,Show tick marks on the axis.
+`x.title`<br>_object_,Axis title configuration.
+`x.title.text`<br>_string_,Axis title text.
+`x.title.visible`<br>_boolean_,Show the title.
+`y`<br>_object_,"Y-axis configuration with optional anchor, scale, and bounds. The anchor controls which side of the chart the axis renders on."
+`y.anchor`<br>_string_,"Position of the Y-axis relative to the chart orientation: start places it on the leading side (left in vertical charts), end on the trailing side (right in vertical charts). Possible values: `""start""`, `""end""`."
+`y.domain`<br>_object_<br>**required**,"Y-axis domain configuration. One of: `vis_api_domain_full`, `vis_api_domain_fit`, `vis_api_domain_custom`."
+`y.grid`<br>_object_,Axis grid lines configuration.
+`y.grid.visible`<br>_boolean_<br>**required**,Show grid lines for this axis.
+`y.labels`<br>_object_,Label configuration.
+`y.labels.orientation`<br>_object_<br>**required**,"Orientation of the tagcloud. Possible values: `""horizontal""`, `""vertical""`, `""angled""`."
+`y.scale`<br>_string_,"Y-axis scale type for data transformation. Possible values: `""linear""`, `""log""`, `""sqrt""`."
+`y.ticks`<br>_object_,Axis tick marks configuration.
+`y.ticks.visible`<br>_boolean_<br>**required**,Show tick marks on the axis.
+`y.title`<br>_object_,Axis title configuration.
+`y.title.text`<br>_string_,Axis title text.
+`y.title.visible`<br>_boolean_,Show the title.
