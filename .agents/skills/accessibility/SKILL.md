@@ -1,11 +1,11 @@
 ---
 name: accessibility
-description: Kibana a11y — EUI, WCAG-minded UI, i18n. ESLint rules, component patterns, shared principles.
+description: Kibana a11y — EUI, WCAG-minded UI. ESLint rules, component patterns, shared principles.
 ---
 
 # Accessibility (Kibana)
 
-Accessible EUI usage, keyboard / screen reader behavior, and i18n for user-visible and assistive-technology strings.
+Accessible EUI usage, including keyboard and screen reader interactions, as well as wording for both user-facing and assistive technology text.
 
 ## 1. Find the right guide
 
