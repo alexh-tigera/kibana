@@ -12,7 +12,6 @@ import { savedObjectsClientMock } from '@kbn/core-saved-objects-api-server-mocks
 import { UiSettingsClientFactory } from './ui_settings_client_factory';
 import { UiSettingsGlobalClient } from './ui_settings_global_client';
 import { UiSettingsClient } from './ui_settings_client';
-import { PerSettingCache } from '../per_setting_cache';
 
 describe('ui settings factory', () => {
   const logger = loggingSystemMock.create();
@@ -25,7 +24,6 @@ describe('ui settings factory', () => {
       buildNum: 1337,
       savedObjectsClient,
       log: logger.get(),
-      perSettingCache: new PerSettingCache(),
       namespace: 'default',
     };
   };

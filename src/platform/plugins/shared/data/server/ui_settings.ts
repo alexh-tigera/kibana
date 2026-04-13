@@ -268,7 +268,6 @@ export function getUiSettings(
       }),
       category: ['search'],
       schema: schema.number(),
-      cacheTTL: 30_000,
     },
     [UI_SETTINGS.SEARCH_INCLUDE_FROZEN]: {
       name: 'Search in frozen indices',
@@ -283,7 +282,6 @@ export function getUiSettings(
       },
       category: ['search'],
       schema: schema.boolean(),
-      cacheTTL: 30_000,
     },
     [UI_SETTINGS.HISTOGRAM_BAR_TARGET]: {
       name: i18n.translate('data.advancedSettings.histogram.barTargetTitle', {

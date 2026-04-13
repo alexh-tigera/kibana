@@ -37,7 +37,7 @@ import { uiSettingsType, uiSettingsGlobalType } from './saved_objects';
 import { registerRoutes, registerInternalRoutes } from './routes';
 import { getCoreSettings, getGlobalCoreSettings } from './settings';
 import { UiSettingsDefaultsClient } from './clients/ui_settings_defaults_client';
-import { PerSettingCache } from './per_setting_cache';
+import { NamespacedCache } from './namespaced_cache';
 
 export interface SetupDeps {
   http: InternalHttpServiceSetup;
@@ -63,7 +63,7 @@ export class UiSettingsService
   private overrides: Record<string, any> = {};
   private globalOverrides: Record<string, any> = {};
   private allowlist: Set<string> | null = null;
-  private readonly sharedPerSettingCache = new PerSettingCache();
+  private readonly sharedUserProvidedCache = new NamespacedCache<Record<string, any>>();
 
   constructor(private readonly coreContext: CoreContext) {
     this.log = coreContext.logger.get('ui-settings-service');
@@ -141,7 +141,9 @@ export class UiSettingsService
     };
   }
 
-  public async stop() {}
+  public async stop() {
+    this.sharedUserProvidedCache.clear();
+  }
 
   private getScopedClientFactory<T extends UiSettingsScope>(
     scope: UiSettingsScope
@@ -149,7 +151,8 @@ export class UiSettingsService
     const { version, buildNum } = this.coreContext.env.packageInfo;
     return (savedObjectsClient: SavedObjectsClientContract): ClientType<T> => {
       const isNamespaceScope = scope === 'namespace';
-      const namespace = savedObjectsClient.getCurrentNamespace() || 'default';
+      const namespace =
+        savedObjectsClient.getCurrentNamespace() || (isNamespaceScope ? 'default' : '__global__');
       const options = {
         type: (isNamespaceScope ? 'config' : 'config-global') as 'config' | 'config-global',
         id: stripVersionQualifier(version),
@@ -160,7 +163,7 @@ export class UiSettingsService
           : mapToObject(this.uiSettingsGlobalDefaults),
         overrides: isNamespaceScope ? this.overrides : this.globalOverrides,
         log: this.log,
-        perSettingCache: this.sharedPerSettingCache,
+        sharedUserProvidedCache: this.sharedUserProvidedCache,
         namespace,
       };
       return UiSettingsClientFactory.create(options) as ClientType<T>;

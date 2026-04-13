@@ -16,33 +16,26 @@ import type {
 } from '@kbn/core-ui-settings-common';
 import type { IUiSettingsClient } from '@kbn/core-ui-settings-server';
 import { ValidationBadValueError, ValidationSettingNotFoundError } from '../ui_settings_errors';
-import type { PerSettingCache } from '../per_setting_cache';
 
 export interface BaseUiSettingsDefaultsClientOptions {
   overrides?: Record<string, any>;
   defaults?: Record<string, UiSettingsParams>;
   log: Logger;
-  perSettingCache?: PerSettingCache;
-  namespace?: string;
 }
 
 /**
  * Base implementation of the {@link IUiSettingsClient}.
  */
 export abstract class BaseUiSettingsClient implements IUiSettingsClient {
-  private readonly defaults: Record<string, UiSettingsParams>;
+  protected readonly defaults: Record<string, UiSettingsParams>;
   protected readonly overrides: Record<string, any>;
   protected readonly log: Logger;
-  protected readonly perSettingCache?: PerSettingCache;
-  protected readonly namespace: string;
 
   protected constructor(options: BaseUiSettingsDefaultsClientOptions) {
-    const { defaults = {}, overrides = {}, log, perSettingCache, namespace = 'default' } = options;
+    const { defaults = {}, overrides = {}, log } = options;
     this.log = log;
     this.overrides = overrides;
     this.defaults = defaults;
-    this.perSettingCache = perSettingCache;
-    this.namespace = namespace;
   }
 
   getRegistered() {
@@ -54,49 +47,18 @@ export abstract class BaseUiSettingsClient implements IUiSettingsClient {
   }
 
   async get<T = any>(key: string, context?: GetUiSettingsContext): Promise<T> {
-    const definition = this.defaults[key];
-
-    const isCacheable =
-      this.perSettingCache &&
-      definition?.cacheTTL &&
-      definition.cacheTTL > 0 &&
-      !this.isOverridden(key);
-
-    if (isCacheable) {
-      // Check cache first
-      if (this.perSettingCache.has(this.namespace, key)) {
-        const cached = this.perSettingCache.get<T>(this.namespace, key);
-        if (cached !== null) {
-          return cached;
-        }
-      }
-
-      // Check if there's already an in-flight request for this setting
-      const inflight = this.perSettingCache.getInflight<T>(this.namespace, key);
-      if (inflight) {
-        return inflight;
-      }
-
-      // No cache and no in-flight request - create new request
-      const promise = this.getAll(context).then((all) => {
-        const value = all[key] as T;
-        // Only cache if we're still the active in-flight promise (not invalidated)
-        // This prevents stale promises from caching data after invalidation
-        if (this.perSettingCache!.getInflight(this.namespace, key) === promise) {
-          this.perSettingCache!.set(this.namespace, key, value, definition.cacheTTL!);
-        }
-        return value;
-      });
-
-      // Store the in-flight promise for deduplication
-      this.perSettingCache.setInflight(this.namespace, key, promise);
-
-      return promise;
+    // Check for user-provided override first
+    const userProvided = await this.getUserProvided();
+    if (userProvided[key]?.userValue !== undefined) {
+      return userProvided[key].userValue as T;
     }
 
-    // Not cacheable - get all settings directly
-    const all = await this.getAll(context);
-    return all[key] as T;
+    // Fall back to default value
+    const definition = this.defaults[key];
+    if (definition?.getValue) {
+      return definition.getValue(context) as Promise<T>;
+    }
+    return definition?.value as T;
   }
 
   async getAll<T = any>(context?: GetUiSettingsContext) {

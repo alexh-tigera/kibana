@@ -34,23 +34,54 @@ export abstract class UiSettingsClientCommon extends BaseUiSettingsClient {
   private readonly buildNum: UiSettingsServiceOptions['buildNum'];
   private readonly savedObjectsClient: UiSettingsServiceOptions['savedObjectsClient'];
   private readonly cache: Cache;
+  private readonly sharedUserProvidedCache?: UiSettingsServiceOptions['sharedUserProvidedCache'];
+  private readonly namespace: string;
 
   constructor(options: UiSettingsServiceOptions) {
     super(options);
-    const { savedObjectsClient, type, id, buildNum } = options;
+    const { savedObjectsClient, type, id, buildNum, sharedUserProvidedCache, namespace } = options;
     this.type = type;
     this.id = id;
     this.buildNum = buildNum;
     this.savedObjectsClient = savedObjectsClient;
     this.cache = new Cache();
+    this.sharedUserProvidedCache = sharedUserProvidedCache;
+    this.namespace = namespace;
   }
 
   async getUserProvided<T = unknown>(): Promise<UserProvided<T>> {
-    const cachedValue = this.cache.get();
-    if (cachedValue) {
-      return cachedValue;
+    // 1. Check shared process-wide cache
+    if (this.sharedUserProvidedCache) {
+      const sharedCached = this.sharedUserProvidedCache.get(this.namespace);
+      if (sharedCached) {
+        return sharedCached as UserProvided<T>;
+      }
+
+      // 2. Check for in-flight request (deduplication)
+      const inflight = this.sharedUserProvidedCache.getInflight(this.namespace);
+      if (inflight) {
+        return inflight as Promise<UserProvided<T>>;
+      }
     }
 
+    // 3. Check per-instance cache (within same request)
+    const instanceCached = this.cache.get();
+    if (instanceCached) {
+      return instanceCached;
+    }
+
+    // 4. Fetch from ES, process, and cache at all levels
+    const promise = this.computeUserProvided<T>();
+
+    // Register in-flight promise for deduplication
+    if (this.sharedUserProvidedCache) {
+      this.sharedUserProvidedCache.setInflight(this.namespace, promise);
+    }
+
+    return promise;
+  }
+
+  private async computeUserProvided<T = unknown>(): Promise<UserProvided<T>> {
     const userProvided: UserProvided<T> = this.onReadHook(await this.read());
 
     // write all overridden keys, dropping the userValue is override is null and
@@ -60,7 +91,13 @@ export abstract class UiSettingsClientCommon extends BaseUiSettingsClient {
         value === null ? { isOverridden: true } : { isOverridden: true, userValue: value };
     }
 
+    // Cache at instance level (per-request, 5s TTL)
     this.cache.set(userProvided);
+
+    // Cache at shared level (cross-request, 30s TTL)
+    if (this.sharedUserProvidedCache) {
+      this.sharedUserProvidedCache.set(this.namespace, userProvided, 30_000);
+    }
 
     return userProvided;
   }
@@ -71,11 +108,9 @@ export abstract class UiSettingsClientCommon extends BaseUiSettingsClient {
   ) {
     this.cache.del();
 
-    // Invalidate shared per-setting cache for changed keys
-    if (this.perSettingCache) {
-      for (const key of Object.keys(changes)) {
-        this.perSettingCache.del(this.namespace, key);
-      }
+    // Invalidate shared getUserProvided cache for this namespace
+    if (this.sharedUserProvidedCache) {
+      this.sharedUserProvidedCache.del(this.namespace);
     }
 
     this.onWriteHook(changes);
