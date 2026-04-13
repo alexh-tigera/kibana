@@ -1,0 +1,102 @@
+# EUI interactive widgets: names for controls
+
+Many EUI controls render as **interactive** elements (buttons, listboxes, pagination, etc.). They must expose an **accessible name** — either from **visible text** and **`aria-labelledby`**, or from **`aria-label`** when no suitable visible label exists.
+
+This guide covers the widget set commonly flagged by **`@elastic/eui/no-unnamed-interactive-element`** (and overlapping badge rules).
+
+## Components in scope
+
+- `EuiBetaBadge`, `EuiButtonIcon`, `EuiComboBox`, `EuiSelect`, `EuiSuperSelect`
+- `EuiPagination`, `EuiTreeView`, `EuiBreadcrumbs`
+
+**Do not** add redundant `aria-*` on controls that are **already named by `EuiFormRow`** — the row establishes the relationship.
+
+## Decision order (for every control that needs a name)
+
+1. If **`aria-label`** / **`aria-labelledby`** is already correct, leave it.
+2. **Prefer visible labels** — `EuiFormLabel`, `EuiTitle`, `<label>`, nearby headings — and use **`aria-labelledby`** with an **`id`** on the label element (`useGeneratedHtmlId` / `htmlIdGenerator` per `../shared_principles.md`). **Do not** duplicate the same text into **`aria-label`**.
+3. **Only if no visible label** applies, add **`aria-label={i18n.translate(...)}`**.
+4. Use **exactly one** naming mechanism — not both **`aria-label`** and **`aria-labelledby`** on the same control.
+
+## Tooltip + `EuiButtonIcon`
+
+When **`EuiToolTip`** wraps **`EuiButtonIcon`** and the tooltip **content** matches the control’s accessible name, set **`disableScreenReaderOutput`** on the tooltip so screen readers are not given the same string twice.
+
+## Examples
+
+**Visible label → `aria-labelledby` (preferred)**
+
+```tsx
+const fieldLabelId = useGeneratedHtmlId();
+
+<EuiFormLabel id={fieldLabelId}>
+  Field (using {bucketAggType} buckets)
+</EuiFormLabel>
+<EuiComboBox aria-labelledby={fieldLabelId} {...rest} />
+```
+
+**Heading labels a select**
+
+```tsx
+const selectLabelId = useGeneratedHtmlId();
+
+<h3 id={selectLabelId}>Output format</h3>
+<EuiSelect
+  aria-labelledby={selectLabelId}
+  options={formatOptions}
+  onChange={onChange}
+/>
+```
+
+**No visible label → `aria-label`**
+
+```tsx
+<EuiSuperSelect
+  aria-label={i18n.translate('myView.options.ariaLabel', {
+    defaultMessage: 'Fancy options',
+  })}
+/>
+```
+
+**`EuiButtonIcon` + matching tooltip**
+
+```tsx
+<EuiToolTip
+  content={i18n.translate('list.refresh', { defaultMessage: 'Refresh' })}
+  disableScreenReaderOutput
+>
+  <EuiButtonIcon
+    iconType="refresh"
+    aria-label={i18n.translate('list.refresh', { defaultMessage: 'Refresh' })}
+  />
+</EuiToolTip>
+```
+
+**`EuiPagination` / `EuiBreadcrumbs`**
+
+```tsx
+<EuiPagination
+  aria-label={i18n.translate('results.pagination', {
+    defaultMessage: 'Results pagination',
+  })}
+  pageCount={pageCount}
+  activePage={activePage}
+  onPageClick={onPageClick}
+/>
+
+<EuiBreadcrumbs
+  aria-label={i18n.translate('nav.breadcrumbs', {
+    defaultMessage: 'Navigation breadcrumbs',
+  })}
+  breadcrumbs={crumbs}
+/>
+```
+
+## Related ESLint rules
+
+| Rule ID | What it enforces |
+|--------|-------------------|
+| `@elastic/eui/no-unnamed-interactive-element` | Accessible name on listed interactive widgets. |
+| `@elastic/eui/badge-accessibility-rules` | Overlapping badge / unnamed interactive cases. |
+
+ESLint quick ref: `../eslint/fix-no-unnamed-interactive-element.md`.
