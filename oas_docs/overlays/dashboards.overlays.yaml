@@ -224,8 +224,6 @@ actions:
                     Response to creating a dashboard. Returns the generated ID, the full dashboard state
                     in `data`, and metadata. Default option values are always returned even when not
                     explicitly set in the request. Panel `id` values are generated automatically.
-                    Note: `config.title` always returns `""` for inline vis panels — this is a known
-                    issue. The title is stored correctly and displays in the UI.
                   value:
                     id: 3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
                     data:
@@ -245,7 +243,7 @@ actions:
                             h: 8
                           config:
                             type: metric
-                            title: ""
+                            title: Total requests
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
@@ -262,7 +260,7 @@ actions:
                             h: 8
                           config:
                             type: metric
-                            title: ""
+                            title: Average response size
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
@@ -280,7 +278,7 @@ actions:
                             h: 10
                           config:
                             type: xy
-                            title: ""
+                            title: Requests over time
                             layers:
                               - type: line
                                 data_source:
@@ -872,7 +870,7 @@ actions:
                             h: 8
                           config:
                             type: metric
-                            title: ""
+                            title: Total requests
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
@@ -889,7 +887,7 @@ actions:
                             h: 8
                           config:
                             type: metric
-                            title: ""
+                            title: Average response size
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
@@ -907,7 +905,7 @@ actions:
                             h: 10
                           config:
                             type: xy
-                            title: ""
+                            title: Requests over time
                             layers:
                               - type: line
                                 data_source:
@@ -973,7 +971,7 @@ actions:
                             h: 8
                           config:
                             type: metric
-                            title: ""
+                            title: Total requests
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
@@ -990,7 +988,7 @@ actions:
                             h: 8
                           config:
                             type: metric
-                            title: ""
+                            title: Average response size
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
@@ -1008,7 +1006,7 @@ actions:
                             h: 10
                           config:
                             type: xy
-                            title: ""
+                            title: Requests over time
                             layers:
                               - type: line
                                 data_source:
@@ -1027,7 +1025,7 @@ actions:
                             h: 10
                           config:
                             type: metric
-                            title: ""
+                            title: Unique visitors
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
