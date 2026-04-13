@@ -242,15 +242,26 @@ actions:
                             w: 12
                             h: 8
                           config:
-                            type: metric
                             title: Total requests
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
                               time_field: timestamp
+                            type: metric
+                            sampling: 1
+                            ignore_global_filters: false
                             metrics:
                               - type: primary
                                 operation: count
+                                empty_as_null: false
+                            styling:
+                              primary:
+                                position: bottom
+                                labels:
+                                  alignment: left
+                                value:
+                                  sizing: auto
+                                  alignment: right
                           id: a1b2c3d4-0001-4000-8000-000000000001
                           type: vis
                         - grid:
@@ -259,16 +270,26 @@ actions:
                             w: 12
                             h: 8
                           config:
-                            type: metric
                             title: Average response size
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
                               time_field: timestamp
+                            type: metric
+                            sampling: 1
+                            ignore_global_filters: false
                             metrics:
                               - type: primary
                                 operation: average
                                 field: bytes
+                            styling:
+                              primary:
+                                position: bottom
+                                labels:
+                                  alignment: left
+                                value:
+                                  sizing: auto
+                                  alignment: right
                           id: a1b2c3d4-0001-4000-8000-000000000002
                           type: vis
                         - grid:
@@ -277,17 +298,65 @@ actions:
                             w: 24
                             h: 10
                           config:
-                            type: xy
                             title: Requests over time
+                            type: xy
                             layers:
                               - type: line
                                 data_source:
                                   type: esql
                                   query: "FROM kibana_sample_data_logs | STATS count = COUNT() BY @timestamp = BUCKET(@timestamp, 75, ?_tstart, ?_tend)"
+                                sampling: 1
+                                ignore_global_filters: false
                                 x:
                                   column: "@timestamp"
                                 y:
                                   - column: count
+                                    axis_id: "y"
+                            axis:
+                              x:
+                                title:
+                                  visible: true
+                                ticks:
+                                  visible: true
+                                grid:
+                                  visible: true
+                                domain:
+                                  type: fit
+                                  rounding: false
+                                labels:
+                                  orientation: horizontal
+                                scale: ordinal
+                              y:
+                                anchor: start
+                                title:
+                                  visible: true
+                                scale: linear
+                                ticks:
+                                  visible: true
+                                grid:
+                                  visible: true
+                                domain:
+                                  type: full
+                                  rounding: true
+                                labels:
+                                  orientation: horizontal
+                            styling:
+                              overlays:
+                                partial_buckets:
+                                  visible: false
+                                current_time_marker:
+                                  visible: false
+                              interpolation: linear
+                              points:
+                                visibility: auto
+                            legend:
+                              visibility: hidden
+                              placement: outside
+                              position: right
+                              layout:
+                                type: grid
+                                truncate:
+                                  max_lines: 1
                           id: a1b2c3d4-0001-4000-8000-000000000003
                           type: vis
                       pinned_panels: []
@@ -862,6 +931,7 @@ actions:
                         sync_colors: false
                         sync_cursor: true
                         sync_tooltips: false
+                      title: Web logs overview
                       panels:
                         - grid:
                             x: 0
@@ -869,15 +939,26 @@ actions:
                             w: 12
                             h: 8
                           config:
-                            type: metric
                             title: Total requests
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
                               time_field: timestamp
+                            type: metric
+                            sampling: 1
+                            ignore_global_filters: false
                             metrics:
                               - type: primary
                                 operation: count
+                                empty_as_null: false
+                            styling:
+                              primary:
+                                position: bottom
+                                labels:
+                                  alignment: left
+                                value:
+                                  sizing: auto
+                                  alignment: right
                           id: a1b2c3d4-0001-4000-8000-000000000001
                           type: vis
                         - grid:
@@ -886,16 +967,26 @@ actions:
                             w: 12
                             h: 8
                           config:
-                            type: metric
                             title: Average response size
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
                               time_field: timestamp
+                            type: metric
+                            sampling: 1
+                            ignore_global_filters: false
                             metrics:
                               - type: primary
                                 operation: average
                                 field: bytes
+                            styling:
+                              primary:
+                                position: bottom
+                                labels:
+                                  alignment: left
+                                value:
+                                  sizing: auto
+                                  alignment: right
                           id: a1b2c3d4-0001-4000-8000-000000000002
                           type: vis
                         - grid:
@@ -904,21 +995,68 @@ actions:
                             w: 24
                             h: 10
                           config:
-                            type: xy
                             title: Requests over time
+                            type: xy
                             layers:
                               - type: line
                                 data_source:
                                   type: esql
                                   query: "FROM kibana_sample_data_logs | STATS count = COUNT() BY @timestamp = BUCKET(@timestamp, 75, ?_tstart, ?_tend)"
+                                sampling: 1
+                                ignore_global_filters: false
                                 x:
                                   column: "@timestamp"
                                 y:
                                   - column: count
+                                    axis_id: "y"
+                            axis:
+                              x:
+                                title:
+                                  visible: true
+                                ticks:
+                                  visible: true
+                                grid:
+                                  visible: true
+                                domain:
+                                  type: fit
+                                  rounding: false
+                                labels:
+                                  orientation: horizontal
+                                scale: ordinal
+                              y:
+                                anchor: start
+                                title:
+                                  visible: true
+                                scale: linear
+                                ticks:
+                                  visible: true
+                                grid:
+                                  visible: true
+                                domain:
+                                  type: full
+                                  rounding: true
+                                labels:
+                                  orientation: horizontal
+                            styling:
+                              overlays:
+                                partial_buckets:
+                                  visible: false
+                                current_time_marker:
+                                  visible: false
+                              interpolation: linear
+                              points:
+                                visibility: auto
+                            legend:
+                              visibility: hidden
+                              placement: outside
+                              position: right
+                              layout:
+                                type: grid
+                                truncate:
+                                  max_lines: 1
                           id: a1b2c3d4-0001-4000-8000-000000000003
                           type: vis
                       pinned_panels: []
-                      title: Web logs overview
                     meta:
                       created_at: "2026-04-13T10:00:00.000Z"
                       managed: false
@@ -970,15 +1108,26 @@ actions:
                             w: 12
                             h: 8
                           config:
-                            type: metric
                             title: Total requests
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
                               time_field: timestamp
+                            type: metric
+                            sampling: 1
+                            ignore_global_filters: false
                             metrics:
                               - type: primary
                                 operation: count
+                                empty_as_null: false
+                            styling:
+                              primary:
+                                position: bottom
+                                labels:
+                                  alignment: left
+                                value:
+                                  sizing: auto
+                                  alignment: right
                           id: a1b2c3d4-0001-4000-8000-000000000001
                           type: vis
                         - grid:
@@ -987,16 +1136,26 @@ actions:
                             w: 12
                             h: 8
                           config:
-                            type: metric
                             title: Average response size
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
                               time_field: timestamp
+                            type: metric
+                            sampling: 1
+                            ignore_global_filters: false
                             metrics:
                               - type: primary
                                 operation: average
                                 field: bytes
+                            styling:
+                              primary:
+                                position: bottom
+                                labels:
+                                  alignment: left
+                                value:
+                                  sizing: auto
+                                  alignment: right
                           id: a1b2c3d4-0001-4000-8000-000000000002
                           type: vis
                         - grid:
@@ -1005,17 +1164,65 @@ actions:
                             w: 24
                             h: 10
                           config:
-                            type: xy
                             title: Requests over time
+                            type: xy
                             layers:
                               - type: line
                                 data_source:
                                   type: esql
                                   query: "FROM kibana_sample_data_logs | STATS count = COUNT() BY @timestamp = BUCKET(@timestamp, 75, ?_tstart, ?_tend)"
+                                sampling: 1
+                                ignore_global_filters: false
                                 x:
                                   column: "@timestamp"
                                 y:
                                   - column: count
+                                    axis_id: "y"
+                            axis:
+                              x:
+                                title:
+                                  visible: true
+                                ticks:
+                                  visible: true
+                                grid:
+                                  visible: true
+                                domain:
+                                  type: fit
+                                  rounding: false
+                                labels:
+                                  orientation: horizontal
+                                scale: ordinal
+                              y:
+                                anchor: start
+                                title:
+                                  visible: true
+                                scale: linear
+                                ticks:
+                                  visible: true
+                                grid:
+                                  visible: true
+                                domain:
+                                  type: full
+                                  rounding: true
+                                labels:
+                                  orientation: horizontal
+                            styling:
+                              overlays:
+                                partial_buckets:
+                                  visible: false
+                                current_time_marker:
+                                  visible: false
+                              interpolation: linear
+                              points:
+                                visibility: auto
+                            legend:
+                              visibility: hidden
+                              placement: outside
+                              position: right
+                              layout:
+                                type: grid
+                                truncate:
+                                  max_lines: 1
                           id: a1b2c3d4-0001-4000-8000-000000000003
                           type: vis
                         - grid:
@@ -1024,16 +1231,27 @@ actions:
                             w: 24
                             h: 10
                           config:
-                            type: metric
                             title: Unique visitors
                             data_source:
                               type: data_view_spec
                               index_pattern: kibana_sample_data_logs
                               time_field: timestamp
+                            type: metric
+                            sampling: 1
+                            ignore_global_filters: false
                             metrics:
                               - type: primary
                                 operation: unique_count
                                 field: clientip
+                                empty_as_null: false
+                            styling:
+                              primary:
+                                position: bottom
+                                labels:
+                                  alignment: left
+                                value:
+                                  sizing: auto
+                                  alignment: right
                           id: a1b2c3d4-0001-4000-8000-000000000004
                           type: vis
                       pinned_panels: []
@@ -1290,3 +1508,13 @@ actions:
           label: Delete a dashboard - Console
           source: |
             DELETE kbn:/api/dashboards/3c4b8e10-d57a-11ef-9a52-4f3c2a8d0e1b
+
+  # ──────────────────────────────────────────────
+  # Fix required fields incorrectly promoted by schema.maybe()
+  # ──────────────────────────────────────────────
+  - target: "$.components.schemas['Kibana_HTTP_APIs_kbn-dashboard-data']"
+    description: "Remove x-oas-optional fields from required: query, refresh_interval, time_range"
+    update:
+      required:
+        - options
+        - title
