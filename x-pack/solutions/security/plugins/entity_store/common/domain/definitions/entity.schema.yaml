@@ -177,20 +177,28 @@ components:
           properties:
             administers:
               $ref: '#/components/schemas/EntityRelationship'
+              description: Entities this entity administers (for example, a user who is an admin of a service).
             communicates_with:
               $ref: '#/components/schemas/EntityRelationship'
+              description: Entities this entity communicates with.
             depends_on:
               $ref: '#/components/schemas/EntityRelationship'
+              description: Entities this entity depends on.
             owns_inferred:
               $ref: '#/components/schemas/EntityRelationship'
+              description: Entities inferred to be owned by this entity.
             accesses_infrequently:
               $ref: '#/components/schemas/EntityRelationship'
+              description: Entities this entity accesses infrequently.
             accesses_frequently:
               $ref: '#/components/schemas/EntityRelationship'
+              description: Entities this entity accesses frequently.
             owns:
               $ref: '#/components/schemas/EntityRelationship'
+              description: Entities owned by this entity.
             supervises:
               $ref: '#/components/schemas/EntityRelationship'
+              description: Entities supervised by this entity.
             resolution:
               type: object
               description: Resolution metadata linking this entity to another.

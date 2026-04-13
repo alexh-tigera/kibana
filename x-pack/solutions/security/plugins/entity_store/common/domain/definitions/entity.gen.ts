@@ -17,14 +17,11 @@
 import { z } from '@kbn/zod/v4';
 
 /**
- * One relationship direction: `raw_identifiers` holds ECS-style dotted keys → keyword arrays (aligned with ENTITY_RELATIONSHIP_IDENTIFIER_FIELDS plus entity.id), and canonical target EUIDs under `ids`.
+ * One relationship direction: a dynamic `raw_identifiers` object (ECS-style dotted keys → string arrays, no enumerated sub-properties) and canonical target EUIDs under `ids`.
  */
 export type EntityRelationship = z.infer<typeof EntityRelationship>;
 export const EntityRelationship = z
   .object({
-    /**
-     * Raw identifier dimensions for graph / resolution hints. Keys match the entity store relationship identifier field set (see ENTITY_RELATIONSHIP_IDENTIFIER_FIELDS in code).
-     */
     raw_identifiers: z
       .object({
         'entity.id': z.array(z.string()).optional(),
@@ -181,14 +178,41 @@ export const EntityField = z
      */
     relationships: z
       .object({
+        /**
+         * Entities this entity administers (for example, a user who is an admin of a service).
+         */
         administers: EntityRelationship.optional(),
+        /**
+         * Entities this entity communicates with.
+         */
         communicates_with: EntityRelationship.optional(),
+        /**
+         * Entities this entity depends on.
+         */
         depends_on: EntityRelationship.optional(),
+        /**
+         * Entities inferred to be owned by this entity.
+         */
         owns_inferred: EntityRelationship.optional(),
+        /**
+         * Entities this entity accesses infrequently.
+         */
         accesses_infrequently: EntityRelationship.optional(),
+        /**
+         * Entities this entity accesses frequently.
+         */
         accesses_frequently: EntityRelationship.optional(),
+        /**
+         * Entities owned by this entity.
+         */
         owns: EntityRelationship.optional(),
+        /**
+         * Entities supervised by this entity.
+         */
         supervises: EntityRelationship.optional(),
+        /**
+         * Resolution metadata linking this entity to another.
+         */
         resolution: z
           .object({
             /**

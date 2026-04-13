@@ -23,5 +23,6 @@ echo -e "\n[Security Solution OpenAPI Code Generation] Security Solution Plugin\
 
 echo -e "\n[Security Solution OpenAPI Code Generation] Entity Store Plugin\n"
 node scripts/generate_openapi.js --rootDir x-pack/solutions/security/plugins/entity_store/
+(cd x-pack/solutions/security/plugins/entity_store/ && yarn openapi:generate)
 
 check_for_changed_files "yarn openapi:generate" true
