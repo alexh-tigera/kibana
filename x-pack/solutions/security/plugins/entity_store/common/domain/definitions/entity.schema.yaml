@@ -8,6 +8,52 @@ info:
 paths: {}
 components:
   schemas:
+    EntityRelationship:
+      type: object
+      additionalProperties: false
+      description: >-
+        One relationship direction: a dynamic `raw_identifiers` object (ECS-style dotted keys →
+        string arrays, no enumerated sub-properties) and canonical target EUIDs under `ids`.
+      properties:
+        raw_identifiers:
+          type: object
+          additionalProperties: false
+          properties:
+            entity.id:
+              type: array
+              items:
+                type: string
+            host.id:
+              type: array
+              items:
+                type: string
+            host.name:
+              type: array
+              items:
+                type: string
+            user.email:
+              type: array
+              items:
+                type: string
+            user.id:
+              type: array
+              items:
+                type: string
+            user.name:
+              type: array
+              items:
+                type: string
+            service.name:
+              type: array
+              items:
+                type: string
+        ids:
+          type: array
+          items:
+            type: string
+          description: >-
+            Target entity EUIDs for this relationship; used for graph LOOKUP JOIN and DSL filters.
+
     EngineMetadata:
       type: object
       description: Internal metadata attached to an entity by the engine that produced it.
@@ -73,6 +119,22 @@ components:
             mfa_enabled:
               type: boolean
               description: Whether multi-factor authentication is enabled for the entity.
+            storage_class:
+              type: string
+              description: Storage tier or class assigned to a storage resource (e.g. hot, warm, cold, standard, archive).
+            permissions:
+              type: array
+              items:
+                type: string
+              description: Action-level permissions granted to this entity (not roles or groups).
+            known_redirects:
+              type: array
+              items:
+                type: string
+              description: Known redirect URIs or URLs (e.g. OAuth application callbacks).
+            oauth_consent_restriction:
+              type: string
+              description: OAuth consent restriction (e.g. admin_only, verified_only, unrestricted).
         behaviors:
           type: object
           description: Behavioral signals observed for the entity.
@@ -113,41 +175,22 @@ components:
           description: Connections between this entity and other entities.
           additionalProperties: false
           properties:
+            administers:
+              $ref: '#/components/schemas/EntityRelationship'
             communicates_with:
-              type: array
-              description: Entity identifiers this entity communicates with.
-              items:
-                type: string
+              $ref: '#/components/schemas/EntityRelationship'
             depends_on:
-              type: array
-              description: Entity identifiers this entity depends on.
-              items:
-                type: string
-            owns:
-              type: array
-              description: Entity identifiers owned by this entity.
-              items:
-                type: string
-            accesses_frequently:
-              type: array
-              description: Entity identifiers this entity accesses frequently.
-              items:
-                type: string
-            accesses_infrequently:
-              type: array
-              description: Entity identifiers this entity accesses infrequently.
-              items:
-                type: string
+              $ref: '#/components/schemas/EntityRelationship'
             owns_inferred:
-              type: array
-              description: Entity identifiers inferred to be owned by this entity.
-              items:
-                type: string
+              $ref: '#/components/schemas/EntityRelationship'
+            accesses_infrequently:
+              $ref: '#/components/schemas/EntityRelationship'
+            accesses_frequently:
+              $ref: '#/components/schemas/EntityRelationship'
+            owns:
+              $ref: '#/components/schemas/EntityRelationship'
             supervises:
-              type: array
-              description: Entity identifiers supervised by this entity.
-              items:
-                type: string
+              $ref: '#/components/schemas/EntityRelationship'
             resolution:
               type: object
               description: Resolution metadata linking this entity to another.
@@ -230,6 +273,7 @@ components:
           description: Deployment environment (for example, production, staging).
           example: 'production'
         criticality:
+          nullable: true
           $ref: '#/components/schemas/AssetCriticalityLevel'
           description: The criticality level assigned to this asset.
           example: 'high_impact'
