@@ -8,23 +8,12 @@
  */
 
 import React from 'react';
-import { HeaderExtension } from '../shared/header_extension';
-import { useAiButtons } from './hooks';
+import { GlobalHeaderShell } from './global_header_shell';
+import { GlobalHeaderLogo } from './global_header_logo';
+import { AiButtonSlot } from './ai_button_slot';
 
-export const AiButtonSlot = React.memo(() => {
-  const buttons = useAiButtons();
+export const GlobalHeader = React.memo(() => (
+  <GlobalHeaderShell logo={<GlobalHeaderLogo />} actions={<AiButtonSlot />} />
+));
 
-  if (buttons.length === 0) {
-    return null;
-  }
-
-  return (
-    <>
-      {buttons.map((button, index) => (
-        <HeaderExtension key={index} extension={button.content} />
-      ))}
-    </>
-  );
-});
-
-AiButtonSlot.displayName = 'AiButtonSlot';
+GlobalHeader.displayName = 'GlobalHeader';

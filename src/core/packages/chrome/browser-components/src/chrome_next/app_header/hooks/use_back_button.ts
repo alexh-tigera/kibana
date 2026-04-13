@@ -8,8 +8,8 @@
  */
 
 import { useMemo } from 'react';
-import { useNextHeader, useProjectBreadcrumbs } from '../../shared/chrome_hooks';
-import { getBreadcrumbPlainText } from '../../shared/breadcrumb_utils';
+import { useNextHeader, useProjectBreadcrumbs } from '../../../shared/chrome_hooks';
+import { getBreadcrumbPlainText } from '../../../shared/breadcrumb_utils';
 
 export interface BackNavigation {
   backHref: string;
@@ -18,7 +18,7 @@ export interface BackNavigation {
 }
 
 /**
- * Resolution: explicit `chrome.next.header` `back.href` (and optional `back.label`) → else the
+ * Resolution: explicit `chrome.next.header` `back.href` (and optional `back.label`) -> else the
  * last non-last project breadcrumb with a truthy `href` (scanning right to left). Returns
  * `undefined` if neither applies.
  */
