@@ -1,6 +1,8 @@
 # EUI tooltips and icon controls
 
-**`EuiToolTip`** + **icon control** (mainly **`EuiButtonIcon`**): avoid duplicate screen reader announcements via **`disableScreenReaderOutput`**.
+**Applies to:** `EuiToolTip`, `EuiButtonIcon`
+
+Avoid duplicate screen reader announcements when **`EuiToolTip`** wraps an icon control via **`disableScreenReaderOutput`**.
 
 **Related:** `eui_focus_and_keyboard.md` (keyboard anchors / `tabIndex`) · `eui_icons_and_tooltips.md` (`EuiIconTip` vs `EuiToolTip` + `EuiIcon`).
 

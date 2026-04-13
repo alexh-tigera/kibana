@@ -1,5 +1,7 @@
 # EUI radio groups: `EuiRadio` and `EuiRadioGroup`
 
+**Applies to:** `EuiRadio`, `EuiRadioGroup`
+
 Radio buttons are **grouped in the accessibility tree** by shared **`name`** values. Without a **`name`**, browsers and assistive technology cannot treat options as one exclusive set.
 
 ## Correct usage

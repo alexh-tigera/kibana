@@ -1,5 +1,7 @@
 # EUI data tables: `EuiBasicTable` and `EuiInMemoryTable`
 
+**Applies to:** `EuiBasicTable`, `EuiInMemoryTable`
+
 Tables need a **caption** exposed to assistive technology so users understand what the grid represents (not the same as a page `<title>`). EUI encodes this as the **`tableCaption`** prop.
 
 ## Correct usage

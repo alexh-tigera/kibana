@@ -1,13 +1,8 @@
 # EUI interactive widgets: names for controls
 
+**Applies to:** `EuiBetaBadge`, `EuiButtonIcon`, `EuiComboBox`, `EuiSelect`, `EuiSuperSelect`, `EuiPagination`, `EuiTreeView`, `EuiBreadcrumbs`
+
 Many EUI controls render as **interactive** elements (buttons, listboxes, pagination, etc.). They must expose an **accessible name** — either from **visible text** and **`aria-labelledby`**, or from **`aria-label`** when no suitable visible label exists.
-
-This guide covers the widget set commonly flagged by **`@elastic/eui/no-unnamed-interactive-element`** (and overlapping badge rules).
-
-## Components in scope
-
-- `EuiBetaBadge`, `EuiButtonIcon`, `EuiComboBox`, `EuiSelect`, `EuiSuperSelect`
-- `EuiPagination`, `EuiTreeView`, `EuiBreadcrumbs`
 
 **Do not** add redundant `aria-*` on controls that are **already named by `EuiFormRow`** — the row establishes the relationship.
 

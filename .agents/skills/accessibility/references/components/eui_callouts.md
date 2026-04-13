@@ -1,5 +1,7 @@
 # EUI callouts: `EuiCallOut` and `announceOnMount`
 
+**Applies to:** `EuiCallOut`
+
 When a callout **appears conditionally** (validation, async result, toggle, etc.), assistive technology may **not read its content** unless you opt into EUI's **live-region** behavior via **`announceOnMount`**.
 
 ## When `announceOnMount` applies

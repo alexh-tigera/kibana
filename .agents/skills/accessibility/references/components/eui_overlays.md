@@ -1,5 +1,7 @@
 # EUI overlays: modals, flyouts, and popovers
 
+**Applies to:** `EuiModal`, `EuiFlyout`, `EuiFlyoutResizable`, `EuiConfirmModal`, `EuiPopover`
+
 Use this guide when building or reviewing **layered UI** that traps or shifts focus: dialogs, side panels, and anchored popovers. Correct usage keeps **accessible names** in sync with visible titles and satisfies keyboard / screen-reader expectations (see `../shared_principles.md`).
 
 ## When to use which

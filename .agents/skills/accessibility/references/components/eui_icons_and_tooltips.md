@@ -1,5 +1,7 @@
 # EUI icons and icon tips: `EuiIcon`, `EuiIconTip`, and `EuiToolTip`
 
+**Applies to:** `EuiIcon`, `EuiIconTip`, `EuiToolTip`
+
 ## `EuiIcon`: decorative vs meaningful
 
 - **Decorative** — the icon repeats or ornaments visible text; hide it from assistive technology with **`aria-hidden={true}`**. Do not use **`aria-hidden`** if the icon is **focusable** (`tabIndex`).

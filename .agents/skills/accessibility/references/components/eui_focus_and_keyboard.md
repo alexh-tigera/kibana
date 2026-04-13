@@ -1,5 +1,7 @@
 # EUI focus and keyboard: interactive controls and tooltip anchors
 
+**Applies to:** `EuiButton`, `EuiButtonIcon`, `EuiLink`, `EuiToolTip`
+
 ## Interactive EUI controls must stay in tab order
 
 Built-in interactive EUI components (buttons, links, icon buttons, tabs, etc.) are expected to participate in **sequential focus navigation** (WCAG **2.1.1**). Do not put **`tabIndex={-1}`** on those controls unless you are following a **documented, reviewed** focus pattern (roving tabindex, etc.) — the lint rule **`accessible-interactive-element`** flags **`tabIndex={-1}`** on those widgets.

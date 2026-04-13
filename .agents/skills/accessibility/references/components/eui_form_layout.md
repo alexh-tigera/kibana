@@ -1,5 +1,7 @@
 # EUI form layout: `EuiFormRow` and invalid state
 
+**Applies to:** `EuiFormRow`, `EuiFieldText`, `EuiFieldNumber`, `EuiFilePicker`, `EuiComboBox`, `EuiTextArea`, `EuiSelect`
+
 `EuiFormRow` wires **labels**, **hints**, and **errors** to its child control. Assistive technology and visual error styling stay consistent only when the **child control’s `isInvalid`** matches the **row’s `isInvalid`**.
 
 ## Correct usage
