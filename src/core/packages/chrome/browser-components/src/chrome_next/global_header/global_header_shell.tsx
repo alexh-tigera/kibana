@@ -29,7 +29,9 @@ export interface GlobalHeaderShellProps {
   logo?: ReactNode;
   switcher?: ReactNode;
   search?: ReactNode;
+  help?: ReactNode;
   actions?: ReactNode;
+  userMenu?: ReactNode;
 }
 
 const useGlobalHeaderStyles = () => {
@@ -82,12 +84,40 @@ const useGlobalHeaderStyles = () => {
       gap: ${euiTheme.size.s};
     `;
 
-    return { root, leftGroup, switcherSlot, spacer, rightGroup, searchSlot, actionsSlot };
+    const helpSlot = css`
+      display: flex;
+      align-items: center;
+    `;
+
+    const userMenuSlot = css`
+      display: flex;
+      align-items: center;
+    `;
+
+    const separator = css`
+      width: 1px;
+      height: 20px;
+      flex-shrink: 0;
+      background: ${euiTheme.colors.borderBaseSubdued};
+    `;
+
+    return {
+      root,
+      leftGroup,
+      switcherSlot,
+      spacer,
+      rightGroup,
+      searchSlot,
+      actionsSlot,
+      helpSlot,
+      userMenuSlot,
+      separator,
+    };
   }, [euiTheme]);
 };
 
 export const GlobalHeaderShell = React.memo<GlobalHeaderShellProps>(
-  ({ logo, switcher, search, actions }) => {
+  ({ logo, switcher, search, help, actions, userMenu }) => {
     const { isCollapsed } = useSideNavCollapsed();
     const styles = useGlobalHeaderStyles();
     const logoWidth = isCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
@@ -104,16 +134,28 @@ export const GlobalHeaderShell = React.memo<GlobalHeaderShellProps>(
             </div>
           )}
         </div>
+        <div css={styles.separator} />
         <div css={styles.spacer} />
+        <div css={styles.separator} />
         <div css={styles.rightGroup}>
           {search && (
             <div css={styles.searchSlot} data-test-subj="chromeNextGlobalHeaderSearch">
               {search}
             </div>
           )}
+          {help && (
+            <div css={styles.helpSlot} data-test-subj="chromeNextGlobalHeaderHelp">
+              {help}
+            </div>
+          )}
           {actions && (
             <div css={styles.actionsSlot} data-test-subj="chromeNextGlobalHeaderActions">
               {actions}
+            </div>
+          )}
+          {userMenu && (
+            <div css={styles.userMenuSlot} data-test-subj="chromeNextGlobalHeaderUserMenu">
+              {userMenu}
             </div>
           )}
         </div>
