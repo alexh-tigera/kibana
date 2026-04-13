@@ -19,6 +19,7 @@ import {
   ValidationBadValueError,
   ValidationSettingNotFoundError,
 } from '../ui_settings_errors';
+import { NamespacedCache } from '../namespaced_cache';
 
 const logger = loggingSystemMock.create().get();
 
@@ -883,6 +884,376 @@ describe('ui settings', () => {
 
         await uiSettings.removeMany(['foo', 'bar']);
         await uiSettings.get('foo');
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
+
+  describe('shared getUserProvided() cache', () => {
+    function setupWithSharedCache(
+      options: SetupOptions & { sharedCache?: NamespacedCache<Record<string, any>> } = {}
+    ) {
+      const {
+        defaults = {},
+        overrides = {},
+        esDocSource = {},
+        namespace = 'default',
+        sharedCache,
+      } = options;
+      const sharedUserProvidedCache = sharedCache || new NamespacedCache<Record<string, any>>();
+
+      const savedObjectsClient = savedObjectsClientMock.create();
+      savedObjectsClient.get.mockReturnValue({ attributes: esDocSource } as any);
+      savedObjectsClient.update.mockResolvedValue({} as any);
+
+      const uiSettings = new UiSettingsClient({
+        type: TYPE,
+        id: ID,
+        buildNum: BUILD_NUM,
+        defaults,
+        savedObjectsClient,
+        overrides,
+        log: logger,
+        namespace,
+        sharedUserProvidedCache,
+      });
+
+      return {
+        uiSettings,
+        savedObjectsClient,
+        sharedUserProvidedCache,
+      };
+    }
+
+    afterEach(() => {
+      jest.clearAllMocks();
+      jest.useRealTimers();
+    });
+
+    describe('cross-request caching', () => {
+      it('caches getUserProvided() results across multiple client instances', async () => {
+        const sharedCache = new NamespacedCache<Record<string, any>>();
+
+        const { uiSettings: client1, savedObjectsClient: soClient1 } = setupWithSharedCache({
+          namespace: 'default',
+          sharedCache,
+          esDocSource: { foo: 'bar' },
+        });
+
+        const { uiSettings: client2, savedObjectsClient: soClient2 } = setupWithSharedCache({
+          namespace: 'default',
+          sharedCache,
+          esDocSource: { foo: 'bar' },
+        });
+
+        await client1.getUserProvided();
+        expect(soClient1.get).toHaveBeenCalledTimes(1);
+
+        await client2.getUserProvided();
+        expect(soClient2.get).toHaveBeenCalledTimes(0);
+      });
+
+      it('shares cache within same namespace', async () => {
+        const sharedCache = new NamespacedCache<Record<string, any>>();
+
+        const { uiSettings: client1, savedObjectsClient } = setupWithSharedCache({
+          namespace: 'space-a',
+          sharedCache,
+          esDocSource: { setting1: 'value1' },
+        });
+
+        const { uiSettings: client2 } = setupWithSharedCache({
+          namespace: 'space-a',
+          sharedCache,
+          esDocSource: { setting1: 'value1' },
+        });
+
+        await client1.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+        await client2.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('in-flight request deduplication', () => {
+      it('deduplicates concurrent getUserProvided() calls', async () => {
+        const sharedCache = new NamespacedCache<Record<string, any>>();
+        const savedObjectsClient = savedObjectsClientMock.create();
+
+        let resolvePromise: (value: any) => void;
+        const delayedPromise = new Promise((resolve) => {
+          resolvePromise = resolve;
+        });
+
+        savedObjectsClient.get.mockReturnValue(delayedPromise as any);
+
+        const uiSettings = new UiSettingsClient({
+          type: TYPE,
+          id: ID,
+          buildNum: BUILD_NUM,
+          defaults: {},
+          savedObjectsClient,
+          overrides: {},
+          log: logger,
+          namespace: 'default',
+          sharedUserProvidedCache: sharedCache,
+        });
+
+        const call1 = uiSettings.getUserProvided();
+        const call2 = uiSettings.getUserProvided();
+        const call3 = uiSettings.getUserProvided();
+
+        resolvePromise!({ attributes: { foo: 'bar' } });
+
+        const [result1, result2, result3] = await Promise.all([call1, call2, call3]);
+
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+        expect(result1).toEqual(result2);
+        expect(result2).toEqual(result3);
+      });
+    });
+
+    describe('cache invalidation', () => {
+      it('invalidates shared cache on set()', async () => {
+        const { uiSettings, savedObjectsClient } = setupWithSharedCache({
+          esDocSource: { foo: 'original' },
+        });
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+        await uiSettings.set('foo', 'updated');
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+      });
+
+      it('invalidates shared cache on setMany()', async () => {
+        const { uiSettings, savedObjectsClient } = setupWithSharedCache({
+          esDocSource: { foo: 'original', bar: 'original' },
+        });
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+        await uiSettings.setMany({ foo: 'updated', bar: 'updated' });
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+      });
+
+      it('invalidates shared cache on remove()', async () => {
+        const { uiSettings, savedObjectsClient } = setupWithSharedCache({
+          esDocSource: { foo: 'value' },
+        });
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+        await uiSettings.remove('foo');
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+      });
+
+      it('invalidates shared cache on removeMany()', async () => {
+        const { uiSettings, savedObjectsClient } = setupWithSharedCache({
+          esDocSource: { foo: 'value', bar: 'value' },
+        });
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+        await uiSettings.removeMany(['foo', 'bar']);
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe('namespace isolation', () => {
+      it('isolates cache by namespace', async () => {
+        const sharedCache = new NamespacedCache<Record<string, any>>();
+
+        const { uiSettings: clientA, savedObjectsClient: soClientA } = setupWithSharedCache({
+          namespace: 'space-a',
+          sharedCache,
+          esDocSource: { setting: 'value-a' },
+        });
+
+        const { uiSettings: clientB, savedObjectsClient: soClientB } = setupWithSharedCache({
+          namespace: 'space-b',
+          sharedCache,
+          esDocSource: { setting: 'value-b' },
+        });
+
+        await clientA.getUserProvided();
+        expect(soClientA.get).toHaveBeenCalledTimes(1);
+
+        await clientB.getUserProvided();
+        expect(soClientB.get).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('TTL expiry', () => {
+      it('expires shared cache after TTL (30s)', async () => {
+        jest.useFakeTimers();
+
+        const { uiSettings, savedObjectsClient } = setupWithSharedCache({
+          esDocSource: { foo: 'bar' },
+        });
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(29_000);
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(2_000);
+
+        await uiSettings.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe('integration with per-request cache', () => {
+      it('uses per-request cache before shared cache', async () => {
+        const { uiSettings, savedObjectsClient } = setupWithSharedCache({
+          esDocSource: { foo: 'bar' },
+        });
+
+        await uiSettings.getUserProvided();
+        await uiSettings.getUserProvided();
+
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+      });
+
+      it('per-request cache expires faster than shared cache', async () => {
+        jest.useFakeTimers();
+
+        const sharedCache = new NamespacedCache<Record<string, any>>();
+
+        const { uiSettings: clientA, savedObjectsClient } = setupWithSharedCache({
+          namespace: 'default',
+          sharedCache,
+          esDocSource: { foo: 'bar' },
+        });
+
+        await clientA.getUserProvided();
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(6_000);
+
+        await clientA.getUserProvided();
+
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('graceful degradation', () => {
+      it('works without shared cache', async () => {
+        const savedObjectsClient = savedObjectsClientMock.create();
+        savedObjectsClient.get.mockReturnValue({ attributes: { foo: 'bar' } } as any);
+
+        const uiSettings = new UiSettingsClient({
+          type: TYPE,
+          id: ID,
+          buildNum: BUILD_NUM,
+          defaults: {},
+          savedObjectsClient,
+          overrides: {},
+          log: logger,
+          namespace: 'default',
+        });
+
+        await uiSettings.getUserProvided();
+        await uiSettings.getUserProvided();
+
+        expect(savedObjectsClient.get).toHaveBeenCalledTimes(1);
+      });
+
+      it('each client instance fetches independently without shared cache', async () => {
+        const soClient1 = savedObjectsClientMock.create();
+        soClient1.get.mockReturnValue({ attributes: { foo: 'bar' } } as any);
+
+        const soClient2 = savedObjectsClientMock.create();
+        soClient2.get.mockReturnValue({ attributes: { foo: 'bar' } } as any);
+
+        const client1 = new UiSettingsClient({
+          type: TYPE,
+          id: ID,
+          buildNum: BUILD_NUM,
+          defaults: {},
+          savedObjectsClient: soClient1,
+          overrides: {},
+          log: logger,
+          namespace: 'default',
+        });
+
+        const client2 = new UiSettingsClient({
+          type: TYPE,
+          id: ID,
+          buildNum: BUILD_NUM,
+          defaults: {},
+          savedObjectsClient: soClient2,
+          overrides: {},
+          log: logger,
+          namespace: 'default',
+        });
+
+        await client1.getUserProvided();
+        await client2.getUserProvided();
+
+        expect(soClient1.get).toHaveBeenCalledTimes(1);
+        expect(soClient2.get).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('in-flight cleanup', () => {
+      it('clears in-flight promises on invalidation', async () => {
+        const savedObjectsClient = savedObjectsClientMock.create();
+        const sharedCache = new NamespacedCache<Record<string, any>>();
+
+        let resolveFirstCall: (value: any) => void;
+        const firstCallPromise = new Promise((resolve) => {
+          resolveFirstCall = resolve;
+        });
+
+        let callCount = 0;
+        savedObjectsClient.get.mockImplementation(() => {
+          callCount++;
+          if (callCount === 1) {
+            return firstCallPromise as any;
+          }
+          return Promise.resolve({ attributes: { foo: 'updated' } }) as any;
+        });
+        savedObjectsClient.update.mockResolvedValue({} as any);
+
+        const uiSettings = new UiSettingsClient({
+          type: TYPE,
+          id: ID,
+          buildNum: BUILD_NUM,
+          defaults: {},
+          savedObjectsClient,
+          overrides: {},
+          log: logger,
+          namespace: 'default',
+          sharedUserProvidedCache: sharedCache,
+        });
+
+        const inflightCall = uiSettings.getUserProvided();
+
+        await uiSettings.set('foo', 'bar');
+
+        const newCallPromise = uiSettings.getUserProvided();
+
+        resolveFirstCall!({ attributes: { foo: 'original' } });
+
+        await Promise.all([inflightCall, newCallPromise]);
+
         expect(savedObjectsClient.get).toHaveBeenCalledTimes(2);
       });
     });
