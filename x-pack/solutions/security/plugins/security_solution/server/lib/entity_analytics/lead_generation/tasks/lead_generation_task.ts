@@ -169,7 +169,11 @@ const runLeadGenerationTask = async ({
       coreStart: core,
       namespace: state.namespace,
     });
-    const crudClient = startPlugins.entityStore.createCRUDClient(esClient, state.namespace, soClient);
+    const crudClient = startPlugins.entityStore.createCRUDClient(
+      esClient,
+      state.namespace,
+      soClient
+    );
     const riskScoreDataClient = new RiskScoreDataClient({
       logger,
       kibanaVersion,
