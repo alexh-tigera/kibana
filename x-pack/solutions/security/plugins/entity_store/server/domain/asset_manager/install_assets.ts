@@ -6,6 +6,9 @@
  */
 
 import type { ElasticsearchClient, Logger } from '@kbn/core/server';
+import { SavedObjectsErrorHelpers } from '@kbn/core/server';
+import type { EngineDescriptorClient, EntityStoreGlobalStateClient } from '../saved_objects';
+import { ENGINE_STATUS } from '../constants';
 import {
   putComponentTemplate,
   putIndexTemplate,
@@ -149,6 +152,52 @@ export async function uninstallElasticsearchAssets({
     logger.error(`error uninstalling assets: ${error}`);
     // TODO: degrade status?
     throw error;
+  }
+}
+
+/**
+ * Ensures the Entity Store infrastructure exists, installing it in STOPPED
+ * state if missing. Called by CRUDClient before write operations to avoid
+ * creating unmapped, bare index with alias as its name.
+ *
+ * Unlike init() (full install + start + task scheduling) or install()
+ * (single entity type, sets STARTED), this function:
+ *  - Only acts when the concrete latest index does not exist
+ *  - Installs shared ES assets, indices, and engine descriptors for ALL types
+ *  - Leaves every engine in STOPPED status — no tasks are scheduled
+ */
+export async function ensureEntityStoreInstalled(deps: {
+  esClient: ElasticsearchClient;
+  logger: Logger;
+  namespace: string;
+  engineDescriptorClient: EngineDescriptorClient;
+  globalStateClient: EntityStoreGlobalStateClient;
+}): Promise<void> {
+  const { esClient, logger, namespace, engineDescriptorClient, globalStateClient } = deps;
+
+  const concreteIndex = getLatestEntitiesIndexName(namespace);
+  const exists = await esClient.indices.exists({ index: concreteIndex });
+  if (exists) return;
+
+  logger.info('Entity store not installed, auto-installing');
+
+  await Promise.all([
+    globalStateClient.init(),
+    installSharedElasticsearchAssets({ esClient, logger, namespace }),
+  ]);
+
+  await installIndicesAndDataStreams(esClient, namespace, logger);
+
+  // init() creates SO with INSTALLING status (just a data record, no tasks start).
+  // update() then sets it to STOPPED. No engine actually runs at any point.
+  for (const type of ALL_ENTITY_TYPES) {
+    try {
+      await engineDescriptorClient.init(type);
+      await engineDescriptorClient.update(type, { status: ENGINE_STATUS.STOPPED });
+    } catch (error) {
+      if (SavedObjectsErrorHelpers.isBadRequestError(error)) continue;
+      throw error;
+    }
   }
 }
 

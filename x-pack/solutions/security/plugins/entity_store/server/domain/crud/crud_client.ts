@@ -14,12 +14,10 @@ import type {
   SortOrder,
 } from '@elastic/elasticsearch/lib/api/types';
 import type { ElasticsearchClient, SavedObjectsClientContract } from '@kbn/core/server';
-import { SavedObjectsErrorHelpers } from '@kbn/core/server';
 import type { Entity } from '../../../common/domain/definitions/entity.gen';
 import type { EntityType } from '../../../common';
 import { hashEuid, getEuidFromObject } from '../../../common/domain/euid';
 import { getLatestEntitiesIndexName } from '../../../common/domain/entity_index';
-import { ALL_ENTITY_TYPES } from '../../../common/domain/definitions/entity_schema';
 import { BadCRUDRequestError, EntityNotFoundError, EntityAlreadyExistsError } from '../errors';
 import { validateAndTransformDoc } from './utils';
 import { runWithSpan } from '../../telemetry/traces';
@@ -29,12 +27,8 @@ import {
   type SearchEntitiesV2Params,
   type SearchEntitiesV2Result,
 } from '../search_entities/search_entities';
-import {
-  installSharedElasticsearchAssets,
-  installIndicesAndDataStreams,
-} from '../asset_manager/install_assets';
+import { ensureEntityStoreInstalled } from '../asset_manager/install_assets';
 import { EngineDescriptorClient, EntityStoreGlobalStateClient } from '../saved_objects';
-import { ENGINE_STATUS } from '../constants';
 
 const RETRY_ON_CONFLICT = 3;
 
@@ -114,34 +108,13 @@ export class CRUDClient {
   }
 
   private async ensureInstalled(): Promise<void> {
-    const concreteIndex = getLatestEntitiesIndexName(this.namespace);
-    const exists = await this.esClient.indices.exists({ index: concreteIndex });
-    if (exists) return;
-
-    this.logger.info('Entity store not installed, auto-installing');
-
-    await Promise.all([
-      this.globalStateClient.init(),
-      installSharedElasticsearchAssets({
-        esClient: this.esClient,
-        logger: this.logger,
-        namespace: this.namespace,
-      }),
-    ]);
-
-    await installIndicesAndDataStreams(this.esClient, this.namespace, this.logger);
-
-    // init() creates SO with INSTALLING status (just a data record, no tasks start).
-    // update() then sets it to STOPPED. No engine actually runs at any point.
-    for (const type of ALL_ENTITY_TYPES) {
-      try {
-        await this.engineDescriptorClient.init(type);
-        await this.engineDescriptorClient.update(type, { status: ENGINE_STATUS.STOPPED });
-      } catch (error) {
-        if (SavedObjectsErrorHelpers.isBadRequestError(error)) continue;
-        throw error;
-      }
-    }
+    await ensureEntityStoreInstalled({
+      esClient: this.esClient,
+      logger: this.logger,
+      namespace: this.namespace,
+      engineDescriptorClient: this.engineDescriptorClient,
+      globalStateClient: this.globalStateClient,
+    });
   }
 
   private initWithTracing(): void {
