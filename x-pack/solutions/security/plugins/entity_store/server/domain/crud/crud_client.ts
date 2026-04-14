@@ -29,6 +29,12 @@ import {
   type SearchEntitiesV2Params,
   type SearchEntitiesV2Result,
 } from '../search_entities/search_entities';
+import {
+  installSharedElasticsearchAssets,
+  installIndicesAndDataStreams,
+} from '../asset_manager/install_assets';
+import { EngineDescriptorClient, EntityStoreGlobalStateClient } from '../saved_objects';
+import { ENGINE_STATUS } from '../constants';
 
 const RETRY_ON_CONFLICT = 3;
 
@@ -36,6 +42,7 @@ interface CRUDClientDependencies {
   logger: Logger;
   esClient: ElasticsearchClient;
   namespace: string;
+  soClient: SavedObjectsClientContract;
 }
 
 export interface ListEntitiesParams {
@@ -86,12 +93,55 @@ export class CRUDClient {
   private readonly logger: Logger;
   private readonly esClient: ElasticsearchClient;
   private readonly namespace: string;
+  private readonly engineDescriptorClient: EngineDescriptorClient;
+  private readonly globalStateClient: EntityStoreGlobalStateClient;
 
   constructor(deps: CRUDClientDependencies) {
     this.logger = deps.logger;
     this.esClient = deps.esClient;
     this.namespace = deps.namespace;
+    this.engineDescriptorClient = new EngineDescriptorClient(
+      deps.soClient,
+      deps.namespace,
+      deps.logger
+    );
+    this.globalStateClient = new EntityStoreGlobalStateClient(
+      deps.soClient,
+      deps.namespace,
+      deps.logger
+    );
     this.initWithTracing();
+  }
+
+  private async ensureInstalled(): Promise<void> {
+    const concreteIndex = getLatestEntitiesIndexName(this.namespace);
+    const exists = await this.esClient.indices.exists({ index: concreteIndex });
+    if (exists) return;
+
+    this.logger.info('Entity store not installed, auto-installing');
+
+    await Promise.all([
+      this.globalStateClient.init(),
+      installSharedElasticsearchAssets({
+        esClient: this.esClient,
+        logger: this.logger,
+        namespace: this.namespace,
+      }),
+    ]);
+
+    await installIndicesAndDataStreams(this.esClient, this.namespace, this.logger);
+
+    // init() creates SO with INSTALLING status (just a data record, no tasks start).
+    // update() then sets it to STOPPED. No engine actually runs at any point.
+    for (const type of ALL_ENTITY_TYPES) {
+      try {
+        await this.engineDescriptorClient.init(type);
+        await this.engineDescriptorClient.update(type, { status: ENGINE_STATUS.STOPPED });
+      } catch (error) {
+        if (SavedObjectsErrorHelpers.isBadRequestError(error)) continue;
+        throw error;
+      }
+    }
   }
 
   private initWithTracing(): void {
@@ -235,6 +285,7 @@ export class CRUDClient {
   // ID will be validated and used if correct
   // 3. Identity only - no ID and identifying data - ID will be generated
   public async updateEntity(entityType: EntityType, doc: Entity, force: boolean): Promise<void> {
+    await this.ensureInstalled();
     const generatedId = getEuidFromObject(entityType, doc);
     const valid = validateAndTransformDoc(
       'update',
@@ -275,6 +326,7 @@ export class CRUDClient {
     objects,
     force = false,
   }: BulkUpdateEntityParams): Promise<BulkObjectResponse[]> {
+    await this.ensureInstalled();
     const operations: (BulkOperationContainer | BulkUpdateAction)[] = [];
     this.logger.debug(`Preparing ${objects.length} entities for bulk update`);
     for (const { type: entityType, doc } of objects) {
@@ -319,6 +371,7 @@ export class CRUDClient {
 
   // createEntity generates EUID and creates the entity in the LATEST index
   public async createEntity(entityType: EntityType, doc: Entity): Promise<void> {
+    await this.ensureInstalled();
     const id = getEuidFromObject(entityType, doc);
     if (!id) {
       throw new BadCRUDRequestError(`Could not derive EUID from document`);
