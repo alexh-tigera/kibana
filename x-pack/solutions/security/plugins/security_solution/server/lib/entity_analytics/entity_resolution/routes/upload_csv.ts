@@ -74,7 +74,8 @@ export const entityResolutionCsvUploadRoute = ({
           const securitySolution = await context.securitySolution;
           const namespace = securitySolution.getSpaceId();
 
-          const crudClient = entityStoreStart.createCRUDClient(esClient, namespace);
+          const soClient = coreContext.savedObjects.client;
+          const crudClient = entityStoreStart.createCRUDClient(esClient, namespace, soClient);
           const resolutionClient = entityStoreStart.createResolutionClient(esClient, namespace);
 
           const fileStream = request.body.file as HapiReadableStream;

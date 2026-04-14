@@ -27,7 +27,7 @@ import type {
 } from '@kbn/licensing-plugin/server';
 import type { SpacesPluginSetup, SpacesPluginStart } from '@kbn/spaces-plugin/server';
 import type { CoreSetup } from '@kbn/core/server';
-import type { ElasticsearchClient } from '@kbn/core/server';
+import type { ElasticsearchClient, SavedObjectsClientContract } from '@kbn/core/server';
 import type { AssetManagerClient } from './domain/asset_manager';
 import type { EntityMaintainersClient } from './domain/entity_maintainers';
 import type { FeatureFlags } from './infra/feature_flags';
@@ -79,7 +79,11 @@ export type RegisterEntityMaintainer = (config: RegisterEntityMaintainerConfig) 
 export type EntityStoreCRUDClient = Omit<CRUDClient, 'createEntity'>;
 
 export interface EntityStoreStartContract {
-  createCRUDClient: (esClient: ElasticsearchClient, namespace: string) => EntityStoreCRUDClient;
+  createCRUDClient: (
+    esClient: ElasticsearchClient,
+    namespace: string,
+    soClient: SavedObjectsClientContract
+  ) => EntityStoreCRUDClient;
   createResolutionClient: (esClient: ElasticsearchClient, namespace: string) => ResolutionClient;
 }
 

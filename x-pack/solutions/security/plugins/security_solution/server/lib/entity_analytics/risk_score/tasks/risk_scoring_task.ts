@@ -122,7 +122,7 @@ export const registerRiskScoringTask = ({
         spaceId: namespace,
         experimentalFeatures,
         uiSettingsClient,
-        crudClient: pluginsStart.entityStore?.createCRUDClient(esClient, namespace),
+        crudClient: pluginsStart.entityStore?.createCRUDClient(esClient, namespace, soClient),
       });
     });
 

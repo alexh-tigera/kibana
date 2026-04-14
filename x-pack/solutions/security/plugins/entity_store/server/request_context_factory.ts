@@ -67,6 +67,7 @@ export async function createRequestHandlerContext({
     logger,
     esClient,
     namespace,
+    soClient: core.savedObjects.client,
   });
   const ccsLogsExtractionClient = new CcsLogsExtractionClient(logger, esClient, namespace);
   const logsExtractionClient = new LogsExtractionClient({

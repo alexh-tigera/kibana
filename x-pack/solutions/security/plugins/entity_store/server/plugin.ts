@@ -113,7 +113,8 @@ export class EntityStorePlugin
 
     const logger = this.logger;
     return {
-      createCRUDClient: (esClient, namespace) => new CRUDClient({ logger, esClient, namespace }),
+      createCRUDClient: (esClient, namespace, soClient) =>
+        new CRUDClient({ logger, esClient, namespace, soClient }),
       createResolutionClient: (esClient, namespace) =>
         new ResolutionClient({ logger, esClient, namespace }),
     };

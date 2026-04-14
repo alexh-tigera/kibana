@@ -78,9 +78,8 @@ export const csvUploadRoute = ({
             const namespace = secSol.getSpaceId();
 
             const esClient = coreStart.elasticsearch.client.asScoped(request).asCurrentUser;
-            const entityStoreClient = new CRUDClient({ logger, esClient, namespace });
-
             const soClient = getRequestSavedObjectClient(await context.core);
+            const entityStoreClient = new CRUDClient({ logger, esClient, namespace, soClient });
             const watchlistClient = new WatchlistConfigClient({
               esClient,
               soClient,

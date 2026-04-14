@@ -147,10 +147,12 @@ export function registerEntityMaintainerTask({
                 };
 
                 const esClient = coreStart.elasticsearch.client.asScoped(fakeRequest).asCurrentUser;
+                const soClient = coreStart.savedObjects.getScopedClient(fakeRequest);
                 const crudClient = new CRUDClient({
                   logger,
                   esClient,
                   namespace: maintainerStatus.metadata.namespace,
+                  soClient,
                 });
                 const taskLogger = logger.get(taskInstance.id);
 

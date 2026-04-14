@@ -37,7 +37,7 @@ export const createEntitySourcesService = ({
 }) => {
   const watchlistClient = new WatchlistConfigClient({ esClient, soClient, logger, namespace });
   const descriptorClient = new WatchlistEntitySourceClient({ soClient, namespace });
-  const crudClient = new CRUDClient({ logger, esClient, namespace });
+  const crudClient = new CRUDClient({ logger, esClient, namespace, soClient });
   const watchlistEntitiesService = createWatchlistEntitiesService({
     esClient,
     namespace,

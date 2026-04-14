@@ -375,7 +375,8 @@ export class RequestContextFactory implements IRequestContextFactory {
       getEntityStoreUpdateClient: memoize(() => {
         return startPlugins.entityStore.createCRUDClient(
           coreContext.elasticsearch.client.asCurrentUser,
-          getSpaceId()
+          getSpaceId(),
+          coreContext.savedObjects.client
         );
       }),
       getAssetInventoryClient: memoize(

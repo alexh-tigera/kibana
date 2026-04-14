@@ -52,12 +52,14 @@ export const generateLeadsRoute = (
         try {
           const secSol = await context.securitySolution;
           const spaceId = secSol.getSpaceId();
-          const esClient = (await context.core).elasticsearch.client.asCurrentUser;
+          const coreContext = await context.core;
+          const esClient = coreContext.elasticsearch.client.asCurrentUser;
+          const soClient = coreContext.savedObjects.client;
           const executionUuid = uuidv4();
           const riskScoreDataClient = secSol.getRiskScoreDataClient();
 
           const [, startPlugins] = await getStartServices();
-          const crudClient = startPlugins.entityStore.createCRUDClient(esClient, spaceId);
+          const crudClient = startPlugins.entityStore.createCRUDClient(esClient, spaceId, soClient);
 
           void (async () => {
             try {

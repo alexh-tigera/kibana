@@ -79,7 +79,8 @@ export const assetCriticalityCSVUploadV2Route = ({
           });
 
           const esClient = coreStart.elasticsearch.client.asScoped(request).asCurrentUser;
-          const entityStoreClient = securityStart.entityStore.createCRUDClient(esClient, spaceId);
+          const soClient = coreStart.savedObjects.getScopedClient(request);
+          const entityStoreClient = securityStart.entityStore.createCRUDClient(esClient, spaceId, soClient);
 
           const fileStream = request.body.file as HapiReadableStream;
           logger.debug(`Parsing asset criticality CSV file ${fileStream.hapi.filename}`);
