@@ -10,7 +10,7 @@ import { FormattedMessage } from '@kbn/i18n-react';
 import { i18n } from '@kbn/i18n';
 import * as t from 'io-ts';
 
-import { EuiLink, EuiCode } from '@elastic/eui';
+import { EuiLink, EuiCode, EuiText } from '@elastic/eui';
 import type { ValidationFunc, ValidationFuncArg, FieldConfig } from '../shared_imports';
 import { FIELD_TYPES, fieldValidators, fieldFormatters } from '../shared_imports';
 import type {
@@ -67,22 +67,35 @@ const indexOptionsConfig = {
   label: i18n.translate('xpack.idxMgmt.mappingsEditor.indexOptionsLabel', {
     defaultMessage: 'Index options',
   }),
+  labelAppend: () => (
+    <EuiText size="xs">
+      <EuiLink
+        href={documentationService.getIndexOptionsLink()}
+        target="_blank"
+        size="xs"
+        aria-label={i18n.translate(
+          'xpack.idxMgmt.mappingsEditor.configuration.indexOptionsDocumentationLink.ariaLabel',
+          {
+            defaultMessage: 'Learn more about {label}',
+            values: {
+              label: indexOptionsConfig.label,
+            },
+          }
+        )}
+      >
+        {i18n.translate(
+          'xpack.idxMgmt.mappingsEditor.configuration.indexOptionsDocumentationLink',
+          {
+            defaultMessage: 'Learn more',
+          }
+        )}
+      </EuiLink>
+    </EuiText>
+  ),
   helpText: () => (
     <FormattedMessage
       id="xpack.idxMgmt.mappingsEditor.indexOptionsHelpText"
-      defaultMessage="Information to store in the index. {docsLink}"
-      values={{
-        docsLink: (
-          <EuiLink href={documentationService.getIndexOptionsLink()} target="_blank">
-            {i18n.translate(
-              'xpack.idxMgmt.mappingsEditor.configuration.indexOptionsdDocumentationLink',
-              {
-                defaultMessage: 'Learn more.',
-              }
-            )}
-          </EuiLink>
-        ),
-      }}
+      defaultMessage="Information to store in the index."
     />
   ),
   type: FIELD_TYPES.SUPER_SELECT,

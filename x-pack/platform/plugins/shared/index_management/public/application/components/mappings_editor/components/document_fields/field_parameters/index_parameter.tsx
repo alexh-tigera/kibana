@@ -26,35 +26,39 @@ export const IndexParameter = ({
   indexOptions = PARAMETERS_OPTIONS.index_options,
   hasIndexOptions = true,
   config = getFieldConfig('index_options'),
-}: Props) => (
-  <EditFieldFormRow
-    title={i18n.translate('xpack.idxMgmt.mappingsEditor.searchableFieldTitle', {
-      defaultMessage: 'Searchable',
-    })}
-    description={i18n.translate('xpack.idxMgmt.mappingsEditor.searchableFieldDescription', {
-      defaultMessage: 'Allow the field to be searched.',
-    })}
-    docLink={{
-      text: i18n.translate('xpack.idxMgmt.mappingsEditor.indexDocLinkText', {
-        defaultMessage: 'Searchable documentation',
-      }),
-      href: documentationService.getIndexLink(),
-    }}
-    formFieldPath="index"
-    data-test-subj="indexParameter"
-  >
-    {/* index_options */}
-    {hasIndexOptions ? (
-      <UseField
-        path="index_options"
-        config={config}
-        component={Field}
-        componentProps={{
-          euiFieldProps: {
-            options: indexOptions,
-          },
-        }}
-      />
-    ) : undefined}
-  </EditFieldFormRow>
-);
+}: Props) => {
+  console.log('config', config);
+  console.log('indexOptions', indexOptions);
+  return (
+    <EditFieldFormRow
+      title={i18n.translate('xpack.idxMgmt.mappingsEditor.searchableFieldTitle', {
+        defaultMessage: 'Searchable',
+      })}
+      description={i18n.translate('xpack.idxMgmt.mappingsEditor.searchableFieldDescription', {
+        defaultMessage: 'Allow the field to be searched.',
+      })}
+      docLink={{
+        text: i18n.translate('xpack.idxMgmt.mappingsEditor.indexDocLinkText', {
+          defaultMessage: 'Searchable documentation',
+        }),
+        href: documentationService.getIndexLink(),
+      }}
+      formFieldPath="index"
+      data-test-subj="indexParameter"
+    >
+      {/* index_options */}
+      {hasIndexOptions ? (
+        <UseField
+          path="index_options"
+          config={config}
+          component={Field}
+          componentProps={{
+            euiFieldProps: {
+              options: indexOptions,
+            },
+          }}
+        />
+      ) : undefined}
+    </EditFieldFormRow>
+  );
+};
