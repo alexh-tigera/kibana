@@ -14,6 +14,7 @@ These principles apply to every accessibility change guided by **`.agents/skills
 
 - Meet **WCAG 2.2 AA**.
 - Follow the [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) for widget patterns.
+- Prefer EUI components over native HTML — EUI handles aria attributes, focus management, and keyboard interactions out of the box. Use native HTML only when no suitable EUI component exists.
 - Prefer semantic HTML over ARIA — use ARIA only when native semantics are insufficient.
 
 ### Minimal changes
@@ -30,6 +31,15 @@ These principles apply to every accessibility change guided by **`.agents/skills
 
 - Do not widen types (`string` → `any`) or suppress errors (`@ts-ignore`, `as any`).
 - New props must match the component's type definition.
+
+## Fix order (root-cause first)
+
+When fixing an accessibility issue, work down this list and stop at the first valid fix:
+
+1. **Semantics first.** Use native HTML or EUI props and markup (`label`, `htmlFor`, `aria-label`, `aria-labelledby`, `aria-describedby`, proper roles) on the rendered element.
+2. **Structural wiring second.** Connect existing visible text to controls via stable IDs (`id` + `aria-labelledby`) instead of duplicating strings.
+3. **Behavior third.** Adjust keyboard or focus behavior only when semantics are already correct.
+4. **Lifecycle hacks as last resort.** `useEffect` for focus or announcements is not an a11y fix — use it only when no declarative alternative exists.
 
 ## Accessible naming
 
