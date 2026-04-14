@@ -1,4 +1,4 @@
-# EUI interactive widgets: names for controls
+# EUI interactive components: names for controls
 
 **Applies to:** `EuiBetaBadge`, `EuiButtonIcon`, `EuiComboBox`, `EuiSelect`, `EuiSuperSelect`, `EuiPagination`, `EuiTreeView`, `EuiBreadcrumbs`
 
@@ -117,7 +117,7 @@ const selectLabelId = useGeneratedHtmlId();
 
 | Rule ID | What it enforces |
 |--------|-------------------|
-| `@elastic/eui/no-unnamed-interactive-element` | Accessible name on listed interactive widgets. |
+| `@elastic/eui/no-unnamed-interactive-element` | Accessible name on listed interactive components. |
 | `@elastic/eui/badge-accessibility-rules` | Overlapping badge / unnamed interactive cases. |
 | `@elastic/eui/sr-output-disabled-tooltip` | Duplicate SR text for **`EuiToolTip`** + **`EuiButtonIcon`** — see **`eui_tooltip_icon.md`**. |
 

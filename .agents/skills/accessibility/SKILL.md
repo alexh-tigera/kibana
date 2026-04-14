@@ -12,7 +12,7 @@ Guide accessible UI development in Kibana: correct EUI component usage, aria wir
 | Starting point | Go to |
 |---------------|-------|
 | `@elastic/eui/*` ESLint rule id | `references/eslint/index.md` → open the **component guide** |
-| EUI widget (modal, table, callout …) | `references/components/index.md` → open the matching guide |
+| EUI component (modal, table, callout …) | `references/components/index.md` → open the matching guide |
 | General a11y question or non-EUI code | `references/shared_principles.md` (read end-to-end) |
 
 ## 2. Read shared principles
@@ -46,7 +46,7 @@ This runs linting, type checking, and i18n validation on your local changes. If 
 | `references/project/` | **Project-specific** — swap this folder when porting |
 | `references/project/i18n.md` | Localization contract |
 | `references/project/html_ids.md` | HTML ID generation utilities |
-| `references/components/index.md` | Widget → component guide lookup |
+| `references/components/index.md` | Component guide lookup |
 | `references/components/*.md` | Canonical EUI patterns, examples, common mistakes |
 | `references/eslint/index.md` | ESLint rule id → component guide + eslint bridge |
 | `references/eslint/fix-*.md` | Thin lint bridges (link into `components/`) |

@@ -11,7 +11,7 @@ Pick a row by **what you are changing**. Each **File** links to canonical usage,
 | `eui_focus_and_keyboard.md` | Focus & keyboard | `EuiButton`, `EuiButtonIcon`, `EuiLink`, `EuiToolTip` |
 | `eui_form_layout.md` | Form row + invalid state | `EuiFormRow`, `EuiFieldText`, `EuiFieldNumber`, `EuiFilePicker`, `EuiComboBox`, `EuiTextArea`, `EuiSelect` |
 | `eui_icons_and_tooltips.md` | Icons & icon tips | `EuiIcon`, `EuiIconTip`, `EuiToolTip` |
-| `eui_interactive_widgets.md` | Named interactive controls | `EuiBetaBadge`, `EuiButtonIcon`, `EuiComboBox`, `EuiSelect`, `EuiSuperSelect`, `EuiPagination`, `EuiTreeView`, `EuiBreadcrumbs` |
+| `eui_interactive_components.md` | Named interactive controls | `EuiBetaBadge`, `EuiButtonIcon`, `EuiComboBox`, `EuiSelect`, `EuiSuperSelect`, `EuiPagination`, `EuiTreeView`, `EuiBreadcrumbs` |
 | `eui_overlays.md` | Modals, flyouts, popovers | `EuiModal`, `EuiFlyout`, `EuiFlyoutResizable`, `EuiConfirmModal`, `EuiPopover` |
 | `eui_radio_groups.md` | Radio groups | `EuiRadio`, `EuiRadioGroup` |
 | `eui_tooltip_icon.md` | Tooltips + icon controls | `EuiToolTip`, `EuiButtonIcon` |

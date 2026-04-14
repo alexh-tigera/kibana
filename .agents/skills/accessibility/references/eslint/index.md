@@ -5,16 +5,16 @@
 - **`eslint/`** column = filename in this folder (thin bridge → component guide).
 
 **Shared principles:** `../shared_principles.md`.
-**Component index (by widget):** `../components/index.md`.
+**Component index:** `../components/index.md`.
 
 | Rule ID | `components/` | `eslint/` |
 |---------|---------------|-----------|
 | `@elastic/eui/accessible-interactive-element` | `eui_focus_and_keyboard.md` | `fix-accessible-interactive-element.md` |
-| `@elastic/eui/badge-accessibility-rules` | `eui_interactive_widgets.md` | `fix-no-unnamed-interactive-element.md` |
+| `@elastic/eui/badge-accessibility-rules` | `eui_interactive_components.md` | `fix-no-unnamed-interactive-element.md` |
 | `@elastic/eui/callout-announce-on-mount` | `eui_callouts.md` | `fix-callout-announce-on-mount.md` |
 | `@elastic/eui/consistent-is-invalid-props` | `eui_form_layout.md` | `fix-consistent-is-invalid-props.md` |
 | `@elastic/eui/icon-accessibility-rules` | `eui_icons_and_tooltips.md` | `fix-icon-accessibility-rules.md` |
-| `@elastic/eui/no-unnamed-interactive-element` | `eui_interactive_widgets.md` | `fix-no-unnamed-interactive-element.md` |
+| `@elastic/eui/no-unnamed-interactive-element` | `eui_interactive_components.md` | `fix-no-unnamed-interactive-element.md` |
 | `@elastic/eui/no-unnamed-radio-group` | `eui_radio_groups.md` | `fix-no-unnamed-radio-group.md` |
 | `@elastic/eui/prefer-eui-icon-tip` | `eui_icons_and_tooltips.md` | `fix-prefer-eui-icon-tip.md` |
 | `@elastic/eui/require-aria-label-for-modals` | `eui_overlays.md` | `fix-require-aria-label-for-modals.md` |

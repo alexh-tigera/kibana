@@ -7,7 +7,7 @@ description: Fixes @elastic/eui/no-unnamed-interactive-element and badge-accessi
 
 **Prerequisite:** `../shared_principles.md`
 
-**Canonical usage:** [`../components/eui_interactive_widgets.md`](../components/eui_interactive_widgets.md) — accessible names, **`aria-labelledby`** vs **`aria-label`**, **`EuiFormRow`**, tooltips on **`EuiButtonIcon`**.
+**Canonical usage:** [`../components/eui_interactive_components.md`](../components/eui_interactive_components.md) — accessible names, **`aria-labelledby`** vs **`aria-label`**, **`EuiFormRow`**, tooltips on **`EuiButtonIcon`**.
 
 ## Rule-only deferrals
 
