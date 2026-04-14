@@ -49,8 +49,8 @@ const defaultActionsConfig: ActionsConfig = {
         callback: { lookbackWindow: '1h', limit: 100 },
       },
     },
+    ears: { enabled: false },
   },
-  ears: { enabled: false },
 };
 
 describe('ensureUriAllowed', () => {
@@ -780,7 +780,10 @@ describe('getEarsUrl()', () => {
   test('returns the configured URL when ears.url is set in config', () => {
     const acu = getActionsConfigurationUtilities({
       ...defaultActionsConfig,
-      ears: { enabled: false, url: 'https://ears.example.com' },
+      auth: {
+        ...defaultActionsConfig.auth,
+        ears: { enabled: false, url: 'https://ears.example.com' },
+      },
     });
     expect(acu.getEarsUrl()).toBe('https://ears.example.com');
   });
