@@ -34,11 +34,6 @@ import {
 import { jobForCloningSchema, jobIdSchema } from './schemas/anomaly_detectors_schema';
 
 import { jobServiceProvider } from '../models/job_service';
-<<<<<<< HEAD
-import { getAuthorizationHeader } from '../lib/request_authorization';
-=======
-import type { Datafeed, Job } from '../../common/types/anomaly_detection_jobs';
->>>>>>> upstream/main
 
 /**
  * Routes for job service

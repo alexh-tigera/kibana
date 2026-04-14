@@ -18,12 +18,9 @@ import { type MlEntityField, type MlEntityFieldOperation } from '@kbn/ml-anomaly
 import { TimeBuckets } from '@kbn/ml-time-buckets';
 import useObservable from 'react-use/lib/useObservable';
 import type { TimeRange } from '@kbn/es-query';
-<<<<<<< HEAD
 import { ML_APP_LOCATOR } from '@kbn/ml-common-types/locator_app_locator';
 import type { MlLocatorParams } from '@kbn/ml-common-types/locator';
-=======
 import { EXPLORER_ENTITY_FIELD_SELECTION_TRIGGER } from '@kbn/ui-actions-plugin/common/trigger_ids';
->>>>>>> upstream/main
 import type {
   AnomalyChartsEmbeddableOverridableState,
   AnomalyChartsEmbeddableServices,
@@ -33,12 +30,6 @@ import type {
 
 import type { AnomaliesTableData, ExplorerJob } from '../../application/explorer/explorer_utils';
 import { ExplorerAnomaliesContainer } from '../../application/explorer/explorer_charts/explorer_anomalies_container';
-<<<<<<< HEAD
-import { EXPLORER_ENTITY_FIELD_SELECTION_TRIGGER } from '../../ui_actions/triggers';
-=======
-import { ML_APP_LOCATOR } from '../../../common/constants/locator';
-import type { MlLocatorParams } from '../../../common/types/locator';
->>>>>>> upstream/main
 import { useAnomalyChartsData } from './use_anomaly_charts_data';
 import { useDateFormatTz, loadAnomaliesTableData } from '../../application/explorer/explorer_utils';
 import { useMlJobService } from '../../application/services/job_service';

@@ -81,10 +81,7 @@
     "@kbn/charts-theme",
     "@kbn/licensing-types",
     "@kbn/deeplinks-management",
-<<<<<<< HEAD
     "@kbn/ml-common-types",
-=======
     "@kbn/react-kibana-context-render",
->>>>>>> upstream/main
   ]
 }

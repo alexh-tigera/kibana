@@ -18,17 +18,9 @@ import { merge, intersection } from 'lodash';
 import type { DataViewsService } from '@kbn/data-views-plugin/common';
 import { isPopulatedObject } from '@kbn/ml-is-populated-object';
 import { isDefined } from '@kbn/ml-is-defined';
-<<<<<<< HEAD
 import type { AnalysisLimits } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
 import type { RecognizeModuleResultDataView } from '@kbn/ml-common-types/modules';
 import { ML_MODULE_SAVED_OBJECT_TYPE } from '@kbn/ml-common-types/saved_objects';
-=======
-import type { CompatibleModule } from '../../../common/constants/app';
-import type { AnalysisLimits } from '../../../common/types/anomaly_detection_jobs';
-import type { MlClient } from '../../lib/ml_client';
-import type { RecognizeModuleResultDataView } from '../../../common/types/modules';
-import { ML_MODULE_SAVED_OBJECT_TYPE } from '../../../common/types/saved_objects';
->>>>>>> upstream/main
 import type {
   KibanaObjects,
   KibanaObjectConfig,
@@ -52,7 +44,6 @@ import { isGeneralJobOverride } from '@kbn/ml-common-types/modules';
 import type { JobExistResult, JobStat } from '@kbn/ml-common-types/data_recognizer';
 import type { Datafeed } from '@kbn/ml-common-types/anomaly_detection_jobs/datafeed';
 import type { CompatibleModule } from '../../../common/constants/app';
-import { getAuthorizationHeader } from '../../lib/request_authorization';
 import type { MlClient } from '../../lib/ml_client';
 import {
   getLatestDataOrBucketTimestamp,

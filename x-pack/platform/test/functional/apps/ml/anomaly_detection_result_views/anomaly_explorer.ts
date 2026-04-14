@@ -5,17 +5,8 @@
  * 2.0.
  */
 
-<<<<<<< HEAD
 import type { Datafeed } from '@kbn/ml-common-types/anomaly_detection_jobs/datafeed';
 import type { Job } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
-import type { AnomalySwimLaneEmbeddableState } from '@kbn/ml-plugin/public';
-import { stringHash } from '@kbn/ml-string-hash';
-import { SWIMLANE_TYPE } from '@kbn/ml-plugin/server/embeddable/schemas';
-import type { AnomalySwimlaneEmbeddableStateViewBy } from '@kbn/ml-plugin/public/embeddables/anomaly_swimlane/types';
-import { USER } from '../../../services/ml/security_common';
-=======
-import type { Job, Datafeed } from '@kbn/ml-plugin/common/types/anomaly_detection_jobs';
->>>>>>> upstream/main
 import type { FtrProviderContext } from '../../../ftr_provider_context';
 
 // @ts-expect-error not full interface

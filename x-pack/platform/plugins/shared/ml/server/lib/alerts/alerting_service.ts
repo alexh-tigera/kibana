@@ -32,18 +32,6 @@ import { DEFAULT_SPACE_ID } from '@kbn/spaces-plugin/common';
 import { ALERT_REASON, ALERT_URL } from '@kbn/rule-data-utils';
 import type { MlJob } from '@elastic/elasticsearch/lib/api/types';
 import { isPopulatedObject } from '@kbn/ml-is-populated-object';
-<<<<<<< HEAD
-=======
-import { ANOMALY_RESULT_TYPE_SCORE_FIELDS } from '../../../common/constants/alerts';
-import { getAnomalyDescription } from '../../../common/util/anomaly_description';
-import { getMetricChangeDescription } from '../../../common/util/metric_change_description';
-import { formatTimeValue } from '../../../common/util/format_time_value';
-import type { MlClient } from '../ml_client';
-import type {
-  MlAnomalyDetectionAlertParams,
-  MlAnomalyDetectionAlertPreviewRequest,
-} from '../../routes/schemas/alerting_schema';
->>>>>>> upstream/main
 import type {
   AlertExecutionResult,
   FormattedRecordAnomalyAlertDoc,
@@ -56,6 +44,8 @@ import type {
   TopRecordAADDoc,
 } from '@kbn/ml-common-types/alerts';
 import type { FieldFormatsRegistryProvider } from '@kbn/ml-common-types/kibana';
+import { ANOMALY_RESULT_TYPE_SCORE_FIELDS } from '../../../common/constants/alerts';
+import { formatTimeValue } from '../../../common/util/format_time_value';
 import { getAnomalyDescription } from '../../../common/util/anomaly_description';
 import { getMetricChangeDescription } from '../../../common/util/metric_change_description';
 import type { MlClient } from '../ml_client';

@@ -257,11 +257,7 @@
     "@kbn/agent-builder-genai-utils",
     "@kbn/agent-builder-server",
     "@kbn/object-utils",
-<<<<<<< HEAD
-    "@kbn/core-ui-settings-common",
     "@kbn/ml-common-types",
-    "@kbn/react-query"
-=======
     "@kbn/control-group-renderer",
     "@kbn/react-query",
     "@kbn/core-chrome-layout-constants",
@@ -297,6 +293,5 @@
     "@kbn/search-inference-endpoints",
     "@kbn/shared-ux-column-presets",
     "@kbn/core-overlays-browser",
->>>>>>> upstream/main
   ]
 }

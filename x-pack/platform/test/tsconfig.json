@@ -165,11 +165,8 @@
     "@kbn/agent-builder-plugin",
     "@kbn/field-formats-common",
     "@kbn/reporting-test-routes",
-<<<<<<< HEAD
     "@kbn/ml-common-types",
-=======
     "@kbn/access-control-test-plugin",
->>>>>>> upstream/main
     "@kbn/alerting-types",
     "@kbn/visualizations-common",
     "@kbn/test-subj-selector",

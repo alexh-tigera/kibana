@@ -53,14 +53,11 @@ import type { DataViewEditorStart } from '@kbn/data-view-editor-plugin/public';
 import type { FieldFormatsRegistry } from '@kbn/field-formats-plugin/common';
 import { ENABLE_ESQL } from '@kbn/esql-utils';
 import type { FieldsMetadataPublicStart } from '@kbn/fields-metadata-plugin/public';
-<<<<<<< HEAD
 import type { MlCapabilities } from '@kbn/ml-common-types/capabilities';
-=======
 import type { FileUploadPluginStart } from '@kbn/file-upload-plugin/public';
 import type { KqlPluginStart } from '@kbn/kql/public';
 import type { CPSPluginStart } from '@kbn/cps/public/types';
 import { ProjectRoutingAccess } from '@kbn/cps-utils/types';
->>>>>>> upstream/main
 import type { MlSharedServices } from './application/services/get_shared_ml_services';
 import { getMlSharedServices } from './application/services/get_shared_ml_services';
 import { registerManagementSections } from './application/management';

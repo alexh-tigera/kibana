@@ -8,11 +8,8 @@
 import type { ElasticsearchClient } from '@kbn/core/server';
 import type { UsageCollectionSetup } from '@kbn/usage-collection-plugin/server';
 import type { MlAnomalyResultType } from '@kbn/ml-anomaly-utils';
-<<<<<<< HEAD
 import type { MlAnomalyDetectionJobsHealthRuleParams } from '@kbn/ml-common-types/alerts';
-=======
 import { GLOBAL_CALENDAR } from '../../common/constants/calendars';
->>>>>>> upstream/main
 import { ML_ALERT_TYPES } from '../../common/constants/alerts';
 import { getResultJobsHealthRuleConfig } from '../../common/util/alerts';
 import {

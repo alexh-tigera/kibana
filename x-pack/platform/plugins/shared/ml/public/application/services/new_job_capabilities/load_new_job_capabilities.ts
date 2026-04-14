@@ -7,12 +7,9 @@
 
 import type { DataView, DataViewsContract } from '@kbn/data-views-plugin/public';
 import type { SavedSearchPublicPluginStart } from '@kbn/saved-search-plugin/public';
-<<<<<<< HEAD
 import type { JobType } from '@kbn/ml-common-types/saved_objects';
-=======
 import type { NotificationsStart } from '@kbn/core/public';
 import { i18n } from '@kbn/i18n';
->>>>>>> upstream/main
 import { getDataViewAndSavedSearchCallback } from '../../util/index_utils';
 import type { MlApi } from '../ml_api_service';
 import { mlJobCapsServiceAnalyticsFactory } from './new_job_capabilities_service_analytics';

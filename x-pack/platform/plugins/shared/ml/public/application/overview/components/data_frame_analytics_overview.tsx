@@ -10,13 +10,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { EuiButton, EuiButtonEmpty, EuiText } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
-<<<<<<< HEAD
 import { ML_PAGES } from '@kbn/ml-common-types/locator_ml_pages';
-import dfaImage from '../../data_frame_analytics/pages/analytics_management/components/empty_prompt/data_frame_analytics_kibana.png';
-=======
-import { ML_PAGES } from '../../../locator';
 import dfaImage from '../../data_frame_analytics/pages/analytics_management/components/empty_prompt/analysis_monitors.svg';
->>>>>>> upstream/main
 import { usePermissionCheck } from '../../capabilities/check_capabilities';
 import { useMlApi, useMlLocator, useMlManagementLocator } from '../../contexts/kibana';
 import { mlNodesAvailable } from '../../ml_nodes_check';

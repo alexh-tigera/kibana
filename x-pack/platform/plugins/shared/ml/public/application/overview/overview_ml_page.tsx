@@ -26,11 +26,8 @@ import {
 } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import { ENABLE_ESQL } from '@kbn/esql-utils';
-<<<<<<< HEAD
 import { ML_PAGES } from '@kbn/ml-common-types/locator_ml_pages';
-=======
 import { css } from '@emotion/react';
->>>>>>> upstream/main
 import { UpgradeWarning } from '../components/upgrade';
 import { HelpMenu } from '../components/help_menu';
 import { useMlKibana, useNavigateToPath } from '../contexts/kibana';

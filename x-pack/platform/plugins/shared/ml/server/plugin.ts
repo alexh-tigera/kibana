@@ -26,14 +26,9 @@ import type { SpacesPluginSetup } from '@kbn/spaces-plugin/server';
 import type { FieldFormatsStart } from '@kbn/field-formats-plugin/server';
 import type { HomeServerPluginSetup } from '@kbn/home-plugin/server';
 import type { CasesServerSetup } from '@kbn/cases-plugin/server';
-<<<<<<< HEAD
 import { type MlCapabilities, alertingFeatures } from '@kbn/ml-common-types/capabilities';
 import { getPluginPrivileges } from '@kbn/ml-common-types/capabilities';
-import type { PluginsSetup, PluginsStart, RouteInitialization } from './types';
-=======
 import type { PluginsSetup, PluginsStart, RouteInitialization, ServerlessInfo } from './types';
-import { type MlCapabilities, alertingFeatures } from '../common/types/capabilities';
->>>>>>> upstream/main
 import { notificationsRoutes } from './routes/notifications';
 import {
   type MlFeatures,
