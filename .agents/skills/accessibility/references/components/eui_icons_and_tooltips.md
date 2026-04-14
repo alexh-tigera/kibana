@@ -19,7 +19,7 @@ When **`EuiToolTip`** wraps **only** a single **`EuiIcon`**, prefer **`EuiIconTi
 1. Replace the wrapper pattern with **`<EuiIconTip ... />`**.
 2. Move supported props (`content`, `position`, `delay`, `title`, `id`, `aria-label`, `data-test-subj`, icon `type` / `color` / `size`, etc.).
 3. **Do not** pass **`tabIndex`** from the old **`EuiIcon`** into **`EuiIconTip`**.
-4. New user-visible strings → **`i18n.translate`** (**i18n rules** in `../shared_principles.md`).
+4. New user-visible strings → **`i18n.translate`** (see `../project/i18n.md`).
 
 **Skip `EuiIconTip`** when: multiple tooltip children, child is not **`EuiIcon`**, **`EuiIcon`** has **`onClick`** / other handlers **`EuiIconTip`** does not support, or tooltip uses props **`EuiIconTip`** cannot take — escalate manually.
 

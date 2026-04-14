@@ -9,7 +9,7 @@ Many EUI controls render as **interactive** elements (buttons, listboxes, pagina
 ## Decision order (for every control that needs a name)
 
 1. If **`aria-label`** / **`aria-labelledby`** is already correct, leave it.
-2. **Prefer visible labels** — `EuiFormLabel`, `EuiTitle`, `<label>`, nearby headings — and use **`aria-labelledby`** with an **`id`** on the label element (`useGeneratedHtmlId` / `htmlIdGenerator` per `../shared_principles.md`). **Do not** duplicate the same text into **`aria-label`**.
+2. **Prefer visible labels** — `EuiFormLabel`, `EuiTitle`, `<label>`, nearby headings — and use **`aria-labelledby`** with an **`id`** on the label element (`useGeneratedHtmlId` / `htmlIdGenerator` per `../project/html_ids.md`). **Do not** duplicate the same text into **`aria-label`**.
 3. **Only if no visible label** applies, add **`aria-label={i18n.translate(...)}`**.
 4. Use **exactly one** naming mechanism — not both **`aria-label`** and **`aria-labelledby`** on the same control.
 

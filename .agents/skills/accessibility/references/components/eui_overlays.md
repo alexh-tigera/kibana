@@ -16,7 +16,7 @@ Use this guide when building or reviewing **layered UI** that traps or shifts fo
 Assistive technology needs a **programmatic name** for the overlay container (dialog / panel / popover). Prefer **`aria-labelledby`** pointing at the **visible title** so the spoken name stays aligned with what sighted users see.
 
 1. Put a real title inside the overlay (`EuiModalTitle`, `EuiFlyoutTitle`, `EuiPopoverTitle`, `EuiTitle`, or a heading).
-2. Give that title element a stable **`id`** (use `useGeneratedHtmlId` or `htmlIdGenerator()` per **Generating HTML IDs** in `../shared_principles.md`).
+2. Give that title element a stable **`id`** (use `useGeneratedHtmlId` or `htmlIdGenerator()` per `../project/html_ids.md`).
 3. Set **`aria-labelledby`** on **`EuiModal`**, **`EuiFlyout`**, **`EuiFlyoutResizable`**, or **`EuiPopover`** to that **`id`**.
 4. Reuse one ID variable for both the title and `aria-labelledby` — never orphan references.
 

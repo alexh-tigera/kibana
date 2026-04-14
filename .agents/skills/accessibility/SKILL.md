@@ -23,7 +23,7 @@ Always read `references/shared_principles.md` before editing. For narrow ESLint 
 
 - Follow the **component guide** — keep changes minimal and typed.
 - New/changed user-visible or assistive-technology strings must use `i18n.translate`.
-- New `id` / `aria-labelledby` wiring must use `useGeneratedHtmlId` / `htmlIdGenerator`.
+- New `id` / `aria-labelledby` wiring follows `references/project/html_ids.md`.
 - If tests fail from DOM changes, update assertions only — never skip or delete tests.
 - No unrelated refactors; license headers untouched.
 
@@ -32,6 +32,9 @@ Always read `references/shared_principles.md` before editing. For narrow ESLint 
 | Path | What it contains |
 |------|-----------------|
 | `references/shared_principles.md` | Global rules (Quick path at top for ESLint fixes) |
+| `references/project/` | **Project-specific** — swap this folder when porting |
+| `references/project/i18n.md` | Localization contract |
+| `references/project/html_ids.md` | HTML ID generation utilities |
 | `references/components/index.md` | Widget → component guide lookup |
 | `references/components/*.md` | Canonical EUI patterns, examples, common mistakes |
 | `references/rule_to_skill_index.md` | ESLint rule id → component guide + eslint bridge |

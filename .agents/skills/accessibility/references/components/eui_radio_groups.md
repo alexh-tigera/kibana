@@ -8,7 +8,7 @@ Radio buttons are **grouped in the accessibility tree** by shared **`name`** val
 
 1. Every **`EuiRadio`** and **`EuiRadioGroup`** must have a **`name`**.
 2. Options that belong together use the **same** **`name`**; distinct groups in one view use **different** names.
-3. **`name`** is a **programmatic** token — **do not** pass it through `i18n` (see **i18n rules** in `../shared_principles.md`). Visible **`label`** text **does** use `i18n.translate` when you add or change it.
+3. **`name`** is a **programmatic** token — **do not** pass it through `i18n` (see `../project/i18n.md`). Visible **`label`** text **does** use `i18n.translate` when you add or change it.
 
 ## Naming
 

@@ -55,57 +55,11 @@ For **broader reviews**, unfamiliar widgets, or work **not** driven by a specifi
 
 ## i18n rules
 
-**Must use `i18n.translate('message.id', { defaultMessage: '…' })` (or the file’s existing i18n helper pattern, e.g. `i18nTexts.*`)** for every **new or changed** string that is **user-visible** or **read by assistive tech** — labels, titles, body copy, `aria-label`, `tableCaption`, user-facing tooltip `content`, etc. **Never** introduce that copy as a **raw string literal** for those cases.
-
-**Do not** pass **programmatic-only** values through i18n (e.g. radio **`name`**, internal ids, non-assistive-technology keys).
-
-**Imports:** add **`i18n`** only when you add a new **`i18n.translate`**; keep imports at the top and merged with existing imports from the same package.
-
-**Message ids:** reuse an id when the message is the same; follow local naming in the file, else **`fileOrComponent.attribute`** (e.g. `myTable.tableCaption`, `myButton.ariaLabel`). One id → one `defaultMessage` per file; keep **`defaultMessage`** short and aligned with nearby UI.
-
-Full Kibana i18n guide: **`src/platform/packages/shared/kbn-i18n/GUIDELINE.md`**.
-
-### Example
-
-```tsx
-<EuiButtonIcon
-  aria-label={i18n.translate('myButton.ariaLabel', {
-    defaultMessage: 'Refresh results',
-  })}
-/>
-```
+See **`project/i18n.md`** for the full localization contract: what must be localized, what must not, import rules, message ID conventions, and examples.
 
 ## Generating HTML IDs
 
-When a fix needs a new `id` (for `aria-labelledby`, `titleProps`, label references, etc.), use the EUI ID utilities.
-
-### Function components
-
-Import `useGeneratedHtmlId` from `@elastic/eui`. Call it once before the first `return` and store the result in a descriptive variable.
-
-```tsx
-import { useGeneratedHtmlId } from '@elastic/eui';
-
-const labelId = useGeneratedHtmlId();
-```
-
-### Class components
-
-Import `htmlIdGenerator` from `@elastic/eui`. Call it inside `render()` with a stable suffix.
-
-```tsx
-import { htmlIdGenerator } from '@elastic/eui';
-
-render() {
-  const labelId = htmlIdGenerator()('myLabel');
-}
-```
-
-### Naming
-
-- Use descriptive variable names that reflect the element being identified (e.g. `modalTitleId`, `fieldLabelId`, `popoverTitleId`).
-- Ensure variable names are unique within the component scope.
-- Reuse an existing valid ID variable when one already targets the same element.
+See **`project/html_ids.md`** for ID generation utilities, function vs class component patterns, and variable naming conventions.
 
 ## Change boundaries
 
