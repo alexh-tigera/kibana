@@ -13,6 +13,8 @@ import {
   modelVersion5,
   modelVersion6,
   modelVersion7,
+  modelVersion8,
+  modelVersion9,
 } from '.';
 
 describe('Model versions', () => {
@@ -198,6 +200,54 @@ describe('Model versions', () => {
                     "type": "keyword",
                   },
                 },
+              },
+            },
+            "type": "mappings_addition",
+          },
+        ]
+      `);
+    });
+  });
+  describe('version 8', () => {
+    it('returns version 8 changes correctly', () => {
+      expect(modelVersion8.changes).toMatchInlineSnapshot(`
+        Array [
+          Object {
+            "addedMappings": Object {
+              "total_observables": Object {
+                "type": "integer",
+              },
+            },
+            "type": "mappings_addition",
+          },
+          Object {
+            "backfillFn": [Function],
+            "type": "data_backfill",
+          },
+        ]
+      `);
+    });
+  });
+
+  describe('version 9', () => {
+    it('returns version 9 changes correctly', () => {
+      expect(modelVersion9.changes).toMatchInlineSnapshot(`
+        Array [
+          Object {
+            "addedMappings": Object {
+              "extended_fields": Object {
+                "type": "flattened",
+              },
+              "template": Object {
+                "properties": Object {
+                  "id": Object {
+                    "type": "keyword",
+                  },
+                  "version": Object {
+                    "type": "integer",
+                  },
+                },
+                "type": "object",
               },
             },
             "type": "mappings_addition",

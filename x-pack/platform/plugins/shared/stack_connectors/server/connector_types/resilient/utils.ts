@@ -13,8 +13,8 @@ import type {
   UpdateIncidentRequest,
   CreateIncidentData,
   Incident,
-} from './types';
-import type { ResilientFieldMeta } from './schema';
+  ResilientFieldMeta,
+} from '@kbn/connector-schemas/resilient';
 
 const getValueFromOldField = (
   fieldMeta: ResilientFieldMeta,
@@ -190,7 +190,7 @@ export function prepareAdditionalFieldsForCreation(
   fields: ResilientFieldMeta[],
   additionalFields: NonNullable<Incident['additionalFields']>
 ): Partial<CreateIncidentData> {
-  const { properties, ...rest } = additionalFields;
+  const { properties, ...rest } = additionalFields as Record<string, unknown>;
   const flattenedAdditionalFields = { ...(properties ?? {}), ...rest };
   const data: Partial<CreateIncidentData> = {};
   const fieldsMetaData = transformFieldMetadataToRecord(fields);

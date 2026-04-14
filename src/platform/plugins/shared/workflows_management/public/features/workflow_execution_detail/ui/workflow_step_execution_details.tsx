@@ -7,194 +7,326 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { UseEuiTheme } from '@elastic/eui';
 import {
+  EuiCallOut,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiHorizontalRule,
+  EuiLink,
+  EuiLoadingSpinner,
   EuiPanel,
   EuiSkeletonText,
   EuiSpacer,
-  EuiStat,
   EuiTab,
   EuiTabs,
-  EuiText,
   EuiTitle,
+  useEuiTheme,
 } from '@elastic/eui';
-import { css } from '@emotion/react';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useMemoCss } from '@kbn/css-utils/public/use_memo_css';
-import type { WorkflowStepExecutionDto } from '@kbn/workflows';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { i18n } from '@kbn/i18n';
+import { FormattedMessage } from '@kbn/i18n-react';
+import type { ChildWorkflowExecutionItem, WorkflowStepExecutionDto } from '@kbn/workflows';
+import { ExecutionStatus, isExecuteSyncStepType, isTerminalStatus } from '@kbn/workflows';
+import type { JsonModelSchemaType } from '@kbn/workflows/spec/schema/common/json_model_schema';
+import { ResumeExecutionButton } from './resume_execution_button';
 import { StepExecutionDataView } from './step_execution_data_view';
-import { StepExecutionTimelineStateful } from './step_execution_timeline_stateful';
-import { formatDuration } from '../../../shared/lib/format_duration';
-import { StatusBadge } from '../../../shared/ui';
-import { useGetFormattedDateTime } from '../../../shared/ui/use_formatted_date';
-import { isTerminalStatus } from '../lib/execution_status';
+import { WorkflowExecutionOverview } from './workflow_execution_overview';
+import type { WorkflowExecutionLinkInfo } from '../../../hooks/navigation/use_navigate_to_execution';
+import { useNavigateToExecution } from '../../../hooks/navigation/use_navigate_to_execution';
+import { getExecutionStatusIcon } from '../../../shared/ui/status_badge';
 
 interface WorkflowStepExecutionDetailsProps {
   workflowExecutionId: string;
   stepExecution?: WorkflowStepExecutionDto;
-  isLoading: boolean;
+  workflowExecutionDuration?: number;
+  isLoadingStepData?: boolean;
+  workflowExecutionStatus?: ExecutionStatus;
+  resumeMessage?: string;
+  resumeSchema?: JsonModelSchemaType;
+  shouldAutoResume?: boolean;
+  /** When the step is workflow.execute, the child workflow execution (to link to) */
+  childWorkflowExecution?: ChildWorkflowExecutionItem;
+  /** When viewing a step that belongs to a nested execution, the parent workflow execution (to link to) */
+  parentWorkflowExecution?: WorkflowExecutionLinkInfo;
 }
 
 export const WorkflowStepExecutionDetails = React.memo<WorkflowStepExecutionDetailsProps>(
-  ({ workflowExecutionId, stepExecution, isLoading }) => {
-    const styles = useMemoCss(componentStyles);
-    const getFormattedDateTime = useGetFormattedDateTime();
-
-    const complicatedFlyoutTitleId = `Step ${stepExecution?.stepId} Execution Details`;
-    const isFinished = useMemo(
-      () => Boolean(stepExecution?.status && isTerminalStatus(stepExecution.status)),
-      [stepExecution?.status]
+  ({
+    workflowExecutionId,
+    stepExecution,
+    workflowExecutionDuration,
+    isLoadingStepData,
+    workflowExecutionStatus,
+    resumeMessage,
+    resumeSchema,
+    shouldAutoResume = false,
+    childWorkflowExecution,
+    parentWorkflowExecution,
+  }) => {
+    const { euiTheme } = useEuiTheme();
+    const workflowNav = useNavigateToExecution(
+      childWorkflowExecution
+        ? {
+            workflowId: childWorkflowExecution.workflowId,
+            executionId: childWorkflowExecution.executionId,
+          }
+        : { workflowId: '' }
+    );
+    const parentWorkflowNav = useNavigateToExecution(
+      parentWorkflowExecution
+        ? {
+            workflowId: parentWorkflowExecution.workflowId,
+            executionId: parentWorkflowExecution.executionId,
+          }
+        : { workflowId: '' }
     );
 
-    const tabs = useMemo(
-      () => [
+    const isWaitingForInput = stepExecution?.status === ExecutionStatus.WAITING_FOR_INPUT;
+
+    // Show data for terminal steps OR steps paused for input (they have input but no output yet)
+    const isFinished = useMemo(
+      () =>
+        Boolean(stepExecution?.status && isTerminalStatus(stepExecution.status)) ||
+        isWaitingForInput,
+      [stepExecution?.status, isWaitingForInput]
+    );
+
+    const isOverviewPseudoStep = stepExecution?.stepType === '__overview';
+    const isTriggerPseudoStep = stepExecution?.stepType?.startsWith('trigger_');
+    const isWorkflowExecuteStep = isExecuteSyncStepType(stepExecution?.stepType);
+
+    const handleWorkflowLinkClick = useCallback(
+      (e: React.MouseEvent) => {
+        if (childWorkflowExecution) {
+          e.preventDefault();
+          workflowNav.navigate();
+        }
+      },
+      [childWorkflowExecution, workflowNav]
+    );
+
+    const handleParentWorkflowLinkClick = useCallback(
+      (e: React.MouseEvent) => {
+        if (parentWorkflowExecution) {
+          e.preventDefault();
+          parentWorkflowNav.navigate();
+        }
+      },
+      [parentWorkflowExecution, parentWorkflowNav]
+    );
+
+    // Extract trigger type from stepType (e.g., 'trigger_manual' -> 'manual')
+    const triggerType = isTriggerPseudoStep
+      ? stepExecution?.stepType?.replace('trigger_', '')
+      : undefined;
+
+    const hasInput = Boolean(stepExecution?.input);
+    const hasOutput = Boolean(stepExecution?.output);
+    const hasError = Boolean(stepExecution?.error);
+
+    const tabs = useMemo(() => {
+      if (isTriggerPseudoStep) {
+        const pseudoTabs: { id: string; name: string }[] = [];
+        if (hasError) {
+          pseudoTabs.push({
+            id: 'output',
+            name: 'Error',
+          });
+        }
+        if (hasInput) {
+          pseudoTabs.push({
+            id: 'input',
+            name: 'Input',
+          });
+        }
+        if (hasOutput) {
+          pseudoTabs.push({
+            id: 'output',
+            name: 'Output',
+          });
+        }
+        return pseudoTabs;
+      }
+      return [
         {
           id: 'output',
-          name: stepExecution?.error ? 'Error' : 'Output',
+          name: hasError ? 'Error' : 'Output',
         },
         {
           id: 'input',
           name: 'Input',
         },
-        {
-          id: 'timeline',
-          name: 'Timeline',
-        },
-      ],
-      [stepExecution]
-    );
+      ];
+    }, [hasInput, hasOutput, hasError, isTriggerPseudoStep]);
 
-    const [selectedTabId, setSelectedTabId] = useState<string>(tabs[0].id);
+    const defaultTabId = isWaitingForInput ? 'input' : tabs[0]?.id ?? 'input';
+    const [selectedTabId, setSelectedTabId] = useState<string>(defaultTabId);
 
     useEffect(() => {
       // reset the tab to the default one on step change
-      setSelectedTabId(tabs[0].id);
+      setSelectedTabId(isWaitingForInput ? 'input' : tabs[0]?.id ?? 'input');
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [stepExecution?.stepId, tabs[0].id]);
+    }, [stepExecution?.stepId, stepExecution?.status, tabs[0].id]);
 
-    if (isLoading || !stepExecution) {
+    if (!stepExecution) {
       return (
         <EuiPanel hasShadow={false} paddingSize="m">
-          <EuiSkeletonText lines={2} />
+          <EuiSkeletonText lines={1} />
           <EuiSpacer size="l" />
           <EuiSkeletonText lines={4} />
         </EuiPanel>
       );
     }
 
+    if (isOverviewPseudoStep) {
+      return (
+        <WorkflowExecutionOverview
+          stepExecution={stepExecution}
+          workflowExecutionDuration={workflowExecutionDuration}
+          showResumeUI={workflowExecutionStatus === ExecutionStatus.WAITING_FOR_INPUT}
+          executionId={workflowExecutionId}
+          resumeMessage={resumeMessage}
+          resumeSchema={resumeSchema}
+          shouldAutoResume={shouldAutoResume}
+        />
+      );
+    }
+
     return (
-      <EuiFlexGroup direction="column" gutterSize="s" style={{ height: '100%' }}>
-        <EuiFlexItem grow={false}>
-          <EuiPanel hasShadow={false} paddingSize="m">
-            <EuiFlexGroup direction="column" gutterSize="m">
-              <EuiFlexItem grow={false}>
-                <p>{getFormattedDateTime(new Date(stepExecution.startedAt))}</p>
-                <EuiTitle size="m">
-                  <h2 id={complicatedFlyoutTitleId} css={styles.title}>
-                    {stepExecution.stepId}
-                  </h2>
-                </EuiTitle>
-              </EuiFlexItem>
-
-              <EuiFlexItem grow={false}>
-                <EuiText size="xs">
-                  {stepExecution && (
-                    <EuiFlexGroup gutterSize="s">
-                      <EuiFlexItem>
-                        <EuiPanel hasBorder={true} paddingSize="s">
-                          <EuiStat
-                            css={styles.stat}
-                            title={
-                              <StatusBadge
-                                textProps={{ css: styles.statusBadge }}
-                                status={stepExecution.status}
-                              />
-                            }
-                            titleSize="xxs"
-                            textAlign="left"
-                            isLoading={isLoading}
-                            description="Status"
-                          />
-                        </EuiPanel>
-                      </EuiFlexItem>
-                      <EuiFlexItem>
-                        <EuiPanel hasBorder={true} paddingSize="s">
-                          <EuiStat
-                            css={styles.stat}
-                            title={formatDuration(stepExecution.executionTimeMs ?? 0)}
-                            titleSize="xxs"
-                            textAlign="left"
-                            isLoading={isLoading || stepExecution.executionTimeMs === undefined}
-                            description="Execution time"
-                          />
-                        </EuiPanel>
-                      </EuiFlexItem>
-                    </EuiFlexGroup>
-                  )}
-                </EuiText>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiPanel>
-        </EuiFlexItem>
-
-        {isFinished && (
-          <EuiFlexItem grow={true}>
-            <EuiTabs bottomBorder={false} css={styles.tabs}>
+      <EuiPanel
+        hasShadow={false}
+        paddingSize="m"
+        css={{ height: '100%', paddingTop: '13px' /* overrides EuiPanel's paddingTop */ }}
+        data-test-subj={
+          isTriggerPseudoStep ? 'workflowExecutionTrigger' : 'workflowStepExecutionDetails'
+        }
+      >
+        <EuiFlexGroup
+          direction="column"
+          gutterSize="m"
+          css={{ height: '100%', overflow: 'hidden' }}
+        >
+          {isWorkflowExecuteStep && childWorkflowExecution && (
+            <EuiFlexItem grow={false}>
+              <EuiFlexGroup alignItems="center" gutterSize="s" responsive={false}>
+                <EuiFlexItem grow={false}>
+                  {getExecutionStatusIcon(euiTheme, childWorkflowExecution.status)}
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiTitle size="xs">
+                    <h3>
+                      {/* eslint-disable-next-line @elastic/eui/href-or-on-click */}
+                      <EuiLink href={workflowNav.href} onClick={handleWorkflowLinkClick}>
+                        {`${stepExecution?.stepType}: ${childWorkflowExecution.workflowName}`}
+                      </EuiLink>
+                    </h3>
+                  </EuiTitle>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+          )}
+          {parentWorkflowExecution && (
+            <EuiFlexItem grow={false}>
+              <EuiFlexGroup alignItems="center" gutterSize="s" responsive={false}>
+                <EuiFlexItem grow={false}>
+                  {getExecutionStatusIcon(euiTheme, parentWorkflowExecution.status)}
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiTitle size="xs">
+                    <h3>
+                      {/* eslint-disable-next-line @elastic/eui/href-or-on-click */}
+                      <EuiLink
+                        href={parentWorkflowNav.href}
+                        onClick={handleParentWorkflowLinkClick}
+                      >
+                        {`${parentWorkflowExecution.workflowName}: ${stepExecution?.stepId}`}
+                      </EuiLink>
+                    </h3>
+                  </EuiTitle>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+          )}
+          <EuiFlexItem grow={false}>
+            <EuiTabs expand>
               {tabs.map((tab) => (
                 <EuiTab
                   onClick={() => setSelectedTabId(tab.id)}
                   isSelected={tab.id === selectedTabId}
                   key={tab.id}
+                  css={{ lineHeight: 'normal' }}
+                  data-test-subj={`workflowStepTab_${tab.id}`}
                 >
                   {tab.name}
                 </EuiTab>
               ))}
             </EuiTabs>
-            <EuiHorizontalRule margin="none" />
-            <EuiPanel hasShadow={false} paddingSize="m">
-              {selectedTabId === 'output' && (
-                <StepExecutionDataView stepExecution={stepExecution} mode="output" />
-              )}
-              {selectedTabId === 'input' && (
-                <StepExecutionDataView stepExecution={stepExecution} mode="input" />
-              )}
-              {selectedTabId === 'timeline' && (
-                <StepExecutionTimelineStateful
-                  executionId={workflowExecutionId}
-                  stepExecutionId={stepExecution.id}
-                />
-              )}
-            </EuiPanel>
           </EuiFlexItem>
-        )}
-      </EuiFlexGroup>
+          {isFinished ? (
+            <EuiFlexItem css={{ overflowY: 'auto' }}>
+              {isLoadingStepData ? (
+                <EuiPanel hasShadow={false} paddingSize="m">
+                  <EuiSkeletonText lines={4} />
+                </EuiPanel>
+              ) : (
+                <>
+                  {selectedTabId === 'output' && (
+                    <StepExecutionDataView stepExecution={stepExecution} mode="output" />
+                  )}
+                  {selectedTabId === 'input' && (
+                    <>
+                      {isWaitingForInput && (
+                        <>
+                          <ResumeExecutionButton
+                            executionId={workflowExecutionId}
+                            resumeMessage={resumeMessage}
+                            resumeSchema={resumeSchema}
+                            autoOpen={shouldAutoResume}
+                          />
+                          <EuiSpacer size="m" />
+                        </>
+                      )}
+                      {isTriggerPseudoStep && (
+                        <>
+                          <EuiCallOut
+                            size="s"
+                            title={i18n.translate(
+                              'workflowsManagement.stepExecutionDetails.inputAccessTitle',
+                              {
+                                defaultMessage: 'Access this data in your workflow',
+                              }
+                            )}
+                            iconType="info"
+                            announceOnMount={false}
+                          >
+                            <FormattedMessage
+                              id="workflowsManagement.stepExecutionDetails.inputAccessDescription"
+                              defaultMessage="You can reference these values using {code}"
+                              values={{
+                                code: (
+                                  <strong>
+                                    {triggerType === 'manual'
+                                      ? `{{ inputs.<field> }}`
+                                      : `{{ event.<field> }}`}
+                                  </strong>
+                                ),
+                              }}
+                            />
+                          </EuiCallOut>
+                          <EuiSpacer size="m" />
+                        </>
+                      )}
+                      <StepExecutionDataView stepExecution={stepExecution} mode="input" />
+                    </>
+                  )}
+                </>
+              )}
+            </EuiFlexItem>
+          ) : (
+            <EuiLoadingSpinner size="m" />
+          )}
+        </EuiFlexGroup>
+      </EuiPanel>
     );
   }
 );
 WorkflowStepExecutionDetails.displayName = 'WorkflowStepExecutionDetails';
-
-WorkflowStepExecutionDetails.displayName = 'WorkflowStepExecutionDetails';
-
-const componentStyles = {
-  title: ({ euiTheme }: UseEuiTheme) =>
-    css({
-      display: 'flex',
-      alignItems: 'center',
-      gap: euiTheme.size.xs,
-    }),
-  stat: css`
-    & .euiStat__title {
-      margin-block-end: 0;
-    }
-  `,
-  statusBadge: css`
-    font-weight: 600;
-  `,
-  tabs: ({ euiTheme }: UseEuiTheme) =>
-    css({
-      padding: `0 ${euiTheme.size.m}`,
-    }),
-};

@@ -7,12 +7,12 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { ControlGroupApi } from '@kbn/controls-plugin/public';
-import { BehaviorSubject } from 'rxjs';
 import type { DashboardStart } from './plugin';
 import type { DashboardState } from '../common/types';
 import { getDashboardApi } from './dashboard_api/get_dashboard_api';
 import { deserializeLayout } from './dashboard_api/layout_manager/deserialize_layout';
+import type { DashboardReadResponseBody } from '../server';
+import { DEFAULT_DASHBOARD_STATE } from './dashboard_api/default_dashboard_state';
 
 export type Start = jest.Mocked<DashboardStart>;
 
@@ -67,18 +67,6 @@ export function setupIntersectionObserverMock({
   });
 }
 
-export const mockControlGroupApi = {
-  untilInitialized: async () => {},
-  untilFiltersPublished: async () => {},
-  filters$: new BehaviorSubject(undefined),
-  query$: new BehaviorSubject(undefined),
-  timeslice$: new BehaviorSubject(undefined),
-  esqlVariables$: new BehaviorSubject(undefined),
-  dataViews$: new BehaviorSubject(undefined),
-  hasUnsavedChanges$: new BehaviorSubject(false),
-  children$: new BehaviorSubject([]),
-} as unknown as ControlGroupApi;
-
 export function buildMockDashboardApi({
   overrides,
   savedObjectId,
@@ -89,46 +77,35 @@ export function buildMockDashboardApi({
   const initialState = getSampleDashboardState(overrides);
   const results = getDashboardApi({
     initialState,
+    incomingEmbeddables: undefined,
     savedObjectId,
-    savedObjectResult: {
-      dashboardFound: true,
-      newDashboardCreated: savedObjectId === undefined,
-      dashboardId: savedObjectId,
-      managed: false,
-      dashboardInput: {
-        ...initialState,
-      },
-      references: [],
-    },
+    readResult: savedObjectId
+      ? ({
+          id: savedObjectId,
+          data: initialState,
+          meta: {
+            managed: false,
+          },
+        } as unknown as DashboardReadResponseBody)
+      : undefined,
   });
-  results.internalApi.setControlGroupApi(mockControlGroupApi);
   return results;
 }
 
 export function getSampleDashboardState(overrides?: Partial<DashboardState>): DashboardState {
   return {
-    // options
-    options: {
-      useMargins: true,
-      syncColors: false,
-      syncCursor: true,
-      syncTooltips: false,
-      hidePanelTitles: false,
-    },
-
+    ...DEFAULT_DASHBOARD_STATE,
     tags: [],
     filters: [],
     title: 'My Dashboard',
     query: {
-      language: 'kuery',
-      query: 'hi',
+      language: 'kql',
+      expression: 'hi',
     },
-    timeRange: {
+    time_range: {
       to: 'now',
       from: 'now-15m',
     },
-    timeRestore: false,
-    panels: [],
     ...overrides,
   };
 }
@@ -138,13 +115,13 @@ export function getMockPanels() {
     {
       grid: { x: 0, y: 0, w: 6, h: 6 },
       config: { title: 'panel One' },
-      uid: '1',
+      id: '1',
       type: 'testPanelType',
     },
     {
       grid: { x: 6, y: 0, w: 6, h: 6 },
       config: { title: 'panel Two' },
-      uid: '2',
+      id: '2',
       type: 'testPanelType',
     },
   ];
@@ -159,12 +136,12 @@ export function getMockPanelsWithSections() {
       grid: {
         y: 6,
       },
-      uid: 'section1',
+      id: 'section1',
       panels: [
         {
           grid: { x: 0, y: 0, w: 6, h: 6 },
           config: { title: 'panel Three' },
-          uid: '3',
+          id: '3',
           type: 'testPanelType',
         },
       ],
@@ -175,12 +152,12 @@ export function getMockPanelsWithSections() {
       grid: {
         y: 7,
       },
-      uid: 'section2',
+      id: 'section2',
       panels: [
         {
           grid: { x: 0, y: 0, w: 6, h: 6 },
           config: { title: 'panel Four' },
-          uid: '4',
+          id: '4',
           type: 'testPanelType',
         },
       ],
@@ -189,9 +166,9 @@ export function getMockPanelsWithSections() {
 }
 
 export function getMockLayout() {
-  return deserializeLayout(getMockPanels(), () => []).layout;
+  return deserializeLayout(getMockPanels(), []).layout;
 }
 
 export function getMockLayoutWithSections() {
-  return deserializeLayout(getMockPanelsWithSections(), () => []).layout;
+  return deserializeLayout(getMockPanelsWithSections(), []).layout;
 }

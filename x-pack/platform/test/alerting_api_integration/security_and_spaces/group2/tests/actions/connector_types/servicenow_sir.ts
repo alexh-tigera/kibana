@@ -15,7 +15,7 @@ import type { IValidatedEvent } from '@kbn/event-log-plugin/server';
 import { getHttpProxyServer } from '@kbn/alerting-api-integration-helpers';
 import { getServiceNowServer } from '@kbn/actions-simulators-plugin/server/plugin';
 import { TaskErrorSource } from '@kbn/task-manager-plugin/common';
-import { MAX_ADDITIONAL_FIELDS_LENGTH } from '@kbn/stack-connectors-plugin/common/servicenow/constants';
+import { MAX_ADDITIONAL_FIELDS_LENGTH } from '@kbn/connector-schemas/servicenow/constants';
 import type { FtrProviderContext } from '../../../../../common/ftr_provider_context';
 import { getEventLog } from '../../../../../common/lib';
 
@@ -173,6 +173,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
             userIdentifierValue: null,
           },
           is_connector_type_deprecated: false,
+          auth_mode: 'shared',
         });
       });
 
@@ -231,6 +232,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
             userIdentifierValue: mockServiceNowOAuth.config.userIdentifierValue,
           },
           is_connector_type_deprecated: false,
+          auth_mode: 'shared',
         });
       });
 
@@ -269,7 +271,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type config: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"apiUrl\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type config: ✖ Invalid input: expected string, received undefined\n  → at apiUrl`,
             });
           });
       });
@@ -291,7 +293,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type config: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"apiUrl\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type config: ✖ Invalid input: expected string, received undefined\n  → at apiUrl`,
             });
           });
       });
@@ -314,7 +316,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
               statusCode: 400,
               error: 'Bad Request',
               message:
-                'error validating action type config: error configuring connector action: target url "http://servicenow.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
+                'error validating connector type config: error configuring connector action: target url "http://servicenow.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
             });
           });
       });
@@ -336,7 +338,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
               statusCode: 400,
               error: 'Bad Request',
               message:
-                'error validating action type secrets: Either basic auth or OAuth credentials must be specified',
+                'error validating connector type secrets: Either basic auth or OAuth credentials must be specified',
             });
           });
       });
@@ -359,7 +361,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
               statusCode: 400,
               error: 'Bad Request',
               message:
-                'error validating action type secrets: Either basic auth or OAuth credentials must be specified',
+                'error validating connector type secrets: Either basic auth or OAuth credentials must be specified',
             });
           });
       });
@@ -373,7 +375,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
               clientId: null,
             },
             secrets: mockServiceNowOAuth.secrets,
-            errorMessage: `error validating action type config: clientId must be provided when isOAuth = true`,
+            errorMessage: `error validating connector type config: clientId must be provided when isOAuth = true`,
           },
           {
             config: {
@@ -382,7 +384,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
               userIdentifierValue: null,
             },
             secrets: mockServiceNowOAuth.secrets,
-            errorMessage: `error validating action type config: userIdentifierValue must be provided when isOAuth = true`,
+            errorMessage: `error validating connector type config: userIdentifierValue must be provided when isOAuth = true`,
           },
           {
             config: {
@@ -391,7 +393,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
               jwtKeyId: null,
             },
             secrets: mockServiceNowOAuth.secrets,
-            errorMessage: `error validating action type config: jwtKeyId must be provided when isOAuth = true`,
+            errorMessage: `error validating connector type config: jwtKeyId must be provided when isOAuth = true`,
           },
           {
             config: {
@@ -402,7 +404,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
               ...mockServiceNowOAuth.secrets,
               clientSecret: null,
             },
-            errorMessage: `error validating action type secrets: clientSecret and privateKey must both be specified`,
+            errorMessage: `error validating connector type secrets: clientSecret and privateKey must both be specified`,
           },
           {
             config: {
@@ -413,7 +415,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
               ...mockServiceNowOAuth.secrets,
               privateKey: null,
             },
-            errorMessage: `error validating action type secrets: clientSecret and privateKey must both be specified`,
+            errorMessage: `error validating connector type secrets: clientSecret and privateKey must both be specified`,
           },
         ];
 
@@ -491,7 +493,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
                 status: 'error',
                 retry: false,
                 errorSource: TaskErrorSource.USER,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_union_discriminator\",\n    \"options\": [\n      \"getFields\",\n      \"getIncident\",\n      \"handshake\",\n      \"pushToService\",\n      \"getChoices\"\n    ],\n    \"path\": [\n      \"subAction\"\n    ],\n    \"message\": \"Invalid discriminator value. Expected 'getFields' | 'getIncident' | 'handshake' | 'pushToService' | 'getChoices'\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input\n  → at subAction`,
               });
             });
         });
@@ -509,7 +511,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
                 status: 'error',
                 retry: false,
                 errorSource: TaskErrorSource.USER,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input: expected object, received undefined\n  → at subActionParams`,
               });
             });
         });
@@ -532,7 +534,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
                 status: 'error',
                 retry: false,
                 errorSource: TaskErrorSource.USER,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\",\n      \"incident\"\n    ],\n    \"message\": \"Required\"\n  },\n  {\n    \"code\": \"unrecognized_keys\",\n    \"keys\": [\n      \"savedObjectId\"\n    ],\n    \"path\": [\n      \"subActionParams\"\n    ],\n    \"message\": \"Unrecognized key(s) in object: 'savedObjectId'\"\n  }\n]`,
+                message: `error validating action params: ✖ Unrecognized key: "savedObjectId"\n  → at subActionParams\n✖ Invalid input: expected object, received undefined\n  → at subActionParams.incident`,
               });
             });
         });
@@ -559,7 +561,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
                 status: 'error',
                 retry: false,
                 errorSource: TaskErrorSource.USER,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\",\n      \"comments\",\n      0,\n      \"commentId\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input: expected string, received undefined\n  → at subActionParams.comments[0].commentId`,
               });
             });
         });
@@ -586,7 +588,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
                 status: 'error',
                 retry: false,
                 errorSource: TaskErrorSource.USER,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\",\n      \"comments\",\n      0,\n      \"comment\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input: expected string, received undefined\n  → at subActionParams.comments[0].comment`,
               });
             });
         });
@@ -683,7 +685,7 @@ export default function serviceNowSIRTest({ getService }: FtrProviderContext) {
                   status: 'error',
                   retry: false,
                   errorSource: TaskErrorSource.USER,
-                  message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"array\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\",\n      \"fields\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                  message: `error validating action params: ✖ Invalid input: expected array, received undefined\n  → at subActionParams.fields`,
                 });
               });
           });

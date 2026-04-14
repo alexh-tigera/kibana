@@ -8,7 +8,7 @@
  */
 
 import type { IconType } from '@elastic/eui/src/components/icon/icon';
-import type { Query, AggregateQuery } from '@kbn/es-query';
+import type { Query, AggregateQuery, ProjectRouting } from '@kbn/es-query';
 import { type DataView } from '@kbn/data-plugin/common';
 import type {
   DataPublicPluginStart,
@@ -27,6 +27,7 @@ import type {
 import type { UiActionsStart, VisualizeFieldContext } from '@kbn/ui-actions-plugin/public';
 import type {
   CellValueContext,
+  EmbeddableEditorBreadcrumb,
   EmbeddableEditorState,
   EmbeddableStateTransfer,
 } from '@kbn/embeddable-plugin/public';
@@ -71,19 +72,17 @@ import type { NavigationPublicPluginStart, TopNavMenuData } from '@kbn/navigatio
 import type { PresentationUtilPluginStart } from '@kbn/presentation-util-plugin/public';
 import type { ServerlessPluginStart } from '@kbn/serverless/public';
 import type { SharePluginStart } from '@kbn/share-plugin/public';
+import type { KqlPluginStart } from '@kbn/kql/public';
 import type { SpacesApi } from '@kbn/spaces-plugin/public';
 import type { UnifiedSearchPublicPluginStart } from '@kbn/unified-search-plugin/public';
 import type { UsageCollectionStart } from '@kbn/usage-collection-plugin/public';
 import type { Adapters } from '@kbn/inspector-plugin/common';
 import type { InspectorOptions } from '@kbn/inspector-plugin/public';
 import type { OnSaveProps } from '@kbn/saved-objects-plugin/public';
+import type { CPSPluginStart } from '@kbn/cps/public';
 import type { NavigateToLensContext } from './convert_to_lens_types';
 import type { LensAppLocator, MainHistoryLocationState } from './locator_types';
-import type {
-  LensRuntimeState,
-  LensSavedObjectAttributes,
-  StructuredDatasourceStates,
-} from './embeddable/types';
+import type { LensSavedObjectAttributes, StructuredDatasourceStates } from './embeddable/types';
 import type {
   DimensionLink,
   LensConfiguration,
@@ -144,14 +143,6 @@ export interface LensAttributesService {
     savedObjectId?: string
   ) => Promise<string>;
   checkForDuplicateTitle: (props: CheckDuplicateTitleProps) => Promise<{ isDuplicate: boolean }>;
-  injectReferences: (
-    runtimeState: LensRuntimeState,
-    references: Reference[] | undefined
-  ) => LensRuntimeState;
-  extractReferences: (runtimeState: LensRuntimeState) => {
-    rawState: LensRuntimeState;
-    references: Reference[];
-  };
 }
 
 export interface LensAppServices extends StartServices {
@@ -187,6 +178,8 @@ export interface LensAppServices extends StartServices {
   locator?: LensAppLocator;
   lensDocumentService: ILensDocumentService;
   serverless?: ServerlessPluginStart;
+  cps?: CPSPluginStart;
+  kql: KqlPluginStart;
 }
 
 export type StartServices = Pick<
@@ -432,8 +425,10 @@ export interface ValueFormatConfig {
 }
 
 export interface LensDocument {
+  /**
+   * savedObjectId must be required when the LensDocument is by ref
+   */
   savedObjectId?: string;
-  type?: string;
   title: string;
   description?: string;
   visualizationType: string | null;
@@ -637,7 +632,10 @@ export type VisualizeEditorContext<T extends LensConfiguration = LensConfigurati
   savedObjectId?: string;
   embeddableId?: string;
   vizEditorOriginatingAppUrl?: string;
+  legacyEditorOriginatingApp?: string;
   originatingApp?: string;
+  originatingPath?: string;
+  breadcrumbs?: EmbeddableEditorBreadcrumb[];
   isVisualizeAction: boolean;
   searchQuery?: Query;
   searchFilters?: Filter[];
@@ -783,7 +781,8 @@ export interface Datasource<T = unknown, P = unknown, Q = Query | AggregateQuery
     dateRange: DateRange,
     nowInstant: Date,
     searchSessionId?: string,
-    forceDSL?: boolean
+    forceDSL?: boolean,
+    projectRouting?: ProjectRouting
   ) => ExpressionAstExpression | string | null;
 
   getDatasourceSuggestionsForField: (
@@ -1201,6 +1200,11 @@ export interface SuggestionRequest<T = unknown> {
   activeData?: Record<string, Datatable>;
   allowMixed?: boolean;
   datasourceId?: string;
+  /**
+   * Optional query (e.g. ES|QL) passed when suggesting from context (e.g. Visualize Editor).
+   * Visualizations can use it to tailor suggestions (e.g. prefer line for time series).
+   */
+  query?: AggregateQuery;
 }
 
 /**
@@ -1398,9 +1402,13 @@ export interface LensAppState extends EditorFrameState {
   // Dataview/Indexpattern management has moved in here from datasource
   dataViews: DataViewsState;
   annotationGroups: AnnotationGroups;
+  projectRouting?: ProjectRouting;
 
   // Whether the current visualization is managed by the system
   managed: boolean;
+
+  /** If true, hides the ES|QL editor in the flyout, used by Discover */
+  hideTextBasedEditor?: boolean;
 }
 
 export interface LensState {

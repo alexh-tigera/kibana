@@ -12,8 +12,10 @@ import type { RuleActionParam, ActionVariable } from '@kbn/alerting-types';
 import type { IconType, RecursivePartial } from '@elastic/eui';
 import type { PublicMethodsOf } from '@kbn/utility-types';
 import type { ActionType, SubFeature } from '@kbn/actions-types';
-import type { TypeRegistry } from '../type_registry';
+import type { SerializerFunc } from '@kbn/es-ui-shared-plugin/static/forms/hook_form_lib';
+import type { ActionTypeSource } from '@kbn/actions-types';
 import type { RuleFormParamsErrors } from './rule_types';
+import type { TypeRegistry } from '../type_registry';
 
 export interface GenericValidationResult<T> {
   errors: Record<Extract<keyof T, string>, string[] | unknown>;
@@ -29,6 +31,7 @@ export interface ActionConnectorFieldsProps {
   readOnly: boolean;
   isEdit: boolean;
   registerPreSubmitValidator: (validator: ConnectorValidationFunc) => void;
+  authMode?: 'shared' | 'per-user';
 }
 
 export interface ActionConnectorProps<Config, Secrets> {
@@ -43,6 +46,8 @@ export interface ActionConnectorProps<Config, Secrets> {
   isSystemAction: boolean;
   isMissingSecrets?: boolean;
   isConnectorTypeDeprecated: boolean;
+  source?: ActionTypeSource;
+  authMode?: 'shared' | 'per-user';
 }
 
 export type SystemAction = Omit<ActionConnectorProps<never, never>, 'config' | 'secrets'> & {
@@ -75,6 +80,21 @@ export enum ActionConnectorMode {
   Test = 'test',
   ActionForm = 'actionForm',
 }
+
+export type ConnectorFormSchema<
+  Config = Record<string, unknown>,
+  Secrets = Record<string, unknown>
+> = Pick<
+  UserConfiguredActionConnector<Config, Secrets>,
+  'actionTypeId' | 'isDeprecated' | 'config' | 'secrets'
+> &
+  Partial<Pick<UserConfiguredActionConnector<Config, Secrets>, 'id' | 'name' | 'authMode'>>;
+
+export type InternalConnectorForm = ConnectorFormSchema & {
+  __internal__?: {
+    headers?: Array<{ key: string; value: string; type: string }>;
+  };
+};
 
 export interface ActionParamsProps<TParams> {
   actionParams: Partial<TParams>;
@@ -115,7 +135,8 @@ export interface ActionTypeModel<ActionConfig = any, ActionSecrets = any, Action
   selectMessagePreconfigured?: string;
   actionTypeTitle?: string;
   validateParams: (
-    actionParams: ActionParams
+    actionParams: ActionParams,
+    connectorConfig: ActionConfig | null
   ) => Promise<GenericValidationResult<Partial<ActionParams> | unknown>>;
   actionConnectorFields: React.LazyExoticComponent<
     ComponentType<ActionConnectorFieldsProps>
@@ -131,9 +152,30 @@ export interface ActionTypeModel<ActionConfig = any, ActionSecrets = any, Action
   subtype?: Array<{ id: string; name: string }>;
   convertParamsBetweenGroups?: (params: ActionParams) => ActionParams | {};
   getHideInUi?: (actionTypes: ActionType[]) => boolean;
+  source?: ActionTypeSource;
   modalWidth?: number;
   isSystemActionType?: boolean;
   subFeature?: SubFeature;
+  /**
+   * Connector form config
+   */
+  connectorForm?: {
+    /**
+     * Form hook lib deserializer used in the connector form
+     * Use this to transform the connector object to an intermediate state used in the form
+     */
+    deserializer?: SerializerFunc<InternalConnectorForm, ConnectorFormSchema>;
+    /**
+     * Form hook lib serializer used in the connector form
+     * Use this to transform the intermediate state used in the form into a connector object
+     */
+    serializer?: SerializerFunc<ConnectorFormSchema, InternalConnectorForm>;
+    /**
+     * If true, hides the settings title of the connector form
+     * @default false
+     */
+    hideSettingsTitle?: boolean;
+  };
 }
 
 export type ActionTypeRegistryContract<Connector = unknown, Params = unknown> = PublicMethodsOf<

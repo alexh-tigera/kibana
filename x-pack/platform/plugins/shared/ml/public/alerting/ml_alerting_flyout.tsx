@@ -11,7 +11,10 @@ import { EuiButtonEmpty } from '@elastic/eui';
 import { RuleFormFlyout } from '@kbn/response-ops-rule-form/flyout';
 import type { Rule } from '@kbn/triggers-actions-ui-plugin/public';
 import type { JobId } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
-import type { MlAnomalyDetectionAlertRule } from '@kbn/ml-common-types/alerts';
+import type {
+  MlAnomalyDetectionAlertRule,
+  MlAnomalyDetectionAlertParams,
+} from '@kbn/ml-common-types/alerts';
 import { useMlKibana } from '../application/contexts/kibana';
 import { ML_ALERT_TYPES } from '../../common/constants/alerts';
 import { PLUGIN_ID } from '../../common/constants/app';
@@ -21,6 +24,7 @@ import { createJobActionFocusTrapProps } from '../application/util/create_focus_
 interface MlAnomalyAlertFlyoutProps {
   initialAlert?: MlAnomalyDetectionAlertRule & Rule;
   jobIds?: JobId[];
+  initialParams?: Partial<MlAnomalyDetectionAlertParams>;
   onSave?: () => void;
   onCloseFlyout: () => void;
   focusTrapProps?: FocusTrapProps;
@@ -37,6 +41,7 @@ interface MlAnomalyAlertFlyoutProps {
 export const MlAnomalyAlertFlyout: FC<MlAnomalyAlertFlyoutProps> = ({
   initialAlert,
   jobIds,
+  initialParams,
   onCloseFlyout,
   onSave,
   focusTrapProps,
@@ -67,6 +72,12 @@ export const MlAnomalyAlertFlyout: FC<MlAnomalyAlertFlyoutProps> = ({
       return <RuleFormFlyout {...commonProps} id={initialAlert.id} />;
     }
 
+    const params = initialParams ?? {
+      jobSelection: {
+        jobIds,
+      },
+    };
+
     return (
       <RuleFormFlyout
         {...commonProps}
@@ -74,18 +85,14 @@ export const MlAnomalyAlertFlyout: FC<MlAnomalyAlertFlyoutProps> = ({
         ruleTypeId={ML_ALERT_TYPES.ANOMALY_DETECTION}
         initialMetadata={{}}
         initialValues={{
-          params: {
-            jobSelection: {
-              jobIds,
-            },
-          },
+          params,
         }}
         focusTrapProps={focusTrapProps}
       />
     );
     // deps on id to avoid re-rendering on auto-refresh
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggersActionsUi, initialAlert?.id, jobIds]);
+  }, [triggersActionsUi, initialAlert?.id, jobIds, initialParams]);
 
   return <>{AlertFlyout}</>;
 };

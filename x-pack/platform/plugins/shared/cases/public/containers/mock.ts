@@ -43,6 +43,7 @@ import type {
   CasesFindResponseUI,
   CasesUI,
   AttachmentUI,
+  AttachmentUIV2,
   CaseUICustomField,
   CasesConfigurationUICustomField,
   CasesConfigurationUITemplate,
@@ -95,6 +96,21 @@ export const basicComment: AttachmentUI = {
   createdAt: basicCreatedAt,
   createdBy: elasticUser,
   owner: SECURITY_SOLUTION_OWNER,
+  pushedAt: null,
+  pushedBy: null,
+  updatedAt: null,
+  updatedBy: null,
+  version: 'WzQ3LDFc',
+};
+
+export const basicCommentUnified: AttachmentUIV2 = {
+  id: basicCommentId,
+  type: 'comment',
+  owner: SECURITY_SOLUTION_OWNER,
+  data: { content: 'Solve this fast!' },
+  metadata: null,
+  createdAt: basicCreatedAt,
+  createdBy: elasticUser,
   pushedAt: null,
   pushedBy: null,
   updatedAt: null,
@@ -274,7 +290,13 @@ export const basicCase: CaseUI = {
   category: null,
   customFields: [],
   observables: [],
+  totalObservables: 0,
   incrementalId: undefined,
+};
+
+export const basicCaseWithUnifiedComments: CaseUI = {
+  ...basicCase,
+  comments: [basicCommentUnified],
 };
 
 export const basicFileMock: FileJSON = {
@@ -402,6 +424,7 @@ export const mockCase: CaseUI = {
   category: null,
   customFields: [],
   observables: [],
+  totalObservables: 0,
   incrementalId: undefined,
 };
 
@@ -596,6 +619,7 @@ export const basicCaseSnake: Case = {
   owner: SECURITY_SOLUTION_OWNER,
   customFields: [],
   incremental_id: undefined,
+  total_observables: 0,
 } as Case;
 
 export const caseWithAlertsSnake = {
@@ -1037,7 +1061,9 @@ export const getCaseUserActionsStatsResponse: CaseUserActionsStats = {
   total: 20,
   totalDeletions: 0,
   totalComments: 10,
+  totalCommentCreations: 10,
   totalCommentDeletions: 0,
+  totalHiddenCommentUpdates: 0,
   totalOtherActions: 10,
   totalOtherActionDeletions: 0,
 };

@@ -227,7 +227,8 @@ export function fieldsServiceProvider({ asCurrentUser }: IScopedClusterClient) {
     query: any,
     runtimeMappings?: RuntimeMappings,
     indicesOptions?: IndicesOptions,
-    allowFutureTime = false
+    allowFutureTime = false,
+    projectRouting?: string
   ): Promise<{
     success: boolean;
     start: number;
@@ -260,6 +261,7 @@ export function fieldsServiceProvider({ asCurrentUser }: IScopedClusterClient) {
         },
         ...(isPopulatedObject(runtimeMappings) ? { runtime_mappings: runtimeMappings } : {}),
         ...(indicesOptions ?? {}),
+        ...(projectRouting ? { project_routing: projectRouting } : {}),
       },
       { maxRetries: 0 }
     );

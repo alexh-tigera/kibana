@@ -9,16 +9,17 @@ import * as serverlessSecurityHeaders from '@kbn/test-suites-xpack-security/secu
 import {
   APP_ENDPOINT_EXCEPTIONS_PATH,
   APP_PATH,
+  RULES_FEATURE_ID,
   SECURITY_FEATURE_ID,
 } from '../../../../../common/constants';
 import { login, ROLE } from '../../tasks/login';
 
-// Failing: See https://github.com/elastic/kibana/issues/240815
-describe.skip('Endpoint exceptions - preserving behaviour without `endpointExceptionsMovedUnderManagement` feature flag', () => {
+describe('Endpoint exceptions - preserving behaviour without `endpointExceptionsMovedUnderManagement` feature flag', () => {
   describe('ESS', { tags: ['@ess'] }, () => {
     const loginWithReadAccess = () => {
       login.withCustomKibanaPrivileges({
         [SECURITY_FEATURE_ID]: ['read', 'endpoint_exceptions_read'],
+        [RULES_FEATURE_ID]: ['read'],
       });
     };
 
@@ -32,9 +33,9 @@ describe.skip('Endpoint exceptions - preserving behaviour without `endpointExcep
       loginWithReadAccess();
       cy.visit(APP_PATH);
 
-      essSecurityHeaders.openNavigationPanelFor(essSecurityHeaders.ENDPOINT_EXCEPTIONS);
+      essSecurityHeaders.openNavigationPanelFor(essSecurityHeaders.ARTIFACTS);
       cy.getByTestSubj('solutionSideNavPanel')
-        .find(essSecurityHeaders.ENDPOINT_EXCEPTIONS)
+        .find('[data-test-subj="solutionSideNavPanelLink-endpoint_exceptions"]')
         .should('not.exist');
     });
 
@@ -47,15 +48,14 @@ describe.skip('Endpoint exceptions - preserving behaviour without `endpointExcep
 
   describe('Serverless', { tags: ['@serverless', '@skipInServerlessMKI'] }, () => {
     it('should not display Endpoint Exceptions in Assets side panel ', () => {
-      // testing with t3_analyst with WRITE access, as we don't support custom roles on serverless yet
+      // instead of testing with the lowest access (READ), we're testing with t3_analyst with WRITE access,
+      // as we neither have any role with READ access, nor custom roles on serverless yet
       login(ROLE.t3_analyst);
       cy.visit(APP_PATH);
 
       serverlessSecurityHeaders.showMoreItems();
-      serverlessSecurityHeaders.openNavigationPanelFor(
-        serverlessSecurityHeaders.ENDPOINT_EXCEPTIONS
-      );
-      cy.get(serverlessSecurityHeaders.ENDPOINT_EXCEPTIONS).should('not.exist');
+      serverlessSecurityHeaders.openNavigationPanelFor(serverlessSecurityHeaders.ARTIFACTS);
+      cy.get('[data-test-subj~="nav-item-id-endpoint_exceptions"]').should('not.exist');
     });
 
     it('should display Not Found page when opening url directly', () => {

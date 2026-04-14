@@ -34,6 +34,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
     createIncidentUrl: 'https://coolsite.net/rest/api/2/issue',
     getIncidentResponseExternalTitleKey: 'key',
     hasAuth: true,
+    authType: 'webhook-authentication-basic',
     headers: { ['content-type']: 'application/json', ['kbn-xsrf']: 'abcd' },
     viewIncidentUrl: 'https://coolsite.net/browse/{{{external.system.title}}}',
     getIncidentUrl: 'https://coolsite.net/rest/api/2/issue/{{{external.system.id}}}',
@@ -136,6 +137,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
           is_missing_secrets: false,
           config: simulatorConfig,
           is_connector_type_deprecated: false,
+          auth_mode: 'shared',
         });
       });
 
@@ -184,6 +186,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
           is_missing_secrets: false,
           config: newConfig,
           is_connector_type_deprecated: false,
+          auth_mode: 'shared',
         });
       });
 
@@ -206,7 +209,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
                 expect(resp.body).to.eql({
                   statusCode: 400,
                   error: 'Bad Request',
-                  message: `error validating action type config: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"${field}\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                  message: `error validating connector type config: ✖ Invalid input: expected string, received undefined\n  → at ${field}`,
                 });
               });
           });
@@ -237,7 +240,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
               statusCode: 400,
               error: 'Bad Request',
               message:
-                'error validating action type config: error configuring cases webhook action: target url "http://casesWebhook.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
+                'error validating connector type config: error configuring cases webhook action: target url "http://casesWebhook.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
             });
           });
       });
@@ -322,7 +325,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
                 connector_id: simulatedActionId,
                 status: 'error',
                 retry: false,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_union_discriminator\",\n    \"options\": [\n      \"pushToService\"\n    ],\n    \"path\": [\n      \"subAction\"\n    ],\n    \"message\": \"Invalid discriminator value. Expected 'pushToService'\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input\n  → at subAction`,
                 errorSource: TaskErrorSource.USER,
               });
             });
@@ -340,7 +343,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
                 connector_id: simulatedActionId,
                 status: 'error',
                 retry: false,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input: expected object, received undefined\n  → at subActionParams`,
                 errorSource: TaskErrorSource.USER,
               });
             });
@@ -366,7 +369,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
                 connector_id: simulatedActionId,
                 status: 'error',
                 retry: false,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\",\n      \"incident\",\n      \"title\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input: expected string, received undefined\n  → at subActionParams.incident.title`,
                 errorSource: TaskErrorSource.USER,
               });
             });
@@ -394,7 +397,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
                 connector_id: simulatedActionId,
                 status: 'error',
                 retry: false,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\",\n      \"comments\",\n      0,\n      \"commentId\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input: expected string, received undefined\n  → at subActionParams.comments[0].commentId`,
                 errorSource: TaskErrorSource.USER,
               });
             });
@@ -421,7 +424,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
                 connector_id: simulatedActionId,
                 status: 'error',
                 retry: false,
-                message: `error validating action params: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"subActionParams\",\n      \"comments\",\n      0,\n      \"comment\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+                message: `error validating action params: ✖ Invalid input: expected string, received undefined\n  → at subActionParams.comments[0].comment`,
                 errorSource: TaskErrorSource.USER,
               });
             });
@@ -991,7 +994,7 @@ export default function casesWebhookTest({ getService }: FtrProviderContext) {
           .set('kbn-xsrf', 'test')
           .expect(400);
 
-        expect(result.message).to.match(/Connector must be a webhook or cases webhook/);
+        expect(result.message).to.match(/Connector must be one of the following types/);
       });
 
       after(() => {

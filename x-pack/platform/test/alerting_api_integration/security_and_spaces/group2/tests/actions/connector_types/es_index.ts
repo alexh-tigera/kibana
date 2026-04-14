@@ -72,6 +72,7 @@ export default function indexTest({ getService }: FtrProviderContext) {
         name: 'An index action',
         connector_type_id: '.index',
         config: { index: ES_TEST_INDEX_NAME, refresh: false, executionTimeField: null },
+        auth_mode: 'shared',
       });
 
       // create action with all config props
@@ -125,6 +126,7 @@ export default function indexTest({ getService }: FtrProviderContext) {
           refresh: true,
           executionTimeField: 'test',
         },
+        auth_mode: 'shared',
       });
     });
 
@@ -142,7 +144,7 @@ export default function indexTest({ getService }: FtrProviderContext) {
           expect(resp.body).to.eql({
             statusCode: 400,
             error: 'Bad Request',
-            message: `error validating action type config: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"number\",\n    \"path\": [\n      \"index\"\n    ],\n    \"message\": \"Expected string, received number\"\n  }\n]`,
+            message: `error validating connector type config: ✖ Invalid input: expected string, received number\n  → at index`,
           });
         });
     });

@@ -27,7 +27,11 @@ import type {
   TaskManagerStartContract,
 } from '@kbn/task-manager-plugin/server';
 import type { CasesServerSetup } from '@kbn/cases-plugin/server';
+<<<<<<< HEAD
 import type { ResolveMlCapabilities } from '@kbn/ml-common-types/capabilities';
+=======
+import type { CPSServerSetup } from '@kbn/cps/server';
+>>>>>>> upstream/main
 import type { RouteGuard } from './lib/route_guard';
 import type { MlLicense } from '../common/license';
 import type { MlFeatures } from '../common/constants/app';
@@ -45,7 +49,7 @@ export interface SystemRouteDeps {
   cloud: CloudSetup;
   getSpaces?: () => Promise<SpacesPluginStart>;
   resolveMlCapabilities: ResolveMlCapabilities;
-  isServerless: boolean;
+  serverless: ServerlessInfo;
 }
 
 export interface SavedObjectsRouteDeps {
@@ -67,6 +71,7 @@ export interface PluginsSetup {
   usageCollection?: UsageCollectionSetup;
   taskManager: TaskManagerSetupContract;
   cases?: CasesServerSetup;
+  cps?: CPSServerSetup;
 }
 
 export interface PluginsStart {
@@ -83,4 +88,9 @@ export interface RouteInitialization {
   mlLicense: MlLicense;
   routeGuard: RouteGuard;
   getEnabledFeatures: () => MlFeatures;
+}
+
+export interface ServerlessInfo {
+  isServerless: boolean;
+  cpsEnabled: boolean;
 }

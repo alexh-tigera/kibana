@@ -9,27 +9,13 @@
 
 import type { ElasticsearchClient } from '@kbn/core/server';
 import type { EsWorkflowStepExecution } from '@kbn/workflows';
-import {
-  WORKFLOWS_STEP_EXECUTIONS_INDEX,
-  WORKFLOWS_STEP_EXECUTIONS_INDEX_MAPPINGS,
-} from '../../common';
-import { createIndexWithMappings } from '../../common/create_index';
+import { getStepExecutionsByWorkflowExecution as getStepExecutionsByWorkflowExecutionShared } from '@kbn/workflows/server';
+import { WORKFLOWS_STEP_EXECUTIONS_INDEX } from '../../common';
 
 export class StepExecutionRepository {
   private indexName = WORKFLOWS_STEP_EXECUTIONS_INDEX;
-  private indexInitialized = false;
+
   constructor(private esClient: ElasticsearchClient) {}
-
-  private async ensureIndexExists() {
-    if (this.indexInitialized) return; // Only 1 boolean check after first time
-
-    await createIndexWithMappings({
-      esClient: this.esClient,
-      indexName: this.indexName,
-      mappings: WORKFLOWS_STEP_EXECUTIONS_INDEX_MAPPINGS,
-    });
-    this.indexInitialized = true;
-  }
 
   /**
    * Searches for step executions by workflow execution ID.
@@ -40,22 +26,60 @@ export class StepExecutionRepository {
   public async searchStepExecutionsByExecutionId(
     executionId: string
   ): Promise<EsWorkflowStepExecution[]> {
-    await this.ensureIndexExists();
-
     const response = await this.esClient.search<EsWorkflowStepExecution>({
       index: this.indexName,
       query: {
         match: { workflowRunId: executionId },
       },
       sort: 'startedAt:desc',
+      size: 10000, // TODO: without it, it returns up to 10 results by default. We should improve this.
     });
 
     return response.hits.hits.map((hit) => hit._source as EsWorkflowStepExecution);
   }
 
-  public async bulkUpsert(stepExecutions: Array<Partial<EsWorkflowStepExecution>>): Promise<void> {
-    await this.ensureIndexExists();
+  /**
+   * Fetches all step executions for a workflow execution.
+   * Uses mget (real-time, O(1)) when stepExecutionIds are available,
+   * falls back to search for backward compatibility with older executions.
+   */
+  public async getStepExecutionsByWorkflowExecution(
+    workflowExecutionId: string,
+    stepExecutionIds?: string[]
+  ): Promise<EsWorkflowStepExecution[]> {
+    return getStepExecutionsByWorkflowExecutionShared({
+      esClient: this.esClient,
+      stepsExecutionIndex: this.indexName,
+      workflowExecutionId,
+      stepExecutionIds,
+    });
+  }
 
+  /*
+   * Retrieves step executions by their IDs using mget (O(1) operation).
+   * This is real-time (reads from translog) and doesn't require index refresh.
+   *
+   * @param stepExecutionIds - The IDs of the step executions to retrieve.
+   * @returns A promise that resolves to an array of step executions.
+   */
+  public async getStepExecutionsByIds(
+    stepExecutionIds: string[]
+  ): Promise<EsWorkflowStepExecution[]> {
+    const response = await this.esClient.mget<EsWorkflowStepExecution>({
+      index: this.indexName,
+      ids: stepExecutionIds,
+    });
+
+    const stepExecutions: EsWorkflowStepExecution[] = [];
+    for (const doc of response.docs) {
+      if ('found' in doc && doc.found && doc._source) {
+        stepExecutions.push(doc._source as EsWorkflowStepExecution);
+      }
+    }
+    return stepExecutions;
+  }
+
+  public async bulkUpsert(stepExecutions: Array<Partial<EsWorkflowStepExecution>>): Promise<void> {
     if (stepExecutions.length === 0) {
       return;
     }
@@ -67,7 +91,7 @@ export class StepExecutionRepository {
     });
 
     const bulkResponse = await this.esClient.bulk({
-      refresh: true,
+      refresh: false, // Performance optimization: documents become searchable after next refresh (~1s)
       index: this.indexName,
       body: stepExecutions.flatMap((stepExecution) => [
         { update: { _id: stepExecution.id } },

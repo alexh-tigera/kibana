@@ -6,6 +6,7 @@
  */
 
 import Boom from '@hapi/boom';
+import { z } from '@kbn/zod/v4';
 import type {
   ActionType,
   ActionTypeConfig,
@@ -109,11 +110,11 @@ function validateWithSchema<
                 validatorServices
               );
             }
-            return validatedValue;
+            return validatedValue as Record<string, unknown>;
           }
           break;
         case 'config':
-          name = 'action type config';
+          name = 'connector type config';
           if (actionType.validate.config) {
             const validatedValue = actionType.validate.config.schema.parse(value);
 
@@ -123,13 +124,13 @@ function validateWithSchema<
                 validatorServices
               );
             }
-            return validatedValue;
+            return validatedValue as Record<string, unknown>;
           }
 
           break;
         case 'secrets':
-          name = 'action type secrets';
-          if (actionType.validate.secrets) {
+          name = 'connector type secrets';
+          if (actionType.validate.secrets && value !== undefined && value !== null) {
             const validatedValue = actionType.validate.secrets.schema.parse(value);
 
             if (actionType.validate.secrets.customValidator) {
@@ -138,7 +139,7 @@ function validateWithSchema<
                 validatorServices
               );
             }
-            return validatedValue;
+            return validatedValue as Record<string, unknown>;
           }
           break;
         default:
@@ -146,8 +147,12 @@ function validateWithSchema<
           throw new Error(`invalid actionType validate key: ${key}`);
       }
     } catch (err) {
+      let errMessage = err.message;
+      if (err instanceof z.ZodError) {
+        errMessage = z.prettifyError(err);
+      }
       // we can't really i18n this yet, since the err.message isn't i18n'd itself
-      throw Boom.badRequest(`error validating ${name}: ${err.message}`);
+      throw Boom.badRequest(`error validating ${name}: ${errMessage}`);
     }
   }
 

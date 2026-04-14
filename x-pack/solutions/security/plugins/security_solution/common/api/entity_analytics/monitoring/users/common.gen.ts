@@ -14,7 +14,7 @@
  *   version: 1
  */
 
-import { z } from '@kbn/zod';
+import { z } from '@kbn/zod/v4';
 
 export type UserName = z.infer<typeof UserName>;
 export const UserName = z.object({
@@ -24,6 +24,34 @@ export const UserName = z.object({
        * The name of the user.
        */
       name: z.string().optional(),
+    })
+    .optional(),
+  /**
+   * Entity analytics monitoring configuration for the user
+   */
+  entity_analytics_monitoring: z
+    .object({
+      /**
+       * Array of labels associated with the user
+       */
+      labels: z
+        .array(
+          z.object({
+            /**
+             * The field name for the label
+             */
+            field: z.string().optional(),
+            /**
+             * The value of the label
+             */
+            value: z.string().optional(),
+            /**
+             * The source where this label was created (api, csv, or index_sync)
+             */
+            source: z.enum(['api', 'csv', 'index_sync']).optional(),
+          })
+        )
+        .optional(),
     })
     .optional(),
 });
@@ -67,6 +95,7 @@ export const MonitoredUserDoc = MonitoredUserUpdateDoc.merge(
     event: z
       .object({
         ingested: z.string().datetime().optional(),
+        '@timestamp': z.string().datetime().optional(),
       })
       .optional(),
     '@timestamp': z.string().datetime().optional(),

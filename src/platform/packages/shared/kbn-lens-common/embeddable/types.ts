@@ -22,26 +22,16 @@ import type {
   ReactExpressionRendererProps,
   ReactExpressionRendererType,
 } from '@kbn/expressions-plugin/public';
+import type { ControlGroupRendererApi } from '@kbn/control-group-renderer';
 import type { AllowedChartOverrides, AllowedSettingsOverrides } from '@kbn/charts-plugin/common';
 import type { AllowedXYOverrides } from '@kbn/expression-xy-plugin/common';
 import type { AllowedPartitionOverrides } from '@kbn/expression-partition-vis-plugin/common';
 import type { AllowedGaugeOverrides } from '@kbn/expression-gauge-plugin/common';
 import type { Reference } from '@kbn/content-management-utils';
 import type {
-  HasEditCapabilities,
-  HasLibraryTransforms,
-  HasSupportedTriggers,
-  PublishesBlockingError,
-  PublishesDataLoading,
   PublishesDataViews,
-  PublishesDisabledActionIds,
-  PublishesRendered,
-  PublishesSavedObjectId,
-  PublishesUnifiedSearch,
-  PublishesViewMode,
-  PublishesWritableDescription,
-  PublishesWritableTitle,
   PublishingSubject,
+  SerializedTimeRange,
   SerializedTitles,
   ViewMode,
 } from '@kbn/presentation-publishing';
@@ -55,12 +45,9 @@ import type { PaletteOutput } from '@kbn/coloring';
 import type { ESQLControlVariable } from '@kbn/esql-types';
 import type { Adapters } from '@kbn/inspector-plugin/common';
 import type { InspectorOptions } from '@kbn/inspector-plugin/public';
-import type { DefaultEmbeddableApi } from '@kbn/embeddable-plugin/public';
-import type { PublishesSearchSession } from '@kbn/presentation-publishing/interfaces/fetch/publishes_search_session';
-import type { DynamicActionsSerializedState } from '@kbn/embeddable-enhanced-plugin/public';
 import type { DefaultInspectorAdapters, RenderMode } from '@kbn/expressions-plugin/common';
-import type { CanAddNewPanel } from '@kbn/presentation-containers';
 import type { Ast } from '@kbn/interpreter';
+import type { SerializedDrilldowns } from '@kbn/embeddable-plugin/server';
 import type {
   IndexPatternMap,
   IndexPatternRef,
@@ -72,14 +59,16 @@ import type {
   VisualizationDisplayOptions,
 } from '../types';
 import type { FormBasedPersistedState, TextBasedPersistedState } from '../datasources/types';
-import type { XYState } from '../visualizations/xy/types';
 import type { HeatmapVisualizationState } from '../visualizations/heatmap/types';
 import type { GaugeVisualizationState } from '../visualizations/gauge/types';
 import type { LegacyMetricState } from '../visualizations/legacy_metric/types';
 import type { MetricVisualizationState } from '../visualizations/metric/types';
 import type { LensPartitionVisualizationState } from '../visualizations/partition/types';
 import type { DatatableVisualizationState } from '../visualizations/datatable/types';
+import type { ChoroplethChartState } from '../visualizations/region_map/types';
+import type { LensTagCloudState } from '../visualizations/tagcloud/types';
 import type { LensTableRowContextMenuEvent } from '../visualizations/types';
+import type { XYPersistedState } from '../visualizations/xy/persistence';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface LensApiProps {}
@@ -126,9 +115,9 @@ export interface PreventableEvent {
   preventDefault(): void;
 }
 
-interface LensByValue {
-  // by-value
-  attributes?: Simplify<LensSavedObjectAttributes>;
+export interface LensByValueBase {
+  ref_id?: string; // really should be never but creates type issues
+  attributes?: LensSavedObjectAttributes;
 }
 
 export interface LensOverrides {
@@ -150,10 +139,9 @@ export interface LensOverrides {
 /**
  * Lens embeddable props broken down by type
  */
-
-export interface LensByReference {
-  // by-reference
-  savedObjectId?: string;
+interface LensByReferenceBase {
+  ref_id?: string;
+  attributes?: never;
 }
 
 interface ContentManagementProps {
@@ -161,9 +149,12 @@ interface ContentManagementProps {
   managed?: boolean;
 }
 
-export type LensPropsVariants = (LensByValue & LensByReference) & {
+interface LensWithReferences {
+  /**
+   * @deprecated use `state.attributes.references`
+   */
   references?: Reference[];
-};
+}
 
 export interface ViewInDiscoverCallbacks extends LensApiProps {
   canViewUnderlyingData$: PublishingSubject<boolean>;
@@ -177,7 +168,7 @@ export interface IntegrationCallbacks extends LensApiProps {
   getSavedVis: () => Readonly<LensSavedObjectAttributes | undefined>;
   getFullAttributes: () => LensDocument | undefined;
   updateAttributes: (newAttributes: LensRuntimeState['attributes']) => void;
-  updateSavedObjectId: (newSavedObjectId: LensRuntimeState['savedObjectId']) => void;
+  updateRefId: (newRefId: LensRuntimeState['ref_id']) => void;
   updateOverrides: (newOverrides: LensOverrides['overrides']) => void;
   getTriggerCompatibleActions: (triggerId: string, context: object) => Promise<Action[]>;
 }
@@ -203,6 +194,10 @@ export interface LensPublicCallbacks extends LensApiProps {
    * Let the consumer overwrite embeddable user messages
    */
   onBeforeBadgesRender?: (userMessages: UserMessage[]) => UserMessage[];
+  /**
+   * Optional user messages from the consumer.
+   */
+  userMessages?: UserMessage[];
   onAlertRule?: (data: unknown) => void;
 }
 
@@ -211,10 +206,9 @@ export interface LensPublicCallbacks extends LensApiProps {
  */
 export type LensApiCallbacks = Simplify<ViewInDiscoverCallbacks & IntegrationCallbacks>;
 
-export interface LensUnifiedSearchContext {
+export interface LensUnifiedSearchContext extends SerializedTimeRange {
   filters?: Filter[];
   query?: Query | AggregateQuery;
-  timeRange?: TimeRange;
   timeslice?: [number, number];
   searchSessionId?: string;
   lastReloadRequestTime?: number;
@@ -243,7 +237,7 @@ export interface LensSharedProps {
   esqlVariables?: ESQLControlVariable[];
 }
 
-interface LensRequestHandlersProps {
+export interface LensRequestHandlersProps {
   /**
    * Custom abort controller to be used for the ES client
    */
@@ -259,15 +253,28 @@ interface LensRequestHandlersProps {
  * * Panel settings
  * * other props from the embeddable
  */
-export type LensSerializedState = Simplify<
-  LensPropsVariants &
-    LensOverrides &
+export type LensSerializedSharedState = Simplify<
+  LensOverrides &
+    LensWithReferences &
     LensUnifiedSearchContext &
     LensPanelProps &
     SerializedTitles &
-    Omit<LensSharedProps, 'noPadding'> &
-    Partial<DynamicActionsSerializedState> & { isNewPanel?: boolean }
+    SerializedDrilldowns &
+    Omit<LensSharedProps, 'noPadding'> & { isNewPanel?: boolean }
 >;
+
+export type LensByValueSerializedState = Simplify<LensSerializedSharedState & LensByValueBase>;
+export type LensByRefSerializedState = Simplify<LensSerializedSharedState & LensByReferenceBase>;
+
+/**
+ * Combined properties of serialized state stored on dashboard panel
+ *
+ *  Includes:
+ * - Lens document state (for by-value)
+ * - Panel settings
+ * - other props from the embeddable
+ */
+export type LensSerializedState = LensByRefSerializedState | LensByValueSerializedState;
 
 /**
  * Custom props exposed on the Lens exported component
@@ -295,6 +302,10 @@ export type LensComponentProps = Simplify<
        * Toggle inline editing feature
        */
       canEditInline?: boolean;
+      /**
+       * Optional search term to highlight in the panel title
+       */
+      titleHighlight?: string;
     }
 >;
 
@@ -321,7 +332,10 @@ type ComponentProps = LensComponentProps & LensPublicCallbacks;
 type ComponentSerializedProps = TypedLensSerializedState;
 
 type LensRendererPrivateProps = ComponentSerializedProps & ComponentProps;
-export type LensRendererProps = LensRendererPrivateProps;
+export type LensRendererProps = Omit<LensRendererPrivateProps, 'hide_title' | 'time_range'> & {
+  hidePanelTitles?: boolean;
+  timeRange?: TimeRange;
+};
 
 /**
  * The LensRuntimeState is the state stored for a dashboard panel
@@ -341,10 +355,7 @@ export type LensRuntimeState = Simplify<
 >;
 
 export interface LensHasEditPanel {
-  getEditPanel?: (options?: {
-    closeFlyout?: () => void;
-    showOnly?: boolean;
-  }) => Promise<JSX.Element | undefined>;
+  getEditPanel?: (options?: { closeFlyout?: () => void }) => Promise<JSX.Element | undefined>;
 }
 
 export interface LensInspectorAdapters {
@@ -357,42 +368,6 @@ export interface LensInspectorAdapters {
   // needs to be updated on data changes
   adapters$: PublishingSubject<Adapters>;
 }
-
-export type LensApi = Simplify<
-  DefaultEmbeddableApi<LensSerializedState> &
-    // This is used by actions to operate the edit action
-    HasEditCapabilities &
-    // for blocking errors leverage the embeddable panel UI
-    PublishesBlockingError &
-    // This is used by dashboard/container to show filters/queries on the panel
-    PublishesUnifiedSearch &
-    // Forward the search session id
-    PublishesSearchSession &
-    // Let the container know the loading state
-    PublishesDataLoading &
-    // Let the container know when the rendering has completed rendering
-    PublishesRendered &
-    // Let the container know the used data views
-    PublishesDataViews &
-    // Let the container operate on panel title/description
-    PublishesWritableTitle &
-    PublishesWritableDescription &
-    // This embeddable can narrow down specific triggers usage
-    HasSupportedTriggers &
-    PublishesDisabledActionIds &
-    // Offers methods to operate from/on the linked saved object
-    HasLibraryTransforms<LensSerializedState, LensSerializedState> &
-    // Let the container know the view mode
-    PublishesViewMode &
-    // Let the container know the saved object id
-    PublishesSavedObjectId &
-    // Lens specific API methods:
-    // Let the container know when the data has been loaded/updated
-    LensInspectorAdapters &
-    LensRequestHandlersProps &
-    LensApiCallbacks &
-    LensHasEditPanel
->;
 
 // This is an API only used internally to the embeddable but not exported elsewhere
 // there's some overlapping between this and the LensApi but they are shared references
@@ -427,6 +402,8 @@ export type LensInternalApi = Simplify<
       updateBlockingError: (newBlockingError: Error | undefined) => void;
       resetAllMessages: () => void;
       getDisplayOptions: () => VisualizationDisplayOptions;
+      updateEditingState: (inProgress: boolean) => void;
+      isEditingInProgress: () => boolean;
     }
 >;
 
@@ -456,19 +433,28 @@ export interface ExpressionWrapperProps {
   executionContext?: KibanaExecutionContext;
   lensInspector: LensInspector;
   noPadding?: boolean;
+  paddingTop?: boolean;
   abortController?: AbortController;
 }
 
 export type GetStateType = () => LensRuntimeState;
 
+export const LENS_DATASOURCE_ID = {
+  FORM_BASED: 'formBased',
+  TEXT_BASED: 'textBased',
+} as const;
+
+/** The supported datasource identifiers */
+export type LensDatasourceId = (typeof LENS_DATASOURCE_ID)[keyof typeof LENS_DATASOURCE_ID];
+
 export interface StructuredDatasourceStates {
-  formBased?: FormBasedPersistedState;
-  textBased?: TextBasedPersistedState;
+  [LENS_DATASOURCE_ID.FORM_BASED]?: FormBasedPersistedState;
+  [LENS_DATASOURCE_ID.TEXT_BASED]?: TextBasedPersistedState;
 }
 
 /** Utility type to build typed version for each chart */
 type TypedLensAttributes<TVisType, TVisState> = Simplify<
-  Omit<LensDocument, 'savedObjectId' | 'type' | 'state' | 'visualizationType'> & {
+  Omit<LensDocument, 'savedObjectId' | 'state' | 'visualizationType'> & {
     visualizationType: TVisType;
     state: Simplify<
       Omit<LensDocument['state'], 'datasourceStates' | 'visualization'> & {
@@ -491,13 +477,15 @@ type TypedLensAttributes<TVisType, TVisState> = Simplify<
 export type TypedLensSerializedState = Simplify<
   Omit<LensSerializedState, 'attributes'> & {
     attributes:
-      | TypedLensAttributes<'lnsXY', XYState>
+      | TypedLensAttributes<'lnsXY', XYPersistedState>
       | TypedLensAttributes<'lnsPie', LensPartitionVisualizationState>
       | TypedLensAttributes<'lnsHeatmap', HeatmapVisualizationState>
       | TypedLensAttributes<'lnsGauge', GaugeVisualizationState>
       | TypedLensAttributes<'lnsDatatable', DatatableVisualizationState>
       | TypedLensAttributes<'lnsLegacyMetric', LegacyMetricState>
       | TypedLensAttributes<'lnsMetric', MetricVisualizationState>
+      | TypedLensAttributes<'lnsChoropleth', ChoroplethChartState>
+      | TypedLensAttributes<'lnsTagcloud', LensTagCloudState>
       | TypedLensAttributes<string, unknown>;
   }
 >;
@@ -509,10 +497,9 @@ export type LensByValueInput = Omit<LensRendererPrivateProps, 'savedObjectId'>;
 export type LensByReferenceInput = Omit<LensRendererPrivateProps, 'attributes'>;
 export type TypedLensByValueInput = Omit<LensRendererProps, 'savedObjectId'>;
 export type LensEmbeddableInput = LensByValueInput | LensByReferenceInput;
-export type LensEmbeddableOutput = LensApi;
 
 export interface ESQLVariablesCompatibleDashboardApi {
   esqlVariables$: PublishingSubject<ESQLControlVariable[]>;
-  controlGroupApi$: PublishingSubject<Partial<CanAddNewPanel> | undefined>;
+  controlGroupApi$: PublishingSubject<Partial<ControlGroupRendererApi> | undefined>;
   children$: PublishingSubject<{ [key: string]: unknown }>;
 }

@@ -225,7 +225,7 @@ exports[`PartitionVisComponent should render correct structure for donut 1`] = `
                       "opacity": 0.25,
                     },
                   },
-                  "opacity": 0.3,
+                  "opacity": 0.2,
                   "visible": true,
                 },
                 "fit": Object {
@@ -261,19 +261,22 @@ exports[`PartitionVisComponent should render correct structure for donut 1`] = `
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "never",
                 },
                 "pointVisibilityMinDistance": 20,
@@ -376,6 +379,12 @@ exports[`PartitionVisComponent should render correct structure for donut 1`] = `
                   "padding": 0,
                 },
                 "rect": Object {
+                  "dimmed": Object {
+                    "fill": "#ECF1F9",
+                    "texture": Object {
+                      "opacity": 0.25,
+                    },
+                  },
                   "opacity": 1,
                 },
                 "rectBorder": Object {
@@ -603,16 +612,24 @@ exports[`PartitionVisComponent should render correct structure for donut 1`] = `
               "highlighter": Object {
                 "point": Object {
                   "fill": "__use__series__color__",
-                  "opacity": 0.5,
-                  "radius": 5,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "onHover": Object {
+                    "fill": "__use__series__color__",
+                    "opacity": 0.5,
+                    "radius": 5,
+                    "stroke": "__use__empty__color__",
+                    "strokeWidth": 0,
+                  },
+                  "opacity": 1,
+                  "radius": 3,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                 },
               },
               "legend": Object {
                 "horizontalHeight": 64,
                 "labelOptions": Object {
                   "maxLines": 1,
+                  "widthLimit": 250,
                 },
                 "margin": 0,
                 "spacingBuffer": 10,
@@ -654,22 +671,25 @@ exports[`PartitionVisComponent should render correct structure for donut 1`] = `
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "auto",
                 },
-                "pointVisibilityMinDistance": 40,
+                "pointVisibilityMinDistance": 20,
               },
               "metric": Object {
                 "barBackground": "#ECF1F9",
@@ -686,7 +706,7 @@ exports[`PartitionVisComponent should render correct structure for donut 1`] = `
                 "textLightColor": "#E3E8F2",
                 "textSubtitleDarkColor": "#1D2A3E",
                 "textSubtitleLightColor": "#CAD3E2",
-                "titleWeight": "bold",
+                "titleWeight": 500,
                 "titlesTextAlign": "left",
                 "valueFontSize": "default",
                 "valuePosition": "bottom",
@@ -694,6 +714,9 @@ exports[`PartitionVisComponent should render correct structure for donut 1`] = `
               },
               "partition": Object {
                 "circlePadding": 4,
+                "dimmed": Object {
+                  "fill": "#ECF1F9",
+                },
                 "emptySizeRatio": 0,
                 "fillLabel": Object {
                   "clipText": false,
@@ -776,6 +799,7 @@ exports[`PartitionVisComponent should render correct structure for donut 1`] = `
           debugState={false}
           flatLegend={true}
           legendAction={[Function]}
+          legendActionOnHover={true}
           legendColorPicker={[Function]}
           legendMaxDepth={1}
           legendPosition="right"
@@ -1153,7 +1177,7 @@ exports[`PartitionVisComponent should render correct structure for mosaic 1`] = 
                       "opacity": 0.25,
                     },
                   },
-                  "opacity": 0.3,
+                  "opacity": 0.2,
                   "visible": true,
                 },
                 "fit": Object {
@@ -1189,19 +1213,22 @@ exports[`PartitionVisComponent should render correct structure for mosaic 1`] = 
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "never",
                 },
                 "pointVisibilityMinDistance": 20,
@@ -1304,6 +1331,12 @@ exports[`PartitionVisComponent should render correct structure for mosaic 1`] = 
                   "padding": 0,
                 },
                 "rect": Object {
+                  "dimmed": Object {
+                    "fill": "#ECF1F9",
+                    "texture": Object {
+                      "opacity": 0.25,
+                    },
+                  },
                   "opacity": 1,
                 },
                 "rectBorder": Object {
@@ -1531,16 +1564,24 @@ exports[`PartitionVisComponent should render correct structure for mosaic 1`] = 
               "highlighter": Object {
                 "point": Object {
                   "fill": "__use__series__color__",
-                  "opacity": 0.5,
-                  "radius": 5,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "onHover": Object {
+                    "fill": "__use__series__color__",
+                    "opacity": 0.5,
+                    "radius": 5,
+                    "stroke": "__use__empty__color__",
+                    "strokeWidth": 0,
+                  },
+                  "opacity": 1,
+                  "radius": 3,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                 },
               },
               "legend": Object {
                 "horizontalHeight": 64,
                 "labelOptions": Object {
                   "maxLines": 1,
+                  "widthLimit": 250,
                 },
                 "margin": 0,
                 "spacingBuffer": 10,
@@ -1582,22 +1623,25 @@ exports[`PartitionVisComponent should render correct structure for mosaic 1`] = 
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "auto",
                 },
-                "pointVisibilityMinDistance": 40,
+                "pointVisibilityMinDistance": 20,
               },
               "metric": Object {
                 "barBackground": "#ECF1F9",
@@ -1614,7 +1658,7 @@ exports[`PartitionVisComponent should render correct structure for mosaic 1`] = 
                 "textLightColor": "#E3E8F2",
                 "textSubtitleDarkColor": "#1D2A3E",
                 "textSubtitleLightColor": "#CAD3E2",
-                "titleWeight": "bold",
+                "titleWeight": 500,
                 "titlesTextAlign": "left",
                 "valueFontSize": "default",
                 "valuePosition": "bottom",
@@ -1622,6 +1666,9 @@ exports[`PartitionVisComponent should render correct structure for mosaic 1`] = 
               },
               "partition": Object {
                 "circlePadding": 4,
+                "dimmed": Object {
+                  "fill": "#ECF1F9",
+                },
                 "emptySizeRatio": 0,
                 "fillLabel": Object {
                   "clipText": false,
@@ -1704,6 +1751,7 @@ exports[`PartitionVisComponent should render correct structure for mosaic 1`] = 
           debugState={false}
           flatLegend={false}
           legendAction={[Function]}
+          legendActionOnHover={true}
           legendColorPicker={[Function]}
           legendPosition="right"
           legendSize={130}
@@ -2141,7 +2189,7 @@ exports[`PartitionVisComponent should render correct structure for multi-metric 
                       "opacity": 0.25,
                     },
                   },
-                  "opacity": 0.3,
+                  "opacity": 0.2,
                   "visible": true,
                 },
                 "fit": Object {
@@ -2177,19 +2225,22 @@ exports[`PartitionVisComponent should render correct structure for multi-metric 
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "never",
                 },
                 "pointVisibilityMinDistance": 20,
@@ -2292,6 +2343,12 @@ exports[`PartitionVisComponent should render correct structure for multi-metric 
                   "padding": 0,
                 },
                 "rect": Object {
+                  "dimmed": Object {
+                    "fill": "#ECF1F9",
+                    "texture": Object {
+                      "opacity": 0.25,
+                    },
+                  },
                   "opacity": 1,
                 },
                 "rectBorder": Object {
@@ -2519,16 +2576,24 @@ exports[`PartitionVisComponent should render correct structure for multi-metric 
               "highlighter": Object {
                 "point": Object {
                   "fill": "__use__series__color__",
-                  "opacity": 0.5,
-                  "radius": 5,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "onHover": Object {
+                    "fill": "__use__series__color__",
+                    "opacity": 0.5,
+                    "radius": 5,
+                    "stroke": "__use__empty__color__",
+                    "strokeWidth": 0,
+                  },
+                  "opacity": 1,
+                  "radius": 3,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                 },
               },
               "legend": Object {
                 "horizontalHeight": 64,
                 "labelOptions": Object {
                   "maxLines": 1,
+                  "widthLimit": 250,
                 },
                 "margin": 0,
                 "spacingBuffer": 10,
@@ -2570,22 +2635,25 @@ exports[`PartitionVisComponent should render correct structure for multi-metric 
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "auto",
                 },
-                "pointVisibilityMinDistance": 40,
+                "pointVisibilityMinDistance": 20,
               },
               "metric": Object {
                 "barBackground": "#ECF1F9",
@@ -2602,7 +2670,7 @@ exports[`PartitionVisComponent should render correct structure for multi-metric 
                 "textLightColor": "#E3E8F2",
                 "textSubtitleDarkColor": "#1D2A3E",
                 "textSubtitleLightColor": "#CAD3E2",
-                "titleWeight": "bold",
+                "titleWeight": 500,
                 "titlesTextAlign": "left",
                 "valueFontSize": "default",
                 "valuePosition": "bottom",
@@ -2610,6 +2678,9 @@ exports[`PartitionVisComponent should render correct structure for multi-metric 
               },
               "partition": Object {
                 "circlePadding": 4,
+                "dimmed": Object {
+                  "fill": "#ECF1F9",
+                },
                 "emptySizeRatio": 0,
                 "fillLabel": Object {
                   "clipText": false,
@@ -2692,6 +2763,7 @@ exports[`PartitionVisComponent should render correct structure for multi-metric 
           debugState={false}
           flatLegend={true}
           legendAction={[Function]}
+          legendActionOnHover={true}
           legendColorPicker={[Function]}
           legendMaxDepth={1}
           legendPosition="right"
@@ -3131,7 +3203,7 @@ exports[`PartitionVisComponent should render correct structure for pie 1`] = `
                       "opacity": 0.25,
                     },
                   },
-                  "opacity": 0.3,
+                  "opacity": 0.2,
                   "visible": true,
                 },
                 "fit": Object {
@@ -3167,19 +3239,22 @@ exports[`PartitionVisComponent should render correct structure for pie 1`] = `
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "never",
                 },
                 "pointVisibilityMinDistance": 20,
@@ -3282,6 +3357,12 @@ exports[`PartitionVisComponent should render correct structure for pie 1`] = `
                   "padding": 0,
                 },
                 "rect": Object {
+                  "dimmed": Object {
+                    "fill": "#ECF1F9",
+                    "texture": Object {
+                      "opacity": 0.25,
+                    },
+                  },
                   "opacity": 1,
                 },
                 "rectBorder": Object {
@@ -3509,16 +3590,24 @@ exports[`PartitionVisComponent should render correct structure for pie 1`] = `
               "highlighter": Object {
                 "point": Object {
                   "fill": "__use__series__color__",
-                  "opacity": 0.5,
-                  "radius": 5,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "onHover": Object {
+                    "fill": "__use__series__color__",
+                    "opacity": 0.5,
+                    "radius": 5,
+                    "stroke": "__use__empty__color__",
+                    "strokeWidth": 0,
+                  },
+                  "opacity": 1,
+                  "radius": 3,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                 },
               },
               "legend": Object {
                 "horizontalHeight": 64,
                 "labelOptions": Object {
                   "maxLines": 1,
+                  "widthLimit": 250,
                 },
                 "margin": 0,
                 "spacingBuffer": 10,
@@ -3560,22 +3649,25 @@ exports[`PartitionVisComponent should render correct structure for pie 1`] = `
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "auto",
                 },
-                "pointVisibilityMinDistance": 40,
+                "pointVisibilityMinDistance": 20,
               },
               "metric": Object {
                 "barBackground": "#ECF1F9",
@@ -3592,7 +3684,7 @@ exports[`PartitionVisComponent should render correct structure for pie 1`] = `
                 "textLightColor": "#E3E8F2",
                 "textSubtitleDarkColor": "#1D2A3E",
                 "textSubtitleLightColor": "#CAD3E2",
-                "titleWeight": "bold",
+                "titleWeight": 500,
                 "titlesTextAlign": "left",
                 "valueFontSize": "default",
                 "valuePosition": "bottom",
@@ -3600,6 +3692,9 @@ exports[`PartitionVisComponent should render correct structure for pie 1`] = `
               },
               "partition": Object {
                 "circlePadding": 4,
+                "dimmed": Object {
+                  "fill": "#ECF1F9",
+                },
                 "emptySizeRatio": 0,
                 "fillLabel": Object {
                   "clipText": false,
@@ -3682,6 +3777,7 @@ exports[`PartitionVisComponent should render correct structure for pie 1`] = `
           debugState={false}
           flatLegend={true}
           legendAction={[Function]}
+          legendActionOnHover={true}
           legendColorPicker={[Function]}
           legendMaxDepth={1}
           legendPosition="right"
@@ -4059,7 +4155,7 @@ exports[`PartitionVisComponent should render correct structure for treemap 1`] =
                       "opacity": 0.25,
                     },
                   },
-                  "opacity": 0.3,
+                  "opacity": 0.2,
                   "visible": true,
                 },
                 "fit": Object {
@@ -4095,19 +4191,22 @@ exports[`PartitionVisComponent should render correct structure for treemap 1`] =
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "never",
                 },
                 "pointVisibilityMinDistance": 20,
@@ -4210,6 +4309,12 @@ exports[`PartitionVisComponent should render correct structure for treemap 1`] =
                   "padding": 0,
                 },
                 "rect": Object {
+                  "dimmed": Object {
+                    "fill": "#ECF1F9",
+                    "texture": Object {
+                      "opacity": 0.25,
+                    },
+                  },
                   "opacity": 1,
                 },
                 "rectBorder": Object {
@@ -4437,16 +4542,24 @@ exports[`PartitionVisComponent should render correct structure for treemap 1`] =
               "highlighter": Object {
                 "point": Object {
                   "fill": "__use__series__color__",
-                  "opacity": 0.5,
-                  "radius": 5,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "onHover": Object {
+                    "fill": "__use__series__color__",
+                    "opacity": 0.5,
+                    "radius": 5,
+                    "stroke": "__use__empty__color__",
+                    "strokeWidth": 0,
+                  },
+                  "opacity": 1,
+                  "radius": 3,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                 },
               },
               "legend": Object {
                 "horizontalHeight": 64,
                 "labelOptions": Object {
                   "maxLines": 1,
+                  "widthLimit": 250,
                 },
                 "margin": 0,
                 "spacingBuffer": 10,
@@ -4488,22 +4601,25 @@ exports[`PartitionVisComponent should render correct structure for treemap 1`] =
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "auto",
                 },
-                "pointVisibilityMinDistance": 40,
+                "pointVisibilityMinDistance": 20,
               },
               "metric": Object {
                 "barBackground": "#ECF1F9",
@@ -4520,7 +4636,7 @@ exports[`PartitionVisComponent should render correct structure for treemap 1`] =
                 "textLightColor": "#E3E8F2",
                 "textSubtitleDarkColor": "#1D2A3E",
                 "textSubtitleLightColor": "#CAD3E2",
-                "titleWeight": "bold",
+                "titleWeight": 500,
                 "titlesTextAlign": "left",
                 "valueFontSize": "default",
                 "valuePosition": "bottom",
@@ -4528,6 +4644,9 @@ exports[`PartitionVisComponent should render correct structure for treemap 1`] =
               },
               "partition": Object {
                 "circlePadding": 4,
+                "dimmed": Object {
+                  "fill": "#ECF1F9",
+                },
                 "emptySizeRatio": 0,
                 "fillLabel": Object {
                   "clipText": false,
@@ -4610,6 +4729,7 @@ exports[`PartitionVisComponent should render correct structure for treemap 1`] =
           debugState={false}
           flatLegend={false}
           legendAction={[Function]}
+          legendActionOnHover={true}
           legendColorPicker={[Function]}
           legendPosition="right"
           legendSize={130}
@@ -4942,7 +5062,7 @@ exports[`PartitionVisComponent should render correct structure for waffle 1`] = 
                       "opacity": 0.25,
                     },
                   },
-                  "opacity": 0.3,
+                  "opacity": 0.2,
                   "visible": true,
                 },
                 "fit": Object {
@@ -4978,19 +5098,22 @@ exports[`PartitionVisComponent should render correct structure for waffle 1`] = 
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "never",
                 },
                 "pointVisibilityMinDistance": 20,
@@ -5093,6 +5216,12 @@ exports[`PartitionVisComponent should render correct structure for waffle 1`] = 
                   "padding": 0,
                 },
                 "rect": Object {
+                  "dimmed": Object {
+                    "fill": "#ECF1F9",
+                    "texture": Object {
+                      "opacity": 0.25,
+                    },
+                  },
                   "opacity": 1,
                 },
                 "rectBorder": Object {
@@ -5320,16 +5449,24 @@ exports[`PartitionVisComponent should render correct structure for waffle 1`] = 
               "highlighter": Object {
                 "point": Object {
                   "fill": "__use__series__color__",
-                  "opacity": 0.5,
-                  "radius": 5,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "onHover": Object {
+                    "fill": "__use__series__color__",
+                    "opacity": 0.5,
+                    "radius": 5,
+                    "stroke": "__use__empty__color__",
+                    "strokeWidth": 0,
+                  },
+                  "opacity": 1,
+                  "radius": 3,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                 },
               },
               "legend": Object {
                 "horizontalHeight": 64,
                 "labelOptions": Object {
                   "maxLines": 1,
+                  "widthLimit": 250,
                 },
                 "margin": 0,
                 "spacingBuffer": 10,
@@ -5371,22 +5508,25 @@ exports[`PartitionVisComponent should render correct structure for waffle 1`] = 
                     "strokeWidth": 2.5,
                   },
                   "opacity": 1,
-                  "strokeWidth": 2,
+                  "strokeWidth": 1.5,
                   "visible": true,
                 },
                 "point": Object {
                   "dimmed": Object {
-                    "fill": "rgba(202, 211, 226, 0.15)",
+                    "fill": "#FFFFFF",
                     "stroke": "rgba(202, 211, 226, 0.15)",
                   },
-                  "fill": "__use__series__color__",
+                  "fill": "#FFFFFF",
+                  "focused": Object {
+                    "strokeWidth": 2.5,
+                  },
                   "opacity": 1,
                   "radius": 3,
-                  "stroke": "__use__empty__color__",
-                  "strokeWidth": 0,
+                  "stroke": "__use__series__color__",
+                  "strokeWidth": 1.5,
                   "visible": "auto",
                 },
-                "pointVisibilityMinDistance": 40,
+                "pointVisibilityMinDistance": 20,
               },
               "metric": Object {
                 "barBackground": "#ECF1F9",
@@ -5403,7 +5543,7 @@ exports[`PartitionVisComponent should render correct structure for waffle 1`] = 
                 "textLightColor": "#E3E8F2",
                 "textSubtitleDarkColor": "#1D2A3E",
                 "textSubtitleLightColor": "#CAD3E2",
-                "titleWeight": "bold",
+                "titleWeight": 500,
                 "titlesTextAlign": "left",
                 "valueFontSize": "default",
                 "valuePosition": "bottom",
@@ -5411,6 +5551,9 @@ exports[`PartitionVisComponent should render correct structure for waffle 1`] = 
               },
               "partition": Object {
                 "circlePadding": 4,
+                "dimmed": Object {
+                  "fill": "#ECF1F9",
+                },
                 "emptySizeRatio": 0,
                 "fillLabel": Object {
                   "clipText": false,
@@ -5493,6 +5636,7 @@ exports[`PartitionVisComponent should render correct structure for waffle 1`] = 
           debugState={false}
           flatLegend={true}
           legendAction={[Function]}
+          legendActionOnHover={true}
           legendColorPicker={[Function]}
           legendMaxDepth={1}
           legendPosition="right"

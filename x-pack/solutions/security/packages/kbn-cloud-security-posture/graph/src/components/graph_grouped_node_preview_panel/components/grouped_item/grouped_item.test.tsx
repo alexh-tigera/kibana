@@ -9,7 +9,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import {
   GROUPED_ITEM_TEST_ID,
-  GROUPED_ITEM_TITLE_TEST_ID,
+  GROUPED_ITEM_TITLE_TEST_ID_TEXT,
+  GROUPED_ITEM_TITLE_TEST_ID_LINK,
   GROUPED_ITEM_TIMESTAMP_TEST_ID,
   GROUPED_ITEM_ACTOR_TEST_ID,
   GROUPED_ITEM_TARGET_TEST_ID,
@@ -20,23 +21,47 @@ import {
 import { GroupedItem } from './grouped_item';
 import { formatDate } from '@elastic/eui';
 import { LIST_ITEM_DATE_FORMAT } from './parts/timestamp_row';
+import { getOrCreateFilterStore, destroyFilterStore } from '../../../filters/filter_store';
 import type { EntityOrEventItem } from './types';
 
+const mockOpenPreviewPanel = jest.fn();
+
+jest.mock('@kbn/expandable-flyout', () => ({
+  useExpandableFlyoutApi: () => ({
+    openPreviewPanel: mockOpenPreviewPanel,
+  }),
+}));
+
+// Use unique scopeId per test run to prevent cross-test pollution
+let TEST_SCOPE_ID: string;
+
 describe('<GroupedItem />', () => {
+  beforeEach(() => {
+    // Generate unique scopeId for each test
+    TEST_SCOPE_ID = `test-scope-${Math.random().toString(36).substring(7)}`;
+    getOrCreateFilterStore(TEST_SCOPE_ID);
+  });
+
+  afterEach(() => {
+    destroyFilterStore(TEST_SCOPE_ID);
+  });
+
   describe('render items', () => {
     it('renders entity item with full details', () => {
       const timestamp = Date.now();
       const { queryByTestId, getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
-            icon: 'node',
+            icon: 'vectorTriangle',
             timestamp,
             risk: 55,
-            ip: '5.5.5.5',
-            countryCode: 'US',
+            ips: ['5.5.5.5'],
+            countryCodes: ['US'],
+            entity: {},
           }}
         />
       );
@@ -44,13 +69,13 @@ describe('<GroupedItem />', () => {
       expect(queryByTestId(GROUPED_ITEM_TEST_ID)).toBeInTheDocument();
       expect(queryByTestId(GROUPED_ITEM_SKELETON_TEST_ID)).not.toBeInTheDocument();
 
-      expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe('entity-1');
+      expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID_TEXT).textContent).toBe('entity-1');
       expect(getByTestId(GROUPED_ITEM_TIMESTAMP_TEST_ID).textContent).toBe(
         formatDate(timestamp, `@ ${LIST_ITEM_DATE_FORMAT}`)
       );
       expect(getByTestId(GROUPED_ITEM_IP_TEST_ID).textContent).toContain('IP: 5.5.5.5');
       expect(getByTestId(GROUPED_ITEM_GEO_TEST_ID).textContent).toBe(
-        'Geo 🇺🇸 United States of America'
+        'Geo:  🇺🇸 United States of America'
       );
     });
 
@@ -58,6 +83,7 @@ describe('<GroupedItem />', () => {
       const timestamp = Date.now();
       const { getByTestId, queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-id',
@@ -72,7 +98,7 @@ describe('<GroupedItem />', () => {
       expect(queryByTestId(GROUPED_ITEM_TEST_ID)).toBeInTheDocument();
       expect(queryByTestId(GROUPED_ITEM_SKELETON_TEST_ID)).not.toBeInTheDocument();
 
-      expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe('process_start');
+      expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID_LINK).textContent).toBe('process_start');
       expect(getByTestId(GROUPED_ITEM_TIMESTAMP_TEST_ID).textContent).toBe(
         formatDate(timestamp, `@ ${LIST_ITEM_DATE_FORMAT}`)
       );
@@ -84,6 +110,7 @@ describe('<GroupedItem />', () => {
       const timestamp = Date.now();
       const { getByTestId, queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'alert',
             id: 'alert-id',
@@ -98,7 +125,7 @@ describe('<GroupedItem />', () => {
       expect(queryByTestId(GROUPED_ITEM_TEST_ID)).toBeInTheDocument();
       expect(queryByTestId(GROUPED_ITEM_SKELETON_TEST_ID)).not.toBeInTheDocument();
 
-      expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe('alert_action');
+      expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID_LINK).textContent).toBe('alert_action');
       expect(getByTestId(GROUPED_ITEM_TIMESTAMP_TEST_ID).textContent).toBe(
         formatDate(timestamp, `@ ${LIST_ITEM_DATE_FORMAT}`)
       );
@@ -111,39 +138,33 @@ describe('<GroupedItem />', () => {
     describe('entity', () => {
       it('falls back to entity id when entity label is missing', () => {
         const entityId = 'entity-id';
-        const { getByTestId } = render(<GroupedItem item={{ itemType: 'entity', id: entityId }} />);
-        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe(entityId);
-      });
-
-      it('falls back to dash when entity label and entity id are both missing', () => {
-        const { getByTestId } = render(<GroupedItem item={{ itemType: 'entity' }} />);
-        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe('-');
+        const { getByTestId } = render(
+          <GroupedItem
+            scopeId={TEST_SCOPE_ID}
+            item={{ itemType: 'entity', id: entityId, entity: {} }}
+          />
+        );
+        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID_TEXT).textContent).toBe(entityId);
       });
     });
 
     describe('event', () => {
       it('falls back to event id when event action is missing', () => {
         const eventId = 'event-id';
-        const { getByTestId } = render(<GroupedItem item={{ itemType: 'event', id: eventId }} />);
-        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe(eventId);
-      });
-
-      it('falls back to dash when event action and event id are both missing', () => {
-        const { getByTestId } = render(<GroupedItem item={{ itemType: 'event' }} />);
-        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe('-');
+        const { getByTestId } = render(
+          <GroupedItem scopeId={TEST_SCOPE_ID} item={{ itemType: 'event', id: eventId }} />
+        );
+        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID_LINK).textContent).toBe(eventId);
       });
     });
 
     describe('alert', () => {
       it('falls back to alert id when alert action is missing', () => {
         const alertId = 'alert-id';
-        const { getByTestId } = render(<GroupedItem item={{ itemType: 'alert', id: alertId }} />);
-        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe(alertId);
-      });
-
-      it('falls back to dash when alert action and alert id are both missing', () => {
-        const { getByTestId } = render(<GroupedItem item={{ itemType: 'alert' }} />);
-        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID).textContent).toBe('-');
+        const { getByTestId } = render(
+          <GroupedItem scopeId={TEST_SCOPE_ID} item={{ itemType: 'alert', id: alertId }} />
+        );
+        expect(getByTestId(GROUPED_ITEM_TITLE_TEST_ID_LINK).textContent).toBe(alertId);
       });
     });
   });
@@ -152,11 +173,13 @@ describe('<GroupedItem />', () => {
     it('does not render ActorsRow for entity type even with actor and target present', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={
             {
               itemType: 'entity',
               id: 'e1',
               label: 'entity-1',
+              entity: {},
               actor: { id: 'a1', label: 'actor' },
               target: { id: 't1', label: 'target' },
             } as any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -171,6 +194,7 @@ describe('<GroupedItem />', () => {
     it('does not render ActorsRow for event when actor is missing', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-1',
@@ -187,6 +211,7 @@ describe('<GroupedItem />', () => {
     it('does not render ActorsRow for event when target is missing', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-1',
@@ -203,6 +228,7 @@ describe('<GroupedItem />', () => {
     it('does not render ActorsRow for alert when actor is missing', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'alert',
             id: 'alert-1',
@@ -219,6 +245,7 @@ describe('<GroupedItem />', () => {
     it('does not render ActorsRow for alert when target is missing', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'alert',
             id: 'alert-1',
@@ -235,6 +262,7 @@ describe('<GroupedItem />', () => {
     it('renders ActorsRow for event with both actor and target present', () => {
       const { getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-1',
@@ -252,6 +280,7 @@ describe('<GroupedItem />', () => {
     it('renders ActorsRow for alert with both actor and target present', () => {
       const { getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'alert',
             id: 'alert-1',
@@ -269,6 +298,7 @@ describe('<GroupedItem />', () => {
     it('renders actor id gracefully with missing label', () => {
       const { getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-1',
@@ -286,6 +316,7 @@ describe('<GroupedItem />', () => {
     it('renders target id gracefully with missing label', () => {
       const { getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-1',
@@ -303,6 +334,7 @@ describe('<GroupedItem />', () => {
     it('renders actor and target with only id when missing both labels', () => {
       const { getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-1',
@@ -320,6 +352,7 @@ describe('<GroupedItem />', () => {
     it('renders actor and target names with optional icon when provided', () => {
       const { getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-1',
@@ -347,6 +380,7 @@ describe('<GroupedItem />', () => {
     it('applies alert styling when item type is alert', () => {
       const { container } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'alert',
             id: 'alert-1',
@@ -363,6 +397,7 @@ describe('<GroupedItem />', () => {
     it('does not apply alert styling when item type is event', () => {
       const { container } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'event',
             id: 'event-1',
@@ -378,10 +413,12 @@ describe('<GroupedItem />', () => {
     it('does not apply alert styling when item type is entity', () => {
       const { container } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'entity-1',
             label: 'test_entity',
+            entity: {},
           }}
         />
       );
@@ -395,26 +432,30 @@ describe('<GroupedItem />', () => {
     it('renders geolocation label followed by country emoji flag and name', () => {
       const { getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
-            countryCode: 'il',
+            countryCodes: ['il'],
+            entity: {},
           }}
         />
       );
 
-      expect(getByTestId(GROUPED_ITEM_GEO_TEST_ID).textContent).toBe('Geo 🇮🇱 Israel');
+      expect(getByTestId(GROUPED_ITEM_GEO_TEST_ID).textContent).toBe('Geo:  🇮🇱 Israel');
     });
 
     it('does not render geolocation info when countryCode is undefined', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
-            countryCode: undefined,
+            countryCodes: undefined,
+            entity: {},
           }}
         />
       );
@@ -425,11 +466,13 @@ describe('<GroupedItem />', () => {
     it('does not render geo info when countryCode is empty string', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
-            countryCode: '',
+            countryCodes: [''],
+            entity: {},
           }}
         />
       );
@@ -440,11 +483,13 @@ describe('<GroupedItem />', () => {
     it('handles invalid country codes gracefully', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
-            countryCode: 'INVALID',
+            countryCodes: ['INVALID'],
+            entity: {},
           }}
         />
       );
@@ -458,29 +503,31 @@ describe('<GroupedItem />', () => {
         itemType: 'entity',
         id: 'e1',
         label: 'entity-1',
+        entity: {},
       };
 
       const { getByTestId, rerender } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             ...item,
-            countryCode: 'us', // lowercase
+            countryCodes: ['us'], // lowercase
           }}
         />
       );
 
       expect(getByTestId(GROUPED_ITEM_GEO_TEST_ID).textContent).toBe(
-        'Geo 🇺🇸 United States of America'
+        'Geo:  🇺🇸 United States of America'
       );
 
-      rerender(<GroupedItem item={{ ...item, countryCode: 'US' }} />); // uppercase
+      rerender(<GroupedItem scopeId={TEST_SCOPE_ID} item={{ ...item, countryCodes: ['US'] }} />); // uppercase
       expect(getByTestId(GROUPED_ITEM_GEO_TEST_ID).textContent).toBe(
-        'Geo 🇺🇸 United States of America'
+        'Geo:  🇺🇸 United States of America'
       );
 
-      rerender(<GroupedItem item={{ ...item, countryCode: 'uS' }} />); // mixed case
+      rerender(<GroupedItem scopeId={TEST_SCOPE_ID} item={{ ...item, countryCodes: ['uS'] }} />); // mixed case
       expect(getByTestId(GROUPED_ITEM_GEO_TEST_ID).textContent).toBe(
-        'Geo 🇺🇸 United States of America'
+        'Geo:  🇺🇸 United States of America'
       );
     });
   });
@@ -489,11 +536,13 @@ describe('<GroupedItem />', () => {
     it('does not render IP when ip is undefined', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
-            ip: undefined,
+            ips: undefined,
+            entity: {},
           }}
         />
       );
@@ -504,11 +553,13 @@ describe('<GroupedItem />', () => {
     it('does not render IP when ip is empty string', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
-            ip: '',
+            ips: [''],
+            entity: {},
           }}
         />
       );
@@ -520,76 +571,192 @@ describe('<GroupedItem />', () => {
       const ipv4 = '192.168.1.1';
       const { getByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
-            ip: ipv4,
+            ips: [ipv4],
+            entity: {},
           }}
         />
       );
 
       expect(getByTestId(GROUPED_ITEM_IP_TEST_ID).textContent).toContain(`IP: ${ipv4}`);
     });
+
+    it('renders first IP address when ip is an array', () => {
+      const ipArray = ['192.168.1.1', '10.0.0.1'];
+      const { getByTestId } = render(
+        <GroupedItem
+          scopeId={TEST_SCOPE_ID}
+          item={{
+            itemType: 'entity',
+            id: 'e1',
+            label: 'entity-1',
+            ips: ipArray,
+            entity: {},
+          }}
+        />
+      );
+
+      expect(getByTestId(GROUPED_ITEM_IP_TEST_ID).textContent).toContain(`IP: ${ipArray[0]}`);
+    });
+
+    it('does not render IP when ip is an empty array', () => {
+      const { queryByTestId } = render(
+        <GroupedItem
+          scopeId={TEST_SCOPE_ID}
+          item={{
+            itemType: 'entity',
+            id: 'e1',
+            label: 'entity-1',
+            ips: [],
+            entity: {},
+          }}
+        />
+      );
+
+      expect(queryByTestId(GROUPED_ITEM_IP_TEST_ID)).not.toBeInTheDocument();
+    });
+
+    it('does not render IP when ip array contains only empty strings', () => {
+      const { queryByTestId } = render(
+        <GroupedItem
+          scopeId={TEST_SCOPE_ID}
+          item={{
+            itemType: 'entity',
+            id: 'e1',
+            label: 'entity-1',
+            ips: ['', ''],
+            entity: {},
+          }}
+        />
+      );
+
+      expect(queryByTestId(GROUPED_ITEM_IP_TEST_ID)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('country code format variations', () => {
+    it('renders first country code when countryCode is an array', () => {
+      const countryArray = ['US', 'IL'];
+      const { getByTestId } = render(
+        <GroupedItem
+          scopeId={TEST_SCOPE_ID}
+          item={{
+            itemType: 'entity',
+            id: 'e1',
+            label: 'entity-1',
+            countryCodes: countryArray,
+            entity: {},
+          }}
+        />
+      );
+
+      expect(getByTestId(GROUPED_ITEM_GEO_TEST_ID).textContent).toBe(
+        'Geo:  🇺🇸 United States of America'
+      );
+    });
+
+    it('does not render geolocation when countryCode is an empty array', () => {
+      const { queryByTestId } = render(
+        <GroupedItem
+          scopeId={TEST_SCOPE_ID}
+          item={{
+            itemType: 'entity',
+            id: 'e1',
+            label: 'entity-1',
+            countryCodes: [],
+            entity: {},
+          }}
+        />
+      );
+
+      expect(queryByTestId(GROUPED_ITEM_GEO_TEST_ID)).not.toBeInTheDocument();
+    });
+
+    it('does not render geolocation when countryCode array contains only empty strings', () => {
+      const { queryByTestId } = render(
+        <GroupedItem
+          scopeId={TEST_SCOPE_ID}
+          item={{
+            itemType: 'entity',
+            id: 'e1',
+            label: 'entity-1',
+            countryCodes: ['', ''],
+            entity: {},
+          }}
+        />
+      );
+
+      expect(queryByTestId(GROUPED_ITEM_GEO_TEST_ID)).not.toBeInTheDocument();
+    });
   });
 
   describe('loading state edge cases', () => {
     it('renders skeleton when isLoading is true and item is undefined', () => {
-      const { queryByTestId } = render(<GroupedItem isLoading />);
+      const { queryByTestId } = render(<GroupedItem scopeId={TEST_SCOPE_ID} isLoading />);
 
       expect(queryByTestId(GROUPED_ITEM_TEST_ID)).toBeInTheDocument();
       expect(queryByTestId(GROUPED_ITEM_SKELETON_TEST_ID)).toBeInTheDocument();
-      expect(queryByTestId(GROUPED_ITEM_TITLE_TEST_ID)).not.toBeInTheDocument();
+      expect(queryByTestId(GROUPED_ITEM_TITLE_TEST_ID_TEXT)).not.toBeInTheDocument();
     });
 
     it('renders skeleton when isLoading is true even with item provided', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           isLoading
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
+            entity: {},
           }}
         />
       );
 
       expect(queryByTestId(GROUPED_ITEM_TEST_ID)).toBeInTheDocument();
       expect(queryByTestId(GROUPED_ITEM_SKELETON_TEST_ID)).toBeInTheDocument();
-      expect(queryByTestId(GROUPED_ITEM_TITLE_TEST_ID)).not.toBeInTheDocument();
+      expect(queryByTestId(GROUPED_ITEM_TITLE_TEST_ID_TEXT)).not.toBeInTheDocument();
     });
 
     it('does not render skeleton when isLoading is false', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           isLoading={false}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
+            entity: {},
           }}
         />
       );
 
       expect(queryByTestId(GROUPED_ITEM_TEST_ID)).toBeInTheDocument();
       expect(queryByTestId(GROUPED_ITEM_SKELETON_TEST_ID)).not.toBeInTheDocument();
-      expect(queryByTestId(GROUPED_ITEM_TITLE_TEST_ID)).toBeInTheDocument();
+      expect(queryByTestId(GROUPED_ITEM_TITLE_TEST_ID_TEXT)).toBeInTheDocument();
     });
 
     it('does not render skeleton when isLoading is undefined and defaults to false', () => {
       const { queryByTestId } = render(
         <GroupedItem
+          scopeId={TEST_SCOPE_ID}
           item={{
             itemType: 'entity',
             id: 'e1',
             label: 'entity-1',
+            entity: {},
           }}
         />
       );
 
       expect(queryByTestId(GROUPED_ITEM_TEST_ID)).toBeInTheDocument();
       expect(queryByTestId(GROUPED_ITEM_SKELETON_TEST_ID)).not.toBeInTheDocument();
-      expect(queryByTestId(GROUPED_ITEM_TITLE_TEST_ID)).toBeInTheDocument();
+      expect(queryByTestId(GROUPED_ITEM_TITLE_TEST_ID_TEXT)).toBeInTheDocument();
     });
   });
 

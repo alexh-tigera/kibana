@@ -8,16 +8,23 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import { z } from '@kbn/zod';
+import { z } from '@kbn/zod/v4';
 
-const RunSubActionParamsSchema = z
+const AlertStatesSchema = z
   .object({
-    workflowId: z.string(),
-    inputs: z.any().optional(),
-    alerts: z.array(z.any()),
-    spaceId: z.string(),
+    new: z.boolean().optional(),
+    ongoing: z.boolean().optional(),
+    recovered: z.boolean().optional(),
   })
   .strict();
+
+const RunSubActionParamsSchema = z.object({
+  workflowId: z.string(),
+  inputs: z.any().optional(),
+  spaceId: z.string(),
+  summaryMode: z.boolean().optional().default(true),
+  alertStates: AlertStatesSchema.optional(),
+});
 
 // Schema for rule configuration (what the UI saves)
 export const WorkflowsRuleActionParamsSchema = schema.object({
@@ -25,6 +32,14 @@ export const WorkflowsRuleActionParamsSchema = schema.object({
   subActionParams: schema.object({
     workflowId: schema.string(),
     inputs: schema.maybe(schema.any()),
+    summaryMode: schema.maybe(schema.boolean()),
+    alertStates: schema.maybe(
+      schema.object({
+        new: schema.maybe(schema.boolean()),
+        ongoing: schema.maybe(schema.boolean()),
+        recovered: schema.maybe(schema.boolean()),
+      })
+    ),
   }),
 });
 

@@ -7,19 +7,26 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
-import { EuiButtonEmpty, EuiFlexItem, EuiFlexGroup, EuiHorizontalRule } from '@elastic/eui';
-
+import {
+  EuiButtonEmpty,
+  EuiFlexItem,
+  EuiFlexGroup,
+  EuiHorizontalRule,
+  EuiText,
+  useEuiTheme,
+} from '@elastic/eui';
+import { css } from '@emotion/react';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
-
 import type { Dictionary } from '@kbn/ml-common-types/common';
 import type {
   MlJobWithTimeRange,
   MlSummaryJob,
 } from '@kbn/ml-common-types/anomaly_detection_jobs/summary_job';
 import { ML_PAGES } from '@kbn/ml-common-types/locator_ml_pages';
+import { AnomalyResultsViewSelector } from '../anomaly_results_view_selector';
+import type { ExplorerJob } from '../../explorer/explorer_utils';
 import { IdBadges } from './id_badges';
-
 import { BADGE_LIMIT } from './job_selector_flyout';
 import { FeedBackButton } from '../feedback_button';
 import { JobInfoFlyoutsProvider } from '../../jobs/components/job_details_flyout';
@@ -86,7 +93,7 @@ export interface JobSelectorProps {
   }) => void;
   selectedJobIds?: string[];
   selectedGroups?: GroupObj[];
-  selectedJobs?: MlSummaryJob[];
+  selectedJobs?: MlSummaryJob[] | ExplorerJob[];
 }
 
 export interface JobSelectionMaps {
@@ -146,6 +153,7 @@ export function JobSelector({
     onSelectionChange?.({ jobIds: newSelection, time: undefined });
   };
 
+  const { euiTheme } = useEuiTheme();
   const [canGetJobs, canCreateJob] = usePermissionCheck(['canGetJobs', 'canCreateJob']);
 
   const redirectToADJobManagement = useCreateAndNavigateToManagementMlLink('', 'anomaly_detection');
@@ -153,7 +161,13 @@ export function JobSelector({
   function renderJobSelectionBar() {
     return (
       <>
-        <EuiFlexGroup responsive={false} gutterSize="xs" alignItems="center">
+        <EuiFlexGroup responsive={false} gutterSize="s" alignItems="center">
+          <EuiFlexItem grow={false}>
+            <AnomalyResultsViewSelector
+              viewId={singleSelection ? 'timeseriesexplorer' : 'explorer'}
+              selectedJobs={selectedJobs}
+            />
+          </EuiFlexItem>
           <EuiFlexItem grow={false}>
             {selectedIds.length > 0 ? (
               <EuiFlexGroup
@@ -175,23 +189,28 @@ export function JobSelector({
                 />
               </EuiFlexGroup>
             ) : (
-              <span>
+              <EuiText
+                size="s"
+                css={css`
+                  color: ${euiTheme.colors.textSubdued};
+                `}
+              >
                 <FormattedMessage
                   id="xpack.ml.jobSelector.noJobsSelectedLabel"
                   defaultMessage="No jobs selected"
                 />
-              </span>
+              </EuiText>
             )}
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButtonEmpty
-              size="xs"
+              size="s"
               iconType="pencil"
               onClick={handleJobSelectionClick}
               data-test-subj="mlButtonEditJobSelection"
             >
               {i18n.translate('xpack.ml.jobSelector.jobSelectionButton', {
-                defaultMessage: 'Edit job selection',
+                defaultMessage: 'Job selection',
               })}
             </EuiButtonEmpty>
           </EuiFlexItem>

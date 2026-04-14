@@ -19,12 +19,14 @@ import {
 import { css } from '@emotion/react';
 import React, { useCallback, useState } from 'react';
 import { i18n } from '@kbn/i18n';
+import { FormattedMessage } from '@kbn/i18n-react';
 import type { WorkflowListItemDto } from '@kbn/workflows';
 import { useWorkflowBulkActions } from './use_workflow_bulk_actions';
 
 interface WorkflowsUtilityBarProps {
   totalWorkflows: number;
   selectedWorkflows: WorkflowListItemDto[];
+  allWorkflows: WorkflowListItemDto[];
   deselectWorkflows: () => void;
   onRefresh: () => void;
   showStart: number;
@@ -34,6 +36,7 @@ interface WorkflowsUtilityBarProps {
 export const WorkflowsUtilityBar: React.FC<WorkflowsUtilityBarProps> = ({
   totalWorkflows,
   selectedWorkflows,
+  allWorkflows,
   deselectWorkflows,
   onRefresh,
   showStart,
@@ -51,6 +54,7 @@ export const WorkflowsUtilityBar: React.FC<WorkflowsUtilityBarProps> = ({
 
   const { panels, modals } = useWorkflowBulkActions({
     selectedWorkflows,
+    allWorkflows,
     onAction: closePopover,
     onActionSuccess,
     deselectWorkflows,
@@ -64,25 +68,23 @@ export const WorkflowsUtilityBar: React.FC<WorkflowsUtilityBarProps> = ({
         alignItems="center"
         justifyContent="spaceBetween"
         css={css`
-          margin-top: ${euiTheme.size.s};
-          padding-bottom: ${euiTheme.size.s};
+          margin-top: ${euiTheme.size.l};
+          padding-bottom: ${euiTheme.size.m};
         `}
       >
         <EuiFlexItem grow={false}>
           <EuiFlexGroup justifyContent="flexStart" gutterSize="s" alignItems="center">
-            <EuiFlexItem
-              data-test-subj="workflows-table-count"
-              grow={false}
-              css={css`
-                border-right: ${euiTheme.border.thin};
-                padding-right: ${euiTheme.size.s};
-              `}
-            >
-              <EuiText size="s">
-                {i18n.translate('workflows.utilityBar.showingWorkflows', {
-                  defaultMessage: 'Showing {showStart}-{showEnd} of {total} workflows',
-                  values: { showStart, showEnd, total: totalWorkflows },
-                })}
+            <EuiFlexItem data-test-subj="workflows-table-count" grow={false}>
+              <EuiText size="xs">
+                <FormattedMessage
+                  id="workflows.utilityBar.showingWorkflows"
+                  defaultMessage="Showing {showStart}-{showEnd} of {total} workflows"
+                  values={{
+                    showStart: <strong>{showStart}</strong>,
+                    showEnd: <strong>{showEnd}</strong>,
+                    total: <strong>{totalWorkflows}</strong>,
+                  }}
+                />
               </EuiText>
             </EuiFlexItem>
             <EuiFlexItem data-test-subj="workflows-table-utility-bar-actions" grow={false}>
@@ -108,7 +110,7 @@ export const WorkflowsUtilityBar: React.FC<WorkflowsUtilityBarProps> = ({
                             onClick={togglePopover}
                             size="s"
                             iconSide="right"
-                            iconType="arrowDown"
+                            iconType="chevronSingleDown"
                             flush="left"
                             data-test-subj="workflows-table-bulk-actions-button"
                             aria-label="Bulk actions"
@@ -143,21 +145,6 @@ export const WorkflowsUtilityBar: React.FC<WorkflowsUtilityBarProps> = ({
                     </EuiFlexItem>
                   </>
                 )}
-                <EuiFlexItem grow={false}>
-                  <EuiButtonEmpty
-                    onClick={onRefresh}
-                    size="s"
-                    iconSide="left"
-                    iconType="refresh"
-                    flush="left"
-                    data-test-subj="workflows-refresh-button"
-                    aria-label="Refresh"
-                  >
-                    {i18n.translate('workflows.utilityBar.refresh', {
-                      defaultMessage: 'Refresh',
-                    })}
-                  </EuiButtonEmpty>
-                </EuiFlexItem>
               </EuiFlexGroup>
             </EuiFlexItem>
           </EuiFlexGroup>

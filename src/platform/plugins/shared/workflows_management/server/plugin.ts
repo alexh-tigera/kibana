@@ -6,11 +6,8 @@
  * your election, the "Elastic License 2.0", the "GNU Affero General Public
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
-
-/* eslint-disable @typescript-eslint/no-this-alias, @typescript-eslint/no-non-null-assertion */
-
-import type { IUnsecuredActionsClient } from '@kbn/actions-plugin/server';
 import type {
+  AnalyticsServiceStart,
   CoreSetup,
   CoreStart,
   KibanaRequest,
@@ -18,29 +15,47 @@ import type {
   Plugin,
   PluginInitializerContext,
 } from '@kbn/core/server';
-
+import type { SecurityServiceStart } from '@kbn/core-security-server';
 import type { SpacesServiceStart } from '@kbn/spaces-plugin/server';
+import type { TriggerType } from '@kbn/workflows';
 import type { WorkflowExecutionEngineModel } from '@kbn/workflows/types/latest';
-import type { WorkflowsManagementConfig } from './config';
-
+import { registerWorkflowAgentBuilderIntegration } from './agent_builder';
+import { defineRoutes } from './api/routes';
+import { type SmlIndexAttachmentFn, WorkflowsManagementApi } from './api/workflows_management_api';
+import { WorkflowsService } from './api/workflows_management_service';
 import {
   getWorkflowsConnectorAdapter,
   getConnectorType as getWorkflowsConnectorType,
 } from './connectors/workflows';
+import { validateWorkflowForExecution } from './connectors/workflows/validate_workflow_for_execution';
+import {
+  resolveMatchingWorkflowSubscriptions,
+  type ResolveMatchingWorkflowSubscriptionsParams,
+} from './event_driven/resolve_workflow_subscriptions';
+import { createTriggerEventHandler } from './event_driven/trigger_event_handler';
 import { WorkflowsManagementFeatureConfig } from './features';
-import { createWorkflowTaskRunner } from './tasks/workflow_task_runner';
 import { WorkflowTaskScheduler } from './tasks/workflow_task_scheduler';
+import {
+  triggerEventDispatchedSchema,
+  WORKFLOWS_TRIGGER_EVENT_DISPATCHED,
+} from './telemetry/events';
+import { WorkflowsAiTelemetryClient } from './telemetry/workflows_ai_telemetry_client';
+import { WorkflowsManagementTelemetryClient } from './telemetry/workflows_management_telemetry_client';
+import {
+  initializeTriggerEventsClient,
+  initializeTriggerEventsDataStream,
+  type TriggerEventsDataStreamClient,
+} from './trigger_events_log';
 import type {
+  AgentBuilderPluginSetupContract,
+  WorkflowsRequestHandlerContext,
   WorkflowsServerPluginSetup,
   WorkflowsServerPluginSetupDeps,
   WorkflowsServerPluginStart,
   WorkflowsServerPluginStartDeps,
 } from './types';
 import { registerUISettings } from './ui_settings';
-import { defineRoutes } from './workflows_management/routes';
-import { WorkflowsManagementApi } from './workflows_management/workflows_management_api';
-import { WorkflowsService } from './workflows_management/workflows_management_service';
-// Import the workflows connector
+import { stepSchemas } from '../common/step_schemas';
 
 export class WorkflowsPlugin
   implements
@@ -52,16 +67,17 @@ export class WorkflowsPlugin
     >
 {
   private readonly logger: Logger;
-  private readonly config: WorkflowsManagementConfig;
   private workflowsService: WorkflowsService | null = null;
   private workflowTaskScheduler: WorkflowTaskScheduler | null = null;
-  private unsecureActionsClient: IUnsecuredActionsClient | null = null;
   private api: WorkflowsManagementApi | null = null;
   private spaces?: SpacesServiceStart | null = null;
+  private securityStart?: SecurityServiceStart;
+  private triggerEventsClient: TriggerEventsDataStreamClient | null = null;
+  private analytics?: AnalyticsServiceStart;
+  private aiTelemetryClient: WorkflowsAiTelemetryClient | null = null;
 
   constructor(initializerContext: PluginInitializerContext) {
     this.logger = initializerContext.logger.get();
-    this.config = initializerContext.config.get<WorkflowsManagementConfig>();
   }
 
   public setup(
@@ -70,7 +86,15 @@ export class WorkflowsPlugin
   ) {
     this.logger.debug('Workflows Management: Setup');
 
-    registerUISettings({ uiSettings: core.uiSettings });
+    this.aiTelemetryClient = new WorkflowsAiTelemetryClient(core.analytics, this.logger);
+
+    registerUISettings(core, plugins);
+    core.analytics.registerEventType({
+      eventType: WORKFLOWS_TRIGGER_EVENT_DISPATCHED,
+      schema: triggerEventDispatchedSchema,
+    });
+
+    initializeTriggerEventsDataStream(core.dataStreams);
 
     // Register workflows connector if actions plugin is available
     if (plugins.actions) {
@@ -82,19 +106,9 @@ export class WorkflowsPlugin
             throw new Error('Workflows management API not initialized');
           }
 
-          // Get the workflow first
+          // Get the workflow and validate it is in a runnable state
           const workflow = await this.api.getWorkflow(workflowId, spaceId);
-          if (!workflow) {
-            throw new Error(`Workflow not found: ${workflowId}`);
-          }
-
-          if (!workflow.definition) {
-            throw new Error(`Workflow definition not found: ${workflowId}`);
-          }
-
-          if (!workflow.valid) {
-            throw new Error(`Workflow is not valid: ${workflowId}`);
-          }
+          validateWorkflowForExecution(workflow, workflowId);
 
           const workflowToRun: WorkflowExecutionEngineModel = {
             id: workflow.id,
@@ -109,8 +123,44 @@ export class WorkflowsPlugin
         };
       };
 
+      // Create workflows scheduling service function for per-alert execution
+      const getScheduleWorkflowService = async (request: KibanaRequest) => {
+        return async (
+          workflowId: string,
+          spaceId: string,
+          inputs: Record<string, unknown>,
+          triggeredBy: TriggerType
+        ) => {
+          if (!this.api) {
+            throw new Error('Workflows management API not initialized');
+          }
+
+          // Get the workflow and validate it is in a runnable state
+          const workflow = await this.api.getWorkflow(workflowId, spaceId);
+          validateWorkflowForExecution(workflow, workflowId);
+
+          const workflowToSchedule: WorkflowExecutionEngineModel = {
+            id: workflow.id,
+            name: workflow.name,
+            enabled: workflow.enabled,
+            definition: workflow.definition,
+            yaml: workflow.yaml,
+          };
+
+          return this.api.scheduleWorkflow(
+            workflowToSchedule,
+            spaceId,
+            inputs,
+            request,
+            triggeredBy
+          );
+        };
+      };
+
       // Register the workflows connector
-      plugins.actions.registerType(getWorkflowsConnectorType({ getWorkflowsService }));
+      plugins.actions.registerType(
+        getWorkflowsConnectorType({ getWorkflowsService, getScheduleWorkflowService })
+      );
 
       // Register connector adapter for alerting if available
       if (plugins.alerting) {
@@ -118,86 +168,77 @@ export class WorkflowsPlugin
       }
     }
 
-    // Register workflow task definition
-    if (plugins.taskManager) {
-      plugins.taskManager.registerTaskDefinitions({
-        'workflow:scheduled': {
-          title: 'Scheduled Workflow Execution',
-          description: 'Executes workflows on a scheduled basis',
-          // Set high timeout for long-running workflows.
-          // This is high value to allow long-running workflows.
-          // The workflow timeout logic defined in workflow execution engine logic is the primary control.
-          timeout: '365d',
-          maxAttempts: 3,
-          createTaskRunner: ({ taskInstance, fakeRequest }) => {
-            // Capture the plugin instance in a closure
-            const pluginInstance = this;
-            // Use a factory pattern to get dependencies when the task runs
-            return {
-              async run() {
-                // Get dependencies when the task actually runs
-                const [, pluginsStart] = await core.getStartServices();
-
-                // Create the actual task runner with dependencies
-                const taskRunner = createWorkflowTaskRunner({
-                  logger: pluginInstance.logger,
-                  workflowsService: pluginInstance.workflowsService!,
-                  workflowsExecutionEngine: pluginsStart.workflowsExecutionEngine,
-                  actionsClient: pluginInstance.unsecureActionsClient!,
-                })({ taskInstance, fakeRequest });
-
-                return taskRunner.run();
-              },
-              async cancel() {
-                // Cancel function for the task
-              },
-            };
-          },
-        },
-      });
-    }
-
     // Register the workflows management feature and its privileges
     plugins.features?.registerKibanaFeature(WorkflowsManagementFeatureConfig);
 
-    this.logger.debug('Workflows Management: Creating router');
-    const router = core.http.createRouter();
-
     this.logger.debug('Workflows Management: Creating workflows service');
 
-    // Get ES client from core
-    const esClientPromise = core
-      .getStartServices()
-      .then(([coreStart]) => coreStart.elasticsearch.client.asInternalUser);
-
+    const getCoreStart = () => core.getStartServices().then(([coreStart]) => coreStart);
+    const getPluginsStart = () => core.getStartServices().then(([, pluginsStart]) => pluginsStart);
     const getWorkflowExecutionEngine = () =>
-      core.getStartServices().then(([, pluginsStart]) => pluginsStart.workflowsExecutionEngine);
+      getPluginsStart().then(({ workflowsExecutionEngine }) => workflowsExecutionEngine);
 
-    // Create function to get actions client (available after start)
-    const getActionsStart = () =>
-      core.getStartServices().then(([, pluginsStart]) => pluginsStart.actions);
+    this.workflowsService = new WorkflowsService(this.logger, getCoreStart, getPluginsStart);
 
-    this.workflowsService = new WorkflowsService(
-      esClientPromise,
-      this.logger,
-      this.config.logging.console,
-      getActionsStart
-    );
     this.api = new WorkflowsManagementApi(this.workflowsService, getWorkflowExecutionEngine);
     this.spaces = plugins.spaces?.spacesService;
 
+    if (!this.spaces) {
+      throw new Error('Spaces service not initialized');
+    }
+
+    if (!this.api) {
+      throw new Error('Workflows management API not initialized');
+    }
+    const api = this.api;
+    const resolveMatchingWorkflowSubscriptionsFn = (
+      params: ResolveMatchingWorkflowSubscriptionsParams
+    ) => resolveMatchingWorkflowSubscriptions(params, { api, logger: this.logger });
+    const telemetryClient = new WorkflowsManagementTelemetryClient({
+      logger: this.logger,
+      getAnalytics: () => this.analytics,
+    });
+
+    const triggerEventHandler = createTriggerEventHandler({
+      api: this.api,
+      logger: this.logger,
+      telemetryClient,
+      getTriggerEventsClient: () => this.triggerEventsClient,
+      getWorkflowExecutionEngine,
+      resolveMatchingWorkflowSubscriptions: resolveMatchingWorkflowSubscriptionsFn,
+    });
+
+    plugins.workflowsExtensions.registerTriggerEventHandler(triggerEventHandler);
+
+    this.logger.debug('Workflows Management: Creating router');
+    const router = core.http.createRouter<WorkflowsRequestHandlerContext>();
+
     // Register server side APIs
-    defineRoutes(router, this.api, this.logger, this.spaces!);
+    defineRoutes(
+      router,
+      this.api,
+      this.logger,
+      this.spaces,
+      getWorkflowExecutionEngine,
+      () => this.securityStart
+    );
+
+    this.setupAiIntegration(core, api, this.aiTelemetryClient);
 
     return {
-      management: this.api,
+      management: api,
     };
   }
 
   public start(core: CoreStart, plugins: WorkflowsServerPluginStartDeps) {
-    this.logger.info('Workflows Management: Start');
+    this.logger.debug('Workflows Management: Start');
+    this.analytics = core.analytics;
 
-    this.unsecureActionsClient = plugins.actions.getUnsecuredActionsClient();
+    this.securityStart = core.security;
+
+    void this.initializeTriggerEventsClient(core);
+
+    stepSchemas.initialize(plugins.workflowsExtensions);
 
     // Initialize workflow task scheduler with the start contract
     this.workflowTaskScheduler = new WorkflowTaskScheduler(this.logger, plugins.taskManager);
@@ -213,9 +254,69 @@ export class WorkflowsPlugin
     const actionsTypes = plugins.actions.getAllTypes();
     this.logger.debug(`Available action types: ${actionsTypes.join(', ')}`);
 
-    this.logger.info('Workflows Management: Started');
+    this.logger.debug('Workflows Management: Started');
 
     return {};
+  }
+
+  private setupAiIntegration(
+    core: CoreSetup<WorkflowsServerPluginStartDeps>,
+    api: WorkflowsManagementApi,
+    aiTelemetryClient: WorkflowsAiTelemetryClient
+  ): void {
+    void core.plugins
+      .onSetup<{ agentBuilder: AgentBuilderPluginSetupContract }>('agentBuilder')
+      .then(({ agentBuilder }) => {
+        if (agentBuilder.found) {
+          this.logger.debug(
+            'Workflows Management: Agent Builder found, registering AI integration'
+          );
+          registerWorkflowAgentBuilderIntegration({
+            agentBuilder: agentBuilder.contract,
+            logger: this.logger,
+            api,
+            aiTelemetryClient,
+          });
+        }
+      })
+      .catch((err) => {
+        const message = err instanceof Error ? err.message : String(err);
+        this.logger.warn(
+          `Workflows Management: Failed to register AI integration with Agent Builder: ${message}`
+        );
+      });
+
+    void core.plugins
+      .onStart<{ agentBuilder: { sml: { indexAttachment: SmlIndexAttachmentFn } } }>('agentBuilder')
+      .then(({ agentBuilder }) => {
+        if (agentBuilder.found) {
+          api.setSmlIndexAttachment(
+            agentBuilder.contract.sml.indexAttachment,
+            this.logger.get('sml')
+          );
+          this.logger.debug(
+            'Workflows Management: SML event-driven indexing wired to workflow CRUD'
+          );
+        }
+      })
+      .catch((err) => {
+        const message = err instanceof Error ? err.message : String(err);
+        this.logger.warn(
+          `Workflows Management: Failed to wire SML indexing with Agent Builder: ${message}`
+        );
+      });
+  }
+
+  private async initializeTriggerEventsClient(core: CoreStart): Promise<void> {
+    try {
+      this.triggerEventsClient = await initializeTriggerEventsClient(core.dataStreams);
+    } catch (error) {
+      this.logger.warn(
+        `Failed to initialize trigger events data stream client: ${
+          error instanceof Error ? error.message : String(error)
+        }. Event audit logging will be skipped.`
+      );
+    }
   }
 
   public stop() {}

@@ -112,6 +112,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
             orgId: mockResilient.config.orgId,
           },
           is_connector_type_deprecated: false,
+          auth_mode: 'shared',
         });
       });
 
@@ -129,7 +130,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type config: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"apiUrl\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type config: ✖ Invalid input: expected string, received undefined\n  → at apiUrl`,
             });
           });
       });
@@ -148,7 +149,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type config: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"orgId\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type config: ✖ Invalid input: expected string, received undefined\n  → at orgId`,
             });
           });
       });
@@ -172,7 +173,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
               statusCode: 400,
               error: 'Bad Request',
               message:
-                'error validating action type config: error validating url: target url "http://resilient.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
+                'error validating connector type config: error validating url: target url "http://resilient.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
             });
           });
       });
@@ -194,7 +195,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type secrets: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"apiKeyId\"\n    ],\n    \"message\": \"Required\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"apiKeySecret\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type secrets: ✖ Invalid input: expected string, received undefined\n  → at apiKeyId\n✖ Invalid input: expected string, received undefined\n  → at apiKeySecret`,
             });
           });
       });
@@ -272,7 +273,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
                 status: 'error',
                 retry: true,
                 message: 'an error occurred while running the action',
-                service_message: `Request validation failed ([\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"incident\"\n    ],\n    \"message\": \"Required\"\n  }\n])`,
+                service_message: `Request validation failed (✖ Invalid input: expected object, received undefined\n  → at incident)`,
                 errorSource: TaskErrorSource.USER,
               });
             });
@@ -300,7 +301,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
                 retry: true,
                 message: 'an error occurred while running the action',
                 errorSource: TaskErrorSource.USER,
-                service_message: `Request validation failed ([\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"incident\",\n      \"name\"\n    ],\n    \"message\": \"Required\"\n  }\n])`,
+                service_message: `Request validation failed (✖ Invalid input: expected string, received undefined\n  → at incident.name)`,
               });
             });
         });
@@ -328,7 +329,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
                 retry: true,
                 message: 'an error occurred while running the action',
                 errorSource: TaskErrorSource.USER,
-                service_message: `Request validation failed ([\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"comments\",\n      0,\n      \"commentId\"\n    ],\n    \"message\": \"Required\"\n  }\n])`,
+                service_message: `Request validation failed (✖ Invalid input: expected string, received undefined\n  → at comments[0].commentId)`,
               });
             });
         });
@@ -356,7 +357,7 @@ export default function resilientTest({ getService }: FtrProviderContext) {
                 retry: true,
                 message: 'an error occurred while running the action',
                 errorSource: TaskErrorSource.USER,
-                service_message: `Request validation failed ([\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"comments\",\n      0,\n      \"comment\"\n    ],\n    \"message\": \"Required\"\n  }\n])`,
+                service_message: `Request validation failed (✖ Invalid input: expected string, received undefined\n  → at comments[0].comment)`,
               });
             });
         });

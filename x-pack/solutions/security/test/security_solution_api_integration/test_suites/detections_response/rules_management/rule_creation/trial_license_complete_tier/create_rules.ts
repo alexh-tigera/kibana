@@ -16,7 +16,18 @@ import {
 } from '@kbn/security-solution-plugin/common/constants';
 import { ExceptionListTypeEnum } from '@kbn/securitysolution-io-ts-list-types';
 import { ROLES } from '@kbn/security-solution-plugin/common/test';
+import { ENDPOINT_ARTIFACT_LISTS, ENDPOINT_LIST_URL } from '@kbn/securitysolution-list-constants';
 
+import {
+  deleteAllRules,
+  waitForRuleSuccess,
+  waitForAlertsToBePresent,
+  waitForRulePartialFailure,
+  deleteAllAlerts,
+} from '@kbn/detections-response-ftr-services';
+import type TestAgent from 'supertest/lib/agent';
+import { v4 as uuidV4 } from 'uuid';
+import { createSupertestErrorLogger } from '../../../../edr_workflows/utils';
 import type { FtrProviderContext } from '../../../../../ftr_provider_context';
 import {
   getActionsWithFrequencies,
@@ -29,15 +40,12 @@ import {
   generateEvent,
   fetchRule,
   waitForAlertToComplete,
+  refreshIndex,
+  createExceptionListItem,
 } from '../../../utils';
-import {
-  deleteAllRules,
-  waitForRuleSuccess,
-  waitForAlertsToBePresent,
-  waitForRulePartialFailure,
-  deleteAllAlerts,
-} from '../../../../../config/services/detections_response';
 import { createUserAndRole, deleteUserAndRole } from '../../../../../config/services/common';
+import { ROLE } from '../../../../../config/services/security_solution_edr_workflows_roles_users';
+import { deleteAllExceptions } from '../../../../lists_and_exception_lists/utils';
 
 export default ({ getService }: FtrProviderContext) => {
   const supertest = getService('supertest');
@@ -46,6 +54,7 @@ export default ({ getService }: FtrProviderContext) => {
   const log = getService('log');
   const es = getService('es');
   const utils = getService('securitySolutionUtils');
+  const rolesUsersProvider = getService('rolesUsersProvider');
 
   describe('@serverless @ess @serverlessQA create_rules', () => {
     describe('rule creation', () => {
@@ -160,7 +169,7 @@ export default ({ getService }: FtrProviderContext) => {
 
           expect(rule?.execution_summary?.last_execution.status).toBe('partial failure');
           expect(rule?.execution_summary?.last_execution.message).toContain(
-            'This rule is attempting to query data from Elasticsearch indices listed in the "Index patterns" section of the rule definition, however no index matching: ["does-not-exist-*"] was found. This warning will continue to appear until a matching index is created or this rule is disabled.'
+            `Unable to find matching indices for rule ${rule.name}. This warning will persist until one of the following occurs: a matching index is created or the rule is disabled.`
           );
         });
 
@@ -370,14 +379,15 @@ export default ({ getService }: FtrProviderContext) => {
           const ruleParams = getThresholdRuleParams();
           const { body } = await detectionsApi
             .createRule({
-              // @ts-expect-error we are testing the invalid payload
+              // we are testing the invalid payload
               body: omit(ruleParams, 'threshold'),
             })
             .expect(400);
 
           expect(body).toEqual({
             error: 'Bad Request',
-            message: '[request body]: threshold: Required',
+            message:
+              '[request body]: threshold: Invalid input: expected object, received undefined',
             statusCode: 400,
           });
         });
@@ -396,7 +406,7 @@ export default ({ getService }: FtrProviderContext) => {
 
           expect(body).toEqual({
             error: 'Bad Request',
-            message: '[request body]: threshold.field: Array must contain at most 5 element(s)',
+            message: '[request body]: threshold.field: Too big: expected array to have <=5 items',
             statusCode: 400,
           });
         });
@@ -415,7 +425,7 @@ export default ({ getService }: FtrProviderContext) => {
 
           expect(body).toEqual({
             error: 'Bad Request',
-            message: '[request body]: threshold.value: Number must be greater than or equal to 1',
+            message: '[request body]: threshold.value: Too small: expected number to be >=1',
             statusCode: 400,
           });
         });
@@ -467,24 +477,25 @@ export default ({ getService }: FtrProviderContext) => {
             .createRule({
               body: {
                 ...getCustomQueryRuleParams(),
-                // @ts-expect-error type system doesn't allow to use the legacy format as params for getCustomQueryRuleParams()
                 investigation_fields: ['host.name'],
               },
             })
             .expect(400);
 
           expect(body.message).toBe(
-            '[request body]: investigation_fields: Expected object, received array'
+            '[request body]: investigation_fields: Invalid input: expected object, received array'
           );
         });
       });
     });
 
     describe('@skipInServerless missing timestamps', () => {
+      const EVENTS_INDEX_NAME = 'myfakeindex-1';
+
       beforeEach(async () => {
-        await es.indices.delete({ index: 'myfakeindex-1', ignore_unavailable: true });
+        await es.indices.delete({ index: EVENTS_INDEX_NAME, ignore_unavailable: true });
         await es.indices.create({
-          index: 'myfakeindex-1',
+          index: EVENTS_INDEX_NAME,
           mappings: {
             properties: {
               '@timestamp': {
@@ -494,13 +505,14 @@ export default ({ getService }: FtrProviderContext) => {
           },
         });
         await es.index({
-          index: 'myfakeindex-1',
+          index: EVENTS_INDEX_NAME,
           document: generateEvent({ '@timestamp': Date.now() - 1 }),
         });
         await es.index({
-          index: 'myfakeindex-1',
+          index: EVENTS_INDEX_NAME,
           document: generateEvent({ '@timestamp': Date.now() - 2 }),
         });
+        await refreshIndex(es, EVENTS_INDEX_NAME);
         await deleteAllAlerts(supertest, log, es);
         await deleteAllRules(supertest, log);
       });
@@ -511,7 +523,7 @@ export default ({ getService }: FtrProviderContext) => {
         } = await detectionsApi
           .createRule({
             body: getCustomQueryRuleParams({
-              index: ['myfakeindex-1'],
+              index: [EVENTS_INDEX_NAME],
               timestamp_override: 'event.ingested',
               enabled: true,
             }),
@@ -529,17 +541,17 @@ export default ({ getService }: FtrProviderContext) => {
 
         expect(rule?.execution_summary?.last_execution.status).toEqual('partial failure');
         expect(rule?.execution_summary?.last_execution.message).toEqual(
-          'The following indices are missing the timestamp override field "event.ingested": ["myfakeindex-1"]'
+          `The following indices are missing the timestamp override field "event.ingested": ["${EVENTS_INDEX_NAME}"]`
         );
       });
 
-      it('generates two signals with a "partial failure" status', async () => {
+      it('generates two alerts with a "partial failure" status', async () => {
         const {
           body: { id },
         } = await detectionsApi
           .createRule({
             body: getCustomQueryRuleParams({
-              index: ['myfa*'],
+              index: [EVENTS_INDEX_NAME],
               timestamp_override: 'event.ingested',
               enabled: true,
             }),
@@ -687,6 +699,133 @@ export default ({ getService }: FtrProviderContext) => {
             );
           });
         });
+      });
+    });
+
+    describe('with endpoint response actions', () => {
+      let superTestResponseActionsNoAuthz: TestAgent;
+      let apiCreatePayload: ReturnType<typeof getCustomQueryRuleParams>;
+
+      before(async () => {
+        superTestResponseActionsNoAuthz = await utils.createSuperTestWithCustomRole({
+          name: ROLE.endpoint_response_actions_no_access,
+          privileges: rolesUsersProvider.loader.getPreDefinedRole(
+            ROLE.endpoint_response_actions_no_access
+          ),
+        });
+      });
+
+      beforeEach(async () => {
+        apiCreatePayload = getCustomQueryRuleParams({
+          rule_id: uuidV4(),
+          response_actions: [
+            {
+              action_type_id: '.endpoint',
+              params: { command: 'kill-process', config: { field: '', overwrite: true } },
+            },
+          ],
+        });
+      });
+
+      afterEach(async () => {
+        await deleteAllRules(supertest, log);
+      });
+
+      it('should create rule with response actions when user has authz', async () => {
+        const { body } = await detectionsApi.createRule({ body: apiCreatePayload }).expect(200);
+
+        expect(body.response_actions).toEqual(apiCreatePayload.response_actions);
+      });
+
+      it('should error creating rule with response actions when user DOES NOT have authz', async () => {
+        const { body } = await superTestResponseActionsNoAuthz
+          .post(DETECTION_ENGINE_RULES_URL)
+          .set('kbn-xsrf', 'true')
+          .set('elastic-api-version', '2023-10-31')
+          .on('error', createSupertestErrorLogger(log).ignoreCodes([403]))
+          .send(apiCreatePayload)
+          .expect(403);
+
+        expect(body.message).toEqual(
+          'User is not authorized to create/update kill-process response action'
+        );
+      });
+    });
+
+    describe('@skipInServerless as a user with only the Rules feature', () => {
+      const role = ROLES.rules_all_preview_index;
+      beforeEach(async () => {
+        await deleteAllRules(supertest, log);
+        await createUserAndRole(getService, role);
+      });
+
+      afterEach(async () => {
+        await deleteUserAndRole(getService, role);
+        await deleteAllRules(supertest, log);
+        await deleteAllExceptions(supertest, log);
+      });
+
+      it('creates and previews a rule that references the endpoint exception list', async () => {
+        // ensure the endpoint list exists
+        await supertest.post(ENDPOINT_LIST_URL).set('kbn-xsrf', 'true').send().expect(200);
+        // add 1 item to the existing endpoint exception list, which will be queried by the rule
+        await createExceptionListItem(supertest, log, {
+          description: 'item description',
+          entries: [
+            {
+              field: 'keyword',
+              operator: 'included',
+              type: 'match',
+              value: 'something',
+            },
+          ],
+          list_id: ENDPOINT_ARTIFACT_LISTS.endpointExceptions.id,
+          name: ENDPOINT_ARTIFACT_LISTS.endpointExceptions.id,
+          os_types: [],
+          type: 'simple',
+          namespace_type: 'agnostic',
+        });
+
+        const ruleParams = getCustomQueryRuleParams({
+          rule_id: 'rule-with-endpoint-exception-list',
+          exceptions_list: [
+            {
+              id: ENDPOINT_ARTIFACT_LISTS.endpointExceptions.id,
+              list_id: ENDPOINT_ARTIFACT_LISTS.endpointExceptions.id,
+              namespace_type: 'agnostic',
+              type: 'endpoint',
+            },
+          ],
+        });
+
+        const restrictedUser = { username: role, password: 'changeme' };
+        const restrictedApis = detectionsApi.withUser(restrictedUser);
+
+        const { body: createdRule } = await restrictedApis
+          .createRule({ body: ruleParams })
+          .expect(200);
+
+        expect(createdRule.exceptions_list).toHaveLength(1);
+        expect(createdRule.exceptions_list?.[0]).toMatchObject({
+          list_id: ENDPOINT_ARTIFACT_LISTS.endpointExceptions.id,
+          type: 'endpoint',
+        });
+
+        const { body: previewBody } = await restrictedApis
+          .rulePreview({
+            query: {},
+            body: {
+              ...ruleParams,
+              invocationCount: 1,
+              timeframeEnd: new Date().toISOString(),
+            },
+          })
+          .expect(200);
+
+        expect(previewBody.previewId).toBeDefined();
+        expect(previewBody.logs.length).toBeGreaterThan(0);
+        expect(previewBody.logs[0].duration).toBeGreaterThan(0);
+        expect(previewBody.logs[0].errors).toHaveLength(0);
       });
     });
   });

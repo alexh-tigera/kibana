@@ -14,6 +14,7 @@ import {
   loggingSystemMock,
   savedObjectsRepositoryMock,
   uiSettingsServiceMock,
+  coreFeatureFlagsMock,
 } from '@kbn/core/server/mocks';
 import { taskManagerMock } from '@kbn/task-manager-plugin/server/mocks';
 import { ruleTypeRegistryMock } from '../../../../rule_type_registry.mock';
@@ -98,6 +99,8 @@ const rulesClientParams: jest.Mocked<ConstructorOptions> = {
   connectorAdapterRegistry,
   isSystemAction: jest.fn(),
   uiSettings: uiSettingsServiceMock.createStartContract(),
+  featureFlags: coreFeatureFlagsMock.createStart(),
+  isServerless: false,
 };
 
 beforeEach(() => {
@@ -499,6 +502,7 @@ describe('create()', () => {
           "lastExecutionDate": "2019-02-12T21:01:22.479Z",
           "status": "pending",
         },
+        "lastEnabledAt": "2019-02-12T21:01:22.479Z",
         "legacyId": null,
         "meta": Object {
           "versionApiKeyLastmodified": "v8.0.0",
@@ -513,6 +517,8 @@ describe('create()', () => {
               "metrics": Object {
                 "duration": 0,
                 "gap_duration_s": null,
+                "gap_range": null,
+                "gap_reason": null,
                 "total_alerts_created": null,
                 "total_alerts_detected": null,
                 "total_indexing_duration_ms": null,
@@ -735,6 +741,7 @@ describe('create()', () => {
           "lastExecutionDate": "2019-02-12T21:01:22.479Z",
           "status": "pending",
         },
+        "lastEnabledAt": "2019-02-12T21:01:22.479Z",
         "legacyId": "123",
         "meta": Object {
           "versionApiKeyLastmodified": "v7.10.0",
@@ -749,6 +756,8 @@ describe('create()', () => {
               "metrics": Object {
                 "duration": 0,
                 "gap_duration_s": null,
+                "gap_range": null,
+                "gap_reason": null,
                 "total_alerts_created": null,
                 "total_alerts_detected": null,
                 "total_indexing_duration_ms": null,
@@ -1213,6 +1222,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
         meta: { versionApiKeyLastmodified: kibanaVersion },
         muteAll: false,
@@ -1468,6 +1478,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         legacyId: null,
         meta: {
           versionApiKeyLastmodified: 'v8.0.0',
@@ -1482,8 +1493,8 @@ describe('create()', () => {
               metrics: {
                 duration: 0,
                 gap_duration_s: null,
-                // TODO: uncomment after intermidiate release
-                // gap_range: null,
+                gap_range: null,
+                gap_reason: null,
                 total_alerts_created: null,
                 total_alerts_detected: null,
                 total_indexing_duration_ms: null,
@@ -1731,6 +1742,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
         meta: { versionApiKeyLastmodified: kibanaVersion },
         muteAll: false,
@@ -1934,6 +1946,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
         meta: { versionApiKeyLastmodified: kibanaVersion },
         muteAll: false,
@@ -2137,6 +2150,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
         revision: 0,
         running: false,
@@ -2291,6 +2305,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
         revision: 0,
         running: false,
@@ -2447,6 +2462,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
         revision: 0,
         running: false,
@@ -2618,6 +2634,7 @@ describe('create()', () => {
           status: 'pending',
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: {
           run: {
             history: [],
@@ -2629,8 +2646,8 @@ describe('create()', () => {
               metrics: {
                 duration: 0,
                 gap_duration_s: null,
-                // TODO: uncomment after intermidiate release
-                // gap_range: null,
+                gap_range: null,
+                gap_reason: null,
                 total_alerts_created: null,
                 total_alerts_detected: null,
                 total_indexing_duration_ms: null,
@@ -3033,6 +3050,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
         revision: 0,
         running: false,
@@ -3285,6 +3303,7 @@ describe('create()', () => {
 
   test('should create rule with flapping', async () => {
     const flapping = {
+      enabled: true,
       lookBackWindow: 10,
       statusChangeThreshold: 10,
     };
@@ -3321,7 +3340,7 @@ describe('create()', () => {
       ],
     });
 
-    const result = await rulesClient.create({ data, isFlappingEnabled: true });
+    const result = await rulesClient.create({ data });
     expect(unsecuredSavedObjectsClient.create).toHaveBeenCalledWith(
       RULE_SAVED_OBJECT_TYPE,
       expect.objectContaining({
@@ -3340,22 +3359,6 @@ describe('create()', () => {
     );
 
     expect(result.flapping).toEqual(flapping);
-  });
-
-  test('throws error when creating a rule with flapping if global flapping is disabled', async () => {
-    const flapping = {
-      lookBackWindow: 10,
-      statusChangeThreshold: 10,
-    };
-
-    const data = getMockData({
-      name: 'my rule name',
-      flapping,
-    });
-
-    await expect(rulesClient.create({ data })).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Error creating rule: can not create rule with flapping if global flapping is disabled"`
-    );
   });
 
   test('throws error when creating with an interval less than the minimum configured one when enforce = true', async () => {
@@ -3956,7 +3959,7 @@ describe('create()', () => {
       ],
     });
     await expect(rulesClient.create({ data })).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Failed to validate actions due to the following error: Action's alertsFilter  must have either \\"query\\" or \\"timeframe\\" : 154"`
+      `"Failed to validate actions due to the following error: Action's alertsFilter  must have either \\"query\\" or \\"timeframe\\" : 153"`
     );
     expect(unsecuredSavedObjectsClient.create).not.toHaveBeenCalled();
     expect(taskManager.schedule).not.toHaveBeenCalled();
@@ -4013,7 +4016,7 @@ describe('create()', () => {
       ],
     });
     await expect(rulesClient.create({ data })).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Failed to validate actions due to the following error: This ruleType (Test) can't have an action with Alerts Filter. Actions: [155]"`
+      `"Failed to validate actions due to the following error: This ruleType (Test) can't have an action with Alerts Filter. Actions: [154]"`
     );
     expect(unsecuredSavedObjectsClient.create).not.toHaveBeenCalled();
     expect(taskManager.schedule).not.toHaveBeenCalled();
@@ -4085,7 +4088,7 @@ describe('create()', () => {
             group: 'default',
             actionTypeId: 'test',
             params: { foo: true },
-            uuid: '156',
+            uuid: '155',
           },
         ],
         alertTypeId: '123',
@@ -4121,6 +4124,7 @@ describe('create()', () => {
           lastExecutionDate: '2019-02-12T21:01:22.479Z',
           status: 'pending',
         },
+        lastEnabledAt: '2019-02-12T21:01:22.479Z',
         monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
         revision: 0,
         running: false,
@@ -4319,13 +4323,13 @@ describe('create()', () => {
               params: {
                 foo: true,
               },
-              uuid: '158',
+              uuid: '157',
             },
             {
               actionRef: 'system_action:system_action-id',
               actionTypeId: '.test',
               params: { foo: 'test' },
-              uuid: '159',
+              uuid: '158',
             },
           ],
           alertTypeId: '123',
@@ -4347,6 +4351,7 @@ describe('create()', () => {
             lastExecutionDate: '2019-02-12T21:01:22.479Z',
             status: 'pending',
           },
+          lastEnabledAt: '2019-02-12T21:01:22.479Z',
           monitoring: getDefaultMonitoring('2019-02-12T21:01:22.479Z'),
           meta: { versionApiKeyLastmodified: kibanaVersion },
           muteAll: false,
@@ -4403,13 +4408,13 @@ describe('create()', () => {
           params: {
             foo: true,
           },
-          uuid: '160',
+          uuid: '159',
         },
         {
           actionRef: 'system_action:system_action-id',
           actionTypeId: '.test',
           params: { foo: 'test' },
-          uuid: '161',
+          uuid: '160',
         },
       ]);
     });
@@ -4490,7 +4495,7 @@ describe('create()', () => {
 
       const data = getMockData({ actions: [], systemActions: [systemAction] });
       await expect(() => rulesClient.create({ data })).rejects.toMatchInlineSnapshot(
-        `[Error: Error validating create data - [systemActions.0.group]: definition for this key is missing]`
+        `[Error: Error validating create data - [systemActions.0.group]: Additional properties are not allowed ('group' was unexpected)]`
       );
     });
 
@@ -4509,7 +4514,7 @@ describe('create()', () => {
 
       const data = getMockData({ actions: [], systemActions: [systemAction] });
       await expect(() => rulesClient.create({ data })).rejects.toMatchInlineSnapshot(
-        `[Error: Error validating create data - [systemActions.0.frequency]: definition for this key is missing]`
+        `[Error: Error validating create data - [systemActions.0.frequency]: Additional properties are not allowed ('frequency' was unexpected)]`
       );
     });
 
@@ -4526,7 +4531,7 @@ describe('create()', () => {
 
       const data = getMockData({ systemActions: [systemAction] });
       await expect(() => rulesClient.create({ data })).rejects.toMatchInlineSnapshot(
-        `[Error: Error validating create data - [systemActions.0.alertsFilter]: definition for this key is missing]`
+        `[Error: Error validating create data - [systemActions.0.alertsFilter]: Additional properties are not allowed ('alertsFilter' was unexpected)]`
       );
     });
 
@@ -4553,7 +4558,7 @@ describe('create()', () => {
 
       const data = getMockData({ actions: [], systemActions: [systemAction, systemAction] });
       await expect(() => rulesClient.create({ data })).rejects.toMatchInlineSnapshot(
-        `[Error: Cannot use the same system action twice]`
+        `[Error: Cannot use action system_action-id more than once for this rule]`
       );
     });
 
@@ -4746,6 +4751,182 @@ This is the type of text _investigation guides_ will contain.`;
       );
 
       expect(result.artifacts?.investigation_guide).toEqual(investigationGuide.investigation_guide);
+    });
+  });
+
+  describe('missing UIAM API key tagging', () => {
+    test('should add missing UIAM API key tag when UIAM key creation fails in serverless with feature flag enabled', async () => {
+      // Set up serverless environment with feature flag enabled
+      const featureFlags = coreFeatureFlagsMock.createStart();
+      featureFlags.getBooleanValue = jest.fn().mockResolvedValue(true);
+
+      const serverlessRulesClient = new RulesClient({
+        ...rulesClientParams,
+        isServerless: true,
+        // To signal that user does not create the API key
+        isAuthenticationTypeAPIKey: () => false,
+        featureFlags,
+      });
+
+      const data = getMockData();
+
+      // Mock API key creation where UIAM key is missing (null) but ES key is created
+      rulesClientParams.createAPIKey.mockResolvedValueOnce({
+        apiKeysEnabled: true,
+        result: { id: '123', name: '123', api_key: 'abc' },
+        // uiamResult is undefined/null - UIAM key creation failed
+      });
+
+      unsecuredSavedObjectsClient.create.mockResolvedValueOnce({
+        id: '1',
+        type: RULE_SAVED_OBJECT_TYPE,
+        attributes: {
+          alertTypeId: '123',
+          schedule: { interval: '1m' },
+          params: {
+            bar: true,
+          },
+          executionStatus: getRuleExecutionStatusPending('2019-02-12T21:01:22.479Z'),
+          running: false,
+          actions: [],
+        },
+        references: [],
+      });
+
+      unsecuredSavedObjectsClient.create.mockResolvedValueOnce({
+        id: '1',
+        type: RULE_SAVED_OBJECT_TYPE,
+        attributes: {
+          actions: [],
+          scheduledTaskId: 'task-123',
+        },
+        references: [],
+      });
+
+      await serverlessRulesClient.create({ data });
+
+      // Verify the missing UIAM key tag was added
+      expect(unsecuredSavedObjectsClient.create).toHaveBeenCalledWith(
+        RULE_SAVED_OBJECT_TYPE,
+        expect.objectContaining({
+          tags: expect.arrayContaining(['foo', 'Missing Universal Api Key']),
+        }),
+        expect.anything()
+      );
+    });
+
+    test('should not add missing UIAM API key tag when UIAM key is present', async () => {
+      // Set up serverless environment with feature flag enabled
+      const featureFlags = coreFeatureFlagsMock.createStart();
+      featureFlags.getBooleanValue = jest.fn().mockResolvedValue(true);
+
+      const serverlessRulesClient = new RulesClient({
+        ...rulesClientParams,
+        isServerless: true,
+        featureFlags,
+      });
+
+      const data = getMockData();
+
+      // Mock API key creation where UIAM key is successfully created
+      rulesClientParams.createAPIKey.mockResolvedValueOnce({
+        apiKeysEnabled: true,
+        result: { id: '123', name: '123', api_key: 'abc' },
+        uiamResult: { id: '456', name: '456', api_key: 'def' },
+      });
+
+      unsecuredSavedObjectsClient.create.mockResolvedValueOnce({
+        id: '1',
+        type: RULE_SAVED_OBJECT_TYPE,
+        attributes: {
+          alertTypeId: '123',
+          schedule: { interval: '1m' },
+          params: {
+            bar: true,
+          },
+          executionStatus: getRuleExecutionStatusPending('2019-02-12T21:01:22.479Z'),
+          running: false,
+          actions: [],
+        },
+        references: [],
+      });
+
+      unsecuredSavedObjectsClient.create.mockResolvedValueOnce({
+        id: '1',
+        type: RULE_SAVED_OBJECT_TYPE,
+        attributes: {
+          actions: [],
+          scheduledTaskId: 'task-123',
+        },
+        references: [],
+      });
+
+      await serverlessRulesClient.create({ data });
+
+      // Verify the missing UIAM key tag was NOT added
+      expect(unsecuredSavedObjectsClient.create).toHaveBeenCalledWith(
+        RULE_SAVED_OBJECT_TYPE,
+        expect.objectContaining({
+          tags: ['foo'], // Only original tags, no UIAM tag
+        }),
+        expect.anything()
+      );
+    });
+
+    test('should not add missing UIAM API key tag in non-serverless environment', async () => {
+      // Non-serverless environment (default rulesClientParams.isServerless = false)
+      const featureFlags = coreFeatureFlagsMock.createStart();
+      featureFlags.getBooleanValue = jest.fn().mockResolvedValue(true);
+
+      const nonServerlessRulesClient = new RulesClient({
+        ...rulesClientParams,
+        featureFlags,
+      });
+
+      const data = getMockData();
+
+      rulesClientParams.createAPIKey.mockResolvedValueOnce({
+        apiKeysEnabled: true,
+        result: { id: '123', name: '123', api_key: 'abc' },
+        // uiamResult is undefined/null
+      });
+
+      unsecuredSavedObjectsClient.create.mockResolvedValueOnce({
+        id: '1',
+        type: RULE_SAVED_OBJECT_TYPE,
+        attributes: {
+          alertTypeId: '123',
+          schedule: { interval: '1m' },
+          params: {
+            bar: true,
+          },
+          executionStatus: getRuleExecutionStatusPending('2019-02-12T21:01:22.479Z'),
+          running: false,
+          actions: [],
+        },
+        references: [],
+      });
+
+      unsecuredSavedObjectsClient.create.mockResolvedValueOnce({
+        id: '1',
+        type: RULE_SAVED_OBJECT_TYPE,
+        attributes: {
+          actions: [],
+          scheduledTaskId: 'task-123',
+        },
+        references: [],
+      });
+
+      await nonServerlessRulesClient.create({ data });
+
+      // Verify the missing UIAM key tag was NOT added (non-serverless)
+      expect(unsecuredSavedObjectsClient.create).toHaveBeenCalledWith(
+        RULE_SAVED_OBJECT_TYPE,
+        expect.objectContaining({
+          tags: ['foo'], // Only original tags
+        }),
+        expect.anything()
+      );
     });
   });
 });

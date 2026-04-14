@@ -16,9 +16,9 @@ import { actionsMock } from '@kbn/actions-plugin/server/mocks';
 import type { ActionsConfigurationUtilities } from '@kbn/actions-plugin/server/actions_config';
 import { loggerMock } from '@kbn/logging-mocks';
 import * as utils from '@kbn/actions-plugin/server/lib/axios_utils';
-import type { PostMessageParams, SlackApiConnectorType } from '../../../common/slack_api/types';
-import { SLACK_API_CONNECTOR_ID } from '../../../common/slack_api/constants';
-import { SLACK_CONNECTOR_NAME } from './translations';
+import type { SlackApiConnectorType } from '../../../common/slack_api/types';
+import type { PostMessageParams } from '@kbn/connector-schemas/slack_api';
+import { CONNECTOR_ID, CONNECTOR_NAME } from '@kbn/connector-schemas/slack_api';
 
 jest.mock('axios');
 jest.mock('@kbn/actions-plugin/server/lib/axios_utils', () => {
@@ -53,8 +53,8 @@ beforeEach(() => {
 
 describe('connector registration', () => {
   test('returns connector type', () => {
-    expect(connectorType.id).toEqual(SLACK_API_CONNECTOR_ID);
-    expect(connectorType.name).toEqual(SLACK_CONNECTOR_NAME);
+    expect(connectorType.id).toEqual(CONNECTOR_ID);
+    expect(connectorType.name).toEqual(CONNECTOR_NAME);
   });
 });
 
@@ -62,18 +62,9 @@ describe('validate config', () => {
   test('should throw error when config are invalid', () => {
     expect(() => {
       validateConfig(connectorType, { message: 1 }, { configurationUtilities });
-    }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action type config: [
-        {
-          \\"code\\": \\"unrecognized_keys\\",
-          \\"keys\\": [
-            \\"message\\"
-          ],
-          \\"path\\": [],
-          \\"message\\": \\"Unrecognized key(s) in object: 'message'\\"
-        }
-      ]"
-    `);
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"error validating connector type config: ✖ Unrecognized key: \\"message\\""`
+    );
   });
 
   test('should validate when config are valid', () => {
@@ -87,187 +78,11 @@ describe('validate params', () => {
   test('should validate and throw error when params are invalid', () => {
     expect(() => {
       validateParams(connectorType, {}, { configurationUtilities });
-    }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action params: [
-        {
-          \\"code\\": \\"invalid_union\\",
-          \\"unionErrors\\": [
-            {
-              \\"issues\\": [
-                {
-                  \\"code\\": \\"invalid_literal\\",
-                  \\"expected\\": \\"validChannelId\\",
-                  \\"path\\": [
-                    \\"subAction\\"
-                  ],
-                  \\"message\\": \\"Invalid literal value, expected \\\\\\"validChannelId\\\\\\"\\"
-                },
-                {
-                  \\"code\\": \\"invalid_type\\",
-                  \\"expected\\": \\"object\\",
-                  \\"received\\": \\"undefined\\",
-                  \\"path\\": [
-                    \\"subActionParams\\"
-                  ],
-                  \\"message\\": \\"Required\\"
-                }
-              ],
-              \\"name\\": \\"ZodError\\"
-            },
-            {
-              \\"issues\\": [
-                {
-                  \\"code\\": \\"invalid_literal\\",
-                  \\"expected\\": \\"postMessage\\",
-                  \\"path\\": [
-                    \\"subAction\\"
-                  ],
-                  \\"message\\": \\"Invalid literal value, expected \\\\\\"postMessage\\\\\\"\\"
-                },
-                {
-                  \\"code\\": \\"invalid_type\\",
-                  \\"expected\\": \\"object\\",
-                  \\"received\\": \\"undefined\\",
-                  \\"path\\": [
-                    \\"subActionParams\\"
-                  ],
-                  \\"message\\": \\"Required\\"
-                }
-              ],
-              \\"name\\": \\"ZodError\\"
-            },
-            {
-              \\"issues\\": [
-                {
-                  \\"code\\": \\"invalid_literal\\",
-                  \\"expected\\": \\"postBlockkit\\",
-                  \\"path\\": [
-                    \\"subAction\\"
-                  ],
-                  \\"message\\": \\"Invalid literal value, expected \\\\\\"postBlockkit\\\\\\"\\"
-                },
-                {
-                  \\"code\\": \\"invalid_type\\",
-                  \\"expected\\": \\"object\\",
-                  \\"received\\": \\"undefined\\",
-                  \\"path\\": [
-                    \\"subActionParams\\"
-                  ],
-                  \\"message\\": \\"Required\\"
-                }
-              ],
-              \\"name\\": \\"ZodError\\"
-            }
-          ],
-          \\"path\\": [],
-          \\"message\\": \\"Invalid input\\"
-        }
-      ]"
-    `);
+    }).toThrowErrorMatchingInlineSnapshot(`"error validating action params: ✖ Invalid input"`);
 
     expect(() => {
       validateParams(connectorType, { message: 1 }, { configurationUtilities });
-    }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action params: [
-        {
-          \\"code\\": \\"invalid_union\\",
-          \\"unionErrors\\": [
-            {
-              \\"issues\\": [
-                {
-                  \\"code\\": \\"invalid_literal\\",
-                  \\"expected\\": \\"validChannelId\\",
-                  \\"path\\": [
-                    \\"subAction\\"
-                  ],
-                  \\"message\\": \\"Invalid literal value, expected \\\\\\"validChannelId\\\\\\"\\"
-                },
-                {
-                  \\"code\\": \\"invalid_type\\",
-                  \\"expected\\": \\"object\\",
-                  \\"received\\": \\"undefined\\",
-                  \\"path\\": [
-                    \\"subActionParams\\"
-                  ],
-                  \\"message\\": \\"Required\\"
-                },
-                {
-                  \\"code\\": \\"unrecognized_keys\\",
-                  \\"keys\\": [
-                    \\"message\\"
-                  ],
-                  \\"path\\": [],
-                  \\"message\\": \\"Unrecognized key(s) in object: 'message'\\"
-                }
-              ],
-              \\"name\\": \\"ZodError\\"
-            },
-            {
-              \\"issues\\": [
-                {
-                  \\"code\\": \\"invalid_literal\\",
-                  \\"expected\\": \\"postMessage\\",
-                  \\"path\\": [
-                    \\"subAction\\"
-                  ],
-                  \\"message\\": \\"Invalid literal value, expected \\\\\\"postMessage\\\\\\"\\"
-                },
-                {
-                  \\"code\\": \\"invalid_type\\",
-                  \\"expected\\": \\"object\\",
-                  \\"received\\": \\"undefined\\",
-                  \\"path\\": [
-                    \\"subActionParams\\"
-                  ],
-                  \\"message\\": \\"Required\\"
-                },
-                {
-                  \\"code\\": \\"unrecognized_keys\\",
-                  \\"keys\\": [
-                    \\"message\\"
-                  ],
-                  \\"path\\": [],
-                  \\"message\\": \\"Unrecognized key(s) in object: 'message'\\"
-                }
-              ],
-              \\"name\\": \\"ZodError\\"
-            },
-            {
-              \\"issues\\": [
-                {
-                  \\"code\\": \\"invalid_literal\\",
-                  \\"expected\\": \\"postBlockkit\\",
-                  \\"path\\": [
-                    \\"subAction\\"
-                  ],
-                  \\"message\\": \\"Invalid literal value, expected \\\\\\"postBlockkit\\\\\\"\\"
-                },
-                {
-                  \\"code\\": \\"invalid_type\\",
-                  \\"expected\\": \\"object\\",
-                  \\"received\\": \\"undefined\\",
-                  \\"path\\": [
-                    \\"subActionParams\\"
-                  ],
-                  \\"message\\": \\"Required\\"
-                },
-                {
-                  \\"code\\": \\"unrecognized_keys\\",
-                  \\"keys\\": [
-                    \\"message\\"
-                  ],
-                  \\"path\\": [],
-                  \\"message\\": \\"Unrecognized key(s) in object: 'message'\\"
-                }
-              ],
-              \\"name\\": \\"ZodError\\"
-            }
-          ],
-          \\"path\\": [],
-          \\"message\\": \\"Invalid input\\"
-        }
-      ]"
-    `);
+    }).toThrowErrorMatchingInlineSnapshot(`"error validating action params: ✖ Invalid input"`);
   });
 
   test('should validate and pass when channels is used as a valid params for post message', () => {
@@ -318,17 +133,8 @@ describe('validate secrets', () => {
     expect(() => {
       validateSecrets(connectorType, {}, { configurationUtilities });
     }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action type secrets: [
-        {
-          \\"code\\": \\"invalid_type\\",
-          \\"expected\\": \\"string\\",
-          \\"received\\": \\"undefined\\",
-          \\"path\\": [
-            \\"token\\"
-          ],
-          \\"message\\": \\"Required\\"
-        }
-      ]"
+      "error validating connector type secrets: ✖ Invalid input: expected string, received undefined
+        → at token"
     `);
   });
 
@@ -346,17 +152,8 @@ describe('validate secrets', () => {
     expect(() => {
       validateSecrets(connectorType, { token: 1 }, { configurationUtilities });
     }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action type secrets: [
-        {
-          \\"code\\": \\"invalid_type\\",
-          \\"expected\\": \\"string\\",
-          \\"received\\": \\"number\\",
-          \\"path\\": [
-            \\"token\\"
-          ],
-          \\"message\\": \\"Expected string, received number\\"
-        }
-      ]"
+      "error validating connector type secrets: ✖ Invalid input: expected string, received number
+        → at token"
     `);
   });
 
@@ -375,7 +172,7 @@ describe('validate secrets', () => {
         { configurationUtilities: configUtils }
       );
     }).toThrowErrorMatchingInlineSnapshot(
-      `"error validating action type secrets: error configuring slack action: target hostname is not added to allowedHosts"`
+      `"error validating connector type secrets: error configuring slack action: target hostname is not added to allowedHosts"`
     );
   });
 });
@@ -398,7 +195,7 @@ describe('execute', () => {
 
     await expect(
       connectorType.executor({
-        actionId: SLACK_API_CONNECTOR_ID,
+        actionId: CONNECTOR_ID,
         config: {},
         services,
         secrets: { token: 'some token' },
@@ -423,7 +220,7 @@ describe('execute', () => {
 
     await expect(
       connectorType.executor({
-        actionId: SLACK_API_CONNECTOR_ID,
+        actionId: CONNECTOR_ID,
         services,
         config: {},
         secrets: { token: 'some token' },
@@ -494,7 +291,7 @@ describe('execute', () => {
     }));
 
     const response = await connectorType.executor({
-      actionId: SLACK_API_CONNECTOR_ID,
+      actionId: CONNECTOR_ID,
       services,
       config: {},
       secrets: { token: 'some token' },
@@ -519,7 +316,7 @@ describe('execute', () => {
     });
 
     expect(response).toEqual({
-      actionId: SLACK_API_CONNECTOR_ID,
+      actionId: CONNECTOR_ID,
       data: {
         channel: 'general',
         message: {
@@ -586,7 +383,7 @@ describe('execute', () => {
     }));
 
     const response = await connectorType.executor({
-      actionId: SLACK_API_CONNECTOR_ID,
+      actionId: CONNECTOR_ID,
       services,
       config: { allowedChannels: [{ id: 'LKJHGF345', name: 'test' }] },
       secrets: { token: 'some token' },
@@ -611,7 +408,7 @@ describe('execute', () => {
     });
 
     expect(response).toEqual({
-      actionId: SLACK_API_CONNECTOR_ID,
+      actionId: CONNECTOR_ID,
       data: {
         ok: true,
         channel: 'LKJHGF345',
@@ -675,7 +472,7 @@ describe('execute', () => {
     }));
 
     const response = await connectorType.executor({
-      actionId: SLACK_API_CONNECTOR_ID,
+      actionId: CONNECTOR_ID,
       services,
       config: { allowedChannels: [{ id: 'LKJHGF345', name: 'test' }] },
       secrets: { token: 'some token' },
@@ -703,7 +500,7 @@ describe('execute', () => {
     });
 
     expect(response).toEqual({
-      actionId: SLACK_API_CONNECTOR_ID,
+      actionId: CONNECTOR_ID,
       data: {
         ok: true,
         channel: 'LKJHGF345',
@@ -727,7 +524,7 @@ describe('execute', () => {
       },
     }));
     const response = await connectorType.executor({
-      actionId: SLACK_API_CONNECTOR_ID,
+      actionId: CONNECTOR_ID,
       services,
       config: {},
       secrets: { token: 'some token' },
@@ -753,7 +550,7 @@ describe('execute', () => {
     });
 
     expect(response).toEqual({
-      actionId: SLACK_API_CONNECTOR_ID,
+      actionId: CONNECTOR_ID,
       data: {
         channel: {
           id: 'ZXCVBNM567',

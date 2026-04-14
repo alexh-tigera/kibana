@@ -108,7 +108,7 @@ export const EffectedPolicySelect = memo<EffectedPolicySelectProps>(
           label: i18n.translate('xpack.securitySolution.endpoint.effectedPolicySelect.global', {
             defaultMessage: 'Global',
           }),
-          iconType: selectedAssignmentType === 'globalPolicy' ? 'checkInCircleFilled' : 'empty',
+          iconType: selectedAssignmentType === 'globalPolicy' ? 'checkCircleFill' : 'empty',
           'data-test-subj': getTestId('global'),
           isDisabled: isGlobalButtonDisabled,
           toolTipContent: isGlobalButtonDisabled
@@ -120,7 +120,7 @@ export const EffectedPolicySelect = memo<EffectedPolicySelectProps>(
           label: i18n.translate('xpack.securitySolution.endpoint.effectedPolicySelect.perPolicy', {
             defaultMessage: 'Per Policy',
           }),
-          iconType: selectedAssignmentType === 'perPolicy' ? 'checkInCircleFilled' : 'empty',
+          iconType: selectedAssignmentType === 'perPolicy' ? 'checkCircleFill' : 'empty',
           'data-test-subj': getTestId('perPolicy'),
         },
       ];
@@ -251,7 +251,11 @@ export const EffectedPolicySelect = memo<EffectedPolicySelectProps>(
         {artifactRestrictedPolicyIds.policyIds.length > 0 && !isGlobal && (
           <>
             <EuiSpacer />
-            <EuiCallOut size="s" data-test-subj={getTestId('unAccessiblePoliciesCallout')}>
+            <EuiCallOut
+              announceOnMount={false}
+              size="s"
+              data-test-subj={getTestId('unAccessiblePoliciesCallout')}
+            >
               {ARTIFACT_POLICIES_NOT_ACCESSIBLE_IN_ACTIVE_SPACE_MESSAGE(
                 artifactRestrictedPolicyIds.policyIds.length
               )}

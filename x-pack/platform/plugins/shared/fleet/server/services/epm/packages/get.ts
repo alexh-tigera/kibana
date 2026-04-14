@@ -7,7 +7,8 @@
 
 import { load } from 'js-yaml';
 import pMap from 'p-map';
-import minimatch from 'minimatch';
+import type { MMRegExp } from 'minimatch';
+import { minimatch } from 'minimatch';
 import type {
   ElasticsearchClient,
   SavedObjectsClientContract,
@@ -76,7 +77,10 @@ import { getFilteredSearchPackages } from '../filtered_packages';
 import { filterAssetPathForParseAndVerifyArchive } from '../archive/parse';
 import { airGappedUtils } from '../airgapped';
 
-import type { RegistryPolicyTemplate } from '../../../../common/types/models/epm';
+import type {
+  PackageAssetReference,
+  RegistryPolicyTemplate,
+} from '../../../../common/types/models/epm';
 
 import { createInstallableFrom } from '.';
 import { getPackageKnowledgeBaseFromIndex } from './knowledge_base_index';
@@ -224,6 +228,7 @@ interface GetInstalledPackagesOptions {
   perPage: number;
   sortOrder: 'asc' | 'desc';
   showOnlyActiveDataStreams?: boolean;
+  dependencyPackageName?: string;
 }
 export async function getInstalledPackages(options: GetInstalledPackagesOptions) {
   const { savedObjectsClient, esClient, showOnlyActiveDataStreams, ...otherOptions } = options;
@@ -355,7 +360,8 @@ export async function getInstalledPackageSavedObjects(
   savedObjectsClient: SavedObjectsClientContract,
   options: Omit<GetInstalledPackagesOptions, 'savedObjectsClient' | 'esClient'>
 ) {
-  const { searchAfter, sortOrder, perPage, nameQuery, dataStreamType } = options;
+  const { searchAfter, sortOrder, perPage, nameQuery, dataStreamType, dependencyPackageName } =
+    options;
 
   const result = await savedObjectsClient.find<Installation>({
     type: PACKAGES_SAVED_OBJECT_TYPE,
@@ -374,6 +380,15 @@ export async function getInstalledPackageSavedObjects(
         `${PACKAGES_SAVED_OBJECT_TYPE}.attributes.install_status`,
         installationStatuses.Installed
       ),
+      ...(dependencyPackageName
+        ? [
+            buildFunctionNode(
+              'nested',
+              `${PACKAGES_SAVED_OBJECT_TYPE}.attributes.dependencies`,
+              nodeBuilder.is('name', dependencyPackageName)
+            ),
+          ]
+        : []),
       ...(dataStreamType
         ? [
             // Filter for a "queryable" marker
@@ -466,7 +481,7 @@ function getInstalledPackageSavedObjectDataStreams(
         const patternRegex = new minimatch.Minimatch(stream.name, {
           noglobstar: true,
           nonegate: true,
-        }).makeRe();
+        }).makeRe() as MMRegExp;
 
         return filterActiveDatastreamsName.some((dataStreamName) =>
           dataStreamName.match(patternRegex)
@@ -671,6 +686,29 @@ export const getPackageUsageStats = async ({
   };
 };
 
+export async function getPackageDependencies(
+  pkgName: string,
+  pkgVersion: string
+): Promise<Array<{ name: string; version: string; title: string }>> {
+  const pkg = await Registry.fetchInfo(pkgName, pkgVersion).catch(() => undefined);
+  if (!pkg) {
+    throw new PackageNotFoundError(`[${pkgName}-${pkgVersion}] package not found in registry`);
+  }
+
+  const deps = pkg.requires?.content ?? [];
+
+  return Promise.all(
+    deps.map(async (dep) => {
+      const depPkg = await Registry.fetchFindLatestPackageOrUndefined(dep.package);
+      return {
+        name: dep.package,
+        version: dep.version,
+        title: depPkg && 'title' in depPkg ? depPkg.title : dep.package,
+      };
+    })
+  );
+}
+
 interface PackageResponse {
   paths: string[];
   packageInfo: ArchivePackage | RegistryPackage;
@@ -824,18 +862,20 @@ export async function getInstalledPackageWithAssets(options: {
   if (!installation) {
     return;
   }
-  const assetsReference =
-    (typeof options.assetsFilter !== 'undefined'
-      ? installation.package_assets?.filter(({ path }) =>
-          typeof path !== 'undefined' ? options.assetsFilter!(path) : true
-        )
-      : installation.package_assets) ?? [];
 
   const esPackage = await getEsPackage(
     installation.name,
     installation.version,
-    assetsReference,
-    options.savedObjectsClient
+    installation.package_assets ?? [],
+    options.savedObjectsClient,
+    {
+      shouldFetchBuffer: (reference: PackageAssetReference) => {
+        if (typeof options.assetsFilter === 'undefined' || typeof reference.path === 'undefined') {
+          return true;
+        }
+        return options.assetsFilter(reference.path);
+      },
+    }
   );
 
   if (!esPackage) {
@@ -973,11 +1013,16 @@ export async function getAgentTemplateAssetsMap({
 export async function getPackageKnowledgeBase(options: {
   esClient: ElasticsearchClient;
   pkgName: string;
+  abortController?: AbortController;
 }): Promise<PackageKnowledgeBase | undefined> {
-  const { esClient, pkgName } = options;
+  const { esClient, pkgName, abortController } = options;
 
   try {
-    const knowledgeBaseItems = await getPackageKnowledgeBaseFromIndex(esClient, pkgName);
+    const knowledgeBaseItems = await getPackageKnowledgeBaseFromIndex(
+      esClient,
+      pkgName,
+      abortController
+    );
 
     if (knowledgeBaseItems.length === 0) {
       return undefined;

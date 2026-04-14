@@ -859,10 +859,12 @@ export function MachineLearningAPIProvider({ getService }: FtrProviderContext) {
         await this.deleteDatafeedES(datafeedId);
       }
 
-      const { body, status } = await esSupertest
-        .delete(`/_ml/anomaly_detectors/${jobId}`)
-        .query({ force: true });
-      this.assertResponseStatusCode(200, status, body);
+      await retry.tryForTime(30 * 1000, async () => {
+        const { body, status } = await esSupertest
+          .delete(`/_ml/anomaly_detectors/${jobId}`)
+          .query({ force: true });
+        this.assertResponseStatusCode(200, status, body);
+      });
 
       await this.waitForAnomalyDetectionJobNotToExist(jobId);
       log.debug('> AD job deleted.');
@@ -1412,8 +1414,8 @@ export function MachineLearningAPIProvider({ getService }: FtrProviderContext) {
       space?: string
     ) {
       const { body, status } = await kbnSupertest
-        .post(`${space ? `/s/${space}` : ''}/internal/ml/saved_objects/update_jobs_spaces`)
-        .set(getCommonRequestHeader('1'))
+        .post(`${space ? `/s/${space}` : ''}/api/ml/saved_objects/update_jobs_spaces`)
+        .set(getCommonRequestHeader('2023-10-31'))
         .send({ jobType, jobIds: [jobId], spacesToAdd, spacesToRemove });
       this.assertResponseStatusCode(200, status, body);
 
@@ -1447,10 +1449,8 @@ export function MachineLearningAPIProvider({ getService }: FtrProviderContext) {
       space?: string
     ) {
       const { body, status } = await kbnSupertest
-        .post(
-          `${space ? `/s/${space}` : ''}/internal/ml/saved_objects/update_trained_models_spaces`
-        )
-        .set(getCommonRequestHeader('1'))
+        .post(`${space ? `/s/${space}` : ''}/api/ml/saved_objects/update_trained_models_spaces`)
+        .set(getCommonRequestHeader('2023-10-31'))
         .send({ modelIds: [modelId], spacesToAdd, spacesToRemove });
       this.assertResponseStatusCode(200, status, body);
 

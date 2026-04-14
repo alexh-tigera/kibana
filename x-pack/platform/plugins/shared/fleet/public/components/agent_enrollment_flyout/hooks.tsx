@@ -22,6 +22,7 @@ import {
   FLEET_KUBERNETES_PACKAGE,
   FLEET_CLOUD_SECURITY_POSTURE_PACKAGE,
   FLEET_CLOUD_SECURITY_ASSET_PACKAGE,
+  FLEET_CLOUD_DEFEND_PACKAGE,
 } from '../../../common';
 
 import {
@@ -47,7 +48,7 @@ import type {
 } from './types';
 
 // Packages that requires custom elastic-agent manifest
-const K8S_PACKAGES = new Set([FLEET_KUBERNETES_PACKAGE]);
+const K8S_PACKAGES = new Set([FLEET_KUBERNETES_PACKAGE, FLEET_CLOUD_DEFEND_PACKAGE]);
 
 export function useAgentPolicyWithPackagePolicies(policyId?: string) {
   const [agentPolicyWithPackagePolicies, setAgentPolicy] = useState<AgentPolicy | null>(null);
@@ -57,6 +58,7 @@ export function useAgentPolicyWithPackagePolicies(policyId?: string) {
   useEffect(() => {
     async function loadPolicy(policyIdToLoad?: string) {
       if (!policyIdToLoad) {
+        setAgentPolicy(null);
         return;
       }
       try {
@@ -216,6 +218,7 @@ export function useGetCreateApiKey() {
   const core = useStartServices();
 
   const [apiKey, setApiKey] = useState<string | undefined>(undefined);
+  const [apiKeyEncoded, setApiKeyEncoded] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const onCreateApiKey = useCallback(async () => {
     try {
@@ -226,6 +229,7 @@ export function useGetCreateApiKey() {
 
       const newApiKey = `${res.item.id}:${res.item.api_key}`;
       setApiKey(newApiKey);
+      setApiKeyEncoded(res.item.encoded);
     } catch (err) {
       core.notifications.toasts.addError(err, {
         title: i18n.translate('xpack.fleet.standaloneAgentPage.errorCreatingAgentAPIKey', {
@@ -237,6 +241,7 @@ export function useGetCreateApiKey() {
   }, [core.notifications.toasts]);
   return {
     apiKey,
+    apiKeyEncoded,
     isLoading,
     onCreateApiKey,
   };

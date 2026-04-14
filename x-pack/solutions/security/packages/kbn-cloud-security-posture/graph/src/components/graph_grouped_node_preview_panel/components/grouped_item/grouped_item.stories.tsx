@@ -6,6 +6,11 @@
  */
 import React from 'react';
 import type { Meta, StoryFn } from '@storybook/react';
+import {
+  DOCUMENT_TYPE_ENTITY,
+  DOCUMENT_TYPE_EVENT,
+  DOCUMENT_TYPE_ALERT,
+} from '@kbn/cloud-security-posture-common/schema/graph/v1';
 import { GlobalStylesStorybookDecorator } from '../../../../../.storybook/decorators';
 import { GroupedItem as GroupedItemComp } from './grouped_item';
 import type {
@@ -14,13 +19,15 @@ import type {
   AlertItem as AlertItemType,
 } from './types';
 
+const STORYBOOK_SCOPE_ID = 'storybook-grouped-item';
+
 // Base interface for common props across all stories
 interface BaseStoryProps {
   isLoading?: boolean;
-  id?: string;
+  id: string;
   timestamp?: string | number | Date;
-  ip?: string;
-  countryCode?: string;
+  ips?: string[];
+  countryCodes?: string[];
 }
 
 // Entity-specific props (excluding type which is hardcoded)
@@ -49,11 +56,12 @@ export const EntityItem: StoryFn<EntityStoryProps> = ({
   ...itemArgs
 }: EntityStoryProps) => {
   const item: EntityItemType = {
-    itemType: 'entity',
+    itemType: DOCUMENT_TYPE_ENTITY,
+    entity: {},
     ...itemArgs,
   };
 
-  return <GroupedItemComp isLoading={isLoading} item={item} />;
+  return <GroupedItemComp isLoading={isLoading} item={item} scopeId={STORYBOOK_SCOPE_ID} />;
 };
 
 EntityItem.args = {
@@ -61,8 +69,8 @@ EntityItem.args = {
   id: 'host-02',
   label: 'host-02.acme',
   risk: 55,
-  ip: '10.200.0.202',
-  countryCode: 'US',
+  ips: ['10.200.0.202'],
+  countryCodes: ['US'],
   icon: 'storage',
   timestamp: Date.now(),
 };
@@ -77,11 +85,11 @@ export const EventItem: StoryFn<EventAlertStoryProps> = ({
   ...itemArgs
 }: EventAlertStoryProps) => {
   const item: EventItemType = {
-    itemType: 'event',
+    itemType: DOCUMENT_TYPE_EVENT,
     ...itemArgs,
   };
 
-  return <GroupedItemComp isLoading={isLoading} item={item} />;
+  return <GroupedItemComp isLoading={isLoading} item={item} scopeId={STORYBOOK_SCOPE_ID} />;
 };
 
 EventItem.args = {
@@ -102,11 +110,11 @@ export const AlertItem: StoryFn<EventAlertStoryProps> = ({
   ...itemArgs
 }: EventAlertStoryProps) => {
   const item: AlertItemType = {
-    itemType: 'alert',
+    itemType: DOCUMENT_TYPE_ALERT,
     ...itemArgs,
   };
 
-  return <GroupedItemComp isLoading={isLoading} item={item} />;
+  return <GroupedItemComp isLoading={isLoading} item={item} scopeId={STORYBOOK_SCOPE_ID} />;
 };
 
 AlertItem.args = {

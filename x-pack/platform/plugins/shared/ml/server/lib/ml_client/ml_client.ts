@@ -9,7 +9,14 @@ import type { estypes } from '@elastic/elasticsearch';
 import type { IScopedClusterClient } from '@kbn/core/server';
 import type { DataFrameAnalyticsConfig } from '@kbn/ml-data-frame-analytics-utils';
 import { isPopulatedObject } from '@kbn/ml-is-populated-object';
+<<<<<<< HEAD
 import type { JobType } from '@kbn/ml-common-types/saved_objects';
+=======
+import type { MlLicense } from '../../../common/license/ml_license';
+import type { MLSavedObjectService } from '../../saved_objects';
+import { getJobDetailsFromTrainedModel } from '../../saved_objects/util';
+import type { JobType } from '../../../common/types/saved_objects';
+>>>>>>> upstream/main
 
 import type { Datafeed } from '@kbn/ml-common-types/anomaly_detection_jobs/datafeed';
 import type { Job } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
@@ -27,13 +34,25 @@ import type {
   MlGetTrainedModelParams,
 } from './types';
 import type { MlAuditLogger } from './ml_audit_logger';
+import type { ServerlessInfo } from '../../types';
 
 export function getMlClient(
   client: IScopedClusterClient,
   mlSavedObjectService: MLSavedObjectService,
-  auditLogger: MlAuditLogger
+  auditLogger: MlAuditLogger,
+  mlLicense: MlLicense,
+  serverless: ServerlessInfo
 ): MlClient {
   const mlClient = client.asInternalUser.ml;
+
+  const mlClientWithSecondaryAuth = () => {
+    // if security is disabled, the asSecondaryAuthUser will throw an error,
+    // In which case we need to use the internal user client without secondary auth.
+    if (mlLicense.isSecurityEnabled()) {
+      return client.asSecondaryAuthUser.ml;
+    }
+    return mlClient;
+  };
 
   async function jobIdsCheck(jobType: JobType, p: MlClientParams, allowWildcards: boolean = false) {
     const jobIds =
@@ -243,11 +262,11 @@ export function getMlClient(
       return mlClient.estimateModelMemory(...p);
     },
     async evaluateDataFrame(...p: Parameters<MlClient['evaluateDataFrame']>) {
-      return mlClient.evaluateDataFrame(...p);
+      return mlClientWithSecondaryAuth().evaluateDataFrame(...p);
     },
     async explainDataFrameAnalytics(...p: Parameters<MlClient['explainDataFrameAnalytics']>) {
       await jobIdsCheck('data-frame-analytics', p);
-      return mlClient.explainDataFrameAnalytics(...p);
+      return mlClientWithSecondaryAuth().explainDataFrameAnalytics(...p);
     },
     async flushJob(...p: Parameters<MlClient['flushJob']>) {
       await jobIdsCheck('anomaly-detector', p);
@@ -607,7 +626,7 @@ export function getMlClient(
     },
     async previewDatafeed(...p: Parameters<MlClient['previewDatafeed']>) {
       await datafeedIdsCheck(p);
-      return mlClient.previewDatafeed(...p);
+      return mlClientWithSecondaryAuth().previewDatafeed(...p);
     },
     async putCalendar(...p: Parameters<MlClient['putCalendar']>) {
       return auditLogger.wrapTask(() => mlClient.putCalendar(...p), 'ml_put_calendar', p);
@@ -618,7 +637,7 @@ export function getMlClient(
     async putDataFrameAnalytics(...p: Parameters<MlClient['putDataFrameAnalytics']>) {
       const [analyticsId] = getDFAJobIdsFromRequest(p);
       const resp = await auditLogger.wrapTask(
-        () => mlClient.putDataFrameAnalytics(...p),
+        () => mlClientWithSecondaryAuth().putDataFrameAnalytics(...p),
         'ml_put_dfa_job',
         p
       );
@@ -630,7 +649,7 @@ export function getMlClient(
     async putDatafeed(...p: Parameters<MlClient['putDatafeed']>) {
       const [datafeedId] = getDatafeedIdsFromRequest(p);
       const resp = await auditLogger.wrapTask(
-        () => mlClient.putDatafeed(...p),
+        () => mlClientWithSecondaryAuth().putDatafeed(...p),
         'ml_put_ad_datafeed',
         p
       );
@@ -646,7 +665,11 @@ export function getMlClient(
     },
     async putJob(...p: Parameters<MlClient['putJob']>) {
       const [jobId] = getADJobIdsFromRequest(p);
-      const resp = await auditLogger.wrapTask(() => mlClient.putJob(...p), 'ml_put_ad_job', p);
+      const resp = await auditLogger.wrapTask(
+        () => mlClientWithSecondaryAuth().putJob(...p),
+        'ml_put_ad_job',
+        p
+      );
       if (jobId !== undefined) {
         await mlSavedObjectService.createAnomalyDetectionJob(jobId);
       }
@@ -704,14 +727,18 @@ export function getMlClient(
     async updateDataFrameAnalytics(...p: Parameters<MlClient['updateDataFrameAnalytics']>) {
       await jobIdsCheck('data-frame-analytics', p);
       return auditLogger.wrapTask(
-        () => mlClient.updateDataFrameAnalytics(...p),
+        () => mlClientWithSecondaryAuth().updateDataFrameAnalytics(...p),
         'ml_update_dfa_job',
         p
       );
     },
     async updateDatafeed(...p: Parameters<MlClient['updateDatafeed']>) {
       await datafeedIdsCheck(p);
-      return auditLogger.wrapTask(() => mlClient.updateDatafeed(...p), 'ml_update_ad_datafeed', p);
+      return auditLogger.wrapTask(
+        () => mlClientWithSecondaryAuth().updateDatafeed(...p),
+        'ml_update_ad_datafeed',
+        p
+      );
     },
     async updateFilter(...p: Parameters<MlClient['updateFilter']>) {
       return auditLogger.wrapTask(() => mlClient.updateFilter(...p), 'ml_update_filter', p);
@@ -738,7 +765,7 @@ export function getMlClient(
       return mlClient.getMemoryStats(...p);
     },
 
-    ...searchProvider(client, mlSavedObjectService),
+    ...searchProvider(client, mlSavedObjectService, serverless),
   } as MlClient;
 }
 

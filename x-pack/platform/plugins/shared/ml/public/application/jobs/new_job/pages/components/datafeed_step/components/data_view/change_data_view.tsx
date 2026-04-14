@@ -246,6 +246,7 @@ const ValidationMessage: FC<{
   if (validationResponse === null) {
     return (
       <EuiCallOut
+        announceOnMount
         title={i18n.translate(
           'xpack.ml.newJob.wizard.datafeedStep.dataView.validation.noDetectors.title',
           {
@@ -265,6 +266,7 @@ const ValidationMessage: FC<{
     if (validationResponse.documentsFound === true) {
       return (
         <EuiCallOut
+          announceOnMount
           title={i18n.translate(
             'xpack.ml.newJob.wizard.datafeedStep.dataView.validation.valid.title',
             {
@@ -282,6 +284,7 @@ const ValidationMessage: FC<{
     } else {
       return (
         <EuiCallOut
+          announceOnMount
           title={i18n.translate(
             'xpack.ml.newJob.wizard.datafeedStep.dataView.validation.possiblyInvalid.title',
             {
@@ -301,6 +304,7 @@ const ValidationMessage: FC<{
   } else {
     return (
       <EuiCallOut
+        announceOnMount
         title={i18n.translate(
           'xpack.ml.newJob.wizard.datafeedStep.dataView.validation.invalid.title',
           {

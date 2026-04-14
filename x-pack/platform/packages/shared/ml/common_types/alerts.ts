@@ -29,7 +29,7 @@ export interface AlertExecutionResult {
   timestampIso8601: string;
   score: number;
   bucketRange: { start: string; end: string };
-  topRecords: RecordAnomalyAlertDoc[];
+  topRecords: FormattedRecordAnomalyAlertDoc[];
   topInfluencers?: InfluencerAnomalyAlertDoc[];
   message: string;
 }
@@ -94,6 +94,13 @@ export interface RecordAnomalyAlertDoc extends BaseAnomalyAlertDoc {
   actual: number[];
 }
 
+// Notification context can contain pre-formatted record values, while the
+// indexed alert payload keeps the raw numeric arrays from the anomaly result.
+export type FormattedRecordAnomalyAlertDoc = Omit<RecordAnomalyAlertDoc, 'typical' | 'actual'> & {
+  typical: Array<string | number>;
+  actual: Array<string | number>;
+};
+
 export interface BucketAnomalyAlertDoc extends BaseAnomalyAlertDoc {
   result_type: typeof ML_ANOMALY_RESULT_TYPE.BUCKET;
   start: number;
@@ -133,6 +140,7 @@ export type MlAnomalyDetectionAlertParams = {
   includeInterim: boolean;
   lookbackInterval: string | null | undefined;
   topNBuckets: number | null | undefined;
+  kqlQueryString?: string | null;
 } & RuleTypeParams;
 
 export type MlAnomalyDetectionAlertAdvancedSettings = Pick<

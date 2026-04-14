@@ -16,8 +16,8 @@ import {
   groupTotalAlertsByID,
   transformCases,
   transformComments,
-  flattenCommentSavedObjects,
-  flattenCommentSavedObject,
+  flattenAttachmentSavedObjects,
+  flattenAttachmentSavedObject,
   extractLensReferencesFromCommentString,
   getOrUpdateLensReferences,
   asArray,
@@ -77,7 +77,7 @@ function createCommentFindResponse(
           attributes: transformNewComment({
             ...comment,
             createdDate: '',
-          }),
+          }) as AttachmentAttributes,
         });
       }
     }
@@ -164,6 +164,7 @@ describe('common utils', () => {
             "case",
           ],
           "title": "My new case",
+          "total_observables": 0,
           "updated_at": null,
           "updated_by": null,
         }
@@ -222,6 +223,7 @@ describe('common utils', () => {
             "case",
           ],
           "title": "My new case",
+          "total_observables": 0,
           "updated_at": null,
           "updated_by": null,
         }
@@ -284,6 +286,7 @@ describe('common utils', () => {
             "case",
           ],
           "title": "My new case",
+          "total_observables": 0,
           "updated_at": null,
           "updated_by": null,
         }
@@ -352,6 +355,7 @@ describe('common utils', () => {
             "case",
           ],
           "title": "My new case",
+          "total_observables": 0,
           "updated_at": null,
           "updated_by": null,
         }
@@ -417,6 +421,7 @@ describe('common utils', () => {
               "totalAlerts": 0,
               "totalComment": 2,
               "totalEvents": 0,
+              "total_observables": 0,
               "updated_at": "2019-11-25T21:54:48.952Z",
               "updated_by": Object {
                 "email": "testemail@elastic.co",
@@ -464,6 +469,7 @@ describe('common utils', () => {
               "totalAlerts": 0,
               "totalComment": 2,
               "totalEvents": 0,
+              "total_observables": 0,
               "updated_at": "2019-11-25T22:32:00.900Z",
               "updated_by": Object {
                 "email": "testemail@elastic.co",
@@ -515,6 +521,7 @@ describe('common utils', () => {
               "totalAlerts": 0,
               "totalComment": 2,
               "totalEvents": 0,
+              "total_observables": 0,
               "updated_at": "2019-11-25T22:32:17.947Z",
               "updated_by": Object {
                 "email": "testemail@elastic.co",
@@ -570,6 +577,7 @@ describe('common utils', () => {
               "totalAlerts": 0,
               "totalComment": 2,
               "totalEvents": 0,
+              "total_observables": 0,
               "updated_at": "2019-11-25T22:32:17.947Z",
               "updated_by": Object {
                 "email": "testemail@elastic.co",
@@ -654,6 +662,7 @@ describe('common utils', () => {
               "totalAlerts": 0,
               "totalComment": 0,
               "totalEvents": 0,
+              "total_observables": 0,
               "updated_at": "2019-11-25T21:54:48.952Z",
               "updated_by": Object {
                 "email": "testemail@elastic.co",
@@ -726,6 +735,7 @@ describe('common utils', () => {
           "totalAlerts": 0,
           "totalComment": 2,
           "totalEvents": 0,
+          "total_observables": 0,
           "updated_at": "2019-11-25T22:32:17.947Z",
           "updated_by": Object {
             "email": "testemail@elastic.co",
@@ -789,6 +799,7 @@ describe('common utils', () => {
           "totalAlerts": 0,
           "totalComment": 2,
           "totalEvents": 0,
+          "total_observables": 0,
           "updated_at": "2019-11-25T22:32:17.947Z",
           "updated_by": Object {
             "email": "testemail@elastic.co",
@@ -875,6 +886,7 @@ describe('common utils', () => {
           "totalAlerts": 0,
           "totalComment": 2,
           "totalEvents": 0,
+          "total_observables": 0,
           "updated_at": "2019-11-25T22:32:17.947Z",
           "updated_by": Object {
             "email": "testemail@elastic.co",
@@ -936,6 +948,7 @@ describe('common utils', () => {
           "totalAlerts": 0,
           "totalComment": 2,
           "totalEvents": 0,
+          "total_observables": 0,
           "updated_at": "2019-11-25T21:54:48.952Z",
           "updated_by": Object {
             "email": "testemail@elastic.co",
@@ -1002,6 +1015,7 @@ describe('common utils', () => {
           "totalAlerts": 0,
           "totalComment": 2,
           "totalEvents": 0,
+          "total_observables": 0,
           "updated_at": "2019-11-25T21:54:48.952Z",
           "updated_by": Object {
             "email": "testemail@elastic.co",
@@ -1028,7 +1042,7 @@ describe('common utils', () => {
         page: 1,
         per_page: 10,
         total: mockCaseComments.length,
-        comments: flattenCommentSavedObjects(comments.saved_objects),
+        comments: flattenAttachmentSavedObjects(comments.saved_objects),
       });
     });
   });
@@ -1036,10 +1050,10 @@ describe('common utils', () => {
   describe('flattenCommentSavedObjects', () => {
     it('flattens correctly', () => {
       const comments = [{ ...mockCaseComments[0] }, { ...mockCaseComments[1] }];
-      const res = flattenCommentSavedObjects(comments);
+      const res = flattenAttachmentSavedObjects(comments);
       expect(res).toEqual([
-        flattenCommentSavedObject(comments[0]),
-        flattenCommentSavedObject(comments[1]),
+        flattenAttachmentSavedObject(comments[0]),
+        flattenAttachmentSavedObject(comments[1]),
       ]);
     });
   });
@@ -1047,7 +1061,7 @@ describe('common utils', () => {
   describe('flattenCommentSavedObject', () => {
     it('flattens correctly', () => {
       const comment = { ...mockCaseComments[0] };
-      const res = flattenCommentSavedObject(comment);
+      const res = flattenAttachmentSavedObject(comment);
       expect(res).toEqual({
         id: comment.id,
         version: comment.version,
@@ -1058,7 +1072,7 @@ describe('common utils', () => {
     it('flattens correctly without version', () => {
       const comment = { ...mockCaseComments[0] };
       comment.version = undefined;
-      const res = flattenCommentSavedObject(comment);
+      const res = flattenAttachmentSavedObject(comment);
       expect(res).toEqual({
         id: comment.id,
         version: '0',

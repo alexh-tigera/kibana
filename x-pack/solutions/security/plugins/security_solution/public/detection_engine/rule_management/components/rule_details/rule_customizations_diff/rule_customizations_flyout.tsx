@@ -83,7 +83,7 @@ export const RuleCustomizationsFlyout = memo(function RuleCustomizationsFlyout({
         isDisabled={isLoading || isOutdated}
         fill
         data-test-subj="revertPrebuiltRuleFromFlyoutButton"
-        iconType="arrowStart"
+        iconType="chevronLimitLeft"
         iconSide="left"
       >
         {i18n.REVERT_BUTTON_LABEL}
@@ -94,7 +94,12 @@ export const RuleCustomizationsFlyout = memo(function RuleCustomizationsFlyout({
   const extraTabs = useMemo(() => {
     const headerCallout = isReverting ? (
       <>
-        <EuiCallOut title={i18n.REVERTING_RULE_CALLOUT_TITLE} color="warning" iconType="warning">
+        <EuiCallOut
+          announceOnMount={false}
+          title={i18n.REVERTING_RULE_CALLOUT_TITLE}
+          color="warning"
+          iconType="warning"
+        >
           <p>{i18n.REVERTING_RULE_CALLOUT_MESSAGE}</p>
         </EuiCallOut>
         <EuiSpacer size="l" />

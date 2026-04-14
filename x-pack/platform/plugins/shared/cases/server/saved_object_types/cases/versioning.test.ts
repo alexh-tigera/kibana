@@ -12,8 +12,9 @@ import {
   type ModelVersionTestMigrator,
 } from '@kbn/core-test-helpers-model-versions';
 import { loggerMock } from '@kbn/logging-mocks';
-import { createCaseSavedObjectResponse } from '../../services/test_utils';
+import { createCaseSavedObjectResponse, createESJiraConnector } from '../../services/test_utils';
 import { ConnectorTypes } from '../../../common/types/domain';
+import { modelVersion9 } from './model_versions';
 
 const mockLogger = loggerMock.create();
 const mockCoreSetup = coreMock.createSetup();
@@ -146,6 +147,54 @@ describe('caseSavedObjectType model version transformations', () => {
       version7Fields.forEach((field) => {
         expect(migrated.attributes).not.toHaveProperty(field);
       });
+    });
+  });
+
+  describe('Model version 7 to 8', () => {
+    it('properly backfill the total_observables field when converting from v7 to v8', () => {
+      const migrated = migrator.migrate({
+        document: createCaseSavedObjectResponse(),
+        fromVersion: 7,
+        toVersion: 8,
+      });
+
+      expect(migrated.attributes).toHaveProperty('total_observables');
+    });
+  });
+
+  describe('Model version 8 to 9', () => {
+    const version9Fields = ['template.id', 'template.version', 'extended_fields'];
+
+    it('by default does not add the new fields to the object', () => {
+      const migrated = migrator.migrate({
+        document: createCaseSavedObjectResponse(),
+        fromVersion: 8,
+        toVersion: 9,
+      });
+
+      version9Fields.forEach((field) => {
+        expect(migrated.attributes).not.toHaveProperty(field);
+      });
+    });
+
+    it('create schema allows null connector field values', () => {
+      const createSchema = modelVersion9.schemas?.create;
+      expect(createSchema).toBeDefined();
+
+      const attributes = createCaseSavedObjectResponse({
+        connector: createESJiraConnector({
+          fields: [
+            { key: 'issueType', value: 'task' },
+            { key: 'priority', value: 'high' },
+            { key: 'parent', value: null },
+          ],
+        }),
+        overrides: {
+          total_observables: 0,
+        },
+      }).attributes;
+
+      expect(() => createSchema!.validate(attributes)).not.toThrow();
     });
   });
 });

@@ -502,6 +502,53 @@ owner:
       })
     );
   });
+
+  it('should parse package with var_groups present', () => {
+    const manifest = `
+format_version: 1.0.0
+name: input_only
+title: Custom Logs
+description: Read lines from active log files with Elastic Agent.
+type: input
+version: 0.1.0
+license: basic
+categories: [custom]
+policy_templates:
+  - name: first_policy_template
+    type: logs
+    title: Custom log file
+    description: Collect your custom log files.
+    input: logfile
+    template_path: input.yml.hbs
+var_groups:
+  - name: auth_method
+    title: Auth method
+    selector_title: Select auth method
+    options:
+      - name: api_key
+        title: API key
+        vars: [api_key]
+owner:
+  github: elastic/integrations
+`;
+
+    const packageInfo = parseAndVerifyArchive(['input_only-0.1.0/manifest.yml'], {
+      'input_only-0.1.0/manifest.yml': Buffer.from(manifest, 'utf8'),
+    });
+
+    expect(packageInfo).toEqual(
+      expect.objectContaining({
+        var_groups: [
+          {
+            name: 'auth_method',
+            title: 'Auth method',
+            selector_title: 'Select auth method',
+            options: [{ name: 'api_key', title: 'API key', vars: ['api_key'] }],
+          },
+        ],
+      })
+    );
+  });
 });
 
 describe('parseAndVerifyDataStreams', () => {
@@ -801,6 +848,68 @@ describe('parseAndVerifyPolicyTemplates', () => {
       } as any)
     ).toThrowError(
       'Invalid top-level manifest: one of mandatory fields \'name\', \'title\', \'description\' is missing in policy template: {"name":"template1","title":"Template"}'
+    );
+  });
+
+  it('should accept input-only template with dynamic_signal_types true and no type', () => {
+    const result = parseAndVerifyPolicyTemplates({
+      policy_templates: [
+        {
+          name: 'otel',
+          title: 'OTel',
+          description: 'OTel input',
+          input: 'otelcol',
+          template_path: 'otel/otel.hbl',
+          dynamic_signal_types: true,
+        },
+      ],
+    } as any);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      name: 'otel',
+      title: 'OTel',
+      description: 'OTel input',
+      input: 'otelcol',
+      template_path: 'otel/otel.hbl',
+      dynamic_signal_types: true,
+    });
+    expect((result[0] as any).type).toBeUndefined();
+  });
+
+  it('should throw for input-only template without type and without dynamic_signal_types', () => {
+    expect(() =>
+      parseAndVerifyPolicyTemplates({
+        policy_templates: [
+          {
+            name: 'otel',
+            title: 'OTel',
+            description: 'OTel input',
+            input: 'otelcol',
+            template_path: 'otel/otel.hbl',
+          },
+        ],
+      } as any)
+    ).toThrowError(
+      /Invalid policy template: for input packages, either 'type' is required or 'dynamic_signal_types' must be true/
+    );
+  });
+
+  it('should throw for input-only template without type and dynamic_signal_types false', () => {
+    expect(() =>
+      parseAndVerifyPolicyTemplates({
+        policy_templates: [
+          {
+            name: 'otel',
+            title: 'OTel',
+            description: 'OTel input',
+            input: 'otelcol',
+            template_path: 'otel/otel.hbl',
+            dynamic_signal_types: false,
+          },
+        ],
+      } as any)
+    ).toThrowError(
+      /Invalid policy template: for input packages, either 'type' is required or 'dynamic_signal_types' must be true/
     );
   });
 });

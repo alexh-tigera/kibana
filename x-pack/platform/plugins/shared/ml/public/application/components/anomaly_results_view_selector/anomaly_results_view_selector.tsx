@@ -16,11 +16,12 @@ import { useUrlState } from '@kbn/ml-url-state';
 
 import { ML_PAGES } from '@kbn/ml-common-types/locator_ml_pages';
 import type { ExplorerJob } from '../../explorer/explorer_utils';
+import type { MlSummaryJob } from '../../../../common/types/anomaly_detection_jobs';
 import { useMlLocator, useNavigateToPath } from '../../contexts/kibana';
 
 interface Props {
   viewId: typeof ML_PAGES.SINGLE_METRIC_VIEWER | typeof ML_PAGES.ANOMALY_EXPLORER;
-  selectedJobs?: ExplorerJob[] | null;
+  selectedJobs?: ExplorerJob[] | MlSummaryJob[] | null;
 }
 
 /**
@@ -63,7 +64,7 @@ export const AnomalyResultsViewSelector: FC<Props> = ({ viewId, selectedJobs }) 
         label: i18n.translate('xpack.ml.anomalyResultsViewSelector.anomalyExplorerLabel', {
           defaultMessage: 'View results in the Anomaly Explorer',
         }),
-        iconType: 'visTable',
+        iconType: 'table',
         value: ML_PAGES.ANOMALY_EXPLORER,
         'data-test-subj': 'mlAnomalyResultsViewSelectorExplorer',
       },

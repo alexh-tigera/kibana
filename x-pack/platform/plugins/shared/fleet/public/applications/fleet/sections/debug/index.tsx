@@ -144,7 +144,7 @@ export const DebugPage: React.FunctionComponent<{
             {!isInitialized && setupError?.message && (
               <>
                 <EuiSpacer size="s" />
-                <EuiCallOut color="danger" iconType="warning" title="Setup error">
+                <EuiCallOut announceOnMount color="danger" iconType="warning" title="Setup error">
                   <EuiText grow={false}>
                     <FormattedMessage
                       id="xpack.fleet.debug.initializationError.description"
@@ -206,7 +206,7 @@ export const DebugPage: React.FunctionComponent<{
                     defaultMessage: 'Troubleshooting Guide',
                   }),
                   href: 'https://www.elastic.co/guide/en/fleet/current/fleet-troubleshooting.html',
-                  iconType: 'popout',
+                  iconType: 'external',
                   target: '_blank',
                 },
               ]}

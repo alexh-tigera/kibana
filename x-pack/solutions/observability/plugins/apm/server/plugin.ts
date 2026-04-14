@@ -51,6 +51,7 @@ import type {
   APMPluginSetupDependencies,
   APMPluginStartDependencies,
 } from './types';
+import { registerDataProviders } from './agent_builder/data_provider/register_data_providers';
 
 export class APMPlugin
   implements Plugin<APMPluginSetup, void, APMPluginSetupDependencies, APMPluginStartDependencies>
@@ -245,8 +246,15 @@ export class APMPlugin
     );
 
     plugins.observability.alertDetailsContextualInsightsService.registerHandler(
-      getAlertDetailsContextHandler(getCoreStart(), resourcePlugins, logger)
+      getAlertDetailsContextHandler({ setup: core, start: getCoreStart }, resourcePlugins, logger)
     );
+
+    registerDataProviders({
+      core,
+      plugins,
+      config: currentConfig,
+      logger: this.logger!.get('observabilityAgentBuilder'),
+    });
 
     registerDeprecations({
       core,

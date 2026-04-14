@@ -6,7 +6,7 @@
  */
 
 import type { CoreSetup } from '@kbn/core/server';
-import { z } from '@kbn/zod';
+import { z } from '@kbn/zod/v4';
 import type { ActionType } from '@kbn/actions-plugin/server';
 import type { FixtureStartDeps, FixtureSetupDeps } from './plugin';
 import {
@@ -95,12 +95,29 @@ export function defineActionTypes(
   actions.registerType(getExcludedActionType());
   actions.registerType(getHookedActionType());
 
+  const oauthTestConnector: ActionType = {
+    id: 'test.oauth-connector',
+    name: 'Test: OAuth Connector',
+    minimumLicenseRequired: 'gold',
+    supportedFeatureIds: ['alerting'],
+    validate: {
+      config: { schema: z.any() },
+      secrets: { schema: z.any() },
+      params: { schema: z.any() },
+    },
+    async executor() {
+      return { status: 'ok', actionId: '' };
+    },
+  };
+  actions.registerType(oauthTestConnector);
+
   /**
    * System actions
    */
   actions.registerType(getSystemActionType());
   actions.registerType(getSystemActionTypeWithKibanaPrivileges());
   actions.registerType(getSystemActionTypeWithConnectorAdapter());
+  actions.registerType(getSystemActionTypeAllowingMultipleInstances());
 
   /** Sub action framework */
 
@@ -685,6 +702,54 @@ function getSystemActionTypeWithConnectorAdapter() {
           params,
           reference,
           source: 'action:test.system-action-connector-adapter',
+        },
+      });
+
+      return { status: 'ok', actionId };
+    },
+  };
+
+  return result;
+}
+
+function getSystemActionTypeAllowingMultipleInstances() {
+  const result: ActionType<{}, {}, { index?: string; reference?: string }> = {
+    id: 'test.system-action-allow-multiple',
+    name: 'Test system action allowing multiple instances',
+    minimumLicenseRequired: 'platinum',
+    supportedFeatureIds: ['alerting'],
+    allowMultipleSystemActions: true,
+    validate: {
+      params: {
+        schema: z
+          .object({
+            index: z.string().optional(),
+            reference: z.string().optional(),
+          })
+          .strict(),
+      },
+      config: {
+        schema: z.any(),
+      },
+      secrets: {
+        schema: z.any(),
+      },
+    },
+    isSystemActionType: true,
+    async executor({ params, services, actionId }) {
+      const { index, reference } = params;
+
+      if (index == null || reference == null) {
+        return { status: 'ok', actionId };
+      }
+
+      await services.scopedClusterClient.index({
+        index,
+        refresh: 'wait_for',
+        body: {
+          params,
+          reference,
+          source: 'action:test.system-action-allow-multiple',
         },
       });
 

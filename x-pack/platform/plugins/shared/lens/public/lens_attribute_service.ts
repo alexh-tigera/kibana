@@ -9,15 +9,12 @@ import type { Reference } from '@kbn/content-management-utils';
 import type { SavedObjectCommon } from '@kbn/saved-objects-finder-plugin/common';
 import { noop } from 'lodash';
 import type { HttpStart } from '@kbn/core/public';
-import type { EmbeddableStateWithType } from '@kbn/embeddable-plugin/common';
 import type {
   SharingSavedObjectProps,
-  LensRuntimeState,
   LensSavedObjectAttributes,
   CheckDuplicateTitleProps,
   LensAttributesService,
 } from '@kbn/lens-common';
-import { extract, inject } from '../common/embeddable_factory';
 import { LensDocumentService } from './persistence';
 import { DOC_TYPE } from '../common/constants';
 
@@ -43,17 +40,25 @@ export function getLensAttributeService(http: HttpStart): LensAttributesService 
       sharingSavedObjectProps: SharingSavedObjectProps;
       managed: boolean;
     }> => {
-      const { item, meta } = await lensDocumentService.load(savedObjectId);
+      // The item.id property returned from lensDocumentService.load is the savedObjectId
+      const {
+        item: { id, ...attributesWithoutId },
+        meta,
+      } = await lensDocumentService.load(savedObjectId);
+
+      // TypeScript's excess property checking doesn't catch extra properties in spreads
+      const attributes = ensureExactAttributes({
+        ...attributesWithoutId,
+        state: attributesWithoutId.state satisfies LensSavedObjectAttributes['state'],
+      });
+
       return {
-        attributes: {
-          ...item,
-          state: item.state as LensSavedObjectAttributes['state'],
-        },
+        attributes,
         sharingSavedObjectProps: {
           aliasTargetId: meta.aliasTargetId,
           outcome: meta.outcome,
           aliasPurpose: meta.aliasPurpose,
-          sourceId: item.id,
+          sourceId: id,
         },
         managed: Boolean(meta.managed),
       };
@@ -94,19 +99,11 @@ export function getLensAttributeService(http: HttpStart): LensAttributesService 
         ),
       };
     },
-    // Make sure to inject references from the container down to the runtime state
-    // this ensure migrations/copy to spaces works correctly
-    injectReferences: (runtimeState, references) => {
-      return inject(
-        runtimeState as unknown as EmbeddableStateWithType,
-        references ?? runtimeState.attributes.references
-      ) as unknown as LensRuntimeState;
-    },
-    // Make sure to move the internal references into the parent references
-    // so migrations/move to spaces can work properly
-    extractReferences: (runtimeState) => {
-      const { state, references } = extract(runtimeState as unknown as EmbeddableStateWithType);
-      return { rawState: state as unknown as LensRuntimeState, references };
-    },
   };
+}
+
+function ensureExactAttributes<T extends LensSavedObjectAttributes>(
+  attrs: T & Record<Exclude<keyof T, keyof LensSavedObjectAttributes>, never>
+): LensSavedObjectAttributes {
+  return attrs;
 }

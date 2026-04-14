@@ -407,7 +407,7 @@ export const DatafeedChartFlyout: FC<DatafeedChartFlyoutProps> = ({
                       onClick={() => {
                         handleEndDateChange(CHART_DIRECTION.BACK);
                       }}
-                      iconType="arrowLeft"
+                      iconType="chevronSingleLeft"
                     />
                   </EuiToolTip>
                 </EuiFlexItem>
@@ -534,11 +534,7 @@ export const DatafeedChartFlyout: FC<DatafeedChartFlyoutProps> = ({
                           style={{
                             line: {
                               strokeWidth: 3,
-                              // Amsterdam: euiTheme.colors.vis.euiColorVis1
-                              // Borealis:  euiTheme.colors.vis.euiColorVis2
-                              stroke: euiTheme.flags.hasVisColorAdjustment
-                                ? euiTheme.colors.vis.euiColorVis1
-                                : euiTheme.colors.vis.euiColorVis2,
+                              stroke: euiTheme.colors.vis.euiColorVis2,
                               opacity: 0.5,
                             },
                           }}
@@ -556,7 +552,7 @@ export const DatafeedChartFlyout: FC<DatafeedChartFlyoutProps> = ({
                             key="messages-results-line"
                             domainType={AnnotationDomainType.XDomain}
                             dataValues={messageData}
-                            marker={<EuiIcon type="tableDensityNormal" />}
+                            marker={<EuiIcon type="table" />}
                             markerPosition={Position.Top}
                             style={{
                               line: {
@@ -617,7 +613,7 @@ export const DatafeedChartFlyout: FC<DatafeedChartFlyoutProps> = ({
                       onClick={() => {
                         handleEndDateChange(CHART_DIRECTION.FORWARD);
                       }}
-                      iconType="arrowRight"
+                      iconType="chevronSingleRight"
                     />
                   </EuiToolTip>
                 </EuiFlexItem>

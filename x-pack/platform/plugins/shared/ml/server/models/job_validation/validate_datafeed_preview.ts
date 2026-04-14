@@ -8,23 +8,20 @@
 import type { CombinedJob } from '@kbn/ml-common-types/anomaly_detection_jobs/combined_job';
 import type { DatafeedValidationResponse } from '@kbn/ml-common-types/job_validation';
 import type { MlClient } from '../../lib/ml_client';
+<<<<<<< HEAD
 import type { AuthorizationHeader } from '../../lib/request_authorization';
+=======
+import type { CombinedJob } from '../../../common/types/anomaly_detection_jobs';
+>>>>>>> upstream/main
 import type { JobValidationMessage } from '../../../common/constants/messages';
 
 export async function validateDatafeedPreviewWithMessages(
   mlClient: MlClient,
-  authHeader: AuthorizationHeader,
   job: CombinedJob,
   start: number | undefined,
   end: number | undefined
 ): Promise<JobValidationMessage[]> {
-  const { valid, documentsFound } = await validateDatafeedPreview(
-    mlClient,
-    authHeader,
-    job,
-    start,
-    end
-  );
+  const { valid, documentsFound } = await validateDatafeedPreview(mlClient, job, start, end);
   if (valid) {
     return documentsFound ? [] : [{ id: 'datafeed_preview_no_documents' }];
   }
@@ -33,7 +30,6 @@ export async function validateDatafeedPreviewWithMessages(
 
 export async function validateDatafeedPreview(
   mlClient: MlClient,
-  authHeader: AuthorizationHeader,
   job: CombinedJob,
   start: number | undefined,
   end: number | undefined
@@ -47,7 +43,7 @@ export async function validateDatafeedPreview(
         start,
         end,
       },
-      { ...authHeader, maxRetries: 0 }
+      { maxRetries: 0 }
       // previewDatafeed response type is incorrect
     )) as unknown as { body: unknown[] };
 

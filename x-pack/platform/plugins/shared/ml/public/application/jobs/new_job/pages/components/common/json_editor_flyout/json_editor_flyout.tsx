@@ -227,6 +227,7 @@ export const JsonEditorFlyout: FC<Props> = ({ isDisabled, jobEditorMode, datafee
               <>
                 <EuiSpacer />
                 <EuiCallOut
+                  announceOnMount
                   color="warning"
                   size="s"
                   title={i18n.translate(
@@ -315,7 +316,7 @@ const Contents: FC<{
   return (
     <EuiFlexItem>
       <EuiTitle size="s">
-        <h5 id={flyoutTitleId}>{title}</h5>
+        <h2 id={flyoutTitleId}>{title}</h2>
       </EuiTitle>
       <EuiSpacer size="s" />
       <MLJobEditor

@@ -44,11 +44,8 @@ export default createTestConfig({
     searchPlayground: {
       pathname: '/app/search_playground',
     },
-    elasticsearchIndices: {
-      pathname: '/app/elasticsearch/indices',
-    },
     searchInferenceEndpoints: {
-      pathname: '/app/elasticsearch/relevance/inference_endpoints',
+      pathname: '/app/management/modelManagement/inference_endpoints',
     },
     searchHomepage: {
       pathname: '/app/elasticsearch/home',
@@ -58,6 +55,9 @@ export default createTestConfig({
     },
     searchQueryRules: {
       pathname: '/app/elasticsearch/query_rules',
+    },
+    searchGettingStarted: {
+      pathname: '/app/elasticsearch/getting_started',
     },
   },
 });

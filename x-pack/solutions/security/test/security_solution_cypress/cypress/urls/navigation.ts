@@ -16,6 +16,8 @@ export const DASHBOARDS_URL = '/app/security/dashboards';
 export const ASSETS_URL = '/app/security/assets';
 export const ENDPOINTS_URL = '/app/security/administration/endpoints';
 export const POLICIES_URL = '/app/security/administration/policy';
+/** Any artifact tab lives under this path prefix (trusted apps, event filters, blocklist, etc.) */
+export const ADMINISTRATION_URL_PREFIX = '/app/security/administration';
 export const TRUSTED_APPS_URL = '/app/security/administration/trusted_apps';
 export const EVENT_FILTERS_URL = '/app/security/administration/event_filters';
 export const BLOCKLIST_URL = '/app/security/administration/blocklist';
@@ -100,6 +102,7 @@ export const ADVANCED_SETTINGS_URL = '/app/management/kibana/settings';
 export const ENTITY_ANALYTICS_DASHBOARD_URL = '/app/security/entity_analytics';
 export const ENTITY_ANALYTICS_PRIVILEGED_USER_MONITORING_URL =
   '/app/security/entity_analytics_privileged_user_monitoring';
+export const ENTITY_ANALYTICS_HOME_PAGE_URL = '/app/security/entity_analytics_home_page';
 
 // Asset Inventory
 export const ASSET_INVENTORY_URL = '/app/security/asset_inventory';

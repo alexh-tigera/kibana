@@ -17,13 +17,10 @@ import type {
 } from '@kbn/discover-shared-plugin/public';
 import type { FieldsMetadataPublicStart } from '@kbn/fields-metadata-plugin/public';
 import type { IndexManagementPluginStart } from '@kbn/index-management-shared-types';
+import type { IndexLifecycleManagementPluginStart } from '@kbn/index-lifecycle-management-common-shared';
 import type { IngestPipelinesPluginStart } from '@kbn/ingest-pipelines-plugin/public';
 import type { LicensingPluginStart } from '@kbn/licensing-plugin/public';
 import type { NavigationPublicStart } from '@kbn/navigation-plugin/public/types';
-import type {
-  ObservabilityAIAssistantPublicSetup,
-  ObservabilityAIAssistantPublicStart,
-} from '@kbn/observability-ai-assistant-plugin/public';
 import type { SavedObjectTaggingPluginStart } from '@kbn/saved-objects-tagging-plugin/public';
 import type { SharePublicSetup, SharePublicStart } from '@kbn/share-plugin/public/plugin';
 import type { StreamsPluginStart } from '@kbn/streams-plugin/public';
@@ -35,6 +32,7 @@ import type { DashboardStart } from '@kbn/dashboard-plugin/public';
 import type { CloudStart } from '@kbn/cloud-plugin/public';
 import type { SpacesPluginStart } from '@kbn/spaces-plugin/public';
 import type { ConsolePluginStart } from '@kbn/console-plugin/public';
+import type { CPSPluginStart } from '@kbn/cps/public';
 
 /* eslint-disable @typescript-eslint/no-empty-interface*/
 export interface ConfigSchema {}
@@ -51,7 +49,6 @@ export interface StreamsAppSetupDependencies {
   discoverShared: DiscoverSharedPublicSetup;
   share: SharePublicSetup;
   unifiedSearch: {};
-  observabilityAIAssistant?: ObservabilityAIAssistantPublicSetup;
 }
 
 export interface StreamsAppStartDependencies {
@@ -62,6 +59,7 @@ export interface StreamsAppStartDependencies {
   discoverShared: DiscoverSharedPublicStart;
   fieldFormats: FieldFormatsStart;
   fieldsMetadata: FieldsMetadataPublicStart;
+  indexLifecycleManagement?: IndexLifecycleManagementPluginStart;
   indexManagement: IndexManagementPluginStart;
   ingestPipelines: IngestPipelinesPluginStart;
   licensing: LicensingPluginStart;
@@ -71,9 +69,9 @@ export interface StreamsAppStartDependencies {
   streams: StreamsPluginStart;
   unifiedSearch: UnifiedSearchPublicPluginStart;
   unifiedDocViewer: UnifiedDocViewerStart;
-  observabilityAIAssistant?: ObservabilityAIAssistantPublicStart;
   dashboard: DashboardStart;
   cloud?: CloudStart;
+  cps?: CPSPluginStart;
   spaces?: SpacesPluginStart;
   console: ConsolePluginStart;
 }

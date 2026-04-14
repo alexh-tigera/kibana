@@ -56,7 +56,6 @@ import { groupsProvider } from './groups';
 import type { MlClient } from '../../lib/ml_client';
 import { ML_ALERT_TYPES } from '../../../common/constants/alerts';
 import type { MlAnomalyDetectionAlertParams } from '../../routes/schemas/alerting_schema';
-import type { AuthorizationHeader } from '../../lib/request_authorization';
 
 interface Results {
   [id: string]: {
@@ -674,10 +673,7 @@ export function jobsProvider(
     return job.node === undefined && job.state === JOB_STATE.OPENING;
   }
 
-  async function bulkCreate(
-    jobs: Array<{ job: Job; datafeed: Datafeed }>,
-    authHeader: AuthorizationHeader
-  ) {
+  async function bulkCreate(jobs: Array<{ job: Job; datafeed: Datafeed }>) {
     const results: BulkCreateResults = Object.create(null);
     await Promise.all(
       jobs.map(async ({ job, datafeed }) => {
@@ -691,7 +687,7 @@ export function jobsProvider(
         }
 
         try {
-          await mlClient.putDatafeed(datafeed, authHeader);
+          await mlClient.putDatafeed(datafeed);
           results[job.job_id].datafeed = { success: true };
         } catch (error) {
           results[job.job_id].datafeed = { success: false, error: error.body ?? error };

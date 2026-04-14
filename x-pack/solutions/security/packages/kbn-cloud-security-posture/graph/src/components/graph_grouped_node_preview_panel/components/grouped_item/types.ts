@@ -5,17 +5,28 @@
  * 2.0.
  */
 
+import type {
+  DOCUMENT_TYPE_ENTITY,
+  DOCUMENT_TYPE_EVENT,
+  DOCUMENT_TYPE_ALERT,
+  EntityDocumentDataModel,
+} from '@kbn/cloud-security-posture-common/types/graph/latest';
+
 export interface BaseGroupedItemCommonFields {
-  id?: string;
+  id: string;
+  /** source index (used for opening single document previews) */
+  index?: string;
   /** raw timestamp */
   timestamp?: string | number | Date;
-  /** optional ip address */
-  ip?: string;
-  /** optional country code (e.g. US) */
-  countryCode?: string; // we will render flag + country name if provided
+  /** optional ip addresses (normalized to array, UI renders first element) */
+  ips?: string[];
+  /** optional country codes (e.g. US) - normalized to array, UI renders first element */
+  countryCodes?: string[];
 }
 
 export interface EventOrAlertSpecificFields extends BaseGroupedItemCommonFields {
+  /** document id - used to open flyout preview */
+  docId?: string;
   /** action becomes the title */
   action?: string; // if missing we fallback to '-')
   /** actor entity descriptor */
@@ -34,16 +45,15 @@ export interface EntitySpecificFields extends BaseGroupedItemCommonFields {
 }
 
 export interface EventItem extends EventOrAlertSpecificFields {
-  itemType: 'event';
+  itemType: typeof DOCUMENT_TYPE_EVENT;
 }
 export interface AlertItem extends EventOrAlertSpecificFields {
-  itemType: 'alert';
+  itemType: typeof DOCUMENT_TYPE_ALERT;
 }
 export interface EntityItem extends EntitySpecificFields {
-  itemType: 'entity';
-  type?: string;
-  subType?: string;
+  itemType: typeof DOCUMENT_TYPE_ENTITY;
+  entity: EntityDocumentDataModel;
 }
 
 export type EntityOrEventItem = EventItem | AlertItem | EntityItem;
-export type PanelItems = EntityItem[] | Array<EventItem | AlertItem>;
+export type PanelItems = EntityItem[] | (EventItem | AlertItem)[];

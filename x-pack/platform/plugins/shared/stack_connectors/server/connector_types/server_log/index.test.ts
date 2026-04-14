@@ -63,72 +63,29 @@ describe('validateParams()', () => {
     expect(() => {
       validateParams(connectorType, {}, { configurationUtilities });
     }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action params: [
-        {
-          \\"code\\": \\"invalid_type\\",
-          \\"expected\\": \\"string\\",
-          \\"received\\": \\"undefined\\",
-          \\"path\\": [
-            \\"message\\"
-          ],
-          \\"message\\": \\"Required\\"
-        }
-      ]"
+      "error validating action params: ✖ Invalid input: expected string, received undefined
+        → at message"
     `);
 
     expect(() => {
       validateParams(connectorType, { message: 1 }, { configurationUtilities });
     }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action params: [
-        {
-          \\"code\\": \\"invalid_type\\",
-          \\"expected\\": \\"string\\",
-          \\"received\\": \\"number\\",
-          \\"path\\": [
-            \\"message\\"
-          ],
-          \\"message\\": \\"Expected string, received number\\"
-        }
-      ]"
+      "error validating action params: ✖ Invalid input: expected string, received number
+        → at message"
     `);
 
     expect(() => {
       validateParams(connectorType, { message: 'x', level: 2 }, { configurationUtilities });
     }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action params: [
-        {
-          \\"expected\\": \\"'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'\\",
-          \\"received\\": \\"number\\",
-          \\"code\\": \\"invalid_type\\",
-          \\"path\\": [
-            \\"level\\"
-          ],
-          \\"message\\": \\"Expected 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal', received number\\"
-        }
-      ]"
+      "error validating action params: ✖ Invalid option: expected one of \\"trace\\"|\\"debug\\"|\\"info\\"|\\"warn\\"|\\"error\\"|\\"fatal\\"
+        → at level"
     `);
 
     expect(() => {
       validateParams(connectorType, { message: 'x', level: 'foo' }, { configurationUtilities });
     }).toThrowErrorMatchingInlineSnapshot(`
-      "error validating action params: [
-        {
-          \\"received\\": \\"foo\\",
-          \\"code\\": \\"invalid_enum_value\\",
-          \\"options\\": [
-            \\"trace\\",
-            \\"debug\\",
-            \\"info\\",
-            \\"warn\\",
-            \\"error\\",
-            \\"fatal\\"
-          ],
-          \\"path\\": [
-            \\"level\\"
-          ],
-          \\"message\\": \\"Invalid enum value. Expected 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal', received 'foo'\\"
-        }
-      ]"
+      "error validating action params: ✖ Invalid option: expected one of \\"trace\\"|\\"debug\\"|\\"info\\"|\\"warn\\"|\\"error\\"|\\"fatal\\"
+        → at level"
     `);
   });
 });

@@ -57,7 +57,7 @@ export default function (providerContext: FtrProviderContext) {
       await cleanFleetIndices(esClient);
 
       await apiClient.postEnableSpaceAwareness();
-
+      await apiClient.setup();
       await createTestSpace(providerContext, TEST_SPACE_1);
       const [
         _defaultSpacePolicy1,
@@ -182,8 +182,119 @@ export default function (providerContext: FtrProviderContext) {
             apiClientDefaultSpaceOnly.createAgentPolicy('default', {
               space_ids: [TEST_SPACE_1],
             }),
-          /No enough permissions to create policies in space test1/
+          /Not enough permissions to create policies in space test1/
         );
+      });
+
+      it('should correctly increment package policy names when creating agent policy with system package across multiple spaces', async () => {
+        const res = await apiClient.postOutput(
+          {
+            name: `test output ${Date.now()}`,
+            type: 'elasticsearch',
+            is_default: false,
+            is_default_monitoring: false,
+            hosts: ['https://test.fr'],
+          },
+          TEST_SPACE_1
+        );
+        const outputId = res.item.id;
+        await apiClient.installPackage({ pkgName: 'system', force: true, pkgVersion: '1.54.0' });
+
+        await apiClient.createAgentPolicy('default', {}, { sys_monitoring: true });
+
+        const newMultiSpacePolicy = await apiClient.createAgentPolicy(
+          TEST_SPACE_1,
+          {
+            space_ids: ['default', TEST_SPACE_1],
+            data_output_id: outputId,
+            monitoring_output_id: outputId,
+          },
+          { sys_monitoring: true }
+        );
+
+        const multiSpacePolicy = await apiClient.getAgentPolicy(
+          newMultiSpacePolicy.item.id,
+          'default'
+        );
+
+        const systemPackagePolicy = multiSpacePolicy.item.package_policies?.find(
+          (packagePolicy) => packagePolicy.package?.name === 'system'
+        );
+        expect(systemPackagePolicy?.name).to.be('system-2');
+      });
+
+      it('should prevent creating agent policy for multiple spaces with same name as policy in non-current namespace', async () => {
+        const testSpaceOnlyPolicy = await apiClient.createAgentPolicy(TEST_SPACE_1);
+
+        // Try to create a multi-space policy (default + test) from default space with same name
+        // This should fail because the name conflicts with policy in test space
+        await expectToRejectWithError(
+          () =>
+            apiClient.createAgentPolicy('default', {
+              name: testSpaceOnlyPolicy.item.name,
+              space_ids: ['default', TEST_SPACE_1],
+            }),
+          /409 "Conflict" Agent Policy\s.* already exists with name\s.*$/i
+        );
+      });
+
+      it('should allow creating a policy assigned to a different space even when URL space has a policy with the same name', async () => {
+        const sharedName = `cross-space-name-create-${Date.now()}`;
+        // Create a policy with that name in the default space
+        await apiClient.createAgentPolicy('default', { name: sharedName });
+
+        // Creating from default space URL but assigned only to TEST_SPACE_1 should succeed
+        // because uniqueness is scoped to space_ids (TEST_SPACE_1), not the URL space (default)
+        const res = await apiClient.createAgentPolicy('default', {
+          name: sharedName,
+          space_ids: [TEST_SPACE_1],
+        });
+
+        expect(res.item.name).to.eql(sharedName);
+        // Verify the policy is accessible in the target space
+        const policyInTargetSpace = await apiClient.getAgentPolicy(res.item.id, TEST_SPACE_1);
+        expect(policyInTargetSpace.item.id).to.eql(res.item.id);
+      });
+
+      it('should prevent creating a single-space policy with same name as an existing policy in the target space', async () => {
+        const sharedName = `cross-space-name-create-${Date.now()}`;
+        await apiClient.createAgentPolicy(TEST_SPACE_1, { name: sharedName });
+
+        // Try to create a policy from the default URL with space_ids: [TEST_SPACE_1] and same name
+        // Should conflict because both policies are in TEST_SPACE_1
+        await expectToRejectWithError(
+          () =>
+            apiClient.createAgentPolicy('default', {
+              name: sharedName,
+              space_ids: [TEST_SPACE_1],
+            }),
+          /409 "Conflict" Agent Policy\s.* already exists with name\s.*$/i
+        );
+      });
+    });
+
+    describe('PUT/agent_policies_spaces', () => {
+      it('should allow updating a policy name to one that exists in the URL space but not in the target space', async () => {
+        const existingNameInDefault = `default-only-name-${Date.now()}`;
+        const newPolicyName = `target-space-policy-${Date.now()}`;
+
+        await apiClient.createAgentPolicy('default', { name: existingNameInDefault });
+
+        // Create a policy assigned only to TEST_SPACE_1
+        const targetSpacePolicy = await apiClient.createAgentPolicy('default', {
+          name: newPolicyName,
+          space_ids: [TEST_SPACE_1],
+        });
+
+        // Rename it to the name that exists in default — should succeed because
+        // uniqueness is scoped to TEST_SPACE_1 (the policy's space_ids), not default (the URL space)
+        const updated = await apiClient.putAgentPolicy(
+          targetSpacePolicy.item.id,
+          { name: existingNameInDefault, namespace: 'default' },
+          TEST_SPACE_1
+        );
+
+        expect(updated.item.name).to.eql(existingNameInDefault);
       });
     });
 

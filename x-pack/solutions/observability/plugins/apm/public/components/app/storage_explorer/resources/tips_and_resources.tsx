@@ -30,6 +30,7 @@ export function TipsAndResources() {
   const router = useApmRouter();
   const { core } = useApmPluginContext();
   const { docLinks } = core;
+  const isFeedbackEnabled = core.notifications.feedback.isEnabled();
 
   const {
     query: { rangeFrom, rangeTo, environment, kuery, comparisonEnabled },
@@ -37,7 +38,7 @@ export function TipsAndResources() {
 
   const cards = [
     {
-      icon: 'beaker',
+      icon: 'flask',
       title: i18n.translate('xpack.apm.storageExplorer.resources.errorMessages.title', {
         defaultMessage: 'Reduce transactions',
       }),
@@ -48,7 +49,7 @@ export function TipsAndResources() {
       href: docLinks.links.apm.transactionSampling,
     },
     {
-      icon: 'visLine',
+      icon: 'chartLine',
       title: i18n.translate('xpack.apm.storageExplorer.resources.compressedSpans.title', {
         defaultMessage: 'Reduce spans',
       }),
@@ -96,7 +97,7 @@ export function TipsAndResources() {
           serviceGroup: '',
         },
       }),
-      iconType: 'tableDensityExpanded',
+      iconType: 'tableDensityLow',
     },
     {
       label: i18n.translate('xpack.apm.storageExplorer.resources.documentation', {
@@ -106,14 +107,18 @@ export function TipsAndResources() {
       target: '_blank',
       iconType: 'documentation',
     },
-    {
-      label: i18n.translate('xpack.apm.storageExplorer.resources.sendFeedback', {
-        defaultMessage: 'Give feedback',
-      }),
-      href: getStorageExplorerFeedbackHref(),
-      target: '_blank',
-      iconType: 'editorComment',
-    },
+    ...(isFeedbackEnabled
+      ? [
+          {
+            label: i18n.translate('xpack.apm.storageExplorer.resources.sendFeedback', {
+              defaultMessage: 'Give feedback',
+            }),
+            href: getStorageExplorerFeedbackHref(),
+            target: '_blank',
+            iconType: 'comment',
+          },
+        ]
+      : []),
   ];
 
   return (

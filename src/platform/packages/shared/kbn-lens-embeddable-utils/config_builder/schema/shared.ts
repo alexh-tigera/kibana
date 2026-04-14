@@ -7,7 +7,9 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
+import type { TypeOf } from '@kbn/config-schema';
 import { schema } from '@kbn/config-schema';
+import { asCodeFilterSchema } from '@kbn/as-code-filters-schema';
 import {
   LENS_SAMPLING_MIN_VALUE,
   LENS_SAMPLING_MAX_VALUE,
@@ -15,6 +17,19 @@ import {
   LENS_IGNORE_GLOBAL_FILTERS_DEFAULT_VALUE,
 } from './constants';
 import { filterSchema } from './filter';
+
+export const labelSharedProp = {
+  /**
+   * Label for the operation
+   */
+  label: schema.maybe(
+    schema.string({
+      meta: {
+        description: 'Label for the operation',
+      },
+    })
+  ),
+};
 
 export const sharedPanelInfoSchema = {
   /**
@@ -46,7 +61,15 @@ export const sharedPanelInfoSchema = {
       },
     })
   ),
-  filters: schema.maybe(schema.arrayOf(filterSchema)),
+  filters: schema.maybe(
+    schema.arrayOf(asCodeFilterSchema, {
+      maxSize: 100,
+      meta: {
+        id: 'lensPanelFilters',
+        description: 'Filters applied to the panel',
+      },
+    })
+  ),
 };
 
 export const dslOnlyPanelInfoSchema = {
@@ -54,26 +77,7 @@ export const dslOnlyPanelInfoSchema = {
   query: schema.maybe(filterSchema),
 };
 
-export const layerSettingsSchema = {
-  /**
-   * The sampling factor for the dataset.
-   *
-   * Determines the proportion of the dataset to be used. Must be a number between 0 and 1 (inclusive).
-   * - 0: No sampling (use none of the data)
-   * - 1: Full sampling (use all data)
-   * - Any value between 0 and 1: Use that proportion of the data
-   *
-   * Default: 1
-   * Possible values: number (0 <= value <= 1)
-   */
-  sampling: schema.number({
-    min: LENS_SAMPLING_MIN_VALUE,
-    max: LENS_SAMPLING_MAX_VALUE,
-    defaultValue: LENS_SAMPLING_DEFAULT_VALUE,
-    meta: {
-      description: 'Sampling factor between 0 (no sampling) and 1 (full sampling). Default is 1.',
-    },
-  }),
+export const ignoringGlobalFiltersSchemaRaw = {
   /**
    * Whether to ignore global filters when fetching data for this layer.
    *
@@ -90,6 +94,29 @@ export const layerSettingsSchema = {
         'If true, ignore global filters when fetching data for this layer. Default is false.',
     },
   }),
+};
+
+export const layerSettingsSchema = {
+  /**
+   * The sampling factor for the data source.
+   *
+   * Determines the proportion of the data source to be used. Must be a number between 0 and 1 (inclusive).
+   * - 0: No sampling (use none of the data)
+   * - 1: Full sampling (use all data)
+   * - Any value between 0 and 1: Use that proportion of the data
+   *
+   * Default: 1
+   * Possible values: number (0 <= value <= 1)
+   */
+  sampling: schema.number({
+    min: LENS_SAMPLING_MIN_VALUE,
+    max: LENS_SAMPLING_MAX_VALUE,
+    defaultValue: LENS_SAMPLING_DEFAULT_VALUE,
+    meta: {
+      description: 'Sampling factor between 0 (no sampling) and 1 (full sampling). Default is 1.',
+    },
+  }),
+  ...ignoringGlobalFiltersSchemaRaw,
 };
 
 export const collapseBySchema = schema.oneOf(
@@ -111,5 +138,33 @@ export const collapseBySchema = schema.oneOf(
      */
     schema.literal('min'),
   ],
-  { meta: { description: 'Collapse by function description' } }
+  {
+    meta: {
+      id: 'collapseBy',
+      description: 'Collapse by function description',
+    },
+  }
+);
+
+export type CollapseBySchema = TypeOf<typeof collapseBySchema>;
+
+const layerSettingsSchemaWrapped = schema.object(layerSettingsSchema);
+
+export type LayerSettingsSchema = TypeOf<typeof layerSettingsSchemaWrapped>;
+
+export const axisTitleSchemaProps = {
+  text: schema.maybe(schema.string({ defaultValue: '', meta: { description: 'Axis title text' } })),
+  visible: schema.maybe(schema.boolean({ meta: { description: 'Show the title' } })),
+};
+
+export const legendTruncateAfterLinesSchema = schema.maybe(
+  schema.number({
+    defaultValue: 1,
+    min: 1,
+    max: 10,
+    meta: {
+      description: 'Maximum lines before truncating legend items (1-10)',
+      id: 'legendTruncateAfterLines',
+    },
+  })
 );

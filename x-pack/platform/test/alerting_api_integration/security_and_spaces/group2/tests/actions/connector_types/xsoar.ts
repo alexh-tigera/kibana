@@ -97,7 +97,7 @@ export default function xsoarTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type config: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"url\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type config: ✖ Invalid input: expected string, received undefined\n  → at url`,
             });
           });
       });
@@ -120,7 +120,7 @@ export default function xsoarTest({ getService }: FtrProviderContext) {
               statusCode: 400,
               error: 'Bad Request',
               message:
-                'error validating action type config: error validating url: target url "http://xsoar.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
+                'error validating connector type config: error validating url: target url "http://xsoar.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
             });
           });
       });
@@ -139,7 +139,7 @@ export default function xsoarTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type secrets: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"apiKey\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type secrets: ✖ Invalid input: expected string, received undefined\n  → at apiKey`,
             });
           });
       });
@@ -225,7 +225,7 @@ export default function xsoarTest({ getService }: FtrProviderContext) {
             retry: true,
             message: 'an error occurred while running the action',
             errorSource: TaskErrorSource.USER,
-            service_message: `Request validation failed ([\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"name\"\n    ],\n    \"message\": \"Required\"\n  }\n])`,
+            service_message: `Request validation failed (✖ Invalid input: expected string, received undefined\n  → at name)`,
           });
         });
       });

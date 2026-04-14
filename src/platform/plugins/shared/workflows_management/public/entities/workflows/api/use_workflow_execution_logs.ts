@@ -8,31 +8,18 @@
  */
 
 import { useQuery } from '@kbn/react-query';
+import {
+  WorkflowApi,
+  type WorkflowExecutionLogEntry,
+  type WorkflowExecutionLogsResponse,
+} from '@kbn/workflows-ui';
 import { useKibana } from '../../../hooks/use_kibana';
-interface WorkflowExecutionLogEntry {
-  id: string;
-  timestamp: string;
-  level: 'info' | 'debug' | 'warn' | 'error';
-  message: string;
-  stepId?: string;
-  stepName?: string;
-  connectorType?: string;
-  duration?: number;
-  additionalData?: Record<string, unknown>;
-}
-
-interface WorkflowExecutionLogsResponse {
-  logs: WorkflowExecutionLogEntry[];
-  total: number;
-  limit: number;
-  offset: number;
-}
 
 interface UseWorkflowExecutionLogsParams {
   executionId: string;
   stepExecutionId?: string;
-  limit?: number;
-  offset?: number;
+  size?: number;
+  page?: number;
   sortField?: string;
   sortOrder?: 'asc' | 'desc';
   enabled?: boolean;
@@ -41,8 +28,8 @@ interface UseWorkflowExecutionLogsParams {
 export function useWorkflowExecutionLogs({
   executionId,
   stepExecutionId,
-  limit = 100,
-  offset = 0,
+  size = 100,
+  page = 1,
   sortField = 'timestamp',
   sortOrder = 'desc',
   enabled = true,
@@ -54,29 +41,24 @@ export function useWorkflowExecutionLogs({
       'workflowExecutionLogs',
       executionId,
       stepExecutionId,
-      limit,
-      offset,
+      size,
+      page,
       sortField,
       sortOrder,
     ],
     queryFn: async () => {
-      const response = await http.get<WorkflowExecutionLogsResponse>(
-        `/api/workflowExecutions/${executionId}/logs`,
-        {
-          query: {
-            stepExecutionId,
-            limit,
-            offset,
-            sortField,
-            sortOrder,
-          },
-        }
-      );
-      return response;
+      const api = new WorkflowApi(http);
+      return api.getExecutionLogs(executionId, {
+        stepExecutionId,
+        size,
+        page,
+        sortField,
+        sortOrder,
+      });
     },
     enabled: enabled && !!executionId,
-    staleTime: 5000, // Refresh every 5 seconds for real-time logs
-    refetchInterval: 5000, // Auto-refresh logs
+    staleTime: 5000,
+    refetchInterval: 5000,
   });
 }
 

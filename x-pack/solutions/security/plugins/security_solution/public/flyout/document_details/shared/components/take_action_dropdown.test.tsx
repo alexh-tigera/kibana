@@ -10,6 +10,7 @@ import { mount } from 'enzyme';
 import { set } from '@kbn/safer-lodash-set';
 import { waitFor } from '@testing-library/react';
 import type { TimelineEventsDetailsItem } from '@kbn/timelines-plugin/common';
+import type { SearchHit } from '../../../../../common/search_strategy';
 import type { TakeActionDropdownProps } from './take_action_dropdown';
 import { TakeActionDropdown } from './take_action_dropdown';
 import { mockAlertDetailsData } from '../../../../common/components/event_details/mocks';
@@ -37,8 +38,30 @@ jest.mock('../../../../common/components/endpoint/responder');
 jest.mock('../../../../common/components/user_privileges');
 jest.mock('../../../../exceptions/hooks/use_endpoint_exceptions_capability');
 
+const mockUseRunAlertWorkflowPanel = jest.fn().mockReturnValue({
+  runWorkflowMenuItem: [],
+  runAlertWorkflowPanel: [],
+});
+jest.mock(
+  '../../../../detections/components/alerts_table/timeline_actions/use_run_alert_workflow_panel',
+  () => ({
+    useRunAlertWorkflowPanel: (...args: unknown[]) => mockUseRunAlertWorkflowPanel(...args),
+  })
+);
+
+const mockUseRunDocumentWorkflowPanel = jest.fn().mockReturnValue({
+  runWorkflowMenuItem: [],
+  runDocumentWorkflowPanel: [],
+});
+jest.mock(
+  '../../../../detections/components/alerts_table/timeline_actions/use_run_document_workflow_panel',
+  () => ({
+    useRunDocumentWorkflowPanel: (...args: unknown[]) => mockUseRunDocumentWorkflowPanel(...args),
+  })
+);
+
 jest.mock('../../../../detections/components/user_info', () => ({
-  useUserData: jest.fn().mockReturnValue([{ canUserCRUD: true, hasIndexWrite: true }]),
+  useUserData: jest.fn().mockReturnValue([{ hasIndexWrite: true }]),
 }));
 
 jest.mock('../../../../common/lib/kibana');
@@ -46,7 +69,7 @@ jest.mock('../../../../common/lib/kibana');
 jest.mock(
   '../../../../detections/containers/detection_engine/alerts/use_alerts_privileges',
   () => ({
-    useAlertsPrivileges: jest.fn().mockReturnValue({ hasIndexWrite: true, hasKibanaCRUD: true }),
+    useAlertsPrivileges: jest.fn().mockReturnValue({ hasAlertsUpdate: true }),
   })
 );
 jest.mock('../../../../cases/components/use_insert_timeline');
@@ -91,6 +114,7 @@ describe('take action dropdown', () => {
       refetchFlyoutData: jest.fn(),
       scopeId: TimelineId.active,
       onOsqueryClick: jest.fn(),
+      searchHit: { _index: 'test-index', _id: 'test-id' } as SearchHit,
     };
 
     mockStartServicesMock = createStartServicesMock();
@@ -124,7 +148,7 @@ describe('take action dropdown', () => {
     (useHttp as jest.Mock).mockReturnValue(mockStartServicesMock.http);
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     (useUserPrivileges as jest.Mock).mockReturnValue(getUserPrivilegesMockDefaultValue());
   });
 
@@ -157,7 +181,12 @@ describe('take action dropdown', () => {
       (useUserPrivileges as jest.Mock).mockReturnValue({
         ...getUserPrivilegesMockDefaultValue(),
         timelinePrivileges: { read: true },
+        rulesPrivileges: {
+          rules: { read: true, edit: true },
+          exceptions: { read: true, edit: true },
+        },
       });
+
       wrapper = mount(
         <TestProviders>
           <TakeActionDropdown {...defaultProps} />
@@ -380,6 +409,18 @@ describe('take action dropdown', () => {
     describe('"Add Endpoint exception" button', () => {
       const mockUseEndpointExceptionsCapability = useEndpointExceptionsCapability as jest.Mock;
 
+      beforeEach(() => {
+        (useUserPrivileges as jest.Mock).mockReturnValue(
+          getUserPrivilegesMockDefaultValue({
+            rulesPrivileges: {
+              ...getUserPrivilegesMockDefaultValue().rulesPrivileges,
+              rules: { read: true, edit: true },
+              exceptions: { read: true, edit: true },
+            },
+          })
+        );
+      });
+
       test('should enable the "Add Endpoint exception" button if provided endpoint alert and has right privileges', async () => {
         set(defaultProps.dataAsNestedObject, 'kibana.alert.original_event.kind', ['alert']);
         set(defaultProps.dataAsNestedObject, 'kibana.alert.original_event.module', ['endpoint']);
@@ -475,6 +516,52 @@ describe('take action dropdown', () => {
           expect(wrapper.exists('[data-test-subj="add-event-filter-menu-item"]')).toBeFalsy();
         });
       });
+    });
+  });
+
+  describe('searchHit prop', () => {
+    it('should pass searchHit._source fields to the document workflow panel', () => {
+      const searchHit = {
+        _id: 'alert-123',
+        _index: 'alerts-index',
+        _source: { 'host.name': 'my-host', 'agent.type': 'endpoint' },
+      };
+
+      mount(
+        <TestProviders>
+          <TakeActionDropdown {...defaultProps} searchHit={searchHit} />
+        </TestProviders>
+      );
+
+      expect(mockUseRunDocumentWorkflowPanel).toHaveBeenCalledWith(
+        expect.objectContaining({
+          documents: [
+            expect.objectContaining({
+              _id: defaultProps.dataAsNestedObject._id,
+              'host.name': 'my-host',
+              'agent.type': 'endpoint',
+            }),
+          ],
+        })
+      );
+    });
+
+    it('should pass empty source fields when searchHit is undefined', () => {
+      mount(
+        <TestProviders>
+          <TakeActionDropdown {...defaultProps} />
+        </TestProviders>
+      );
+
+      expect(mockUseRunDocumentWorkflowPanel).toHaveBeenCalledWith(
+        expect.objectContaining({
+          documents: [
+            expect.objectContaining({
+              _id: defaultProps.dataAsNestedObject._id,
+            }),
+          ],
+        })
+      );
     });
   });
 });

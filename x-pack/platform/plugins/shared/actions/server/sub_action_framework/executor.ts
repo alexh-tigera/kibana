@@ -5,6 +5,7 @@
  * 2.0.
  */
 
+import { z } from '@kbn/zod/v4';
 import type { Logger } from '@kbn/core/server';
 import { createTaskRunError, TaskErrorSource } from '@kbn/task-manager-plugin/server';
 import type { ActionsConfigurationUtilities } from '../actions_config';
@@ -91,8 +92,12 @@ export const buildExecutor = <
       try {
         _subActionParams = action.schema.parse(subActionParams) as typeof subActionParams;
       } catch (reqValidationError) {
+        let errMessage = reqValidationError.message;
+        if (reqValidationError instanceof z.ZodError) {
+          errMessage = z.prettifyError(reqValidationError);
+        }
         throw createTaskRunError(
-          new Error(`Request validation failed (${reqValidationError})`),
+          new Error(`Request validation failed (${errMessage})`),
           TaskErrorSource.USER
         );
       }

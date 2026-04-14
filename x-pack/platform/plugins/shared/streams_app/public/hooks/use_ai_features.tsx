@@ -10,13 +10,13 @@ import { isEmpty } from 'lodash';
 import {
   ElasticLlmCalloutKey,
   useElasticLlmCalloutDismissed,
-  getElasticManagedLlmConnector,
 } from '@kbn/observability-ai-assistant-plugin/public';
 import { STREAMS_TIERED_AI_FEATURE } from '@kbn/streams-plugin/common';
-import type { UseGenAIConnectorsResult } from '@kbn/observability-ai-assistant-plugin/public/hooks/use_genai_connectors';
 import { useKibana } from './use_kibana';
+import { useGenAIConnectors, type UseGenAIConnectorsResult } from './use_genai_connectors';
 
 export interface AIFeatures {
+  loading: boolean;
   enabled: boolean;
   couldBeEnabled: boolean;
   genAiConnectors: UseGenAIConnectorsResult;
@@ -28,41 +28,56 @@ export interface AIFeatures {
 export function useAIFeatures(): AIFeatures | null {
   const {
     dependencies: {
-      start: { observabilityAIAssistant, licensing },
+      start: { licensing },
     },
     core,
   } = useKibana();
 
   const isAIAvailableForTier = core.pricing.isFeatureAvailable(STREAMS_TIERED_AI_FEATURE.id);
 
-  const genAiConnectors = observabilityAIAssistant?.useGenAIConnectors();
+  const genAiConnectors = useGenAIConnectors({
+    http: core.http,
+    settings: core.settings,
+  });
   const license = useObservable(licensing.license$);
   const [tourCalloutDismissed, setTourCalloutDismissed] = useElasticLlmCalloutDismissed(
     ElasticLlmCalloutKey.TOUR_CALLOUT
   );
 
-  if (
-    !isAIAvailableForTier ||
-    !observabilityAIAssistant ||
-    !genAiConnectors ||
-    genAiConnectors.loading
-  ) {
+  if (!isAIAvailableForTier) {
     return null;
   }
 
-  const elasticManagedLlmConnector = getElasticManagedLlmConnector(genAiConnectors.connectors);
+  if (genAiConnectors.loading) {
+    return {
+      loading: true,
+      enabled: false,
+      couldBeEnabled: false,
+      genAiConnectors,
+      isManagedAIConnector: false,
+      hasAcknowledgedAdditionalCharges: tourCalloutDismissed,
+      acknowledgeAdditionalCharges: setTourCalloutDismissed,
+    };
+  }
+
+  // Check for actions.show permission (read access is sufficient for listing connectors)
+  const hasActionsPermission = core.application.capabilities.actions?.show || false;
 
   const enabled =
-    observabilityAIAssistant.service.isEnabled() && !isEmpty(genAiConnectors.connectors);
+    Boolean(license?.hasAtLeast('enterprise')) &&
+    hasActionsPermission &&
+    !isEmpty(genAiConnectors.connectors);
 
   const couldBeEnabled = Boolean(
-    license?.hasAtLeast('enterprise') && core.application.capabilities.actions?.save
+    license?.hasAtLeast('enterprise') && core.application.capabilities.actions?.show
   );
-  const isManagedAIConnector = elasticManagedLlmConnector
-    ? elasticManagedLlmConnector.id === genAiConnectors.selectedConnector
-    : false;
+  const selectedConnector = (genAiConnectors.connectors || []).find(
+    (connector) => connector.connectorId === genAiConnectors.selectedConnector
+  );
+  const isManagedAIConnector = selectedConnector?.isEis || false;
 
   return {
+    loading: false,
     enabled,
     couldBeEnabled,
     genAiConnectors,

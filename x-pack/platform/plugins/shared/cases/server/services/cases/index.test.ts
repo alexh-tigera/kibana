@@ -16,7 +16,11 @@
 import { omit, unset } from 'lodash';
 import type { CaseAttributes, ExternalService, CaseConnector } from '../../../common/types/domain';
 import { CaseSeverity, CaseStatuses } from '../../../common/types/domain';
-import { CASE_SAVED_OBJECT, SECURITY_SOLUTION_OWNER } from '../../../common/constants';
+import {
+  CASE_EXTENDED_FIELDS,
+  CASE_SAVED_OBJECT,
+  SECURITY_SOLUTION_OWNER,
+} from '../../../common/constants';
 import { savedObjectsClientMock } from '@kbn/core/server/mocks';
 import type {
   SavedObject,
@@ -56,6 +60,7 @@ import {
   CasePersistedStatus,
   CaseTransformedAttributesRt,
 } from '../../common/types/case';
+import type { ConfigType } from '../../config';
 
 const createUpdateSOResponse = ({
   connector,
@@ -168,6 +173,7 @@ describe('CasesService', () => {
     log: mockLogger,
     persistableStateAttachmentTypeRegistry,
     unsecuredSavedObjectsClient,
+    config: {} as ConfigType,
   });
 
   let service: CasesService;
@@ -251,6 +257,7 @@ describe('CasesService', () => {
                     "defacement",
                   ],
                   "title": "Super Bad Security Issue",
+                  "total_observables": 0,
                   "updated_at": "2019-11-25T21:54:48.952Z",
                   "updated_by": Object {
                     "email": "testemail@elastic.co",
@@ -335,6 +342,7 @@ describe('CasesService', () => {
             "title": "Super Bad Security Issue",
             "total_alerts": 10,
             "total_comments": 5,
+            "total_observables": 0,
             "updated_at": "2019-11-25T21:54:48.952Z",
             "updated_by": Object {
               "email": "testemail@elastic.co",
@@ -591,9 +599,11 @@ describe('CasesService', () => {
           originalCase: {} as CaseSavedObjectTransformed,
         });
 
-        expect(unsecuredSavedObjectsClient.update.mock.calls[0][2]).toMatchInlineSnapshot(
-          `Object {}`
-        );
+        expect(unsecuredSavedObjectsClient.update.mock.calls[0][2]).toMatchInlineSnapshot(`
+          Object {
+            "total_observables": 0,
+          }
+        `);
         const updateOptions = unsecuredSavedObjectsClient.update.mock
           .calls[0][3] as SavedObjectsUpdateOptions<unknown>;
         expect(updateOptions.references).toBeUndefined();
@@ -617,6 +627,7 @@ describe('CasesService', () => {
               "name": "none",
               "type": ".none",
             },
+            "total_observables": 0,
           }
         `);
       });
@@ -924,6 +935,7 @@ describe('CasesService', () => {
             "total_alerts": 0,
             "total_comments": 0,
             "total_events": 0,
+            "total_observables": 0,
             "updated_at": "2019-11-25T21:54:48.952Z",
             "updated_by": Object {
               "email": "testemail@elastic.co",
@@ -1147,6 +1159,7 @@ describe('CasesService', () => {
                   "total_alerts": 0,
                   "total_comments": 0,
                   "total_events": 0,
+                  "total_observables": 0,
                   "updated_at": "2019-11-25T21:54:48.952Z",
                   "updated_by": Object {
                     "email": "testemail@elastic.co",
@@ -1420,7 +1433,9 @@ describe('CasesService', () => {
 
         expect(res).toMatchInlineSnapshot(`
           Object {
-            "attributes": Object {},
+            "attributes": Object {
+              "total_events": -1,
+            },
           }
         `);
       });
@@ -1780,6 +1795,7 @@ describe('CasesService', () => {
                     "defacement",
                   ],
                   "title": "Super Bad Security Issue",
+                  "total_observables": 0,
                   "updated_at": "2019-11-25T21:54:48.952Z",
                   "updated_by": Object {
                     "email": "testemail@elastic.co",
@@ -2288,6 +2304,7 @@ describe('CasesService', () => {
       'category',
       'customFields',
       'observables',
+      'total_observables',
       'settings',
       'incremental_id',
       'settings',
@@ -2296,7 +2313,9 @@ describe('CasesService', () => {
       'in_progress_at',
       'time_to_acknowledge',
       'time_to_resolve',
-      'time_to_investigate'
+      'time_to_investigate',
+      'template',
+      CASE_EXTENDED_FIELDS
     );
 
     describe('getCaseIdsByAlertId', () => {
@@ -2409,6 +2428,7 @@ describe('CasesService', () => {
                 "defacement",
               ],
               "title": "Super Bad Security Issue",
+              "total_observables": 0,
               "updated_at": "2019-11-25T21:54:48.952Z",
               "updated_by": Object {
                 "email": "testemail@elastic.co",
@@ -2514,6 +2534,7 @@ describe('CasesService', () => {
                   "defacement",
                 ],
                 "title": "Super Bad Security Issue",
+                "total_observables": 0,
                 "updated_at": "2019-11-25T21:54:48.952Z",
                 "updated_by": Object {
                   "email": "testemail@elastic.co",
@@ -2610,6 +2631,7 @@ describe('CasesService', () => {
                     "defacement",
                   ],
                   "title": "Super Bad Security Issue",
+                  "total_observables": 0,
                   "updated_at": "2019-11-25T21:54:48.952Z",
                   "updated_by": Object {
                     "email": "testemail@elastic.co",
@@ -2706,6 +2728,7 @@ describe('CasesService', () => {
                     "defacement",
                   ],
                   "title": "Super Bad Security Issue",
+                  "total_observables": 0,
                   "updated_at": "2019-11-25T21:54:48.952Z",
                   "updated_by": Object {
                     "email": "testemail@elastic.co",
@@ -2815,6 +2838,7 @@ describe('CasesService', () => {
                     "defacement",
                   ],
                   "title": "Super Bad Security Issue",
+                  "total_observables": 0,
                   "updated_at": "2019-11-25T21:54:48.952Z",
                   "updated_by": Object {
                     "email": "testemail@elastic.co",
@@ -2874,6 +2898,7 @@ describe('CasesService', () => {
                     "defacement",
                   ],
                   "title": "Super Bad Security Issue",
+                  "total_observables": 0,
                   "updated_at": "2019-11-25T21:54:48.952Z",
                   "updated_by": Object {
                     "email": "testemail@elastic.co",
@@ -2979,6 +3004,7 @@ describe('CasesService', () => {
                 "defacement",
               ],
               "title": "Super Bad Security Issue",
+              "total_observables": 0,
               "updated_at": "2019-11-25T21:54:48.952Z",
               "updated_by": Object {
                 "email": "testemail@elastic.co",
@@ -3100,6 +3126,7 @@ describe('CasesService', () => {
                     "defacement",
                   ],
                   "title": "Super Bad Security Issue",
+                  "total_observables": 0,
                   "updated_at": "2019-11-25T21:54:48.952Z",
                   "updated_by": Object {
                     "email": "testemail@elastic.co",

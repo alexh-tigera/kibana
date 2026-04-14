@@ -9,10 +9,9 @@ import { i18n } from '@kbn/i18n';
 import type { ValidatorServices } from '@kbn/actions-plugin/server/types';
 
 import type { ActionsConfigurationUtilities } from '@kbn/actions-plugin/server/actions_config';
-import { SSLCertType } from '../../../common/auth/constants';
-import type { ConnectorTypeConfigType } from './types';
 
-import { AuthType } from '../../../common/auth/constants';
+import type { ConnectorTypeConfigType } from '@kbn/connector-schemas/webhook';
+import { AuthType, SSLCertType } from '@kbn/connector-schemas/common/auth';
 import { ADDITIONAL_FIELD_CONFIG_ERROR } from './translations';
 
 function validateUrl(configuredUrl: string) {
@@ -97,11 +96,15 @@ function validateAdditionalFields(configObject: ConnectorTypeConfigType) {
   }
 }
 
-function validateOAuth2(configObject: ConnectorTypeConfigType) {
-  if (
-    configObject.authType === AuthType.OAuth2ClientCredentials &&
-    (!configObject.accessTokenUrl || !configObject.clientId)
-  ) {
+function validateOAuth2(
+  configObject: ConnectorTypeConfigType,
+  configurationUtilities: ActionsConfigurationUtilities
+) {
+  if (configObject.authType !== AuthType.OAuth2ClientCredentials) {
+    return;
+  }
+
+  if (!configObject.accessTokenUrl || !configObject.clientId) {
     const missingFields = [];
     if (!configObject.accessTokenUrl) {
       missingFields.push('Access Token URL (accessTokenUrl)');
@@ -119,6 +122,9 @@ function validateOAuth2(configObject: ConnectorTypeConfigType) {
       })
     );
   }
+
+  validateUrl(configObject.accessTokenUrl);
+  ensureUriAllowed(configObject.accessTokenUrl, configurationUtilities);
 }
 
 export function validateConnectorTypeConfig(
@@ -133,5 +139,5 @@ export function validateConnectorTypeConfig(
   validateAuthType(configObject);
   validateCertType(configObject, configurationUtilities);
   validateAdditionalFields(configObject);
-  validateOAuth2(configObject);
+  validateOAuth2(configObject, configurationUtilities);
 }

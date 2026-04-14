@@ -7,13 +7,18 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { Liquid } from 'liquidjs';
+import { createWorkflowLiquidEngine } from '@kbn/workflows';
 
 export class WorkflowTemplatingEngine {
-  private readonly engine: Liquid;
+  /**
+   * Liquid tags that are not supported in workflow templates.
+   */
+  private static readonly UNSUPPORTED_TAG_PATTERN = /\{%-?\s*(include|render|layout)\s/i;
+
+  private readonly engine;
 
   constructor() {
-    this.engine = new Liquid({
+    this.engine = createWorkflowLiquidEngine({
       strictFilters: true,
       strictVariables: false,
     });
@@ -29,6 +34,14 @@ export class WorkflowTemplatingEngine {
         return value;
       }
     });
+
+    // register entries filter that converts an object into an array of {key, value} pairs
+    this.engine.registerFilter('entries', (value: unknown): unknown => {
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        return value;
+      }
+      return Object.entries(value).map(([k, v]) => ({ key: k, value: v }));
+    });
   }
 
   public render<T>(obj: T, context: Record<string, unknown>): T {
@@ -36,11 +49,13 @@ export class WorkflowTemplatingEngine {
   }
 
   public evaluateExpression(template: string, context: Record<string, unknown>): unknown {
+    this.validateTemplate(template);
+
     let resolvedExpression = template.trim();
     const openExpressionIndex = resolvedExpression.indexOf('{{');
     const closeExpressionIndex = resolvedExpression.lastIndexOf('}}');
 
-    if (!openExpressionIndex && !closeExpressionIndex) {
+    if (openExpressionIndex === -1 || closeExpressionIndex === -1) {
       throw new Error(`The provided expression is invalid. Got: ${template}.`);
     }
 
@@ -59,6 +74,11 @@ export class WorkflowTemplatingEngine {
     // Handle null and undefined
     if (value === null || value === undefined) {
       return value;
+    }
+
+    if (typeof value === 'string' && value.startsWith('${{') && value.endsWith('}}')) {
+      // remove the first $ only as the evaluateExpression removes the {{ and }} later
+      return this.evaluateExpression(value.substring(1), context);
     }
 
     // Handle string values - render them using the template engine
@@ -84,8 +104,18 @@ export class WorkflowTemplatingEngine {
     return value;
   }
 
+  /**
+   * Validates that a template string does not use unsupported Liquid tags.
+   */
+  private validateTemplate(template: string): void {
+    if (WorkflowTemplatingEngine.UNSUPPORTED_TAG_PATTERN.test(template)) {
+      throw new Error('Template contains unsupported tags.');
+    }
+  }
+
   private renderString(template: string, context: Record<string, unknown>): string {
     try {
+      this.validateTemplate(template);
       return this.engine.parseAndRenderSync(template, context);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);

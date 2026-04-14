@@ -242,7 +242,7 @@ export function ServicesTable({ summaryStatsData, loadingSummaryStats }: Props) 
                     defaultMessage: 'Expand',
                   })
             }
-            iconType={itemIdToExpandedRowMap[serviceName] ? 'arrowUp' : 'arrowDown'}
+            iconType={itemIdToExpandedRowMap[serviceName] ? 'chevronSingleUp' : 'chevronSingleDown'}
           />
         );
       },
@@ -321,7 +321,7 @@ export function ServicesTable({ summaryStatsData, loadingSummaryStats }: Props) 
               })
             : ''
         }
-        message={
+        noItemsMessage={
           loading
             ? i18n.translate('xpack.apm.storageExplorer.table.loading', {
                 defaultMessage: 'Loading...',

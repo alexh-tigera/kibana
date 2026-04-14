@@ -59,6 +59,7 @@ export default function updateConnectorTests({ getService }: FtrProviderContext)
           config: {
             unencrypted: `This value shouldn't get encrypted`,
           },
+          auth_mode: 'shared',
         });
 
       // Ensure AAD isn't broken
@@ -179,7 +180,7 @@ export default function updateConnectorTests({ getService }: FtrProviderContext)
       } = await supertest.get(`${getUrlPrefix(Spaces.space1.id)}/api/licensing/feature_usage`);
       expect(features).to.be.an(Array);
       const noopFeature = features.find(
-        (feature: { name: string }) => feature.name === 'Connector: Test: Noop'
+        (feature: { id: string }) => feature.id === 'Connector: Test: Noop'
       );
       expect(noopFeature).to.be.ok();
       expect(noopFeature.last_used).to.be.a('string');

@@ -9,7 +9,7 @@ import React from 'react';
 import CasesWebhookActionConnectorFields from './webhook_connectors';
 import { ConnectorFormTestProvider } from '../lib/test_utils';
 import { render, screen, waitFor } from '@testing-library/react';
-import { AuthType } from '../../../common/auth/constants';
+import { AuthType } from '@kbn/connector-schemas/common/auth/constants';
 import userEvent from '@testing-library/user-event';
 import * as i18n from './translations';
 import { QueryClient, QueryClientProvider } from '@kbn/react-query';
@@ -25,7 +25,10 @@ jest.mock('@kbn/triggers-actions-ui-plugin/public', () => {
     ...originalModule,
     useKibana: () => ({
       services: {
-        docLinks: { ELASTIC_WEBSITE_URL: 'url' },
+        docLinks: {
+          ELASTIC_WEBSITE_URL: 'url',
+          links: { alerting: { casesWebhookAction: 'url/cases-webhook' } },
+        },
         notifications: {
           toasts: {
             addError: jest.fn(),
@@ -205,7 +208,8 @@ describe('CasesWebhookActionConnectorFields renders', () => {
     expect(screen.queryByTestId('webhookHeadersValueInput')).not.toBeInTheDocument();
   });
 
-  describe('Step Validation', () => {
+  // FLAKY: https://github.com/elastic/kibana/issues/237095
+  describe.skip('Step Validation', () => {
     it('Steps work correctly when all fields valid', async () => {
       render(
         <ConnectorFormTestProvider connector={actionConnector}>

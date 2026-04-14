@@ -110,7 +110,7 @@ export default function tinesTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type config: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"url\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type config: ✖ Invalid input: expected string, received undefined\n  → at url`,
             });
           });
       });
@@ -133,7 +133,7 @@ export default function tinesTest({ getService }: FtrProviderContext) {
               statusCode: 400,
               error: 'Bad Request',
               message:
-                'error validating action type config: error validating url: target url "http://tines.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
+                'error validating connector type config: error validating url: target url "http://tines.mynonexistent.com" is not added to the Kibana config xpack.actions.allowedHosts',
             });
           });
       });
@@ -152,7 +152,7 @@ export default function tinesTest({ getService }: FtrProviderContext) {
             expect(resp.body).to.eql({
               statusCode: 400,
               error: 'Bad Request',
-              message: `error validating action type secrets: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"email\"\n    ],\n    \"message\": \"Required\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"token\"\n    ],\n    \"message\": \"Required\"\n  }\n]`,
+              message: `error validating connector type secrets: ✖ Invalid input: expected string, received undefined\n  → at email\n✖ Invalid input: expected string, received undefined\n  → at token`,
             });
           });
       });
@@ -230,7 +230,7 @@ export default function tinesTest({ getService }: FtrProviderContext) {
             retry: true,
             message: 'an error occurred while running the action',
             errorSource: TaskErrorSource.USER,
-            service_message: `Request validation failed ([\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"nan\",\n    \"path\": [\n      \"storyId\"\n    ],\n    \"message\": \"Expected number, received nan\"\n  }\n])`,
+            service_message: `Request validation failed (✖ Invalid input: expected number, received NaN\n  → at storyId)`,
           });
         });
 
@@ -273,7 +273,7 @@ export default function tinesTest({ getService }: FtrProviderContext) {
             retry: true,
             message: 'an error occurred while running the action',
             errorSource: TaskErrorSource.USER,
-            service_message: `Request validation failed ([\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"nan\",\n    \"path\": [\n      \"webhook\",\n      \"storyId\"\n    ],\n    \"message\": \"Expected number, received nan\"\n  }\n])`,
+            service_message: `Request validation failed (✖ Invalid input: expected number, received NaN\n  → at webhook.storyId)`,
           });
         });
 
@@ -296,7 +296,7 @@ export default function tinesTest({ getService }: FtrProviderContext) {
             retry: true,
             message: 'an error occurred while running the action',
             errorSource: TaskErrorSource.USER,
-            service_message: `Request validation failed ([\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"webhook\",\n      \"name\"\n    ],\n    \"message\": \"Required\"\n  }\n])`,
+            service_message: `Request validation failed (✖ Invalid input: expected string, received undefined\n  → at webhook.name)`,
           });
         });
       });

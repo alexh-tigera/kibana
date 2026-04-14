@@ -216,7 +216,7 @@ export const EditIndexPattern = withRouter(
                 <EuiFlexItem grow={false} key={tag.key}>
                   {tag.key === 'default' ? (
                     <EuiBadge
-                      iconType="starFilled"
+                      iconType="starFill"
                       color="default"
                       data-test-subj={tag['data-test-subj']}
                     >
@@ -240,6 +240,7 @@ export const EditIndexPattern = withRouter(
               <>
                 <EuiSpacer />
                 <EuiCallOut
+                  announceOnMount={false}
                   title={mappingConflictHeader}
                   color="warning"
                   iconType="warning"

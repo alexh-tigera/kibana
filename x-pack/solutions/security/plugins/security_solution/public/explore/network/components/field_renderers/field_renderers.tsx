@@ -7,8 +7,14 @@
 
 import { EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { getOr } from 'lodash/fp';
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import type { HostEcs } from '@kbn/securitysolution-ecs';
+import { useEntityStoreEuidApi } from '@kbn/entity-store/public';
+import {
+  type IdentityFields,
+  ecsSliceToFlattenedDocument,
+} from '../../../../flyout/document_details/shared/utils';
+import type { PageScope } from '../../../../data_view_manager/constants';
 import { DefaultFieldRenderer } from '../../../../timelines/components/field_renderers/default_renderer';
 import type {
   AutonomousSystem,
@@ -16,11 +22,10 @@ import type {
   FlowTargetSourceDest,
   NetworkDetailsStrategyResponse,
 } from '../../../../../common/search_strategy';
-import { DefaultDraggable } from '../../../../common/components/draggables';
+import { CellActionsRenderer } from '../../../../common/components/cell_actions/cell_actions_renderer';
 import { getEmptyTagValue } from '../../../../common/components/empty_value';
 import { ReputationLink, WhoIsLink } from '../../../../common/components/links';
 import * as i18n from '../details/translations';
-import type { SourcererScopeName } from '../../../../sourcerer/store/model';
 import { FlyoutLink } from '../../../../flyout/shared/components/flyout_link';
 
 export const IpOverviewId = 'ip-overview';
@@ -28,7 +33,7 @@ export const IpOverviewId = 'ip-overview';
 export const locationRenderer = (
   fieldNames: string[],
   data: NetworkDetailsStrategyResponse['networkDetails'],
-  contextID?: string
+  scopeId: string
 ): React.ReactElement =>
   fieldNames.length > 0 && fieldNames.every((fieldName) => getOr(null, fieldName, data)) ? (
     <EuiFlexGroup alignItems="center" gutterSize="none">
@@ -38,15 +43,7 @@ export const locationRenderer = (
           <Fragment key={`${IpOverviewId}-${fieldName}`}>
             {index ? ',\u00A0' : ''}
             <EuiFlexItem grow={false}>
-              <DefaultDraggable
-                id={`location-renderer-default-draggable-${IpOverviewId}-${
-                  contextID ? `${contextID}-` : ''
-                }${fieldName}`}
-                field={fieldName}
-                value={locationValue}
-                isAggregatable={true}
-                fieldType={'keyword'}
-              />
+              <CellActionsRenderer scopeId={scopeId} field={fieldName} value={locationValue} />
             </EuiFlexItem>
           </Fragment>
         );
@@ -59,29 +56,23 @@ export const locationRenderer = (
 export const autonomousSystemRenderer = (
   as: AutonomousSystem,
   flowTarget: FlowTarget | FlowTargetSourceDest,
-  contextID?: string
+  scopeId: string
 ): React.ReactElement =>
   as && as.organization && as.organization.name && as.number ? (
     <EuiFlexGroup alignItems="center" gutterSize="none">
       <EuiFlexItem grow={false}>
-        <DefaultDraggable
-          id={`autonomous-system-renderer-default-draggable-${IpOverviewId}-${
-            contextID ? `${contextID}-` : ''
-          }${flowTarget}.as.organization.name`}
+        <CellActionsRenderer
+          scopeId={scopeId}
           field={`${flowTarget}.as.organization.name`}
           value={as.organization.name}
         />
       </EuiFlexItem>
       <EuiFlexItem grow={false}>{'/'}</EuiFlexItem>
       <EuiFlexItem grow={false}>
-        <DefaultDraggable
-          id={`autonomous-system-renderer-default-draggable-${IpOverviewId}-${
-            contextID ? `${contextID}-` : ''
-          }${flowTarget}.as.number`}
+        <CellActionsRenderer
+          scopeId={scopeId}
           field={`${flowTarget}.as.number`}
           value={`${as.number}`}
-          isAggregatable={true}
-          fieldType={'number'}
         />
       </EuiFlexItem>
     </EuiFlexGroup>
@@ -98,7 +89,7 @@ interface HostIdRendererTypes {
   isFlyoutOpen: boolean;
 }
 
-export const hostIdRenderer = ({
+export const HostIdRenderer = ({
   contextID,
   host,
   ipFilter,
@@ -106,12 +97,29 @@ export const hostIdRenderer = ({
   scopeId,
   isFlyoutOpen,
 }: HostIdRendererTypes): React.ReactElement => {
+  const euidApi = useEntityStoreEuidApi();
   const hostName = host.name && host.name[0];
+  const identityFields = useMemo((): IdentityFields => {
+    if (euidApi?.euid) {
+      const built = euidApi.euid.getEntityIdentifiersFromDocument(
+        'host',
+        ecsSliceToFlattenedDocument('host', host)
+      ) as IdentityFields | undefined;
+      if (built && Object.keys(built).length > 0) {
+        return built;
+      }
+      if (hostName != null) {
+        return { 'host.name': hostName };
+      }
+      return {};
+    }
+    return hostName != null ? { 'host.name': hostName } : {};
+  }, [euidApi?.euid, host, hostName]);
   return host.id && host.ip && (ipFilter == null || host.ip.includes(ipFilter)) ? (
     <>
       {hostName != null ? (
         <DefaultFieldRenderer
-          rowItems={host.id}
+          rowItems={Array.isArray(host.id) ? host.id : [host.id]}
           attrName={'host.id'}
           idPrefix={contextID ? `host-overview-${contextID}` : 'host-overview'}
           scopeId={scopeId}
@@ -122,6 +130,7 @@ export const hostIdRenderer = ({
               <FlyoutLink
                 field={'host.name'}
                 value={hostName}
+                identityFields={identityFields}
                 scopeId={scopeId}
                 isFlyoutOpen={isFlyoutOpen}
               >
@@ -140,40 +149,52 @@ export const hostIdRenderer = ({
 };
 
 interface HostNameRendererTypes {
-  scopeId: SourcererScopeName;
+  scopeId: PageScope;
   host: HostEcs;
   ipFilter?: string;
-  contextID?: string;
   isFlyoutOpen: boolean;
 }
-export const hostNameRenderer = ({
+export const HostNameRenderer = ({
   scopeId,
   host,
   ipFilter,
-  contextID,
   isFlyoutOpen,
-}: HostNameRendererTypes): React.ReactElement =>
-  host.name && host.name[0] && host.ip && (!(ipFilter != null) || host.ip.includes(ipFilter)) ? (
-    <DefaultDraggable
-      id={`host-name-renderer-default-draggable-${IpOverviewId}-${
-        contextID ? `${contextID}-` : ''
-      }host-name`}
-      field={'host.name'}
-      value={host.name[0]}
-      isAggregatable={true}
-      fieldType={'keyword'}
-      scopeId={scopeId}
-    >
+}: HostNameRendererTypes): React.ReactElement => {
+  const euidApi = useEntityStoreEuidApi();
+  const hostNameFirst = host.name?.[0];
+  const identityFields = useMemo((): IdentityFields => {
+    if (euidApi?.euid) {
+      const built = euidApi.euid.getEntityIdentifiersFromDocument(
+        'host',
+        ecsSliceToFlattenedDocument('host', host)
+      ) as IdentityFields | undefined;
+      if (built && Object.keys(built).length > 0) {
+        return built;
+      }
+      if (hostNameFirst != null) {
+        return { 'host.name': hostNameFirst };
+      }
+      return {};
+    }
+    return hostNameFirst != null ? { 'host.name': hostNameFirst } : {};
+  }, [euidApi?.euid, host, hostNameFirst]);
+  return host.name &&
+    host.name[0] &&
+    host.ip &&
+    (!(ipFilter != null) || host.ip.includes(ipFilter)) ? (
+    <CellActionsRenderer field={'host.name'} value={host.name[0]} scopeId={scopeId}>
       <FlyoutLink
         field={'host.name'}
         value={host.name[0]}
+        identityFields={identityFields}
         scopeId={scopeId}
         isFlyoutOpen={isFlyoutOpen}
       />
-    </DefaultDraggable>
+    </CellActionsRenderer>
   ) : (
     getEmptyTagValue()
   );
+};
 
 export const whoisRenderer = (ip: string) => <WhoIsLink domain={ip}>{i18n.VIEW_WHOIS}</WhoIsLink>;
 

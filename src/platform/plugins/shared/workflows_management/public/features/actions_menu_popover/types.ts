@@ -7,17 +7,27 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
+import type { IconType } from '@elastic/eui';
+import type { StepStabilityLevel } from '@kbn/workflows';
+
 interface ActionBase {
   id: string;
   label: string;
   description?: string;
   instancesLabel?: string;
   iconColor?: string;
+  stability?: StepStabilityLevel;
+  /**
+   * Ids from the root menu down through this row (for groups: path to open this group).
+   * Set in `getActionOptions` for O(1) navigation when selecting from search.
+   */
+  pathIds?: readonly string[];
 }
 
 export interface ActionGroup extends ActionBase {
-  iconType: string;
+  iconType: IconType;
   options: ActionOptionData[];
+  nestedGroups?: ActionGroup[];
 }
 
 export interface ActionConnectorGroup extends ActionBase {
@@ -27,7 +37,7 @@ export interface ActionConnectorGroup extends ActionBase {
 
 export interface ActionOption extends ActionBase {
   id: string;
-  iconType: string;
+  iconType: IconType;
 }
 
 export interface ActionConnectorOption extends ActionBase {

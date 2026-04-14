@@ -6,34 +6,41 @@
  */
 
 import type { Reference } from '@kbn/content-management-utils';
+import type { TimeRange } from '@kbn/es-query';
 import type { MapAttributes, StoredMapAttributes } from '../../server';
 import { injectReferences } from '../migrations/references';
 import type { LayerDescriptor } from '../descriptor_types';
 import { mapStateKeys, uiStateKeys } from './stored_map_attributes';
 import type { StoredRefreshInterval } from '../../server/saved_objects/types';
+import { transformLayersOut } from './transform_layers_out';
 
 export function transformMapAttributesOut(
   storedMapAttributes: StoredMapAttributes,
-  references: Reference[]
+  findReference: (name: string) => Reference | undefined
 ): MapAttributes {
   const { attributes: injectedAttributes } = injectReferences({
     attributes: storedMapAttributes,
-    references,
+    findReference,
   });
   return {
     title: injectedAttributes.title,
     ...(injectedAttributes.description ? { description: injectedAttributes.description } : {}),
-    ...(injectedAttributes.layerListJSON
-      ? { layers: parseJSON<Partial<LayerDescriptor[]>>([], injectedAttributes.layerListJSON) }
-      : {}),
+    ...parseLayerListJSON(injectedAttributes.layerListJSON),
     ...parseMapStateJSON(injectedAttributes.mapStateJSON),
     ...parseUiStateJSON(injectedAttributes.uiStateJSON),
   };
 }
 
+function parseLayerListJSON(layerListJSON?: string) {
+  if (!layerListJSON) return {};
+
+  const layers = parseJSON<Partial<LayerDescriptor[]>>([], layerListJSON);
+  return { layers: transformLayersOut(layers) };
+}
+
 function parseMapStateJSON(mapStateJSON?: string) {
   const parsedMapState = parseJSON<{ [key: string]: unknown }>({}, mapStateJSON);
-  const { refreshConfig, ...rest } = dropUnknownKeys(
+  const { refreshConfig, timeFilters, adHocDataViews, ...rest } = dropUnknownKeys(
     parsedMapState,
     mapStateKeys
   ) as Partial<MapAttributes> & { refreshConfig: StoredRefreshInterval };
@@ -41,6 +48,19 @@ function parseMapStateJSON(mapStateJSON?: string) {
     ...rest,
     ...(refreshConfig
       ? { refreshInterval: { pause: refreshConfig.isPaused, value: refreshConfig.interval } }
+      : {}),
+    // BWC drop mode - no longer needed.
+    // mode stored in timeRange with values not supported in timeRangeSchema
+    ...(timeFilters
+      ? { timeFilters: dropUnknownKeys(timeFilters, ['from', 'to']) as TimeRange }
+      : {}),
+    // BWC drop unused adhoc data view keys.
+    ...(adHocDataViews?.length
+      ? {
+          adHocDataViews: adHocDataViews.map((adhocDataView) =>
+            dropUnknownKeys(adhocDataView, ['allowHidden', 'id', 'name', 'timeFieldName', 'title'])
+          ) as MapAttributes['adHocDataViews'],
+        }
       : {}),
   };
 }

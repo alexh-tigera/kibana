@@ -48,7 +48,7 @@ export interface DatafeedResultsChartDataParams {
   end: number;
 }
 
-export const defaultSearchQuery: estypes.QueryDslQueryContainer = {
+export const defaultSearchQuery: NonNullable<estypes.QueryDslQueryContainer> = {
   bool: {
     must: [
       {

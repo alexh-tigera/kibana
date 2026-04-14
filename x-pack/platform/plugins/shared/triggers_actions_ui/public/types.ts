@@ -17,10 +17,9 @@ import type { DataViewsPublicPluginStart } from '@kbn/data-views-plugin/public';
 import type { UnifiedSearchPublicPluginStart } from '@kbn/unified-search-plugin/public';
 import type { RuleCreationValidConsumer } from '@kbn/rule-data-utils';
 import type { HttpSetup } from '@kbn/core/public';
-import type { KueryNode } from '@kbn/es-query';
+import type { Filter, KueryNode } from '@kbn/es-query';
 import type { ActionType, AsApiContract } from '@kbn/actions-plugin/common';
 import {
-  ALERT_HISTORY_PREFIX,
   AlertHistoryDefaultIndexName,
   AlertHistoryDocumentTemplate,
   AlertHistoryEsIndexConnectorId,
@@ -45,6 +44,7 @@ import type {
 import type { BulkOperationError } from '@kbn/alerting-plugin/server';
 import type { RuleType, RuleTypeIndex } from '@kbn/triggers-actions-ui-types';
 import type {
+  AlertFormatter,
   ValidationResult,
   UserConfiguredActionConnector,
   ActionConnector,
@@ -108,10 +108,6 @@ type SanitizedRule<Params extends RuleTypeParams = never> = Omit<
 };
 type Rule<Params extends RuleTypeParams = RuleTypeParams> = SanitizedRule<Params>;
 
-type RuleTemplate = Pick<
-  Rule,
-  'id' | 'name' | 'params' | 'tags' | 'alertDelay' | 'schedule' | 'flapping' | 'ruleTypeId'
->;
 type ResolvedRule = Omit<
   ResolvedSanitizedRule<RuleTypeParams>,
   'alertTypeId' | 'actions' | 'systemActions'
@@ -131,6 +127,11 @@ export interface PrebuildFieldsMap {
   [RULE_PREBUILD_DESCRIPTION_FIELDS.ESQL_QUERY]: PrebuildField<string>;
   [RULE_PREBUILD_DESCRIPTION_FIELDS.DATA_VIEW_ID]: PrebuildField<string>;
   [RULE_PREBUILD_DESCRIPTION_FIELDS.DATA_VIEW_INDEX_PATTERN]: PrebuildField<string>;
+  [RULE_PREBUILD_DESCRIPTION_FIELDS.QUERY_FILTERS]: PrebuildField<{
+    filters: Filter[];
+    dataViewId: string;
+  }>;
+  [RULE_PREBUILD_DESCRIPTION_FIELDS.KQL_FILTERS]: PrebuildField<string>;
 }
 
 export type GetDescriptionFieldsFn<Params extends RuleTypeParams = RuleTypeParams> = ({
@@ -140,11 +141,10 @@ export type GetDescriptionFieldsFn<Params extends RuleTypeParams = RuleTypeParam
 }: {
   rule: Rule<Params>;
   prebuildFields: PrebuildFieldsMap | undefined;
-  http: HttpSetup | undefined;
+  http?: HttpSetup;
 }) => { title: string; description: NonNullable<ReactNode> }[];
 
 export {
-  ALERT_HISTORY_PREFIX,
   AlertHistoryDefaultIndexName,
   AlertHistoryDocumentTemplate,
   AlertHistoryEsIndexConnectorId,
@@ -174,7 +174,6 @@ export type {
   RuleTagBadgeProps,
   RuleTagFilterProps,
   RuleTaskState,
-  RuleTemplate,
   RuleType,
   RuleTypeIndex,
   RuleTypeMetaData,
@@ -318,6 +317,11 @@ export interface RuleTypeModel<Params extends RuleTypeParams = RuleTypeParams> {
     | React.FunctionComponent<any>
     | React.LazyExoticComponent<ComponentType<any>>;
   isInternallyManaged?: boolean;
+  /**
+   * Optional formatter for alert-level context (reason, deep link URL).
+   * Used to generate "View in App" links for individual alerts.
+   */
+  format?: AlertFormatter;
 }
 
 export interface IErrorObject {

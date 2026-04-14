@@ -24,10 +24,17 @@ export const edotSDKSettings: RawSettingDefinition[] = [
           'Comma-separated list of instrumentation names to disable. When an instrumentation is disabled, no telemetry will be collected for the library/module it instruments. ' +
           'The list of supported instrumentation names is language specific:\n' +
           '- [EDOT Java](https://ela.st/otel-agent-instructions): for example "akka-http,grpc"\n' +
-          '- [EDOT Node.js](https://ela.st/edot-node-disable-instrs): for example "net,dns,http"',
+          '- [EDOT Node.js](https://ela.st/edot-node-disable-instrs): for example "net,dns,http"\n' +
+          '- [EDOT PHP](https://ela.st/edot-php-deactivate-instrumentations): for example "curl,laravel,pdo"\n' +
+          '- [EDOT Python](https://ela.st/edot-python-deactivate-instrumentations) for example "opentelemetry.instrumentation.flask,opentelemetry.instrumentation.botocore*"',
       }
     ),
-    includeAgents: ['opentelemetry/java/elastic', 'opentelemetry/nodejs/elastic'],
+    includeAgents: [
+      'opentelemetry/java/elastic',
+      'opentelemetry/nodejs/elastic',
+      'opentelemetry/php/elastic',
+      'opentelemetry/python/elastic',
+    ],
   },
   {
     key: 'deactivate_all_instrumentations',
@@ -42,7 +49,11 @@ export const edotSDKSettings: RawSettingDefinition[] = [
         defaultMessage: 'No spans will be collected for any instrumentation modules.',
       }
     ),
-    includeAgents: ['opentelemetry/java/elastic', 'opentelemetry/nodejs/elastic'],
+    includeAgents: [
+      'opentelemetry/java/elastic',
+      'opentelemetry/nodejs/elastic',
+      'opentelemetry/php/elastic',
+    ],
   },
   {
     key: 'infer_spans',
@@ -118,6 +129,7 @@ export const edotSDKSettings: RawSettingDefinition[] = [
     includeAgents: [
       'opentelemetry/java/elastic',
       'opentelemetry/nodejs/elastic',
+      'opentelemetry/php/elastic',
       'opentelemetry/python/elastic',
     ],
   },
@@ -133,7 +145,11 @@ export const edotSDKSettings: RawSettingDefinition[] = [
         'Set the traces exporter to send or discard traces. When set to false, all traces will be discarded so there will be no traces sent to the collector\n' +
         '\n',
     }),
-    includeAgents: ['opentelemetry/java/elastic', 'opentelemetry/nodejs/elastic'],
+    includeAgents: [
+      'opentelemetry/java/elastic',
+      'opentelemetry/nodejs/elastic',
+      'opentelemetry/php/elastic',
+    ],
   },
   {
     key: 'send_metrics',
@@ -147,7 +163,11 @@ export const edotSDKSettings: RawSettingDefinition[] = [
         'Set the metrics exporter to send or discard metrics. When set to false, all metrics will be discarded so there will be no metrics sent to the collector\n' +
         '\n',
     }),
-    includeAgents: ['opentelemetry/java/elastic', 'opentelemetry/nodejs/elastic'],
+    includeAgents: [
+      'opentelemetry/java/elastic',
+      'opentelemetry/nodejs/elastic',
+      'opentelemetry/php/elastic',
+    ],
   },
   {
     key: 'send_logs',
@@ -161,6 +181,10 @@ export const edotSDKSettings: RawSettingDefinition[] = [
         'Set the logs exporter to send or discard logs. When set to false, all logs (that are normally sent by the agent) will be discarded so there will be no logs sent to the collector\n' +
         '\n',
     }),
-    includeAgents: ['opentelemetry/java/elastic', 'opentelemetry/nodejs/elastic'],
+    includeAgents: [
+      'opentelemetry/java/elastic',
+      'opentelemetry/nodejs/elastic',
+      'opentelemetry/php/elastic',
+    ],
   },
 ];

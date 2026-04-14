@@ -30,6 +30,7 @@ import { addItemToRecentlyAccessed } from '../../../../util/recently_accessed';
 import { LinkCard } from '../../../../components/link_card';
 import { useCreateAndNavigateToMlLink } from '../../../../contexts/kibana/use_create_url';
 import { MlPageHeader } from '../../../../components/page_header';
+import { CPSUnsupportedWarning } from '../../../../components/cps_unsupported_warning';
 
 export const Page: FC = () => {
   const {
@@ -286,10 +287,18 @@ export const Page: FC = () => {
           }
         />
       </MlPageHeader>
+      <EuiSpacer size="l" />
+
+      <CPSUnsupportedWarning />
 
       {isTimeBasedIndex === false && (
         <>
-          <EuiCallOut title={indexWarningTitle} color="warning" iconType="warning">
+          <EuiCallOut
+            announceOnMount={false}
+            title={indexWarningTitle}
+            color="warning"
+            iconType="warning"
+          >
             <FormattedMessage
               id="xpack.ml.newJob.wizard.jobType.howToRunAnomalyDetectionDescription"
               defaultMessage="Anomaly detection can only be run over indices which are time based."
@@ -302,7 +311,7 @@ export const Page: FC = () => {
               />
             </EuiLink>
           </EuiCallOut>
-          <EuiSpacer size="xxl" />
+          <EuiSpacer size="l" />
         </>
       )}
 
@@ -367,22 +376,20 @@ export const Page: FC = () => {
 
       <EuiSpacer size="xxl" />
 
-      <EuiText>
-        <EuiTitle size="s">
-          <h3>
-            <FormattedMessage
-              id="xpack.ml.newJob.wizard.jobType.learnMoreAboutDataTitle"
-              defaultMessage="Learn more about your data"
-            />
-          </h3>
-        </EuiTitle>
-
-        <p>
+      <EuiTitle size="s">
+        <h2>
           <FormattedMessage
-            id="xpack.ml.newJob.wizard.jobType.learnMoreAboutDataDescription"
-            defaultMessage="If you're not sure what type of job to create, first explore the fields and metrics in your data."
+            id="xpack.ml.newJob.wizard.jobType.learnMoreAboutDataTitle"
+            defaultMessage="Learn more about your data"
           />
-        </p>
+        </h2>
+      </EuiTitle>
+      <EuiSpacer size="s" />
+      <EuiText>
+        <FormattedMessage
+          id="xpack.ml.newJob.wizard.jobType.learnMoreAboutDataDescription"
+          defaultMessage="If you're not sure what type of job to create, first explore the fields and metrics in your data."
+        />
       </EuiText>
 
       <EuiSpacer size="m" />

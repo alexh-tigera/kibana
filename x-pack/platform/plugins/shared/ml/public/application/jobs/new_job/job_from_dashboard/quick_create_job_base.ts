@@ -233,7 +233,7 @@ export class QuickJobCreatorBase {
 
     const params: DashboardLocatorParams = {
       dashboardId: savedObjectId,
-      timeRange: {
+      time_range: {
         from: '$earliest$',
         to: '$latest$',
         mode: 'absolute',

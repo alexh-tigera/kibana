@@ -151,7 +151,9 @@ const CloudIntegrationSetup = memo<CloudIntegrationSetupProps>(
         <ProviderSelector
           selectedProvider={selectedProvider}
           setSelectedProvider={(provider) => {
-            const showCloudConnectors = isCloudConnectorsEnabledForProvider(provider);
+            const showCloudConnectors =
+              isCloudConnectorsEnabledForProvider(provider) &&
+              setupTechnology === SetupTechnology.AGENTLESS;
             setEnabledPolicyInput(provider, showCloudConnectors);
           }}
           disabled={isEditPage}
@@ -241,25 +243,33 @@ const CloudIntegrationSetup = memo<CloudIntegrationSetupProps>(
             <EuiSpacer size="m" />
             <SetupTechnologySelector
               disabled={isEditPage}
+              packageInfo={packageInfo}
               setupTechnology={setupTechnology}
               allowedSetupTechnologies={[SetupTechnology.AGENT_BASED, SetupTechnology.AGENTLESS]}
               showBetaBadge={false}
               useDescribedFormGroup={false}
               onSetupTechnologyChange={(value) => {
                 updateSetupTechnology(value);
-                const showCloudConnectors = isCloudConnectorsEnabledForProvider(selectedProvider);
+                const showCloudConnectors =
+                  isCloudConnectorsEnabledForProvider(selectedProvider) &&
+                  value === SetupTechnology.AGENTLESS;
                 updatePolicy({
-                  updatedPolicy: updatePolicyWithInputs(
-                    newPolicy,
-                    config.providers[selectedProvider].type,
-                    getDefaultCloudCredentialsType(
-                      value === SetupTechnology.AGENTLESS,
-                      selectedProvider,
-                      packageInfo,
-                      showCloudConnectors,
-                      templateName
-                    )
-                  ),
+                  updatedPolicy: {
+                    ...updatePolicyWithInputs(
+                      newPolicy,
+                      config.providers[selectedProvider].type,
+                      getDefaultCloudCredentialsType(
+                        value === SetupTechnology.AGENTLESS,
+                        selectedProvider,
+                        packageInfo,
+                        showCloudConnectors,
+                        templateName
+                      )
+                    ),
+                    supports_cloud_connector:
+                      showCloudConnectors && value === SetupTechnology.AGENTLESS,
+                    cloud_connector_id: undefined,
+                  },
                 });
               }}
             />
@@ -298,6 +308,9 @@ const CloudIntegrationSetup = memo<CloudIntegrationSetupProps>(
             updatePolicy={updatePolicy}
             disabled={isEditPage}
             hasInvalidRequiredVars={hasInvalidRequiredVars}
+            setupTechnology={setupTechnology}
+            cloud={cloud}
+            isEditPage={isEditPage}
           />
         )}
         {selectedProvider === GCP_PROVIDER && setupTechnology !== SetupTechnology.AGENTLESS && (
