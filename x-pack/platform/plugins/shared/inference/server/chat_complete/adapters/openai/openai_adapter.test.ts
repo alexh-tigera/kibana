@@ -86,6 +86,15 @@ describe('openAIAdapter', () => {
 
   beforeEach(() => {
     executorMock.invoke.mockReset();
+    executorMock.getConnector.mockReset().mockReturnValue({
+      type: '.gen-ai',
+      name: 'test-connector',
+      connectorId: 'test-id',
+      config: {},
+      capabilities: {},
+      isInferenceEndpoint: false,
+      isPreconfigured: false,
+    });
     isNativeFunctionCallingSupportedMock.mockReset().mockReturnValue(true);
 
     executorMock.invoke.mockImplementation(async () => {

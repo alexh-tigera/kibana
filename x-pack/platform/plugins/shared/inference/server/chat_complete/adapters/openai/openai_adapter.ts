@@ -7,6 +7,7 @@
 
 import type OpenAI from 'openai';
 import { defer, identity } from 'rxjs';
+import { getMaxOutputTokens } from '@kbn/inference-common';
 import { eventSourceStreamIntoObservable } from '../../../util/event_source_stream_into_observable';
 import type { InferenceConnectorAdapter } from '../../types';
 import {
@@ -24,6 +25,13 @@ import { processOpenAIStream } from './process_openai_stream';
 import { processOpenAIResponse } from './process_openai_response';
 import { emitTokenCountEstimateIfMissing } from './emit_token_count_if_missing';
 import { getTemperatureIfValid } from '../../utils/get_temperature';
+
+/**
+ * Fallback max output tokens for "Other" (OpenAI-compatible) providers when the
+ * model isn't found in the known models list. Prevents proxies with very low
+ * server-side default from silently truncating responses.
+ */
+const DEFAULT_OTHER_PROVIDER_MAX_OUTPUT_TOKENS = 16384;
 
 export const openAIAdapter: InferenceConnectorAdapter = {
   chatComplete: ({
@@ -48,6 +56,18 @@ export const openAIAdapter: InferenceConnectorAdapter = {
         ? !isNativeFunctionCallingSupported(connector)
         : functionCalling === 'simulated';
 
+    // For "Other" (OpenAI-compatible) providers, send an explicit
+    // max_completion_tokens so that proxies with very low server-side defaults
+    // (e.g. defaulting to 1000 tokens) don't silently truncate responses.
+    // We look up the model's known max output tokens first, falling back to a
+    // sensible default. Only applied for the "Other" provider type — native
+    // OpenAI and Azure endpoints handle their own defaults.
+    const isOtherProvider = connector.config?.apiProvider === 'Other';
+    const maxOutputTokens = isOtherProvider
+      ? getMaxOutputTokens(connector, modelName) ?? DEFAULT_OTHER_PROVIDER_MAX_OUTPUT_TOKENS
+      : undefined;
+    const maxTokensDefault = maxOutputTokens ? { max_completion_tokens: maxOutputTokens } : {};
+
     let request: OpenAIRequest;
 
     if (useSimulatedFunctionCalling) {
@@ -59,6 +79,7 @@ export const openAIAdapter: InferenceConnectorAdapter = {
       });
       request = {
         stream,
+        ...maxTokensDefault,
         ...getTemperatureIfValid(temperature, { connector, modelName }),
         model: modelName,
         messages: messagesToOpenAI({ system: wrapped.system, messages: wrapped.messages }),
@@ -69,6 +90,7 @@ export const openAIAdapter: InferenceConnectorAdapter = {
 
       request = {
         stream,
+        ...maxTokensDefault,
         ...getTemperatureIfValid(temperature, { connector, modelName }),
         model: modelName,
         messages: messagesToOpenAI({ system, messages }),

@@ -148,6 +148,8 @@ export {
   getModelDefinition,
   getContextWindowSize,
   contextWindowFromModelName,
+  getMaxOutputTokens,
+  maxOutputTokensFromModelName,
   type InferenceConnector,
   type InferenceConnectorCapabilities,
   type RawConnector,

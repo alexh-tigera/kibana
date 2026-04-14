@@ -36,3 +36,32 @@ export const contextWindowFromModelName = (modelName: string): number | undefine
   const modelDefinition = getModelDefinition(modelName);
   return modelDefinition?.contextWindow;
 };
+
+/**
+ * Retrieve the max output tokens for the default model of the given connector, if available.
+ * Used to set max_completion_tokens for providers that need an explicit output limit.
+ */
+export const getMaxOutputTokens = (
+  connector: InferenceConnector,
+  modelName?: string
+): number | undefined => {
+  const defaultModel = getConnectorDefaultModel(connector);
+  if (defaultModel) {
+    const result = maxOutputTokensFromModelName(defaultModel);
+    if (result !== undefined) {
+      return result;
+    }
+  }
+  if (modelName) {
+    return maxOutputTokensFromModelName(modelName);
+  }
+  return undefined;
+};
+
+export const maxOutputTokensFromModelName = (modelName: string): number | undefined => {
+  if (elasticModelDictionary[modelName]) {
+    modelName = elasticModelDictionary[modelName].model;
+  }
+  const modelDefinition = getModelDefinition(modelName);
+  return modelDefinition?.maxOutputTokens;
+};
