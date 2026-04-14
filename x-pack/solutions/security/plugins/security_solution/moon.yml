@@ -255,6 +255,7 @@ dependsOn:
   - '@kbn/agent-builder-genai-utils'
   - '@kbn/agent-builder-server'
   - '@kbn/object-utils'
+  - '@kbn/ml-common-types'
   - '@kbn/control-group-renderer'
   - '@kbn/react-query'
   - '@kbn/core-chrome-layout-constants'
