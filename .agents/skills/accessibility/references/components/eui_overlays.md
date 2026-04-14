@@ -99,6 +99,8 @@ return (
 - **`{...props}`** spread with no visible `aria-labelledby` / title wiring — inspect the spread source or escalate.
 - Adding a visible title would change UX — flag for design / PM.
 
+Also check **`../shared_principles.md` → When to escalate** for general stop conditions.
+
 ## Common mistakes
 
 **Using `aria-label` when a visible title already exists**

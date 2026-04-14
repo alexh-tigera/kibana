@@ -49,6 +49,8 @@ Radio buttons are **grouped in the accessibility tree** by shared **`name`** val
 
 - **`{...groupProps}`** — verify **`name`** in the spread source before adding another.
 
+Also check **`../shared_principles.md` → When to escalate** for general stop conditions.
+
 ## Common mistakes
 
 **Missing `name`**

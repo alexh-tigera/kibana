@@ -9,7 +9,7 @@
 
 /**
  * Resolves an ESLint rule id to the **lint bridge** path (`references/eslint/fix-*.md`, repo-relative).
- * Canonical patterns: `references/components/` — see `references/rule_to_skill_index.md`.
+ * Canonical patterns: `references/components/` — see `references/eslint/index.md`.
  *
  * Supported `@elastic/eui/<suffix>` suffixes: accessible-interactive-element, badge-accessibility-rules, callout-announce-on-mount,
  * consistent-is-invalid-props, icon-accessibility-rules, no-unnamed-interactive-element, no-unnamed-radio-group,

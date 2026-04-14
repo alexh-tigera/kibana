@@ -51,6 +51,8 @@ Prefer **one** `i18n.translate` (same id + `defaultMessage`) for both **`content
 - **`{...tooltipProps}`** without visible **`disableScreenReaderOutput`** — merge at callsite or in spread source.
 - Dynamic equality the rule cannot detect — resolve per **Change boundaries** in `../shared_principles.md`.
 
+Also check **`../shared_principles.md` → When to escalate** for general stop conditions.
+
 ## Common mistakes
 
 **Missing `disableScreenReaderOutput` when content matches aria-label**

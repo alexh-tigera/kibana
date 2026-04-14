@@ -76,6 +76,8 @@ If **`EuiCallOut`** uses **`{...calloutProps}`** and **`announceOnMount`** is no
 - **Always-visible** callout — no **`announceOnMount`** needed.
 - **Spread-only** props — verify manually.
 
+Also check **`../shared_principles.md` → When to escalate** for general stop conditions.
+
 ## Common mistakes
 
 **Missing `announceOnMount` on conditional callout**

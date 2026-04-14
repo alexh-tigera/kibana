@@ -37,6 +37,8 @@ Change **only** the child’s **`isInvalid`**; do not alter unrelated props or t
 - Child is **`{...fieldProps}`** — confirm `isInvalid` is not already supplied by the spread.
 - Nested **`EuiFormRow`** — apply to the **innermost** parent–child pair first.
 
+Also check **`../shared_principles.md` → When to escalate** for general stop conditions.
+
 ## Common mistakes
 
 **Mismatched `isInvalid` between row and child**

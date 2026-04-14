@@ -1,13 +1,11 @@
 # `@elastic/eui` accessibility ESLint rules → guides
 
-**Directory:** `references/` (under pack root `.agents/skills/accessibility/`).
-
 - Rule ids are full strings, e.g. **`@elastic/eui/require-table-caption`**.
 - **`components/`** column = filename inside `references/components/`.
-- **`eslint/`** column = filename inside `references/eslint/` (thin bridge → component guide).
+- **`eslint/`** column = filename in this folder (thin bridge → component guide).
 
-**Shared principles:** `shared_principles.md` — for narrow fixes, read **Quick path** at the top first.
-**Component index (by widget):** `components/index.md`.
+**Shared principles:** `../shared_principles.md`.
+**Component index (by widget):** `../components/index.md`.
 
 | Rule ID | `components/` | `eslint/` |
 |---------|---------------|-----------|
@@ -23,5 +21,3 @@
 | `@elastic/eui/require-table-caption` | `eui_data_tables.md` | `fix-require-table-caption.md` |
 | `@elastic/eui/sr-output-disabled-tooltip` | `eui_tooltip_icon.md` | `fix-sr-output-disabled-tooltip.md` |
 | `@elastic/eui/tooltip-focusable-anchor` | `eui_focus_and_keyboard.md` | `fix-tooltip-focusable-anchor.md` |
-
-**Pack entry:** `../SKILL.md`.

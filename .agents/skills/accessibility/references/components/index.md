@@ -16,5 +16,5 @@ Pick a row by **what you are changing**. Each **File** links to canonical usage,
 | `eui_radio_groups.md` | Radio groups | `EuiRadio`, `EuiRadioGroup` |
 | `eui_tooltip_icon.md` | Tooltips + icon controls | `EuiToolTip`, `EuiButtonIcon` |
 
-**Also read:** `../shared_principles.md` (full doc or **Quick path** at top).  
-**ESLint rule id → row:** `../rule_to_skill_index.md`.
+**Also read:** `../shared_principles.md`.
+**ESLint rule id → row:** `../eslint/index.md`.
