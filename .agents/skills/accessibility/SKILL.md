@@ -19,7 +19,7 @@ Guide accessible UI development in Kibana: correct EUI component usage, aria wir
 
 Always read `references/shared_principles.md` before editing. It applies to all accessibility work — EUI and non-EUI.
 
-## 3. Implement and verify
+## 3. Implement
 
 - Follow the **component guide** when one exists — keep changes minimal and typed.
 - For non-EUI elements, apply WCAG and WAI-ARIA APG patterns from shared principles.
@@ -27,6 +27,16 @@ Always read `references/shared_principles.md` before editing. It applies to all 
 - New `id` / `aria-labelledby` wiring follows `references/project/html_ids.md`.
 - If tests fail from DOM changes, update assertions only — never skip or delete tests.
 - No unrelated refactors; license headers untouched.
+
+## 4. Verify the fix
+
+Run **before** considering the task done:
+
+```bash
+node scripts/check
+```
+
+This runs linting, type checking, and i18n validation on your local changes. If any check fails, fix the root cause — do not suppress errors.
 
 ## File layout
 
