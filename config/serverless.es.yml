@@ -293,3 +293,11 @@ xpack.actions.preconfigured:
       inferenceId: ".google-gemini-3.0-flash-chat_completion"
       providerConfig:
         model_id: "google-gemini-3.0-flash"
+  Elastic-Docs-MCP:
+    name: Elastic Docs MCP
+    actionTypeId: .mcp
+    exposeConfig: true
+    config:
+      serverUrl: "https://www.elastic.co/docs/_mcp/"
+      hasAuth: false
+      authType: "none"
