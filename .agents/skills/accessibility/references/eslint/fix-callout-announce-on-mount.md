@@ -11,5 +11,5 @@ description: Fixes @elastic/eui/callout-announce-on-mount — add announceOnMoun
 
 ## Rule-only deferrals
 
-- **`{...props}`** on **`EuiCallOut`** with no explicit **`announceOnMount`** — ESLint may not autofix; merge the prop at the callsite or into the spread source.
-- Callout is **always rendered** — rule should not fire; if it does, re-check whether the AST is considered conditional.
+- **`{...props}`** on **`EuiCallOut`** with no explicit **`announceOnMount`** → ESLint may not autofix; merge the prop at the callsite or into the spread source.
+- Callout is **always rendered** → rule should not fire; re-check whether the AST is considered conditional.

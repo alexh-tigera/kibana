@@ -11,5 +11,5 @@ description: Fixes @elastic/eui/sr-output-disabled-tooltip — add disableScreen
 
 ## Rule-only deferrals
 
-- **`EuiToolTip`** props from **`{...spread}`** — ensure **`disableScreenReaderOutput`** is set when **`content`** and **`aria-label`** still match; merge into the spread source when appropriate.
-- Child is not **`EuiButtonIcon`** — this rule’s matcher may not apply; do not force the prop without understanding the pattern.
+- **`EuiToolTip`** props from **`{...spread}`** → ensure **`disableScreenReaderOutput`** is set when **`content`** and **`aria-label`** match; merge into spread source when appropriate.
+- Child is not **`EuiButtonIcon`** → rule matcher may not apply; do not force the prop without understanding the pattern.
