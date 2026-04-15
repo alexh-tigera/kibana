@@ -8,5 +8,5 @@
 module.exports = {
   preset: '@kbn/test',
   rootDir: '../../../../../..',
-  roots: ['<rootDir>/x-pack/platform/packages/shared/ml/common_types'],
+  roots: ['<rootDir>/x-pack/platform/packages/shared/ml/common-types'],
 };
