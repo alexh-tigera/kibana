@@ -17,12 +17,16 @@ import { treemapStateSchema } from './treemap';
 import type { WaffleState, WaffleStateESQL, WaffleStateNoESQL } from './waffle';
 import { waffleStateSchema } from './waffle';
 
-export const partitionStateSchema = schema.oneOf([
-  mosaicStateSchema,
-  pieStateSchema,
-  treemapStateSchema,
-  waffleStateSchema,
-]);
+export const partitionStateSchema = schema.oneOf(
+  [mosaicStateSchema, pieStateSchema, treemapStateSchema, waffleStateSchema],
+  {
+    meta: {
+      id: 'lensPartitionChart',
+      title: 'Partition Chart',
+      description: 'Partition chart configuration. Supports pie, mosaic, treemap, and waffle chart types.',
+    },
+  }
+);
 
 export type PartitionState = PieState | MosaicState | TreemapState | WaffleState;
 export type PartitionStateNoESQL =
