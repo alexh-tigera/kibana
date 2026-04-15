@@ -18,6 +18,7 @@ import { i18n } from '@kbn/i18n';
 import { toMountPoint } from '@kbn/react-kibana-mount';
 import { PageScope } from '../../../data_view_manager/constants';
 import { SECURITY_FEATURE_ID } from '../../../../common';
+import { SIEM_MIGRATIONS_PATH } from '../../../../common/constants';
 import { useIsExperimentalFeatureEnabled } from '../../../common/hooks/use_experimental_features';
 import { MlPopover } from '../../../common/components/ml_popover/ml_popover';
 import { useKibana } from '../../../common/lib/kibana';
@@ -105,7 +106,7 @@ export const GlobalHeader = React.memo(() => {
 
         <EuiHeaderSectionItem>
           <EuiHeaderLinks>
-            {canAddData && (
+            {canAddData && !pathname.startsWith(SIEM_MIGRATIONS_PATH) && (
               <EuiHeaderLink
                 color="primary"
                 data-test-subj="add-data"

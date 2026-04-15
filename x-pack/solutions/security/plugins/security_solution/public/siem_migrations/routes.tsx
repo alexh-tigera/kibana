@@ -6,11 +6,13 @@
  */
 
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { Routes, Route } from '@kbn/shared-ux-router';
 
 import type { ExperimentalFeatures } from '../../common';
 import type { SecuritySubPluginRoutes } from '../app/types';
 import {
+  SIEM_MIGRATIONS_PATH,
   SIEM_MIGRATIONS_MANAGE_PATH,
   SIEM_MIGRATIONS_DASHBOARDS_PATH,
   SIEM_MIGRATIONS_LANDING_PATH,
@@ -23,6 +25,8 @@ import { PluginTemplateWrapper } from '../common/components/plugin_template_wrap
 import { SecurityRoutePageWrapper } from '../common/components/security_route_page_wrapper';
 import { MigrationsLandingPage } from './landing';
 import { SiemMigrationsManagePage } from './manage';
+
+const SiemMigrationsBaseRedirect = () => <Redirect to={SIEM_MIGRATIONS_MANAGE_PATH} />;
 
 const SiemMigrationsLandingRoutes = () => {
   return (
@@ -39,7 +43,7 @@ const SiemMigrationsLandingRoutes = () => {
 const SiemMigrationsManageRoutes = () => {
   return (
     <PluginTemplateWrapper>
-      <SecurityRoutePageWrapper pageName={SecurityPageName.siemMigrationsManage}>
+      <SecurityRoutePageWrapper pageName={SecurityPageName.siemMigrationsLanding}>
         <Routes>
           <Route path={'*'} component={SiemMigrationsManagePage} />
         </Routes>
@@ -51,12 +55,9 @@ const SiemMigrationsManageRoutes = () => {
 const SiemMigrationsRulesRoutes = () => {
   return (
     <PluginTemplateWrapper>
-      <SecurityRoutePageWrapper pageName={SecurityPageName.siemMigrationsRules}>
+      <SecurityRoutePageWrapper pageName={SecurityPageName.siemMigrationsLanding}>
         <Routes>
-          <Route
-            path={`${SIEM_MIGRATIONS_RULES_PATH}/:migrationId?`}
-            component={MigrationRulesPage}
-          />
+          <Route path={SIEM_MIGRATIONS_RULES_PATH} component={MigrationRulesPage} />
         </Routes>
       </SecurityRoutePageWrapper>
     </PluginTemplateWrapper>
@@ -66,12 +67,9 @@ const SiemMigrationsRulesRoutes = () => {
 const SiemMigrationsDashboardsRoutes = () => {
   return (
     <PluginTemplateWrapper>
-      <SecurityRoutePageWrapper pageName={SecurityPageName.siemMigrationsDashboards}>
+      <SecurityRoutePageWrapper pageName={SecurityPageName.siemMigrationsLanding}>
         <Routes>
-          <Route
-            path={`${SIEM_MIGRATIONS_DASHBOARDS_PATH}/:migrationId?`}
-            component={MigrationDashboardsPage}
-          />
+          <Route path={SIEM_MIGRATIONS_DASHBOARDS_PATH} component={MigrationDashboardsPage} />
         </Routes>
       </SecurityRoutePageWrapper>
     </PluginTemplateWrapper>
@@ -86,6 +84,11 @@ export const getSiemMigrationsRoutes = (
   return [
     ...(isSiemMigrationsEnabled
       ? [
+          {
+            path: SIEM_MIGRATIONS_PATH,
+            exact: true,
+            component: SiemMigrationsBaseRedirect,
+          },
           {
             path: SIEM_MIGRATIONS_MANAGE_PATH,
             component: SiemMigrationsManageRoutes,

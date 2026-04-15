@@ -13,9 +13,9 @@ import {
 } from '@kbn/security-solution-features/constants';
 import {
   SIEM_MIGRATIONS_DASHBOARDS_PATH,
-  SIEM_MIGRATIONS_LANDING_PATH,
   SIEM_MIGRATIONS_RULES_PATH,
   SIEM_MIGRATIONS_MANAGE_PATH,
+  SIEM_MIGRATIONS_PATH,
   SecurityPageName,
 } from '../../common/constants';
 import type { LinkItem } from '../common/links/types';
@@ -86,7 +86,7 @@ export const links: LinkItem = {
   title: i18n.translate('xpack.securitySolution.appLinks.automaticMigrations.title', {
     defaultMessage: 'Automatic migrations',
   }),
-  path: SIEM_MIGRATIONS_LANDING_PATH,
+  path: SIEM_MIGRATIONS_PATH,
   capabilities: [
     [SECURITY_UI_SHOW_PRIVILEGE, `${SIEM_MIGRATIONS_FEATURE_ID}.all`],
     [RULES_UI_READ_PRIVILEGE, `${SIEM_MIGRATIONS_FEATURE_ID}.all`],

@@ -24,3 +24,4 @@ export * from './start_migration_modal';
 export * from './start_translation_button';
 export * from './unknown_migration';
 export * from './updated_by_label';
+export * from './migration_context_header';
