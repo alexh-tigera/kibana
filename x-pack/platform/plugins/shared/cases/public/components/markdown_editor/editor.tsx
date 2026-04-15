@@ -6,7 +6,15 @@
  */
 
 import type { ElementRef } from 'react';
-import React, { memo, forwardRef, useCallback, useRef, useState, useImperativeHandle } from 'react';
+import React, {
+  memo,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useImperativeHandle,
+} from 'react';
 import type { EuiMarkdownEditorProps, EuiMarkdownAstNode } from '@elastic/eui';
 import { EuiMarkdownEditor } from '@elastic/eui';
 import { usePlugins } from './use_plugins';
@@ -56,6 +64,19 @@ const MarkdownEditorComponent = forwardRef<MarkdownEditorRef, MarkdownEditorProp
       editorRef: ref as React.MutableRefObject<MarkdownEditorRef>,
       value,
     });
+
+    // The EUI markdown editor's drop zone gets role="button" from react-dropzone,
+    // which causes an a11y violation ("Interactive controls must not be nested")
+    // when the drop zone wraps interactive elements like the textarea.
+    // Remove the role since no drop handlers are configured.
+    useEffect(() => {
+      const textarea = editorRef.current?.textarea;
+      if (!textarea) return;
+      const dropZone = textarea.closest('.euiMarkdownEditorDropZone');
+      if (dropZone) {
+        dropZone.removeAttribute('role');
+      }
+    }, []);
 
     // @ts-expect-error
     useImperativeHandle(ref, () => {
