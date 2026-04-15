@@ -331,6 +331,12 @@ export const ThresholdWatchEdit = ({ pageTitle }: { pageTitle: string }) => {
                 noSuggestions={!indexOptions.length}
                 options={indexOptions}
                 data-test-subj="indicesComboBox"
+                aria-label={i18n.translate(
+                  'xpack.watcher.sections.watchEdit.titlePanel.indicesToQueryAriaLabel',
+                  {
+                    defaultMessage: 'Indices to query',
+                  }
+                )}
                 selectedOptions={(watch.index || []).map((anIndex: string) => {
                   return {
                     label: anIndex,
@@ -394,6 +400,12 @@ export const ThresholdWatchEdit = ({ pageTitle }: { pageTitle: string }) => {
                 name="watchTimeField"
                 data-test-subj="watchTimeFieldSelect"
                 value={watch.timeField}
+                aria-label={i18n.translate(
+                  'xpack.watcher.sections.watchEdit.titlePanel.timeFieldSelectAriaLabel',
+                  {
+                    defaultMessage: 'Time field',
+                  }
+                )}
                 onChange={(e) => {
                   setWatchProperty('timeField', e.target.value);
                 }}
@@ -571,6 +583,12 @@ export const ThresholdWatchEdit = ({ pageTitle }: { pageTitle: string }) => {
                             <EuiComboBox
                               singleSelection={{ asPlainText: true }}
                               placeholder={firstFieldOption.text}
+                              aria-label={i18n.translate(
+                                'xpack.watcher.sections.watchEdit.threshold.aggFieldSelectAriaLabel',
+                                {
+                                  defaultMessage: 'Aggregation field',
+                                }
+                              )}
                               options={esFields.reduce((esFieldOptions: any[], field: any) => {
                                 if (
                                   aggTypes[watch.aggType].validNormalizedTypes.includes(
@@ -704,6 +722,12 @@ export const ThresholdWatchEdit = ({ pageTitle }: { pageTitle: string }) => {
                             >
                               <EuiSelect
                                 value={watch.termField || ''}
+                                aria-label={i18n.translate(
+                                  'xpack.watcher.sections.watchEdit.threshold.termFieldSelectAriaLabel',
+                                  {
+                                    defaultMessage: 'Term field',
+                                  }
+                                )}
                                 onChange={(e) => {
                                   setWatchProperty('termField', e.target.value);
                                 }}
