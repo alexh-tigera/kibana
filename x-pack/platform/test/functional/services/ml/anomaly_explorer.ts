@@ -7,7 +7,7 @@
 
 import expect from '@kbn/expect';
 
-import type { SwimlaneType } from '@kbn/ml-common-types/embeddables/swimlane_type';
+import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
 import type { CreateCaseParams } from '../cases/create';
 import type { FtrProviderContext } from '../../ftr_provider_context';
 import type { MlAnomalyCharts } from './anomaly_charts';
