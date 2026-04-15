@@ -35,6 +35,7 @@ dependsOn:
   - '@kbn/ml-local-storage'
   - '@kbn/rule-data-utils'
   - '@kbn/core-http-browser'
+  - '@kbn/ml-common-api-schemas'
 tags:
   - shared-common
   - package
