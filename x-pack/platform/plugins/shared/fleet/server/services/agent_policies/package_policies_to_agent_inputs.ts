@@ -263,10 +263,12 @@ export const storedPackagePoliciesToAgentInputs = async (
       : undefined;
 
     const filteredGlobalDataTags = filterGlobalDataTags(globalDataTags, packageInfo);
-    const addFields =
-      filteredGlobalDataTags && filteredGlobalDataTags.length > 0
-        ? globalDataTagsToAddFields(filteredGlobalDataTags)
-        : undefined;
+    // Merge agent policy auto-derived tags with user-defined tags from the package policy.
+    // Package policy global_data_tags are only set on agentless integration policies; for
+    // standard policies this array will be empty/undefined and has no effect.
+    const packagePolicyTags = packagePolicy.global_data_tags ?? [];
+    const allTags = [...(filteredGlobalDataTags ?? []), ...packagePolicyTags];
+    const addFields = allTags.length > 0 ? globalDataTagsToAddFields(allTags) : undefined;
 
     let packagePolicyWithUpdatedInputs = packagePolicy;
     // recompile inputs to apply agent version conditions

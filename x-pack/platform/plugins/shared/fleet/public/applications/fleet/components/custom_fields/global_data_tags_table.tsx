@@ -24,13 +24,9 @@ import {
   type EuiBasicTableColumn,
 } from '@elastic/eui';
 
-import { useStartServices } from '../../../../../../../hooks';
+import { useStartServices } from '../../../../hooks';
 
-import type {
-  NewAgentPolicy,
-  AgentPolicy,
-  GlobalDataTag,
-} from '../../../../../../../../common/types';
+import type { NewAgentPolicy, AgentPolicy, GlobalDataTag } from '../../../../../common/types';
 
 interface Props {
   updateAgentPolicy: (u: Partial<NewAgentPolicy | AgentPolicy>) => void;
