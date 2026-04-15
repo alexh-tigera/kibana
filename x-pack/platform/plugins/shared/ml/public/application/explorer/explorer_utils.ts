@@ -27,6 +27,8 @@ import type { InfluencersFilterQuery, MlAnomaliesTableRecordExtended } from '@kb
 import type { TimeRangeBounds } from '@kbn/ml-time-buckets';
 import type { IUiSettingsClient } from '@kbn/core/public';
 import { parseInterval } from '@kbn/ml-parse-interval';
+import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
+import { SWIMLANE_TYPE } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
 
 import type { CombinedJob } from '@kbn/ml-common-types/anomaly_detection_jobs/combined_job';
 import type { Annotations, AnnotationsTable } from '@kbn/ml-common-types/annotations';
@@ -42,9 +44,7 @@ import {
   isTimeSeriesViewJob,
 } from '../../../common/util/job_utils';
 import type { MlJobService } from '../services/job_service';
-
-import type { SwimlaneType } from './explorer_constants';
-import { MAX_CATEGORY_EXAMPLES, SWIMLANE_TYPE, VIEW_BY_JOB_LABEL } from './explorer_constants';
+import { MAX_CATEGORY_EXAMPLES, VIEW_BY_JOB_LABEL } from './explorer_constants';
 import { useMlKibana } from '../contexts/kibana';
 import type { MlApi } from '../services/ml_api_service';
 import { ML_RESULTS_INDEX_PATTERN } from '../../../common/constants/index_patterns';

@@ -7751,6 +7751,10 @@
   version "0.0.0"
   uid ""
 
+"@kbn/ml-common-api-schemas@link:x-pack/platform/packages/shared/ml/common_api_schemas":
+  version "0.0.0"
+  uid ""
+
 "@kbn/ml-common-types@link:x-pack/platform/packages/shared/ml/common_types":
   version "0.0.0"
   uid ""

@@ -24,7 +24,8 @@ import type { TimeRangeBounds } from '@kbn/data-plugin/common';
 import { mlTimefilterRefresh$ } from '@kbn/ml-date-picker';
 import type { InfluencersFilterQuery } from '@kbn/ml-anomaly-utils';
 import type { TimeBucketsInterval } from '@kbn/ml-time-buckets';
-import type { SeverityThreshold } from '@kbn/ml-common-types/anomalies';
+import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
+import { SWIMLANE_TYPE } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
 import type { AnomalyExplorerSwimLaneUrlState } from '@kbn/ml-common-types/locator';
 import { ANOMALY_SWIM_LANE_HARD_LIMIT } from '../../../common/constants/explorer';
 import { resolveSeverityFormat } from '../components/controls/select_severity/severity_format_resolver';
@@ -36,7 +37,7 @@ import type {
   ViewBySwimLaneData,
 } from './explorer_utils';
 import type { AnomalyExplorerCommonStateService } from './anomaly_explorer_common_state';
-import { SWIMLANE_TYPE, VIEW_BY_JOB_LABEL } from './explorer_constants';
+import { VIEW_BY_JOB_LABEL } from './explorer_constants';
 import type { MlJobService } from '../services/job_service';
 import { getSelectionInfluencers, getSelectionTimeRange } from './explorer_utils';
 import type { Refresh } from '../routing/use_refresh';

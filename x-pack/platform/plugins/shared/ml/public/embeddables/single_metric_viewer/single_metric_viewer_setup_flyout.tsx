@@ -11,12 +11,14 @@ import { KibanaContextProvider } from '@kbn/kibana-react-plugin/public';
 import type { DataPublicPluginStart } from '@kbn/data-plugin/public';
 import type { SharePluginStart } from '@kbn/share-plugin/public';
 import { StorageContextProvider } from '@kbn/ml-local-storage';
+import type {
+  SingleMetricViewerEmbeddableInput,
+  SingleMetricViewerEmbeddableUserInput,
+} from '@kbn/ml-common-api-schemas/embeddables/single_metric_viewer';
 import { Storage } from '@kbn/kibana-utils-plugin/public';
 import { ML_STORAGE_KEYS } from '@kbn/ml-common-types/storage';
-import type { SingleMetricViewerEmbeddableUserInput } from '..';
 import { SingleMetricViewerInitializer } from './single_metric_viewer_initializer';
 import type { MlApi } from '../../application/services/ml_api_service';
-import type { SingleMetricViewerEmbeddableInput } from './types';
 
 export function EmbeddableSingleMetricViewerUserInput({
   coreStart,

@@ -6,6 +6,7 @@
  */
 
 import { schema } from '@kbn/config-schema';
+import type { TypeOf } from '@kbn/config-schema';
 import { storedFilterSchema, querySchema } from '@kbn/es-query-server';
 import { refreshIntervalSchema } from '@kbn/data-service-server';
 import {
@@ -29,6 +30,10 @@ export const singleMetricViewerEmbeddableUserInputSchema = schema.object({
   panelTitle: schema.maybe(schema.string()),
 });
 
+export type SingleMetricViewerEmbeddableUserInput = TypeOf<
+  typeof singleMetricViewerEmbeddableUserInputSchema
+>;
+
 export const singleMetricViewerEmbeddableCustomInputSchema = schema.object({
   ...baseUserInputProps.getPropSchemas(),
   ...serializedTimeRangeSchema.getPropSchemas(),
@@ -38,12 +43,24 @@ export const singleMetricViewerEmbeddableCustomInputSchema = schema.object({
   refreshConfig: schema.maybe(refreshIntervalSchema),
 });
 
+export type SingleMetricViewerEmbeddableCustomInput = TypeOf<
+  typeof singleMetricViewerEmbeddableCustomInputSchema
+>;
+
 export const singleMetricViewerEmbeddableInputSchema = schema.object({
   ...singleMetricViewerEmbeddableCustomInputSchema.getPropSchemas(),
   title: schema.maybe(schema.string()),
 });
 
+export type SingleMetricViewerEmbeddableInput = TypeOf<
+  typeof singleMetricViewerEmbeddableInputSchema
+>;
+
 export const singleMetricViewerEmbeddableStateSchema = schema.object({
   ...serializedTitlesSchema.getPropSchemas(),
   ...singleMetricViewerEmbeddableCustomInputSchema.getPropSchemas(),
 });
+
+export type SingleMetricViewerEmbeddableState = TypeOf<
+  typeof singleMetricViewerEmbeddableStateSchema
+>;

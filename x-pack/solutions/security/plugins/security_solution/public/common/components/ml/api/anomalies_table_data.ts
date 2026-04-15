@@ -6,7 +6,7 @@
  */
 
 import type { estypes } from '@elastic/elasticsearch';
-import type { SeverityThreshold } from '@kbn/ml-common-types/anomalies';
+import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
 import type { Anomalies, InfluencerInput, CriteriaFields } from '../types';
 import { KibanaServices } from '../../../lib/kibana';
 

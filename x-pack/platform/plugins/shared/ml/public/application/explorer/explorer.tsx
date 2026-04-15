@@ -35,7 +35,7 @@ import type { TimefilterContract } from '@kbn/data-plugin/public';
 import { useStorage } from '@kbn/ml-local-storage';
 import type { TimeBuckets } from '@kbn/ml-time-buckets';
 import { dynamic } from '@kbn/shared-ux-utility';
-import type { SeverityThreshold } from '@kbn/ml-common-types/anomalies';
+import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
 import { ML_ANOMALY_EXPLORER_PANELS } from '@kbn/ml-common-types/storage';
 import { HelpPopover } from '../components/help_popover';
 // @ts-ignore

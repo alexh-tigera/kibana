@@ -6,6 +6,7 @@
  */
 
 import { schema } from '@kbn/config-schema';
+import type { TypeOf } from '@kbn/config-schema';
 import { mlEntityFieldSchema } from '@kbn/ml-anomaly-utils/schemas';
 import {
   serializedTimeRangeSchema,
@@ -17,6 +18,8 @@ export const severityThresholdSchema = schema.object({
   max: schema.maybe(schema.number()),
 });
 
+export type SeverityThreshold = TypeOf<typeof severityThresholdSchema>;
+
 export const anomalyChartsEmbeddableRuntimeStateSchema = schema.object({
   jobIds: schema.arrayOf(schema.string()),
   maxSeriesToPlot: schema.number(),
@@ -24,12 +27,22 @@ export const anomalyChartsEmbeddableRuntimeStateSchema = schema.object({
   selectedEntities: schema.maybe(schema.arrayOf(mlEntityFieldSchema)),
 });
 
+export type AnomalyChartsEmbeddableRuntimeState = TypeOf<
+  typeof anomalyChartsEmbeddableRuntimeStateSchema
+>;
+
 export const anomalyChartsEmbeddableOverridableStateSchema = schema.object({
   ...anomalyChartsEmbeddableRuntimeStateSchema.getPropSchemas(),
   ...serializedTimeRangeSchema.getPropSchemas(),
 });
 
+export type AnomalyChartsEmbeddableOverridableState = TypeOf<
+  typeof anomalyChartsEmbeddableOverridableStateSchema
+>;
+
 export const anomalyChartsEmbeddableStateSchema = schema.object({
   ...serializedTitlesSchema.getPropSchemas(),
   ...anomalyChartsEmbeddableOverridableStateSchema.getPropSchemas(),
 });
+
+export type AnomalyChartsEmbeddableState = TypeOf<typeof anomalyChartsEmbeddableStateSchema>;

@@ -27,7 +27,7 @@ export const plugin: PluginInitializer<
 
 export type { MlPluginSetup, MlPluginStart };
 
-export type { AnomalySwimLaneEmbeddableApi, AnomalySwimLaneEmbeddableState } from './embeddables';
+export type { AnomalySwimLaneEmbeddableApi } from './embeddables';
 
 export { ANOMALY_SWIMLANE_EMBEDDABLE_TYPE } from './embeddables/constants';
 export { CONTROLLED_BY_SWIM_LANE_FILTER } from './ui_actions/constants';

@@ -71,6 +71,7 @@
     "@kbn/entityManager-plugin",
     "@kbn/ml-is-populated-object",
     "@kbn/ml-anomaly-utils",
+    "@kbn/ml-common-api-schemas",
     "@kbn/encrypted-saved-objects-plugin",
     "@kbn/event-log-plugin",
     "@kbn/task-manager-plugin",

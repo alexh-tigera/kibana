@@ -29,6 +29,10 @@ import {
 import { FormattedMessage } from '@kbn/i18n-react';
 import { i18n } from '@kbn/i18n';
 import { extractErrorMessage } from '@kbn/ml-error-utils';
+import type {
+  SingleMetricViewerEmbeddableInput,
+  SingleMetricViewerEmbeddableUserInput,
+} from '@kbn/ml-common-api-schemas/embeddables/single_metric_viewer';
 import type { TimeRangeBounds } from '@kbn/ml-time-buckets';
 import { ML_PAGES } from '@kbn/ml-common-types/locator_ml_pages';
 
@@ -41,10 +45,9 @@ import {
 import { useMlLink } from '../../application/contexts/kibana';
 import { JobSelectorControl } from '../../alerting/job_selector';
 
-import type { SingleMetricViewerEmbeddableUserInput, MlEntity } from '..';
+import type { MlEntity } from './types';
 
 import { getDefaultSingleMetricViewerPanelTitle } from './get_default_panel_title';
-import type { SingleMetricViewerEmbeddableInput } from './types';
 
 export interface SingleMetricViewerInitializerProps {
   bounds: TimeRangeBounds;

@@ -42,6 +42,7 @@ dependsOn:
   - '@kbn/lists-plugin'
   - '@kbn/maps-plugin'
   - '@kbn/ml-plugin'
+  - '@kbn/ml-common-api-schemas'
   - '@kbn/osquery-plugin'
   - '@kbn/session-view-plugin'
   - '@kbn/security-plugin'

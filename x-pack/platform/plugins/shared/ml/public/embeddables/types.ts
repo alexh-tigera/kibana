@@ -10,6 +10,15 @@ import type { DefaultEmbeddableApi } from '@kbn/embeddable-plugin/public';
 import type { Filter, Query, TimeRange } from '@kbn/es-query';
 import type { MlEntityField } from '@kbn/ml-anomaly-utils';
 import type {
+  AnomalyChartsEmbeddableOverridableState,
+  AnomalyChartsEmbeddableState,
+  SeverityThreshold,
+} from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
+import type {
+  SingleMetricViewerEmbeddableState,
+  SingleMetricViewerEmbeddableUserInput,
+} from '@kbn/ml-common-api-schemas/embeddables/single_metric_viewer';
+import type {
   EmbeddableApiContext,
   HasEditCapabilities,
   HasParentApi,
@@ -21,8 +30,6 @@ import type {
   PublishesDataViews,
 } from '@kbn/presentation-publishing';
 import { type BehaviorSubject } from 'rxjs';
-import type { TypeOf } from '@kbn/config-schema';
-import type { SeverityThreshold } from '@kbn/ml-common-types/anomalies';
 import type { JobId } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
 import type { MlDependencies } from '../application/app';
 import type { MlCapabilitiesService } from '../application/capabilities/check_capabilities';
@@ -42,25 +49,8 @@ import type {
   AnomalySwimLaneEmbeddableType,
   MlEmbeddableTypes,
 } from './constants';
-import type {
-  anomalyChartsEmbeddableOverridableStateSchema,
-  anomalyChartsEmbeddableRuntimeStateSchema,
-  anomalyChartsEmbeddableStateSchema,
-} from '../../server/embeddable/schemas';
-import type {
-  SingleMetricViewerEmbeddableState,
-  SingleMetricViewerEmbeddableUserInput,
-} from './single_metric_viewer/types';
 
-export type {
-  AnomalySwimLaneEmbeddableState,
-  AnomalySwimLaneEmbeddableApi,
-} from './anomaly_swimlane/types';
-
-export type {
-  SingleMetricViewerEmbeddableUserInput,
-  SingleMetricViewerEmbeddableState,
-} from './single_metric_viewer/types';
+export type { AnomalySwimLaneEmbeddableApi } from './anomaly_swimlane/types';
 
 /**
  * Common API for all ML embeddables
@@ -96,16 +86,6 @@ export interface SwimLaneDrilldownContext extends EditSwimlanePanelContext {
   data?: AppStateSelectedCells;
 }
 
-/**
- * Anomaly Explorer Charts
- */
-
-export type AnomalyChartsEmbeddableRuntimeState = TypeOf<
-  typeof anomalyChartsEmbeddableRuntimeStateSchema
->;
-export type AnomalyChartsEmbeddableOverridableState = TypeOf<
-  typeof anomalyChartsEmbeddableOverridableStateSchema
->;
 export interface AnomalyChartsComponentApi {
   jobIds$: PublishingSubject<JobId[]>;
   maxSeriesToPlot$: PublishingSubject<number>;
@@ -120,11 +100,6 @@ export interface AnomalyChartsDataLoadingApi {
   onLoading: (v: boolean) => void;
   onError: (error?: Error) => void;
 }
-
-/**
- * Persisted state for the Anomaly Charts Embeddable.
- */
-export type AnomalyChartsEmbeddableState = TypeOf<typeof anomalyChartsEmbeddableStateSchema>;
 
 export type AnomalyChartsApi = AnomalyChartsComponentApi & AnomalyChartsDataLoadingApi;
 

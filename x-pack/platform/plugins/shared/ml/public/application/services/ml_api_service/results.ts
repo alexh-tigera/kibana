@@ -12,7 +12,7 @@ import type { ESSearchRequest, ESSearchResponse } from '@kbn/es-types';
 import type { MlEntityField, ML_JOB_ID, ML_PARTITION_FIELD_VALUE } from '@kbn/ml-anomaly-utils';
 import { type InfluencersFilterQuery, type MlAnomalyRecordDoc } from '@kbn/ml-anomaly-utils';
 
-import type { SeverityThreshold } from '@kbn/ml-common-types/anomalies';
+import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
 import type {
   GetStoppedPartitionResult,
   GetDatafeedResultsChartDataResult,
