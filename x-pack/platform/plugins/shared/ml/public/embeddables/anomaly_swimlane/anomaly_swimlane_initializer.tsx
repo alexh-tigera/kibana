@@ -28,8 +28,8 @@ import type {
   AnomalySwimlaneEmbeddableUserInput,
   AnomalySwimlaneInitialInput,
 } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
-import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
-import { SWIMLANE_TYPE } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
+import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import { ML_PAGES } from '@kbn/ml-common-types/locator_ml_pages';
 import { useMlLink } from '../../application/contexts/kibana';
 import type { MlApi } from '../../application/services/ml_api_service';

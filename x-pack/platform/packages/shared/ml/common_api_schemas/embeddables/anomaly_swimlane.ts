@@ -13,24 +13,25 @@ import {
   serializedTimeRangeSchema,
   serializedTitlesSchema,
 } from '@kbn/presentation-publishing-schemas';
-import { SWIMLANE_TYPE } from './swimlane_type';
 
-const swimlaneTypeSchema = schema.oneOf([
-  schema.literal(SWIMLANE_TYPE.OVERALL),
-  schema.literal(SWIMLANE_TYPE.VIEW_BY),
+export const swimlaneTypeSchema = schema.oneOf([
+  schema.literal('overall'),
+  schema.literal('viewBy'),
 ]);
+
+export type SwimlaneType = TypeOf<typeof swimlaneTypeSchema>;
 
 const commonUserInputProps = schema.object({
   jobIds: schema.arrayOf(schema.string()),
 });
 
 const anomalySwimlaneOverallSchema = schema.object({
-  swimlaneType: schema.literal(SWIMLANE_TYPE.OVERALL),
+  swimlaneType: schema.literal('overall'),
   ...commonUserInputProps.getPropSchemas(),
 });
 
 const anomalySwimlaneViewBySchema = schema.object({
-  swimlaneType: schema.literal(SWIMLANE_TYPE.VIEW_BY),
+  swimlaneType: schema.literal('viewBy'),
   viewBy: schema.string(),
   ...commonUserInputProps.getPropSchemas(),
 });

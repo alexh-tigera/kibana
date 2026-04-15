@@ -9,7 +9,7 @@ import { DASHBOARD_APP_ID } from '@kbn/dashboard-plugin/public';
 import type { Filter } from '@kbn/es-query';
 import { FilterStateStore } from '@kbn/es-query';
 import { i18n } from '@kbn/i18n';
-import { SWIMLANE_TYPE } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
+import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import type { EmbeddableApiContext } from '@kbn/presentation-publishing';
 import type { UiActionsActionDefinition } from '@kbn/ui-actions-plugin/public';
 import { firstValueFrom } from 'rxjs';

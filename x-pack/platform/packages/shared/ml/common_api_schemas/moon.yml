@@ -23,7 +23,7 @@ dependsOn:
   - '@kbn/ml-anomaly-utils'
   - '@kbn/presentation-publishing-schemas'
 tags:
-  - shared-common
+  - shared-server
   - package
   - prod
   - group-platform

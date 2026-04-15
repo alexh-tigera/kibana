@@ -41,8 +41,8 @@ import {
 } from '@kbn/presentation-util-plugin/public';
 import { useTimeBuckets } from '@kbn/ml-time-buckets';
 import type { AnomalySwimLaneEmbeddableState } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
-import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
-import { SWIMLANE_TYPE } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
+import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import type { JobId } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
 import { getDefaultSwimlanePanelTitle } from '../../embeddables/anomaly_swimlane/anomaly_swimlane_embeddable';
 import { useCasesModal } from '../contexts/kibana/use_cases_modal';

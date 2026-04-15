@@ -11,7 +11,7 @@ import type {
   AnomalySwimLaneEmbeddableState,
   AnomalySwimlaneEmbeddableStateViewBy,
 } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
-import { SWIMLANE_TYPE } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
+import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import { stringHash } from '@kbn/ml-string-hash';
 import type { FtrProviderContext } from '../../../ftr_provider_context';
 import { USER } from '../../../services/ml/security_common';

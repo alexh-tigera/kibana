@@ -5,9 +5,9 @@
  * 2.0.
  */
 
+import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+
 export const SWIMLANE_TYPE = {
   OVERALL: 'overall',
   VIEW_BY: 'viewBy',
-} as const;
-
-export type SwimlaneType = (typeof SWIMLANE_TYPE)[keyof typeof SWIMLANE_TYPE];
+} as const satisfies Record<string, SwimlaneType>;

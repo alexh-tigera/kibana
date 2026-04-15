@@ -23,7 +23,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { SWIMLANE_TYPE } from '@kbn/ml-common-api-schemas/embeddables/swimlane_type';
+import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import { ANOMALY_SWIM_LANE_HARD_LIMIT } from '../../../common/constants/explorer';
 import type { OverallSwimlaneData } from '../../application/explorer/explorer_utils';
 import { CONTROLLED_BY_SWIM_LANE_FILTER } from '../../ui_actions/constants';
