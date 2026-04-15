@@ -23,7 +23,7 @@ import {
 } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { ML_PAGES } from '@kbn/ml-common-types/locator_ml_pages';
-import type { AnomalyChartsEmbeddableState } from '..';
+import type { AnomalyChartsEmbeddableState } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
 import { DEFAULT_MAX_SERIES_TO_PLOT } from '../../application/services/anomaly_explorer_charts_service';
 import { JobSelectorControl } from '../../alerting/job_selector';
 import { getDefaultExplorerChartsPanelTitle } from './utils';

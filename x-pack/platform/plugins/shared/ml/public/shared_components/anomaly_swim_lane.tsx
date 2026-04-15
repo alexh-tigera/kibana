@@ -8,8 +8,10 @@
 import type { KibanaExecutionContext } from '@kbn/core/public';
 import { EmbeddableRenderer } from '@kbn/embeddable-plugin/public';
 import type { AggregateQuery, Filter, Query, TimeRange } from '@kbn/es-query';
-import type { AnomalySwimlaneEmbeddableCustomInput } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
-import type { AnomalySwimLaneEmbeddableState } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+import type {
+  AnomalySwimLaneEmbeddableState,
+  AnomalySwimlaneProps as AnomalySwimlanePropsFromSchema,
+} from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
 import type { PublishesWritableUnifiedSearch } from '@kbn/presentation-publishing';
 import type { HasSerializedChildState } from '@kbn/presentation-publishing';
 import React, { useEffect, useMemo, useRef, type FC } from 'react';
@@ -17,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 import type { AnomalySwimLaneEmbeddableApi } from '../embeddables';
 import { ANOMALY_SWIMLANE_EMBEDDABLE_TYPE } from '../embeddables';
 
-interface AnomalySwimLaneProps extends AnomalySwimlaneEmbeddableCustomInput {
+interface AnomalySwimLaneProps extends AnomalySwimlanePropsFromSchema {
   executionContext: KibanaExecutionContext;
 }
 

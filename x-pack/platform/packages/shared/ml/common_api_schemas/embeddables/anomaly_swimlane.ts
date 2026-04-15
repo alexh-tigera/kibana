@@ -88,6 +88,8 @@ export const anomalySwimlanePropsSchema = schema.object({
   ...anomalySwimlaneEmbeddableUserInputSchema.getPropSchemas(),
 });
 
+export type AnomalySwimlaneProps = TypeOf<typeof anomalySwimlanePropsSchema>;
+
 export const anomalySwimlaneInitialInputSchema = schema.object({
   jobIds: schema.maybe(schema.arrayOf(schema.string())),
   swimlaneType: schema.maybe(swimlaneTypeSchema),

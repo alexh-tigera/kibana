@@ -114,10 +114,10 @@ export interface AnomalyChartsFieldSelectionApi {
   entityFields: PublishingSubject<MlEntityField[] | undefined>;
 }
 
-export interface AnomalyChartsAttachmentState extends AnomalyChartsEmbeddableState {
+export type AnomalyChartsAttachmentState = AnomalyChartsEmbeddableState & {
   query?: Query;
   filters?: Filter[];
-}
+};
 
 export interface AnomalyChartsAttachmentApi extends AnomalyChartsApi {
   parentApi: {
