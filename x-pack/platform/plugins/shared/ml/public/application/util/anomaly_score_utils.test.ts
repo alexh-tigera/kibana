@@ -6,7 +6,7 @@
  */
 
 import { shouldIncludePointByScore } from './anomaly_score_utils';
-import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
+import type { SeverityThreshold } from '@kbn/ml-server-schemas/embeddables/anomaly_charts';
 
 describe('anomaly_score_utils', () => {
   describe('shouldIncludePointByScore', () => {

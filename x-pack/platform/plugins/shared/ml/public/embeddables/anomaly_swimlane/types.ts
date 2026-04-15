@@ -18,8 +18,8 @@ import { apiIsOfType } from '@kbn/presentation-publishing';
 import type {
   AnomalySwimLaneEmbeddableState,
   AnomalySwimlaneEmbeddableUserInput,
-} from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
-import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+} from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
+import type { SwimlaneType } from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 import type { JobId } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
 import type { AppStateSelectedCells } from '../../application/explorer/explorer_utils';
 import { ANOMALY_SWIMLANE_EMBEDDABLE_TYPE } from '../constants';

@@ -11,8 +11,8 @@ import type {
   AnomalySwimLaneControlsState,
   AnomalySwimLaneEmbeddableState,
   AnomalySwimlaneEmbeddableUserInput,
-} from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
-import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+} from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
+import type { SwimlaneType } from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import type { JobId } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
 import { SWIM_LANE_DEFAULT_PAGE_SIZE } from '../../application/explorer/explorer_constants';

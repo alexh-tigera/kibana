@@ -12,7 +12,7 @@ import type {
   AnomalyChartsEmbeddableRuntimeState,
   SeverityThreshold,
   AnomalyChartsEmbeddableState,
-} from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
+} from '@kbn/ml-server-schemas/embeddables/anomaly_charts';
 import type { JobId } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
 
 import { DEFAULT_MAX_SERIES_TO_PLOT } from '../../application/services/anomaly_explorer_charts_service';

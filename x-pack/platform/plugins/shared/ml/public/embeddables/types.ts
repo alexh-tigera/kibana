@@ -13,11 +13,11 @@ import type {
   AnomalyChartsEmbeddableOverridableState,
   AnomalyChartsEmbeddableState,
   SeverityThreshold,
-} from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
+} from '@kbn/ml-server-schemas/embeddables/anomaly_charts';
 import type {
   SingleMetricViewerEmbeddableState,
   SingleMetricViewerEmbeddableUserInput,
-} from '@kbn/ml-common-api-schemas/embeddables/single_metric_viewer';
+} from '@kbn/ml-server-schemas/embeddables/single_metric_viewer';
 import type {
   EmbeddableApiContext,
   HasEditCapabilities,

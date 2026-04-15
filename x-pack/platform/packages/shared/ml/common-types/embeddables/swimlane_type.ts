@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+import type { SwimlaneType } from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 
 export const SWIMLANE_TYPE = {
   OVERALL: 'overall',

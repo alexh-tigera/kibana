@@ -27,7 +27,7 @@ import type { InfluencersFilterQuery, MlAnomaliesTableRecordExtended } from '@kb
 import type { TimeRangeBounds } from '@kbn/ml-time-buckets';
 import type { IUiSettingsClient } from '@kbn/core/public';
 import { parseInterval } from '@kbn/ml-parse-interval';
-import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+import type { SwimlaneType } from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 
 import type { CombinedJob } from '@kbn/ml-common-types/anomaly_detection_jobs/combined_job';

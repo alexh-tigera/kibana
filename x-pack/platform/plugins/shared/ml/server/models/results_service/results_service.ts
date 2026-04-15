@@ -19,7 +19,7 @@ import {
   ML_JOB_ID,
   ML_PARTITION_FIELD_VALUE,
 } from '@kbn/ml-anomaly-utils';
-import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
+import type { SeverityThreshold } from '@kbn/ml-server-schemas/embeddables/anomaly_charts';
 import type { CriteriaField, Influencer } from '@kbn/ml-anomaly-utils';
 import type {
   GetStoppedPartitionResult,

@@ -14,7 +14,7 @@ import { StorageContextProvider } from '@kbn/ml-local-storage';
 import type {
   SingleMetricViewerEmbeddableInput,
   SingleMetricViewerEmbeddableUserInput,
-} from '@kbn/ml-common-api-schemas/embeddables/single_metric_viewer';
+} from '@kbn/ml-server-schemas/embeddables/single_metric_viewer';
 import { Storage } from '@kbn/kibana-utils-plugin/public';
 import { ML_STORAGE_KEYS } from '@kbn/ml-common-types/storage';
 import { SingleMetricViewerInitializer } from './single_metric_viewer_initializer';

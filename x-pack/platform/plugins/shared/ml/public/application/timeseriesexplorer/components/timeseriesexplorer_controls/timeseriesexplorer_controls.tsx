@@ -27,7 +27,7 @@ import {
 } from '@kbn/presentation-util-plugin/public';
 import { useTimeRangeUpdates } from '@kbn/ml-date-picker';
 import type { MlJobState } from '@elastic/elasticsearch/lib/api/types';
-import type { SingleMetricViewerEmbeddableState } from '@kbn/ml-common-api-schemas/embeddables/single_metric_viewer';
+import type { SingleMetricViewerEmbeddableState } from '@kbn/ml-server-schemas/embeddables/single_metric_viewer';
 import type { CombinedJobWithStats } from '@kbn/ml-common-types/anomaly_detection_jobs/combined_job';
 import type { JobId } from '@kbn/ml-common-types/anomaly_detection_jobs/job';
 import { CASES_TOAST_MESSAGES_TITLES } from '../../../../cases/constants';

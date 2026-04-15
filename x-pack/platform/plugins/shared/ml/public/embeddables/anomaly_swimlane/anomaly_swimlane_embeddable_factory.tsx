@@ -13,7 +13,7 @@ import type { EmbeddableFactory } from '@kbn/embeddable-plugin/public';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { KibanaContextProvider } from '@kbn/kibana-react-plugin/public';
-import type { AnomalySwimLaneEmbeddableState } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+import type { AnomalySwimLaneEmbeddableState } from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 import { useTimeBuckets } from '@kbn/ml-time-buckets';
 import type { PublishesUnifiedSearch } from '@kbn/presentation-publishing';
 import {

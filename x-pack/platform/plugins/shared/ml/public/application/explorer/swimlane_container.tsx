@@ -40,7 +40,7 @@ import { useActiveCursor } from '@kbn/charts-plugin/public';
 import { css } from '@emotion/react';
 import { getThemeResolvedSeverityColor, ML_ANOMALY_THRESHOLD } from '@kbn/ml-anomaly-utils';
 import { formatHumanReadableDateTime } from '@kbn/ml-date-utils';
-import type { SwimlaneType } from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+import type { SwimlaneType } from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import type { TimeBuckets as TimeBucketsClass } from '@kbn/ml-time-buckets';
 import { SwimLanePagination } from './swimlane_pagination';

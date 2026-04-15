@@ -32,7 +32,7 @@ import { extractErrorMessage } from '@kbn/ml-error-utils';
 import type {
   SingleMetricViewerEmbeddableInput,
   SingleMetricViewerEmbeddableUserInput,
-} from '@kbn/ml-common-api-schemas/embeddables/single_metric_viewer';
+} from '@kbn/ml-server-schemas/embeddables/single_metric_viewer';
 import type { TimeRangeBounds } from '@kbn/ml-time-buckets';
 import { ML_PAGES } from '@kbn/ml-common-types/locator_ml_pages';
 

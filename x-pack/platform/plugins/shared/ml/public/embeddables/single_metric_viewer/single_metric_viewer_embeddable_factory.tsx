@@ -13,7 +13,7 @@ import { openLazyFlyout } from '@kbn/presentation-util';
 import type { EmbeddableFactory } from '@kbn/embeddable-plugin/public';
 import React from 'react';
 import useUnmount from 'react-use/lib/useUnmount';
-import type { SingleMetricViewerEmbeddableState } from '@kbn/ml-common-api-schemas/embeddables/single_metric_viewer';
+import type { SingleMetricViewerEmbeddableState } from '@kbn/ml-server-schemas/embeddables/single_metric_viewer';
 import {
   apiHasExecutionContext,
   initializeTimeRangeManager,

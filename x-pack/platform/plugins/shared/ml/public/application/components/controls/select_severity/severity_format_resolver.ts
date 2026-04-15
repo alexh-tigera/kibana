@@ -6,7 +6,7 @@
  */
 
 import { ML_ANOMALY_THRESHOLD } from '@kbn/ml-anomaly-utils';
-import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
+import type { SeverityThreshold } from '@kbn/ml-server-schemas/embeddables/anomaly_charts';
 
 /**
  * Utility function to resolve severity format from old to new format

@@ -11,7 +11,7 @@ import React from 'react';
 import type {
   AnomalySwimLaneEmbeddableState,
   AnomalySwimlaneEmbeddableUserInput,
-} from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+} from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 import type { MlDependencies } from '../../application/app';
 import { HttpService } from '../../application/services/http_service';
 import { jobsApiProvider } from '../../application/services/ml_api_service/jobs';

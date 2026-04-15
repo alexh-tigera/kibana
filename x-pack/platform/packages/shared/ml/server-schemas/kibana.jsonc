@@ -1,6 +1,6 @@
 {
   "type": "shared-server",
-  "id": "@kbn/ml-common-api-schemas",
+  "id": "@kbn/ml-server-schemas",
   "owner": [
     "@elastic/ml-ui"
   ],

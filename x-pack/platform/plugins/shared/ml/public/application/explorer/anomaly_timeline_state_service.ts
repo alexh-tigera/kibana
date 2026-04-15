@@ -24,7 +24,7 @@ import type { TimeRangeBounds } from '@kbn/data-plugin/common';
 import { mlTimefilterRefresh$ } from '@kbn/ml-date-picker';
 import type { InfluencersFilterQuery } from '@kbn/ml-anomaly-utils';
 import type { TimeBucketsInterval } from '@kbn/ml-time-buckets';
-import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
+import type { SeverityThreshold } from '@kbn/ml-server-schemas/embeddables/anomaly_charts';
 import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import type { AnomalyExplorerSwimLaneUrlState } from '@kbn/ml-common-types/locator';
 import { ANOMALY_SWIM_LANE_HARD_LIMIT } from '../../../common/constants/explorer';

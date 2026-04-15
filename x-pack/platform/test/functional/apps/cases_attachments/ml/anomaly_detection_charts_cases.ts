@@ -10,7 +10,7 @@ import type { Datafeed } from '@kbn/ml-common-types/anomaly_detection_jobs/dataf
 import type {
   AnomalySwimLaneEmbeddableState,
   AnomalySwimlaneEmbeddableStateViewBy,
-} from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+} from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 import { SWIMLANE_TYPE } from '@kbn/ml-common-types/embeddables/swimlane_type';
 import { stringHash } from '@kbn/ml-string-hash';
 import type { FtrProviderContext } from '../../../ftr_provider_context';

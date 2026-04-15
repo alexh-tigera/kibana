@@ -11,7 +11,7 @@ import type { AggregateQuery, Filter, Query, TimeRange } from '@kbn/es-query';
 import type {
   AnomalySwimLaneEmbeddableState,
   AnomalySwimlaneProps as AnomalySwimlanePropsFromSchema,
-} from '@kbn/ml-common-api-schemas/embeddables/anomaly_swimlane';
+} from '@kbn/ml-server-schemas/embeddables/anomaly_swimlane';
 import type { PublishesWritableUnifiedSearch } from '@kbn/presentation-publishing';
 import type { HasSerializedChildState } from '@kbn/presentation-publishing';
 import React, { useEffect, useMemo, useRef, type FC } from 'react';
