@@ -1,45 +1,51 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LoginForm login selector properly switches to login form -> login help and back: Login Help 1`] = `
-<Markdown>
+<ReactMarkdown
+  transformLinkUri={[Function]}
+>
   <p
-    key="p-0"
+    key="p-1-1-0"
   >
     <strong
-      key="strong-0"
+      key="strong-1-1-0"
     >
       some help
     </strong>
   </p>
-</Markdown>
+</ReactMarkdown>
 `;
 
 exports[`LoginForm login selector properly switches to login help: Login Help 1`] = `
-<Markdown>
+<ReactMarkdown
+  transformLinkUri={[Function]}
+>
   <p
-    key="p-0"
+    key="p-1-1-0"
   >
     <strong
-      key="strong-0"
+      key="strong-1-1-0"
     >
       some help
     </strong>
   </p>
-</Markdown>
+</ReactMarkdown>
 `;
 
 exports[`LoginForm properly switches to login help: Login Help 1`] = `
-<Markdown>
+<ReactMarkdown
+  transformLinkUri={[Function]}
+>
   <p
-    key="p-0"
+    key="p-1-1-0"
   >
     <strong
-      key="strong-0"
+      key="strong-1-1-0"
     >
       some help
     </strong>
   </p>
-</Markdown>
+</ReactMarkdown>
 `;
 
 exports[`LoginForm renders as expected 1`] = `
