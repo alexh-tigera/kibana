@@ -197,6 +197,7 @@ export const colorByValueSchema = schema.oneOf(
     meta: {
       id: 'colorByValue',
       title: 'Color By Value',
+      description: 'Colors values dynamically based on numeric ranges. Supports absolute value ranges and percentage-based ranges.',
     },
   }
 );
@@ -209,7 +210,13 @@ export const staticColorSchema = schema.object(
      */
     color: schema.string({ meta: { description: 'The static color to be used for all values.' } }),
   },
-  { meta: { id: 'staticColor', title: 'Static Color' } }
+  {
+    meta: {
+      id: 'staticColor',
+      title: 'Static Color',
+      description: 'Applies a fixed color to all values in the dimension.',
+    },
+  }
 );
 
 const colorFromPaletteSchema = schema.object(
@@ -218,7 +225,13 @@ const colorFromPaletteSchema = schema.object(
     index: schema.number({ meta: { description: 'The index of the color in the palette.' } }),
     palette: schema.maybe(schema.string({ meta: { description: 'The palette name to use.' } })),
   },
-  { meta: { id: 'colorFromPalette', title: 'Color From Palette' } }
+  {
+    meta: {
+      id: 'colorFromPalette',
+      title: 'Color From Palette',
+      description: 'Selects a color by position index from a named color palette.',
+    },
+  }
 );
 
 const colorCodeSchema = schema.object(
@@ -226,7 +239,13 @@ const colorCodeSchema = schema.object(
     type: schema.literal('color_code'),
     value: schema.string({ meta: { description: 'The static color value to use.' } }),
   },
-  { meta: { id: 'color_code', title: 'Color Code' } }
+  {
+    meta: {
+      id: 'color_code',
+      title: 'Color Code',
+      description: 'A color specified as a hex or CSS color code string.',
+    },
+  }
 );
 
 const colorDefSchema = schema.oneOf([colorFromPaletteSchema, colorCodeSchema]);
@@ -250,7 +269,14 @@ const categoricalColorMappingSchema = schema.object(
     ),
     unassigned: schema.maybe(unassignedColorSchema),
   },
-  { meta: { id: 'categoricalColorMapping', title: 'Categorical Color Mapping' } }
+  {
+    meta: {
+      id: 'categoricalColorMapping',
+      title: 'Categorical Color Mapping',
+      description:
+        'Assigns palette colors to specific categorical values. Values without an explicit mapping receive the unassigned color.',
+    },
+  }
 );
 
 const gradientColorMappingSchema = schema.object(
@@ -275,7 +301,13 @@ const gradientColorMappingSchema = schema.object(
     gradient: schema.maybe(schema.arrayOf(colorDefSchema, { maxSize: 3 })),
     unassigned: schema.maybe(unassignedColorSchema),
   },
-  { meta: { id: 'gradientColorMapping', title: 'Gradient Color Mapping' } }
+  {
+    meta: {
+      id: 'gradientColorMapping',
+      title: 'Gradient Color Mapping',
+      description: 'Assigns a gradient of palette colors across a range of categorical values.',
+    },
+  }
 );
 
 const DEFAULT_CATEGORICAL_COLOR_MAPPING_VALUE: TypeOf<typeof categoricalColorMappingSchema> = {
@@ -296,7 +328,12 @@ export const colorMappingSchema = schema.oneOf(
     gradientColorMappingSchema,
   ],
   {
-    meta: { id: 'colorMapping', title: 'Color Mapping' },
+    meta: {
+      id: 'colorMapping',
+      title: 'Color Mapping',
+      description:
+        'Maps dimension values to colors, either categorically (specific values) or as a gradient across values.',
+    },
     defaultValue: DEFAULT_CATEGORICAL_COLOR_MAPPING_VALUE,
   }
 );
@@ -317,13 +354,17 @@ export const autoColorSchema = schema.object(
   }
 );
 
-export const allColoringTypeSchema = schema.oneOf([
-  colorByValueSchema,
-  staticColorSchema,
-  colorMappingSchema,
-  noColorSchema,
-  autoColorSchema,
-]);
+export const allColoringTypeSchema = schema.oneOf(
+  [colorByValueSchema, staticColorSchema, colorMappingSchema, noColorSchema, autoColorSchema],
+  {
+    meta: {
+      id: 'allColoringType',
+      title: 'Color Configuration',
+      description:
+        'Color configuration for a dimension. Supports dynamic coloring by value range, a fixed static color, categorical or gradient color mapping, or no color.',
+    },
+  }
+);
 
 export type StaticColorType = TypeOf<typeof staticColorSchema>;
 export type ColorByValueType = TypeOf<typeof colorByValueSchema>;
@@ -351,6 +392,9 @@ export const DEFAULT_CATEGORICAL_COLOR_MAPPING: ColorMappingCategoricalType =
 export const applyColorToSchema = schema.oneOf(
   [schema.literal('value'), schema.literal('background')],
   {
-    meta: { description: 'Where to apply the color' },
+    meta: {
+      description:
+        'Whether to apply the color to the metric value text (`value`) or to the cell or panel background (`background`).',
+    },
   }
 );

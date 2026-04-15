@@ -12,7 +12,9 @@ import { LENS_FORMAT_NUMBER_DECIMALS_DEFAULT, LENS_FORMAT_COMPACT_DEFAULT } from
 
 const numericFormatSchema = schema.object(
   {
-    type: schema.oneOf([schema.literal('number'), schema.literal('percent')]),
+    type: schema.oneOf([schema.literal('number'), schema.literal('percent')], {
+      meta: { description: 'Format as a plain number (`number`) or as a percentage (`percent`).' },
+    }),
     /**
      * Number of decimals
      */
@@ -42,12 +44,21 @@ const numericFormatSchema = schema.object(
       },
     }),
   },
-  { meta: { id: 'numericFormat', title: 'Numeric Format' } }
+  {
+    meta: {
+      id: 'numericFormat',
+      title: 'Numeric Format',
+      description:
+        'Formats values as a number or percentage with optional decimal places, suffix, and compact notation.',
+    },
+  }
 );
 
 const byteFormatSchema = schema.object(
   {
-    type: schema.oneOf([schema.literal('bits'), schema.literal('bytes')]),
+    type: schema.oneOf([schema.literal('bits'), schema.literal('bytes')], {
+      meta: { description: 'Format as bits (`bits`) or bytes (`bytes`).' },
+    }),
     /**
      * Number of decimals
      */
@@ -68,7 +79,13 @@ const byteFormatSchema = schema.object(
       })
     ),
   },
-  { meta: { id: 'byteFormat', title: 'Byte Format' } }
+  {
+    meta: {
+      id: 'byteFormat',
+      title: 'Byte Format',
+      description: 'Formats values as a data size in bits or bytes with optional decimal places and suffix.',
+    },
+  }
 );
 
 const durationFormatSchema = schema.object(
@@ -79,7 +96,7 @@ const durationFormatSchema = schema.object(
      */
     from: schema.string({
       meta: {
-        description: 'From',
+        description: 'Source time unit (e.g. `milliseconds`, `seconds`, `minutes`, `hours`, `days`).',
       },
     }),
     /**
@@ -87,7 +104,7 @@ const durationFormatSchema = schema.object(
      */
     to: schema.string({
       meta: {
-        description: 'To',
+        description: 'Display time unit after conversion (e.g. `seconds`, `minutes`, `hours`, `days`).',
       },
     }),
     /**
@@ -101,7 +118,13 @@ const durationFormatSchema = schema.object(
       })
     ),
   },
-  { meta: { id: 'durationFormat', title: 'Duration Format' } }
+  {
+    meta: {
+      id: 'durationFormat',
+      title: 'Duration Format',
+      description: 'Formats a numeric value as a human-readable duration by converting between time units.',
+    },
+  }
 );
 
 const customFormatSchema = schema.object(
@@ -112,11 +135,17 @@ const customFormatSchema = schema.object(
      */
     pattern: schema.string({
       meta: {
-        description: 'Pattern',
+        description: 'Kibana field format pattern string.',
       },
     }),
   },
-  { meta: { id: 'customFormat', title: 'Custom Format' } }
+  {
+    meta: {
+      id: 'customFormat',
+      title: 'Custom Format',
+      description: 'Formats values using a Kibana field format pattern string.',
+    },
+  }
 );
 
 /**
@@ -124,7 +153,13 @@ const customFormatSchema = schema.object(
  */
 export const formatTypeSchema = schema.oneOf(
   [numericFormatSchema, byteFormatSchema, durationFormatSchema, customFormatSchema],
-  { meta: { id: 'formatType', title: 'Format Type' } }
+  {
+    meta: {
+      id: 'formatType',
+      title: 'Format Type',
+      description: 'Number display format for the dimension value.',
+    },
+  }
 );
 
 export const formatSchema = {

@@ -89,7 +89,14 @@ export const _lensApiStateSchema: any = objectUnion(
     ...treemapStateSchema.getUnionTypes(),
     ...waffleStateSchema.getUnionTypes(),
   ],
-  { meta: { id: 'lensApiState', title: 'Visualizations' } }
+  {
+    meta: {
+      id: 'lensApiState',
+      title: 'Visualizations',
+      description:
+        'Visualization configuration. Use the `type` field to specify the chart type. Each chart type has its own set of required and optional fields.',
+    },
+  }
 );
 
 export type LensApiState =
