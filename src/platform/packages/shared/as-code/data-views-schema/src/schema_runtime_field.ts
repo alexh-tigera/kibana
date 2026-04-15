@@ -131,7 +131,13 @@ export const primitiveRuntimeFieldSchema = schema.object(
     ...commonFieldSchema,
     ...commonRuntimeFieldSchema,
   },
-  { meta: { id: 'kbn-runtime-field-schema', title: 'Runtime field' } }
+  {
+    meta: {
+      id: 'kbn-runtime-field-schema',
+      title: 'Runtime field',
+      description: 'A single-value runtime field computed at query time by a Painless script.',
+    },
+  }
 );
 
 export const compositeRuntimeFieldSchema = schema.object(
@@ -153,14 +159,32 @@ export const compositeRuntimeFieldSchema = schema.object(
         }),
         ...commonFieldSchema,
       }),
-      { maxSize: 100 }
+      {
+        maxSize: 100,
+        meta: { description: 'Subfields of the composite runtime field. Maximum 100.' },
+      }
     ),
     ...commonRuntimeFieldSchema,
   },
-  { meta: { id: 'kbn-composite-runtime-field-schema', title: 'Composite runtime field' } }
+  {
+    meta: {
+      id: 'kbn-composite-runtime-field-schema',
+      title: 'Composite runtime field',
+      description:
+        'A multi-value runtime field with named subfields, each computed by the same Painless script.',
+    },
+  }
 );
 
-export const runtimeFieldSchema = schema.discriminatedUnion('type', [
-  primitiveRuntimeFieldSchema,
-  compositeRuntimeFieldSchema,
-]);
+export const runtimeFieldSchema = schema.discriminatedUnion(
+  'type',
+  [primitiveRuntimeFieldSchema, compositeRuntimeFieldSchema],
+  {
+    meta: {
+      id: 'kbn-runtime-field-schema-union',
+      title: 'Runtime Field',
+      description:
+        'A runtime field computed at query time. Use a primitive field for a single value or a composite field for multiple named subfields.',
+    },
+  }
+);

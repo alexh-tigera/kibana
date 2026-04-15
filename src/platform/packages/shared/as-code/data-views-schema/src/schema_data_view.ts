@@ -21,7 +21,13 @@ export const dataViewReferenceSchema = schema.object(
       },
     }),
   },
-  { meta: { id: 'kbn-data-view-reference-schema', title: 'Data view reference' } }
+  {
+    meta: {
+      id: 'kbn-data-view-reference-schema',
+      title: 'Data view reference',
+      description: 'Uses an existing saved Kibana data view as the data source, referenced by its ID.',
+    },
+  }
 );
 
 export const dataViewSpecSchema = schema.object(
@@ -41,12 +47,32 @@ export const dataViewSpecSchema = schema.object(
         },
       })
     ),
-    runtime_fields: schema.maybe(schema.arrayOf(runtimeFieldSchema, { maxSize: 100 })),
+    runtime_fields: schema.maybe(
+      schema.arrayOf(runtimeFieldSchema, {
+        maxSize: 100,
+        meta: { description: 'Optional runtime fields added to the ad-hoc data view. Maximum 100.' },
+      })
+    ),
   },
-  { meta: { id: 'kbn-data-view-spec-schema', title: 'Data view inline spec' } }
+  {
+    meta: {
+      id: 'kbn-data-view-spec-schema',
+      title: 'Data view inline spec',
+      description:
+        'Defines an ad-hoc data view inline using an index pattern. No saved object is created.',
+    },
+  }
 );
 
-export const dataViewSchema = schema.discriminatedUnion('type', [
-  dataViewReferenceSchema,
-  dataViewSpecSchema,
-]);
+export const dataViewSchema = schema.discriminatedUnion(
+  'type',
+  [dataViewReferenceSchema, dataViewSpecSchema],
+  {
+    meta: {
+      id: 'kbn-data-view-schema',
+      title: 'Data Source',
+      description:
+        'Data source for the visualization. Use `data_view_reference` to reference a saved data view by ID, or `data_view_spec` to define an ad-hoc data view inline.',
+    },
+  }
+);
