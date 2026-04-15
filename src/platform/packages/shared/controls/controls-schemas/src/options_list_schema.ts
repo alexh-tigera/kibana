@@ -18,27 +18,84 @@ import { controlTitleSchema, dataControlSchema } from './control_schema';
 const SELECTIONS_MAX = 10000;
 
 export const optionsListDisplaySettingsSchema = schema.object({
-  placeholder: schema.maybe(schema.string()),
-  hide_action_bar: schema.maybe(schema.boolean()),
-  hide_exclude: schema.maybe(schema.boolean()),
-  hide_exists: schema.maybe(schema.boolean()),
-  hide_sort: schema.maybe(schema.boolean()),
+  placeholder: schema.maybe(
+    schema.string({
+      meta: {
+        description: 'Placeholder text displayed in the control input when no option is selected.',
+      },
+    })
+  ),
+  hide_action_bar: schema.maybe(
+    schema.boolean({
+      meta: {
+        description:
+          'When `true`, the action bar (containing apply and clear buttons) is hidden from the control popover.',
+      },
+    })
+  ),
+  hide_exclude: schema.maybe(
+    schema.boolean({
+      meta: {
+        description:
+          'When `true`, the exclude toggle is hidden from the control popover, preventing users from switching between include and exclude mode.',
+      },
+    })
+  ),
+  hide_exists: schema.maybe(
+    schema.boolean({
+      meta: {
+        description: 'When `true`, the "exists" filter option is hidden from the control popover.',
+      },
+    })
+  ),
+  hide_sort: schema.maybe(
+    schema.boolean({
+      meta: {
+        description: 'When `true`, the sort order selector is hidden from the control popover.',
+      },
+    })
+  ),
 });
 
 export const optionsListSearchTechniqueSchema = schema.oneOf(
   [schema.literal('prefix'), schema.literal('wildcard'), schema.literal('exact')],
-  { defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.search_technique }
+  {
+    defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.search_technique,
+    meta: {
+      description:
+        'The string matching technique used when searching for options. `prefix` matches from the beginning of the string, `wildcard` matches anywhere in the string, and `exact` requires a full string match. Defaults to `wildcard`.',
+    },
+  }
 );
 
 export const optionsListSortSchema = schema.object(
   {
-    by: schema.oneOf([schema.literal('_count'), schema.literal('_key')]),
-    direction: schema.oneOf([schema.literal('asc'), schema.literal('desc')]),
+    by: schema.oneOf([schema.literal('_count'), schema.literal('_key')], {
+      meta: {
+        description:
+          'The field used to sort the available options list. `_count` sorts by document count and `_key` sorts alphabetically by option value.',
+      },
+    }),
+    direction: schema.oneOf([schema.literal('asc'), schema.literal('desc')], {
+      meta: {
+        description: 'The sort direction. `asc` sorts ascending and `desc` sorts descending.',
+      },
+    }),
   },
-  { defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.sort }
+  {
+    defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.sort,
+    meta: {
+      description:
+        'Defines how the available options are sorted in the control popover. Defaults to `{ by: "_count", direction: "desc" }`.',
+    },
+  }
 );
 
-export const optionsListSelectionSchema = schema.oneOf([schema.string(), schema.number()]);
+export const optionsListSelectionSchema = schema.oneOf([schema.string(), schema.number()], {
+  meta: {
+    description: 'A selected option value. Accepts a string or a number.',
+  },
+});
 
 const optionsListControlBaseParameters = schema.object({
   display_settings: schema.maybe(optionsListDisplaySettingsSchema),
@@ -47,35 +104,83 @@ const optionsListControlBaseParameters = schema.object({
 export const optionsListDSLControlSchema = schema.object({
   ...optionsListControlBaseParameters.getPropSchemas(),
   ...dataControlSchema.getPropSchemas(),
-  exclude: schema.boolean({ defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.exclude }),
+  exclude: schema.boolean({
+    defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.exclude,
+    meta: {
+      description:
+        'When `true`, the control filters to documents that do NOT match the selected options. Defaults to `false`.',
+    },
+  }),
   exists_selected: schema.boolean({
     defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.exists_selected,
+    meta: {
+      description:
+        'When `true`, the control filters to documents where the field exists, regardless of value. Defaults to `false`.',
+    },
   }),
   run_past_timeout: schema.boolean({
     defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.run_past_timeout,
+    meta: {
+      description:
+        'When `true`, the options list query continues running even if it exceeds the configured timeout threshold. Defaults to `false`.',
+    },
   }),
   search_technique: optionsListSearchTechniqueSchema,
   selected_options: schema.arrayOf(optionsListSelectionSchema, {
     defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.selected_options,
     maxSize: SELECTIONS_MAX,
+    meta: {
+      description:
+        'The list of currently selected option values. Maximum 10000 entries. Defaults to an empty array.',
+    },
   }),
-  single_select: schema.boolean({ defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.single_select }),
+  single_select: schema.boolean({
+    defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.single_select,
+    meta: {
+      description:
+        'When `true`, only one option may be selected at a time. Selecting a new option deselects any previously selected option. Defaults to `false`.',
+    },
+  }),
   sort: optionsListSortSchema,
 });
 
 const baseEsqlControl = {
   ...controlTitleSchema.getPropSchemas(),
   ...optionsListControlBaseParameters.getPropSchemas(),
-  selected_options: schema.arrayOf(schema.string(), { maxSize: SELECTIONS_MAX }),
-  single_select: schema.boolean({ defaultValue: DEFAULT_ESQL_OPTIONS_LIST_STATE.single_select }),
-  variable_name: schema.string(),
-  variable_type: schema.oneOf([
-    schema.literal('fields'),
-    schema.literal('values'),
-    schema.literal('functions'),
-    schema.literal('time_literal'),
-    schema.literal('multi_values'),
-  ]),
+  selected_options: schema.arrayOf(schema.string(), {
+    maxSize: SELECTIONS_MAX,
+    meta: {
+      description: 'The list of currently selected option values. Maximum 10000 entries.',
+    },
+  }),
+  single_select: schema.boolean({
+    defaultValue: DEFAULT_ESQL_OPTIONS_LIST_STATE.single_select,
+    meta: {
+      description:
+        'When `true`, only one option may be selected at a time. Selecting a new option deselects any previously selected option. Defaults to `true`.',
+    },
+  }),
+  variable_name: schema.string({
+    meta: {
+      description:
+        'The name of the ES|QL variable that this control populates. The variable is referenced in ES|QL queries using the `?variable_name` syntax.',
+    },
+  }),
+  variable_type: schema.oneOf(
+    [
+      schema.literal('fields'),
+      schema.literal('values'),
+      schema.literal('functions'),
+      schema.literal('time_literal'),
+      schema.literal('multi_values'),
+    ],
+    {
+      meta: {
+        description:
+          'The ES|QL variable type that determines how the selected value is substituted into the query. Accepts `fields`, `values`, `functions`, `time_literal`, or `multi_values`.',
+      },
+    }
+  ),
 };
 
 export const optionsListESQLControlSchema = schema.discriminatedUnion('control_type', [
@@ -85,11 +190,18 @@ export const optionsListESQLControlSchema = schema.discriminatedUnion('control_t
       control_type: schema.literal('STATIC_VALUES'),
       available_options: schema.arrayOf(schema.string(), {
         maxSize: MAX_OPTIONS_LIST_REQUEST_SIZE,
+        meta: {
+          description:
+            'A fixed list of option strings displayed in the control popover. Maximum 1000 entries.',
+        },
       }),
     },
     {
       meta: {
         id: 'kbn-controls-schemas-options-list-esql-control-schema-static-values',
+        title: 'STATIC_VALUES',
+        description:
+          'An ES|QL control with a fixed list of selectable options defined directly in `available_options`.',
       },
     }
   ),
@@ -97,11 +209,19 @@ export const optionsListESQLControlSchema = schema.discriminatedUnion('control_t
     {
       ...baseEsqlControl,
       control_type: schema.literal('VALUES_FROM_QUERY'),
-      esql_query: schema.string(),
+      esql_query: schema.string({
+        meta: {
+          description:
+            'An ES|QL query whose results populate the list of available options in the control popover.',
+        },
+      }),
     },
     {
       meta: {
         id: 'kbn-controls-schemas-options-list-esql-control-schema-values-from-query',
+        title: 'VALUES_FROM_QUERY',
+        description:
+          'An ES|QL control whose selectable options are dynamically retrieved by running an ES|QL query.',
       },
     }
   ),

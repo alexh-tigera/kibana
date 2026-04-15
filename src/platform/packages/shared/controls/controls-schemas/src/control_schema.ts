@@ -12,22 +12,30 @@ import { DEFAULT_DATA_CONTROL_STATE } from '@kbn/controls-constants';
 
 export const controlTitleSchema = schema.object({
   title: schema.maybe(
-    schema.string({ meta: { description: 'A human-readable title for the control' } })
+    schema.string({ meta: { description: 'A human-readable title for the control.' } })
   ),
 });
 
 export const dataControlSchema = schema.object({
   ...controlTitleSchema.getPropSchemas(),
   data_view_id: schema.string({
-    meta: { description: 'The ID of the data view that the control is tied to' }, // this will generate a reference
+    meta: { description: 'The ID of the data view that provides field options for this control.' }, // this will generate a reference
   }),
   field_name: schema.string({
-    meta: { description: 'The name of the field in the data view that the control is tied to' },
+    meta: { description: 'The name of the field in the data view that this control filters on.' },
   }),
   use_global_filters: schema.boolean({
     defaultValue: DEFAULT_DATA_CONTROL_STATE.use_global_filters,
+    meta: {
+      description:
+        'When `true`, the control applies global filters from the search bar to its own options query. Defaults to `true`.',
+    },
   }),
   ignore_validations: schema.boolean({
     defaultValue: DEFAULT_DATA_CONTROL_STATE.ignore_validations,
+    meta: {
+      description:
+        'When `true`, the control skips field-level validation checks and renders even when the configured field does not exist in the data view. Defaults to `false`.',
+    },
   }),
 });
