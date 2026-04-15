@@ -51,9 +51,10 @@ import {
   isNLPModelItem,
   type TrainedModelDeploymentStatsResponse,
 } from '@kbn/ml-common-types/trained_models';
+import type { CloudInfo } from '@kbn/ml-common-types/ml_server_info';
 import type { NLPSettings } from '../../../common/constants/app';
 
-import { type CloudInfo, getNewJobLimits } from '../services/ml_server_info';
+import { getNewJobLimits } from '../services/ml_server_info';
 import { DeploymentParamsMapper } from './deployment_params_mapper';
 
 import type { HttpService } from '../services/http_service';
