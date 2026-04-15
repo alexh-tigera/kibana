@@ -2358,6 +2358,10 @@
       "enabled": {
         "type": "boolean"
       },
+      "global_data_tags": {
+        "index": false,
+        "type": "flattened"
+      },
       "inputs": {
         "dynamic": false,
         "properties": {}
@@ -2997,6 +3001,10 @@
       },
       "enabled": {
         "type": "boolean"
+      },
+      "global_data_tags": {
+        "index": false,
+        "type": "flattened"
       },
       "inputs": {
         "dynamic": false,
