@@ -67,8 +67,7 @@ const commonRuntimeFieldSchema = {
  */
 const commonFieldSchema = {
   /**
-   * The type of the runtime field (e.g., 'keyword', 'long', 'date').
-   * Example: 'keyword'
+   * The type of the runtime field.
    */
   type: schema.oneOf(
     PRIMITIVE_RUNTIME_FIELD_TYPES.map((type) => schema.literal(type)) as [
@@ -78,7 +77,7 @@ const commonFieldSchema = {
       meta: {
         id: 'kbn-runtime-field-type',
         title: 'Type',
-        description: 'The type of the runtime field (e.g., "keyword", "long", "date").',
+        description: 'The type of the runtime field. Accepted values: `keyword`, `long`, `double`, `date`, `ip`, `boolean`, `geo_point`.',
       },
     }
   ),

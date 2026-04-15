@@ -96,7 +96,7 @@ const durationFormatSchema = schema.object(
      */
     from: schema.string({
       meta: {
-        description: 'Source time unit (e.g. `milliseconds`, `seconds`, `minutes`, `hours`, `days`).',
+        description: 'Source time unit for conversion, for example `milliseconds`, `seconds`, `minutes`, `hours`, or `days`.',
       },
     }),
     /**
@@ -104,7 +104,7 @@ const durationFormatSchema = schema.object(
      */
     to: schema.string({
       meta: {
-        description: 'Display time unit after conversion (e.g. `seconds`, `minutes`, `hours`, `days`).',
+        description: 'Display time unit after conversion, for example `seconds`, `minutes`, `hours`, or `days`.',
       },
     }),
     /**
