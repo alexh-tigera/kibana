@@ -68,30 +68,55 @@ const compareToSchemaShared = schema.object(
       schema.boolean({ meta: { description: 'Show value' }, defaultValue: true })
     ),
   },
-  { meta: { id: 'metricChartCompareToShared', title: 'Compare To Shared' } }
+  {
+    meta: {
+      id: 'metricChartCompareToShared',
+      title: 'Compare To Shared',
+      description: 'Shared configuration for compare-to options (palette, icon, value visibility).',
+    },
+  }
 );
 
-const barBackgroundChartSchema = schema.object({
-  type: schema.literal('bar'),
-  /**
-   * Direction of the bar. Possible values:
-   * - 'vertical': Bar is oriented vertically
-   * - 'horizontal': Bar is oriented horizontally
-   */
-  orientation: schema.maybe(builderEnums.simpleOrientation()),
-});
-
-export const complementaryVizSchemaNoESQL = schema.oneOf([
-  barBackgroundChartSchema.extends({
+const barBackgroundChartSchema = schema.object(
+  {
+    type: schema.literal('bar'),
     /**
-     * Max value
+     * Direction of the bar. Possible values:
+     * - 'vertical': Bar is oriented vertically
+     * - 'horizontal': Bar is oriented horizontally
      */
-    max_value: metricOperationDefinitionSchema,
-  }),
-  schema.object({
-    type: schema.literal('trend'),
-  }),
-]);
+    orientation: schema.maybe(builderEnums.simpleOrientation()),
+  },
+  {
+    meta: {
+      id: 'metricBarBackgroundChart',
+      title: 'Bar Background Chart',
+      description: 'Bar chart shown as background context behind the primary metric value.',
+    },
+  }
+);
+
+export const complementaryVizSchemaNoESQL = schema.oneOf(
+  [
+    barBackgroundChartSchema.extends({
+      /**
+       * Max value
+       */
+      max_value: metricOperationDefinitionSchema,
+    }),
+    schema.object({
+      type: schema.literal('trend'),
+    }),
+  ],
+  {
+    meta: {
+      id: 'metricComplementaryViz',
+      title: 'Complementary Visualization',
+      description:
+        'Secondary visualization displayed behind the primary metric value. Supports a bar chart (with optional max value) or a trend line.',
+    },
+  }
+);
 
 // Note: 'trend' type is not supported for ES|QL yet
 export const complementaryVizSchemaESQL = barBackgroundChartSchema.extends(
@@ -334,6 +359,7 @@ const metricStatePrimaryMetricOptionsSchema = {
    */
   color: schema.maybe(
     schema.oneOf([colorByValueSchema, staticColorSchema, autoColorSchema], {
+      meta: { description: 'Color configuration for the primary metric value or background.' },
       defaultValue: AUTO_COLOR,
     })
   ),
@@ -352,21 +378,29 @@ const metricStateSecondaryMetricOptionsSchema = {
    * Compare to
    */
   compare: schema.maybe(
-    schema.oneOf([
-      compareToSchemaShared.extends(
-        {
-          to: schema.literal('baseline'),
-          baseline: schema.number({ meta: { description: 'Baseline value' }, defaultValue: 0 }),
+    schema.oneOf(
+      [
+        compareToSchemaShared.extends(
+          {
+            to: schema.literal('baseline'),
+            baseline: schema.number({ meta: { description: 'Baseline value' }, defaultValue: 0 }),
+          },
+          { meta: { id: 'metricCompareToBaseline', title: 'Compare To Baseline' } }
+        ),
+        compareToSchemaShared.extends(
+          {
+            to: schema.literal('primary'),
+          },
+          { meta: { id: 'metricCompareToPrimary', title: 'Compare To Primary' } }
+        ),
+      ],
+      {
+        meta: {
+          description:
+            'Compare the secondary metric to a baseline value or to the primary metric.',
         },
-        { meta: { id: 'metricCompareToBaseline', title: 'Compare To Baseline' } }
-      ),
-      compareToSchemaShared.extends(
-        {
-          to: schema.literal('primary'),
-        },
-        { meta: { id: 'metricCompareToPrimary', title: 'Compare To Primary' } }
-      ),
-    ])
+      }
+    )
   ),
   /**
    * Color configuration
@@ -452,6 +486,10 @@ export const metricStateSchemaNoESQL = schema.object(
         minSize: 1,
         maxSize: 2,
         validate: validateMetrics,
+        meta: {
+          description:
+            'Metric dimensions to display. The first must be a primary metric; an optional second must be a secondary metric.',
+        },
       }
     ),
     /**
@@ -501,6 +539,10 @@ export const esqlMetricState = schema.object(
       minSize: 1,
       maxSize: 2,
       validate: validateMetrics,
+      meta: {
+        description:
+          'Metric dimensions to display. The first must be a primary metric; an optional second must be a secondary metric.',
+      },
     }),
     /**
      * Configure how to break down the metric (e.g. show one metric per term).
@@ -528,7 +570,12 @@ export const esqlMetricState = schema.object(
 );
 
 export const metricStateSchema = objectUnion([metricStateSchemaNoESQL, esqlMetricState], {
-  meta: { id: 'metricChart', title: 'Metric Chart' },
+  meta: {
+    id: 'metricChart',
+    title: 'Metric Chart',
+    description:
+      'Displays one or two metric values with optional color coding, trend line, and breakdown by dimension.',
+  },
 });
 
 export type MetricState = TypeOf<typeof metricStateSchema>;

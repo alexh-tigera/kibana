@@ -229,7 +229,12 @@ const datatableStateCommonOptionsSchema = {
   /**
    * Show the column
    */
-  visible: schema.maybe(schema.boolean({ defaultValue: true })),
+  visible: schema.maybe(
+    schema.boolean({
+      defaultValue: true,
+      meta: { description: 'When `false`, hides the column from the datatable.' },
+    })
+  ),
   /**
    * Column width in pixels
    */
