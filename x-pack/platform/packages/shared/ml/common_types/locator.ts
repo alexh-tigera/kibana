@@ -13,7 +13,7 @@ import type { InfluencersFilterQuery } from '@kbn/ml-anomaly-utils';
 import type { SearchQueryLanguage } from '@kbn/ml-query-utils';
 import type { ListingPageUrlState } from '@kbn/ml-url-state';
 
-import type { SeverityThreshold } from './anomalies';
+import type { SeverityThreshold } from '@kbn/ml-common-api-schemas/embeddables/anomaly_charts';
 import type { JobId } from './anomaly_detection_jobs/job';
 import type { ML_PAGES } from './locator_ml_pages';
 
