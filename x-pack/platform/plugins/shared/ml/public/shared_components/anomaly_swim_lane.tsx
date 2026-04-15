@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 import type { AnomalySwimLaneEmbeddableApi } from '../embeddables';
 import { ANOMALY_SWIMLANE_EMBEDDABLE_TYPE } from '../embeddables';
 
-interface AnomalySwimLaneProps extends AnomalySwimlanePropsFromSchema {
+export interface AnomalySwimLaneProps extends AnomalySwimlanePropsFromSchema {
   executionContext: KibanaExecutionContext;
 }
 
