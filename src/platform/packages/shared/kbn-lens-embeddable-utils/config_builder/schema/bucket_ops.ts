@@ -433,13 +433,23 @@ export const bucketRangesOperationSchema = schema.object(
   { meta: { id: 'rangesOperation', title: 'Ranges Operation' } }
 );
 
-export const bucketOperationDefinitionSchema = schema.oneOf([
-  bucketDateHistogramOperationSchema,
-  bucketTermsOperationSchema,
-  bucketHistogramOperationSchema,
-  bucketRangesOperationSchema,
-  bucketFiltersOperationSchema,
-]);
+export const bucketOperationDefinitionSchema = schema.oneOf(
+  [
+    bucketDateHistogramOperationSchema,
+    bucketTermsOperationSchema,
+    bucketHistogramOperationSchema,
+    bucketRangesOperationSchema,
+    bucketFiltersOperationSchema,
+  ],
+  {
+    meta: {
+      id: 'lensBucketOperation',
+      title: 'Breakdown Operation',
+      description:
+        'Breakdown dimension configuration. Groups data using date histogram, terms, numeric histogram, value ranges, or custom filters.',
+    },
+  }
+);
 
 export type TermOperationRankByCustomBaseType = TypeOf<typeof bucketTermsRankByCustomBaseSchema>;
 export type TermOperationRankByCustomPercentileType = TypeOf<

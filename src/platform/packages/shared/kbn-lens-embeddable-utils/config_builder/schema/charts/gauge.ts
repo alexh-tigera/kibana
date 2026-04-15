@@ -133,6 +133,7 @@ const gaugeStateMetricOptionsSchema = {
    */
   color: schema.maybe(
     schema.oneOf([colorByValueSchema, noColorSchema, autoColorSchema], {
+      meta: { description: 'Color configuration for the gauge fill.' },
       defaultValue: AUTO_COLOR,
     })
   ),
@@ -176,7 +177,13 @@ export const gaugeStateSchemaNoESQL = schema.object(
       ...gaugeStateMetricInnerNoESQLOpsSchema,
     }),
   },
-  { meta: { id: 'gaugeNoESQL', title: 'Gauge Chart (DSL)' } }
+  {
+    meta: {
+      id: 'gaugeNoESQL',
+      title: 'Gauge Chart (DSL)',
+      description: 'Gauge configuration using a DSL data source.',
+    },
+  }
 );
 
 export const gaugeStateSchemaESQL = schema.object(
@@ -194,11 +201,22 @@ export const gaugeStateSchemaESQL = schema.object(
       ...gaugeStateMetricInnerESQLOpsSchema,
     }),
   },
-  { meta: { id: 'gaugeESQL', title: 'Gauge Chart (ES|QL)' } }
+  {
+    meta: {
+      id: 'gaugeESQL',
+      title: 'Gauge Chart (ES|QL)',
+      description: 'Gauge configuration using an ES|QL query.',
+    },
+  }
 );
 
 export const gaugeStateSchema = objectUnion([gaugeStateSchemaNoESQL, gaugeStateSchemaESQL], {
-  meta: { id: 'gaugeChart', title: 'Gauge Chart' },
+  meta: {
+    id: 'gaugeChart',
+    title: 'Gauge Chart',
+    description:
+      'Displays a metric value on a gauge with optional minimum, maximum, and goal markers. Supports bullet and circular gauge shapes.',
+  },
 });
 
 export type GaugeState = TypeOf<typeof gaugeStateSchema>;

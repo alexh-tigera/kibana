@@ -99,7 +99,13 @@ export const tagcloudStateSchemaNoESQL = schema.object(
      */
     tag_by: mergeAllBucketsWithChartDimensionSchema(tagcloudStateTagsByOptionsSchema),
   },
-  { meta: { id: 'tagcloudNoESQL', title: 'Tag Cloud Chart (DSL)' } }
+  {
+    meta: {
+      id: 'tagcloudNoESQL',
+      title: 'Tag Cloud Chart (DSL)',
+      description: 'Tag Cloud configuration using a DSL data source.',
+    },
+  }
 );
 
 export const tagcloudStateSchemaESQL = schema.object(
@@ -118,13 +124,23 @@ export const tagcloudStateSchemaESQL = schema.object(
      */
     tag_by: esqlColumnWithFormatSchema.extends(tagcloudStateTagsByOptionsSchema),
   },
-  { meta: { id: 'tagcloudESQL', title: 'Tag Cloud Chart (ES|QL)' } }
+  {
+    meta: {
+      id: 'tagcloudESQL',
+      title: 'Tag Cloud Chart (ES|QL)',
+      description: 'Tag Cloud configuration using an ES|QL query.',
+    },
+  }
 );
 
 export const tagcloudStateSchema = objectUnion(
   [tagcloudStateSchemaNoESQL, tagcloudStateSchemaESQL],
   {
-    meta: { id: 'tagcloudChart', title: 'Tag Cloud Chart' },
+    meta: {
+      id: 'tagcloudChart',
+      title: 'Tag Cloud Chart',
+      description: 'Displays terms as a word cloud, sizing each tag by its metric value.',
+    },
   }
 );
 

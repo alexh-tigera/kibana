@@ -44,7 +44,14 @@ export const regionMapStateSchemaNoESQL = schema.object(
      */
     region: mergeAllBucketsWithChartDimensionSchema(regionMapStateRegionOptionsSchema),
   },
-  { meta: { id: 'regionMapNoESQL', title: 'Region Map (DSL)' } }
+  {
+    meta: {
+      id: 'regionMapNoESQL',
+      title: 'Region Map (DSL)',
+      description:
+        'Region Map configuration using a DSL data source. Maps metric values to geographic regions by color.',
+    },
+  }
 );
 
 export const regionMapStateSchemaESQL = schema.object(
@@ -62,12 +69,25 @@ export const regionMapStateSchemaESQL = schema.object(
      */
     region: esqlColumnSchema.extends(regionMapStateRegionOptionsSchema),
   },
-  { meta: { id: 'regionMapESQL', title: 'Region Map (ES|QL)' } }
+  {
+    meta: {
+      id: 'regionMapESQL',
+      title: 'Region Map (ES|QL)',
+      description: 'Region Map configuration using an ES|QL query. Maps metric values to geographic regions by color.',
+    },
+  }
 );
 
 export const regionMapStateSchema = objectUnion(
   [regionMapStateSchemaNoESQL, regionMapStateSchemaESQL],
-  { meta: { id: 'regionMapChart', title: 'Region Map' } }
+  {
+    meta: {
+      id: 'regionMapChart',
+      title: 'Region Map',
+      description:
+        'Displays metric values as a choropleth map, coloring geographic regions by the aggregated value.',
+    },
+  }
 );
 
 export type RegionMapState = TypeOf<typeof regionMapStateSchema>;

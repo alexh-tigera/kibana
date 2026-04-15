@@ -141,7 +141,8 @@ export const collapseBySchema = schema.oneOf(
   {
     meta: {
       id: 'collapseBy',
-      description: 'Collapse by function description',
+      description:
+        'Aggregation function used to collapse a breakdown dimension into a single value.',
     },
   }
 );
