@@ -574,7 +574,7 @@ export const metricStateSchema = objectUnion([metricStateSchemaNoESQL, esqlMetri
     id: 'metricChart',
     title: 'Metric Chart',
     description:
-      'Displays one or two metric values with optional color coding, trend line, and breakdown by dimension.',
+      'One or two metric values with optional color coding, trend line, and breakdown by dimension.',
   },
 });
 

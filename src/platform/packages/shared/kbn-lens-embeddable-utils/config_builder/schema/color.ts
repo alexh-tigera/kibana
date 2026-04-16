@@ -274,7 +274,7 @@ const categoricalColorMappingSchema = schema.object(
       id: 'categoricalColorMapping',
       title: 'Categorical Color Mapping',
       description:
-        'Assigns palette colors to specific categorical values. Values without an explicit mapping receive the unassigned color.',
+        'Palette color assignment for specific categorical values. Unmapped values receive the unassigned color.',
     },
   }
 );
@@ -332,7 +332,7 @@ export const colorMappingSchema = schema.oneOf(
       id: 'colorMapping',
       title: 'Color Mapping',
       description:
-        'Maps dimension values to colors, either categorically (specific values) or as a gradient across values.',
+        'Color mapping for dimension values, either categorical (for specific values) or as a gradient.',
     },
     defaultValue: DEFAULT_CATEGORICAL_COLOR_MAPPING_VALUE,
   }
@@ -394,7 +394,7 @@ export const applyColorToSchema = schema.oneOf(
   {
     meta: {
       description:
-        'Determines where the color is applied. Set to `value` to color the metric text, or `background` to color the cell or panel background.',
+        'Color target: `value` colors the metric text, `background` colors the cell or panel background.',
     },
   }
 );

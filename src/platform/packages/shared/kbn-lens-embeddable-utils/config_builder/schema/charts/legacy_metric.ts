@@ -130,7 +130,7 @@ export const legacyMetricStateSchema = objectUnion([legacyMetricStateSchemaNoESQ
     id: 'legacyMetricChart',
     title: 'Legacy Metric Chart',
     description:
-      'Displays a single metric value with optional coloring and formatting. Consider using the Metric chart type for new visualizations.',
+      'Single metric value with optional coloring and formatting. Superseded by the Metric chart type.',
   },
 });
 

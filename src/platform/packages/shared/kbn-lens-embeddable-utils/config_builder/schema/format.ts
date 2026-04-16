@@ -49,7 +49,7 @@ const numericFormatSchema = schema.object(
       id: 'numericFormat',
       title: 'Numeric Format',
       description:
-        'Formats values as a number or percentage with optional decimal places, suffix, and compact notation.',
+        'Number or percentage format with optional decimal places, suffix, and compact notation.',
     },
   }
 );

@@ -215,7 +215,7 @@ export const gaugeStateSchema = objectUnion([gaugeStateSchemaNoESQL, gaugeStateS
     id: 'gaugeChart',
     title: 'Gauge Chart',
     description:
-      'Displays a metric value on a gauge with optional minimum, maximum, and goal markers. Supports bullet and circular gauge shapes.',
+      'Gauge chart with a metric value and optional minimum, maximum, and goal markers, in bullet or circular shape.',
   },
 });
 

@@ -206,7 +206,7 @@ export const heatmapStateSchema = objectUnion([heatmapStateSchemaNoESQL, heatmap
     id: 'heatmapChart',
     title: 'Heatmap Chart',
     description:
-      'Displays data as a grid of colored cells, where color intensity represents the metric value at each X/Y intersection.',
+      'Grid of colored cells where color intensity represents the metric value at each X/Y intersection.',
   },
 });
 

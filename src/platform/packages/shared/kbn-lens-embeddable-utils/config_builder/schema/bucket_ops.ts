@@ -130,7 +130,7 @@ const bucketTermsRankByPercentileOperationSchema = bucketTermsRankByCustomShared
       id: 'termsRankByPercentileOperation',
       title: 'Terms Rank By Percentile Operation',
       description:
-        'Ranks terms by a percentile value of a numeric field, for example the 95th percentile of response time.',
+        'Terms ranked by a percentile of a numeric field, for example the 95th percentile of response time.',
     },
   }
 );
@@ -150,7 +150,7 @@ const bucketTermsRankByPercentileRankOperationSchema = bucketTermsRankByCustomSh
       id: 'termsRankByPercentileRankOperation',
       title: 'Terms Rank By Percentile Rank Operation',
       description:
-        'Ranks terms by the percentile rank of a single value — the proportion of field values at or below that value.',
+        'Terms ranked by the percentile rank of a single value: the proportion of field values at or below that value.',
     },
   }
 );
