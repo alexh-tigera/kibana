@@ -91,7 +91,7 @@ export const ignoringGlobalFiltersSchemaRaw = {
     defaultValue: LENS_IGNORE_GLOBAL_FILTERS_DEFAULT_VALUE,
     meta: {
       description:
-        'If true, ignore global filters when fetching data for this layer. Default is false.',
+        'When `true`, ignores global filters when fetching data for this layer. Defaults to `false`.',
     },
   }),
 };
@@ -113,7 +113,7 @@ export const layerSettingsSchema = {
     max: LENS_SAMPLING_MAX_VALUE,
     defaultValue: LENS_SAMPLING_DEFAULT_VALUE,
     meta: {
-      description: 'Sampling factor between 0 (no sampling) and 1 (full sampling). Default is 1.',
+      description: 'Sampling factor between 0 (no sampling) and 1 (full sampling).',
     },
   }),
   ...ignoringGlobalFiltersSchemaRaw,
@@ -154,8 +154,8 @@ const layerSettingsSchemaWrapped = schema.object(layerSettingsSchema);
 export type LayerSettingsSchema = TypeOf<typeof layerSettingsSchemaWrapped>;
 
 export const axisTitleSchemaProps = {
-  text: schema.maybe(schema.string({ defaultValue: '', meta: { description: 'Axis title text' } })),
-  visible: schema.maybe(schema.boolean({ meta: { description: 'Show the title' } })),
+  text: schema.maybe(schema.string({ defaultValue: '', meta: { description: 'Axis title text.' } })),
+  visible: schema.maybe(schema.boolean({ meta: { description: 'When `true`, displays the title.' } })),
 };
 
 export const legendTruncateAfterLinesSchema = schema.maybe(
