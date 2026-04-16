@@ -139,7 +139,7 @@ export const legacyColorByValueSchema = colorByValueBaseSchema.extends(
       },
     }),
 
-    shift: schema.boolean({ meta: { description: 'Whether to shift the palette.' } }),
+    shift: schema.boolean({ meta: { description: 'When `true`, shifts the palette colors so they start from a different offset. Defaults to `false`.' } }),
   },
   {
     meta: {

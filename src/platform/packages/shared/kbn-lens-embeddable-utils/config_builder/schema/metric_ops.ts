@@ -145,7 +145,7 @@ const emptyAsNullSchemaRawObject = {
    */
   empty_as_null: schema.boolean({
     meta: {
-      description: 'Whether to consider null values as null',
+      description: 'When `true`, treats empty buckets as null instead of zero.',
     },
     defaultValue: LENS_EMPTY_AS_NULL_DEFAULT_VALUE,
   }),
