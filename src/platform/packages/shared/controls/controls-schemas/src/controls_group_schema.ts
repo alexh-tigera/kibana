@@ -32,7 +32,7 @@ export const controlWidthSchema = schema.oneOf(
     defaultValue: DEFAULT_PINNED_CONTROL_STATE.width as typeof CONTROL_WIDTH_MEDIUM,
     meta: {
       description:
-        'Minimum width of the control panel in the control group. Accepts `small`, `medium`, or `large`. Defaults to `medium`.',
+        'Minimum width of the control panel. Accepts `small`, `medium`, or `large`. Defaults to `medium`.',
     },
   }
 );
@@ -44,7 +44,7 @@ export const pinnedControlSchema = schema.object({
     defaultValue: DEFAULT_PINNED_CONTROL_STATE.grow,
     meta: {
       description:
-        'When `true`, the control panel expands to fill any available horizontal space in the control group. Defaults to `false`.',
+        'When `true`, the control expands to fill any available horizontal space. Defaults to `false`.',
     },
   }),
 });
@@ -68,7 +68,7 @@ export const getControlsGroupSchema = () => {
             id: 'kbn-controls-schemas-controls-group-schema-esql-control',
             title: ESQL_CONTROL,
             description:
-              'A dropdown control whose options are populated via ES|QL, either from a fixed list or a query result. Define the query or values in `config`.',
+              'An ES|QL variable control whose selected value is injected into ES|QL visualizations using the `?variable_name` syntax. Options can come from a fixed list or an ES|QL query. Define the options source in `config`.',
           },
         }
       ),
@@ -98,7 +98,7 @@ export const getControlsGroupSchema = () => {
             id: 'kbn-controls-schemas-controls-group-schema-range-slider-control',
             title: RANGE_SLIDER_CONTROL,
             description:
-              'A control panel that filters a numeric field to a selected range. The `config` object defines the data view, field, range value, and step size.',
+              'A slider control that filters data by selecting a numeric range for the configured field.',
           },
         }
       ),

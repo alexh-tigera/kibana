@@ -16,7 +16,7 @@ export const rangeValueSchema = schema.arrayOf(schema.string(), {
   maxSize: 2,
   meta: {
     description:
-      'The selected range as a two-element array of strings representing the lower and upper bound values, for example `["10", "50"]`. Must contain exactly 2 elements.',
+      'The selected range as a two-element array of strings representing the lower and upper bound values, for example `["10", "50"]`.',
   },
 });
 
@@ -27,7 +27,7 @@ export const rangeSliderControlSchema = schema.object({
     defaultValue: DEFAULT_RANGE_SLIDER_STATE.step,
     min: 0,
     meta: {
-      description: 'The step size between selectable range values. Minimum `0`. Defaults to `1`.',
+      description: 'The step size between selectable range values.',
     },
   }),
 });

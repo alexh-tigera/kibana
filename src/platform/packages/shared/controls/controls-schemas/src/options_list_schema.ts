@@ -29,7 +29,7 @@ export const optionsListDisplaySettingsSchema = schema.object({
     schema.boolean({
       meta: {
         description:
-          'When `true`, the action bar (containing apply and clear buttons) is hidden from the control popover.',
+          'When `true`, the apply and clear actions are hidden from the control.',
       },
     })
   ),
@@ -37,21 +37,21 @@ export const optionsListDisplaySettingsSchema = schema.object({
     schema.boolean({
       meta: {
         description:
-          'When `true`, the exclude toggle is hidden from the control popover, preventing users from switching between include and exclude mode.',
+          'When `true`, the exclude mode toggle is hidden from the control.',
       },
     })
   ),
   hide_exists: schema.maybe(
     schema.boolean({
       meta: {
-        description: 'When `true`, the "exists" filter option is hidden from the control popover.',
+        description: 'When `true`, the exists filter option is hidden from the control.',
       },
     })
   ),
   hide_sort: schema.maybe(
     schema.boolean({
       meta: {
-        description: 'When `true`, the sort order selector is hidden from the control popover.',
+        description: 'When `true`, the sort selector is hidden from the control.',
       },
     })
   ),
@@ -63,7 +63,7 @@ export const optionsListSearchTechniqueSchema = schema.oneOf(
     defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.search_technique,
     meta: {
       description:
-        'The string matching technique used when searching for options. `prefix` matches from the beginning of the string, `wildcard` matches anywhere in the string, and `exact` requires a full string match. Defaults to `wildcard`.',
+        'The matching technique used when searching available options. `prefix` matches values starting with the search term, `wildcard` matches values containing the search term, and `exact` requires a complete match. Only applies to string and IP fields. Defaults to `wildcard`.',
     },
   }
 );
@@ -115,7 +115,7 @@ export const optionsListDSLControlSchema = schema.object({
     defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.exists_selected,
     meta: {
       description:
-        'When `true`, the control filters to documents where the field exists, regardless of value. Defaults to `false`.',
+        'When `true`, the control filters to documents where the field exists, regardless of the field\'s value. Defaults to `false`.',
     },
   }),
   run_past_timeout: schema.boolean({
@@ -131,14 +131,14 @@ export const optionsListDSLControlSchema = schema.object({
     maxSize: SELECTIONS_MAX,
     meta: {
       description:
-        'The list of currently selected option values. Maximum 10000 entries. Defaults to an empty array.',
+        'The list of currently selected option values.',
     },
   }),
   single_select: schema.boolean({
     defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.single_select,
     meta: {
       description:
-        'When `true`, only one option may be selected at a time. Selecting a new option deselects any previously selected option. Defaults to `false`.',
+        'When `true`, only one option can be selected at a time. Selecting a new option deselects any previously selected option. Defaults to `false`.',
     },
   }),
   sort: optionsListSortSchema,
@@ -150,14 +150,14 @@ const baseEsqlControl = {
   selected_options: schema.arrayOf(schema.string(), {
     maxSize: SELECTIONS_MAX,
     meta: {
-      description: 'The list of currently selected option values. Maximum 10000 entries.',
+      description: 'The list of currently selected option values.',
     },
   }),
   single_select: schema.boolean({
     defaultValue: DEFAULT_ESQL_OPTIONS_LIST_STATE.single_select,
     meta: {
       description:
-        'When `true`, only one option may be selected at a time. Selecting a new option deselects any previously selected option. Defaults to `true`.',
+        'When `true`, only one option can be selected at a time. Selecting a new option deselects any previously selected option. Defaults to `true`.',
     },
   }),
   variable_name: schema.string({
@@ -192,7 +192,7 @@ export const optionsListESQLControlSchema = schema.discriminatedUnion('control_t
         maxSize: MAX_OPTIONS_LIST_REQUEST_SIZE,
         meta: {
           description:
-            'A fixed list of option strings displayed in the control popover. Maximum 1000 entries.',
+            'A fixed list of option strings displayed in the control.',
         },
       }),
     },
@@ -201,7 +201,7 @@ export const optionsListESQLControlSchema = schema.discriminatedUnion('control_t
         id: 'kbn-controls-schemas-options-list-esql-control-schema-static-values',
         title: 'STATIC_VALUES',
         description:
-          'An ES|QL control with a fixed list of selectable options defined directly in `available_options`.',
+          'An ES|QL variable control with a fixed list of selectable options defined directly in `available_options`.',
       },
     }
   ),
@@ -221,7 +221,7 @@ export const optionsListESQLControlSchema = schema.discriminatedUnion('control_t
         id: 'kbn-controls-schemas-options-list-esql-control-schema-values-from-query',
         title: 'VALUES_FROM_QUERY',
         description:
-          'An ES|QL control whose selectable options are dynamically retrieved by running an ES|QL query.',
+          'An ES|QL variable control whose selectable options are dynamically retrieved by running an ES|QL query.',
       },
     }
   ),
