@@ -59,7 +59,7 @@ export const dataViewSpecSchema = schema.object(
       id: 'kbn-data-view-spec-schema',
       title: 'Data view inline spec',
       description:
-        'Defines an ad-hoc data view inline using an index pattern. No saved object is created.',
+        'Ad-hoc data view defined inline using an index pattern. No saved object is created.',
     },
   }
 );
