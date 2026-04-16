@@ -67,7 +67,7 @@ const pieStylingSchema = schema.object(
           position: schema.maybe(
             schema.oneOf([schema.literal('inside'), schema.literal('outside')], {
               meta: {
-                description: 'Slice label position.',
+                description: 'Slice label position: `inside` or `outside`.',
               },
             })
           ),
@@ -82,7 +82,7 @@ const pieStylingSchema = schema.object(
     donut_hole: schema.maybe(
       schema.oneOf(
         [schema.literal('none'), schema.literal('s'), schema.literal('m'), schema.literal('l')],
-        { meta: { description: 'Donut hole size.' } }
+        { meta: { description: 'Donut hole size. Accepted values: `none` (full pie), `s`, `m`, `l`.' } }
       )
     ),
   },
