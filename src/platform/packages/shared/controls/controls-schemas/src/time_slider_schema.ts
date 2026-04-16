@@ -17,7 +17,7 @@ export const timeSliderControlSchema = schema.object({
     max: 1,
     meta: {
       description:
-        'The start of the selected time window expressed as a fraction of the global time range, where `0` is the beginning and `1` is the end of the range. Minimum `0`, maximum `1`. Defaults to `0`.',
+        'The start of the selected time window expressed as a fraction of the global time range, where `0` is the beginning and `1` is the end of the range.',
     },
   }),
   end_percentage_of_time_range: schema.number({
@@ -26,7 +26,7 @@ export const timeSliderControlSchema = schema.object({
     max: 1,
     meta: {
       description:
-        'The end of the selected time window expressed as a fraction of the global time range, where `0` is the beginning and `1` is the end of the range. Minimum `0`, maximum `1`. Defaults to `1`.',
+        'The end of the selected time window expressed as a fraction of the global time range, where `0` is the beginning and `1` is the end of the range.',
     },
   }),
   is_anchored: schema.boolean({
