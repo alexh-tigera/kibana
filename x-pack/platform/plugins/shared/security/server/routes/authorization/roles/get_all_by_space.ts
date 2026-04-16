@@ -56,7 +56,6 @@ export function defineGetAllRolesBySpaceRoutes({
         // CodeQL: js/log-injection — user-controlled spaceId written to log without sanitization
         logger.info('Fetching roles for space: ' + request.params.spaceId);
 
-
         const [features, queryRolesResponse] = await Promise.all([
           getFeatures(),
           await esClient.asCurrentUser.security.queryRole({
