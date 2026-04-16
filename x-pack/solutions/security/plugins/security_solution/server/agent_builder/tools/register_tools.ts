@@ -13,6 +13,16 @@ import { attackDiscoverySearchTool } from './attack_discovery_search_tool';
 import { entityRiskScoreTool, getEntityTool, searchEntitiesTool } from './entity_analytics';
 import { alertsTool } from './alerts_tool';
 import { createDetectionRuleTool } from './create_detection_rule_tool';
+import { readinessImpactGraphTool } from './readiness_impact_graph_tool';
+import { readinessContinuityTool } from './readiness_continuity_tool';
+import { readinessRuleDataTool } from './readiness_rule_data_tool';
+import { readinessDetectionHealthTool } from './readiness_detection_health_tool';
+import { readinessEnrichmentHealthTool } from './readiness_enrichment_health_tool';
+import { readinessEntityHealthTool } from './readiness_entity_health_tool';
+import { readinessReportTool } from './readiness_report_tool';
+import { readinessCaseTool } from './readiness_case_tool';
+import { readinessRetentionTool } from './readiness_retention_tool';
+import { readinessEcsCoverageTool } from './readiness_ecs_coverage_tool';
 import type { SecuritySolutionPluginCoreSetupDependencies } from '../../plugin_contract';
 
 /**
@@ -31,4 +41,14 @@ export const registerTools = async (
   agentBuilder.tools.register(alertsTool(core, logger));
   agentBuilder.tools.register(getEntityTool(core, logger, experimentalFeatures));
   agentBuilder.tools.register(searchEntitiesTool(core, logger, experimentalFeatures));
+  agentBuilder.tools.register(readinessImpactGraphTool(core, logger));
+  agentBuilder.tools.register(readinessContinuityTool(core, logger));
+  agentBuilder.tools.register(readinessRuleDataTool(core, logger));
+  agentBuilder.tools.register(readinessDetectionHealthTool(core, logger));
+  agentBuilder.tools.register(readinessEnrichmentHealthTool(core, logger));
+  agentBuilder.tools.register(readinessEntityHealthTool(core, logger));
+  agentBuilder.tools.register(readinessReportTool(core, logger));
+  agentBuilder.tools.register(readinessCaseTool(core, logger));
+  agentBuilder.tools.register(readinessRetentionTool(core, logger));
+  agentBuilder.tools.register(readinessEcsCoverageTool(core, logger));
 };
