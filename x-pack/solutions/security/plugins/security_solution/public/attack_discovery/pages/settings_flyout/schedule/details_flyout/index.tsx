@@ -86,10 +86,13 @@ export const DetailsFlyout: React.FC<Props> = React.memo(({ scheduleId, onClose 
   });
   const { isWorkflowsEnabled, useGetSchedule, useUpdateSchedule } = useScheduleApi();
 
-  const { data: { schedule } = { schedule: undefined }, isLoading: isLoadingSchedule } =
-    useGetSchedule({
-      id: scheduleId,
-    });
+  const {
+    data: { schedule } = { schedule: undefined },
+    isLoading: isLoadingSchedule,
+    refetch: refetchSchedule,
+  } = useGetSchedule({
+    id: scheduleId,
+  });
 
   const { sourcererDataView } = useSourcererDataView();
   const { dataView: experimentalDataView } = useDataView(PageScope.alerts);
@@ -126,6 +129,8 @@ export const DetailsFlyout: React.FC<Props> = React.memo(({ scheduleId, onClose 
           }) => Promise<unknown>
         )({ id: scheduleId, scheduleToUpdate });
 
+        await refetchSchedule();
+
         telemetry.reportEvent(AttackDiscoveryEventTypes.ScheduleUpdated, {
           has_actions: (scheduleData.actions ?? []).length > 0,
           interval: scheduleData.interval,
@@ -139,13 +144,14 @@ export const DetailsFlyout: React.FC<Props> = React.memo(({ scheduleId, onClose 
     [
       aiConnectors,
       alertsIndexPattern,
+      experimentalDataView,
       isWorkflowsEnabled,
+      refetchSchedule,
+      scheduleId,
       sourcererDataView,
       telemetry,
       uiSettings,
-      experimentalDataView,
       updateScheduleMutation,
-      scheduleId,
     ]
   );
 

@@ -185,7 +185,7 @@ export const EditForm: React.FC<FormProps> = React.memo((props) => {
       return false;
     }
     return (
-      workflowConfig.defaultAlertRetrievalMode === 'disabled' &&
+      workflowConfig.alertRetrievalMode === 'custom_only' &&
       workflowConfig.alertRetrievalWorkflowIds.length === 0
     );
   }, [isWorkflowsEnabled, workflowConfig]);
