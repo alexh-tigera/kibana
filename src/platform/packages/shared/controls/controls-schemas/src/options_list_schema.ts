@@ -28,16 +28,14 @@ export const optionsListDisplaySettingsSchema = schema.object({
   hide_action_bar: schema.maybe(
     schema.boolean({
       meta: {
-        description:
-          'When `true`, the apply and clear actions are hidden from the control.',
+        description: 'When `true`, the apply and clear actions are hidden from the control.',
       },
     })
   ),
   hide_exclude: schema.maybe(
     schema.boolean({
       meta: {
-        description:
-          'When `true`, the exclude mode toggle is hidden from the control.',
+        description: 'When `true`, the exclude mode toggle is hidden from the control.',
       },
     })
   ),
@@ -115,7 +113,7 @@ export const optionsListDSLControlSchema = schema.object({
     defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.exists_selected,
     meta: {
       description:
-        'When `true`, the control filters to documents where the field exists, regardless of the field\'s value. Defaults to `false`.',
+        "When `true`, the control filters to documents where the field exists, regardless of the field's value. Defaults to `false`.",
     },
   }),
   run_past_timeout: schema.boolean({
@@ -130,8 +128,7 @@ export const optionsListDSLControlSchema = schema.object({
     defaultValue: DEFAULT_DSL_OPTIONS_LIST_STATE.selected_options,
     maxSize: SELECTIONS_MAX,
     meta: {
-      description:
-        'The list of currently selected option values.',
+      description: 'The list of currently selected option values.',
     },
   }),
   single_select: schema.boolean({
@@ -191,8 +188,7 @@ export const optionsListESQLControlSchema = schema.discriminatedUnion('control_t
       available_options: schema.arrayOf(schema.string(), {
         maxSize: MAX_OPTIONS_LIST_REQUEST_SIZE,
         meta: {
-          description:
-            'A fixed list of option strings displayed in the control.',
+          description: 'A fixed list of option strings displayed in the control.',
         },
       }),
     },

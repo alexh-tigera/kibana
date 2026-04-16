@@ -28,7 +28,7 @@ export const dataControlSchema = schema.object({
     defaultValue: DEFAULT_DATA_CONTROL_STATE.use_global_filters,
     meta: {
       description:
-        'When `true`, the control\'s available options are narrowed by the dashboard\'s active filters. Defaults to `true`.',
+        "When `true`, the control's available options are narrowed by the dashboard's active filters. Defaults to `true`.",
     },
   }),
   ignore_validations: schema.boolean({
