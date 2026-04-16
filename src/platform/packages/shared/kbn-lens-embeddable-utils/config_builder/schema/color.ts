@@ -197,7 +197,7 @@ export const colorByValueSchema = schema.oneOf(
     meta: {
       id: 'colorByValue',
       title: 'Color By Value',
-      description: 'Dynamic color mapping by numeric range. Supports absolute and percentage-based ranges.',
+      description: 'Dynamic color mapping by numeric range, with support for absolute and percentage-based ranges.',
     },
   }
 );
