@@ -59,13 +59,13 @@ const compareToSchemaShared = schema.object(
   {
     palette: schema.maybe(
       schema.string({
-        meta: { description: 'Palette' },
+        meta: { description: 'Color palette.' },
         defaultValue: DEFAULT_SECONDARY_COMPARE_TO_PALETTE,
       })
     ),
-    icon: schema.maybe(schema.boolean({ meta: { description: 'Show icon' }, defaultValue: true })),
+    icon: schema.maybe(schema.boolean({ meta: { description: 'When `true`, displays the icon.' }, defaultValue: true })),
     value: schema.maybe(
-      schema.boolean({ meta: { description: 'Show value' }, defaultValue: true })
+      schema.boolean({ meta: { description: 'When `true`, displays the metric value.' }, defaultValue: true })
     ),
   },
   {
@@ -207,7 +207,7 @@ const metricStylingSchema = schema.object(
          */
         position: schema.maybe(
           metricValuePositionSchema({
-            meta: { description: 'Position of the primary metric value (top, middle, or bottom)' },
+            meta: { description: 'Position of the primary metric value (top, middle, or bottom).' },
             defaultValue: DEFAULT_PRIMARY_POSITION,
           })
         ),
@@ -227,7 +227,7 @@ const metricStylingSchema = schema.object(
                 horizontalAlignmentSchema({
                   meta: {
                     description:
-                      'Horizontal alignment for the title and subtitle text (left, center or right)',
+                      'Horizontal alignment for the title and subtitle text.',
                   },
                   defaultValue: DEFAULT_PRIMARY_LABELS_ALIGNMENT,
                 })
@@ -253,7 +253,7 @@ const metricStylingSchema = schema.object(
               alignment: schema.maybe(
                 horizontalAlignmentSchema({
                   meta: {
-                    description: 'Alignment for the primary metric value (left, center or right)',
+                    description: 'Alignment for the primary metric value.',
                   },
                   defaultValue: DEFAULT_PRIMARY_VALUE_ALIGNMENT,
                 })
@@ -293,7 +293,7 @@ const metricStylingSchema = schema.object(
              */
             visible: schema.maybe(
               schema.boolean({
-                meta: { description: 'Whether to display the label' },
+                meta: { description: 'When `true`, displays the label.' },
                 defaultValue: DEFAULT_SECONDARY_LABEL_VISIBLE,
               })
             ),
@@ -306,7 +306,7 @@ const metricStylingSchema = schema.object(
               placementSchema({
                 meta: {
                   description:
-                    'Label placement relative to the secondary metric value (before or after)',
+                    'Label placement relative to the secondary metric value (before or after).',
                 },
                 defaultValue: DEFAULT_SECONDARY_LABEL_PLACEMENT,
               })
@@ -324,7 +324,7 @@ const metricStylingSchema = schema.object(
                */
               alignment: schema.maybe(
                 horizontalAlignmentSchema({
-                  meta: { description: 'Alignment for secondary values (left, center or right)' },
+                  meta: { description: 'Alignment for secondary values.' },
                   defaultValue: DEFAULT_SECONDARY_VALUE_ALIGNMENT,
                 })
               ),
@@ -352,7 +352,7 @@ const metricStatePrimaryMetricOptionsSchema = {
    * Subtitle
    */
   subtitle: schema.maybe(
-    schema.string({ meta: { description: 'Subtitle below the primary metric value' } })
+    schema.string({ meta: { description: 'Subtitle below the primary metric value.' } })
   ),
   /**
    * Color configuration
@@ -418,7 +418,7 @@ const metricStateBreakdownByOptionsSchema = {
    */
   columns: schema.number({
     defaultValue: LENS_METRIC_BREAKDOWN_DEFAULT_MAX_COLUMNS,
-    meta: { description: 'Number of columns' },
+    meta: { description: 'Number of columns.' },
   }),
   /**
    * Collapse by function. This parameter is used to collapse the

@@ -164,7 +164,7 @@ export const legendTruncateAfterLinesSchema = schema.maybe(
     min: 1,
     max: 10,
     meta: {
-      description: 'Maximum lines before truncating legend items (1-10)',
+      description: 'Number of lines before legend items are truncated.',
       id: 'legendTruncateAfterLines',
     },
   })

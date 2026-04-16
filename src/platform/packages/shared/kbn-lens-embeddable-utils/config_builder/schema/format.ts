@@ -21,7 +21,7 @@ const numericFormatSchema = schema.object(
     decimals: schema.number({
       defaultValue: LENS_FORMAT_NUMBER_DECIMALS_DEFAULT,
       meta: {
-        description: 'Number of decimals',
+        description: 'Number of decimal places to display.',
       },
     }),
     /**
@@ -30,7 +30,7 @@ const numericFormatSchema = schema.object(
     suffix: schema.maybe(
       schema.string({
         meta: {
-          description: 'Suffix',
+          description: 'Suffix appended to the formatted value.',
         },
       })
     ),
@@ -40,7 +40,7 @@ const numericFormatSchema = schema.object(
     compact: schema.boolean({
       defaultValue: LENS_FORMAT_COMPACT_DEFAULT,
       meta: {
-        description: 'Whether to use compact notation',
+        description: 'When `true`, uses compact notation (for example, 1.2k instead of 1,200). Defaults to `false`.',
       },
     }),
   },
@@ -65,7 +65,7 @@ const byteFormatSchema = schema.object(
     decimals: schema.number({
       defaultValue: LENS_FORMAT_NUMBER_DECIMALS_DEFAULT,
       meta: {
-        description: 'Number of decimals',
+        description: 'Number of decimal places to display.',
       },
     }),
     /**
@@ -74,7 +74,7 @@ const byteFormatSchema = schema.object(
     suffix: schema.maybe(
       schema.string({
         meta: {
-          description: 'Suffix',
+          description: 'Suffix appended to the formatted value.',
         },
       })
     ),
@@ -113,7 +113,7 @@ const durationFormatSchema = schema.object(
     suffix: schema.maybe(
       schema.string({
         meta: {
-          description: 'Suffix',
+          description: 'Suffix appended to the formatted value.',
         },
       })
     ),

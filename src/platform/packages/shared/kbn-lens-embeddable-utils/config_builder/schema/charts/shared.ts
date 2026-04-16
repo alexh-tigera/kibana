@@ -35,13 +35,13 @@ import {
 
 export const baseLegendVisibilitySchema = schema.maybe(
   schema.oneOf([schema.literal('visible'), schema.literal('hidden')], {
-    meta: { description: 'Legend visibility' },
+    meta: { description: 'Controls the visibility of the legend.' },
   })
 );
 
 export const legendVisibilitySchemaWithAuto = schema.maybe(
   schema.oneOf([schema.literal('auto'), schema.literal('visible'), schema.literal('hidden')], {
-    meta: { description: 'Legend visibility' },
+    meta: { description: 'Controls the visibility of the legend.' },
   })
 );
 
@@ -58,7 +58,7 @@ export const legendSizeSchema = schema.maybe(
       meta: {
         id: 'legendSize',
         title: 'Legend Size',
-        description: 'Legend size',
+        description: 'Controls the size of the legend.',
       },
     }
   )

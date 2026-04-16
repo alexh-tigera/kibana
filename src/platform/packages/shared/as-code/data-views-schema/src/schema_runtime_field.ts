@@ -160,7 +160,7 @@ export const compositeRuntimeFieldSchema = schema.object(
       }),
       {
         maxSize: 100,
-        meta: { description: 'Subfields of the composite runtime field. Maximum 100.' },
+        meta: { description: 'Subfields of the composite runtime field.' },
       }
     ),
     ...commonRuntimeFieldSchema,

@@ -37,7 +37,7 @@ const gaugeStylingSchema = schema.object(
               meta: {
                 id: 'gaugeShapeBullet',
                 title: 'Shape (Bullet)',
-                description: 'Bullet gauge shape',
+                description: 'Bullet gauge shape.',
               },
             }
           ),
@@ -53,7 +53,7 @@ const gaugeStylingSchema = schema.object(
               meta: {
                 id: 'gaugeShapeCircular',
                 title: 'Shape (Circular)',
-                description: 'Circular gauge shape',
+                description: 'Circular gauge shape.',
               },
             }
           ),
@@ -113,11 +113,11 @@ const gaugeStateMetricOptionsSchema = {
       {
         visible: schema.maybe(
           schema.boolean({
-            meta: { description: 'Show the title' },
+            meta: { description: 'When `true`, displays the title.' },
             defaultValue: true,
           })
         ),
-        text: schema.maybe(schema.string({ meta: { description: 'Title text' } })),
+        text: schema.maybe(schema.string({ meta: { description: 'Title text.' } })),
       },
       { meta: { description: 'Title configuration' } }
     )
@@ -126,7 +126,7 @@ const gaugeStateMetricOptionsSchema = {
    * Subtitle
    */
   subtitle: schema.maybe(
-    schema.string({ meta: { description: 'Subtitle below the gauge value' } })
+    schema.string({ meta: { description: 'Subtitle below the gauge value.' } })
   ),
   /**
    * Color configuration
@@ -145,13 +145,13 @@ const gaugeStateMetricOptionsSchema = {
       {
         visible: schema.maybe(
           schema.boolean({
-            meta: { description: 'Show tick marks' },
+            meta: { description: 'When `true`, displays tick marks on the gauge.' },
             defaultValue: true,
           })
         ),
         mode: schema.maybe(
           schema.oneOf([schema.literal('auto'), schema.literal('bands')], {
-            meta: { description: 'Tick placement mode' },
+            meta: { description: 'Tick placement mode.' },
             defaultValue: 'bands',
           })
         ),

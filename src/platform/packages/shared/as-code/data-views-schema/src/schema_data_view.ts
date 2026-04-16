@@ -50,7 +50,7 @@ export const dataViewSpecSchema = schema.object(
     runtime_fields: schema.maybe(
       schema.arrayOf(runtimeFieldSchema, {
         maxSize: 100,
-        meta: { description: 'Optional runtime fields added to the ad-hoc data view. Maximum 100.' },
+        meta: { description: 'Runtime fields added to the data view.' },
       })
     ),
   },

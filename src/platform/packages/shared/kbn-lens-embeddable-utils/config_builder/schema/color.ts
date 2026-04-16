@@ -394,7 +394,7 @@ export const applyColorToSchema = schema.oneOf(
   {
     meta: {
       description:
-        'Whether to apply the color to the metric value text (`value`) or to the cell or panel background (`background`).',
+        'Determines where the color is applied. Set to `value` to color the metric text, or `background` to color the cell or panel background.',
     },
   }
 );

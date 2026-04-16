@@ -39,7 +39,7 @@ import { objectUnion } from './utils/object_union';
  * so it uses a datatable-specific schema rather than the shared applyColorToSchema.
  */
 const applyColorToDatatableSchema = schema.oneOf([applyColorToSchema, schema.literal('badge')], {
-  meta: { description: 'Where to apply the color for datatable (value, background, or badge)' },
+  meta: { description: 'Where to apply the color for datatable (value, background, or badge).' },
 });
 
 /**
@@ -51,13 +51,13 @@ const sortingSchema = schema.oneOf(
     schema.object(
       {
         column_type: schema.oneOf([schema.literal('metric'), schema.literal('row')], {
-          meta: { description: 'Type of column to sort by' },
+          meta: { description: 'Type of column to sort by.' },
         }),
         index: schema.number({
           min: 0,
-          meta: { description: 'Index of the column/row to sort by (0-based)' },
+          meta: { description: 'Index of the column or row to sort by (0-based).' },
         }),
-        direction: builderEnums.direction({ meta: { description: 'Sort direction' } }),
+        direction: builderEnums.direction({ meta: { description: 'Sort direction.' } }),
       },
       { meta: { description: 'Sort by a metric or row column' } }
     ),
@@ -79,7 +79,7 @@ const sortingSchema = schema.oneOf(
             description: 'Array of pivot values, one for each split_metrics_by column in order',
           },
         }),
-        direction: builderEnums.direction({ meta: { description: 'Sort direction' } }),
+        direction: builderEnums.direction({ meta: { description: 'Sort direction.' } }),
       },
       {
         meta: {
@@ -113,7 +113,7 @@ const datatableStylingSchema = schema.object(
               [schema.literal('compact'), schema.literal('default'), schema.literal('expanded')],
               {
                 defaultValue: 'default',
-                meta: { description: 'Density mode' },
+                meta: { description: 'Display density mode.' },
               }
             )
           ),
@@ -137,7 +137,7 @@ const datatableStylingSchema = schema.object(
                   ],
                   {
                     meta: {
-                      description: 'Maximum number of lines to use before header is truncated',
+                      description: 'Number of lines before the header is truncated.',
                     },
                   }
                 )
@@ -157,7 +157,7 @@ const datatableStylingSchema = schema.object(
                   ],
                   {
                     meta: {
-                      description: 'Number of lines to display per table body cell',
+                      description: 'Number of lines to display per table body cell.',
                     },
                   }
                 )
@@ -168,7 +168,7 @@ const datatableStylingSchema = schema.object(
         {
           meta: {
             id: 'datatableDensity',
-            description: 'Density configuration for the datatable',
+            description: 'Density configuration for the datatable.',
           },
         }
       )
@@ -187,7 +187,7 @@ const datatableStylingSchema = schema.object(
         ],
         {
           meta: {
-            description: 'Enables pagination and sets the number of rows to display per page',
+            description: 'Enables pagination and sets the number of rows to display per page.',
           },
         }
       )
@@ -202,7 +202,7 @@ const datatableStylingSchema = schema.object(
     row_numbers: schema.maybe(
       schema.object(
         {
-          visible: schema.boolean({ meta: { description: 'Show row numbers' } }),
+          visible: schema.boolean({ meta: { description: 'When `true`, displays row numbers.' } }),
         },
         {
           meta: {
@@ -241,7 +241,7 @@ const datatableStateCommonOptionsSchema = {
   width: schema.maybe(
     schema.number({
       min: 0,
-      meta: { description: 'Column width in pixels' },
+      meta: { description: 'Column width in pixels.' },
     })
   ),
 };
@@ -254,7 +254,7 @@ const datatableStateRowsOptionsNoESQLSchema = {
   alignment: schema.maybe(
     horizontalAlignmentSchema({
       defaultValue: 'left',
-      meta: { description: 'Alignment of the rows' },
+      meta: { description: 'Alignment of the rows.' },
     })
   ),
   /**
@@ -271,7 +271,7 @@ const datatableStateRowsOptionsNoESQLSchema = {
   click_filter: schema.maybe(
     schema.boolean({
       defaultValue: false,
-      meta: { description: 'Whether to enable the one click filter' },
+      meta: { description: 'When `true`, enables one-click filtering on cell values.' },
     })
   ),
   /**
@@ -318,7 +318,7 @@ const datatableStateMetricsOptionsSchema = {
   alignment: schema.maybe(
     horizontalAlignmentSchema({
       defaultValue: 'right',
-      meta: { description: 'Alignment of the columns' },
+      meta: { description: 'Alignment of the columns.' },
     })
   ),
   /**
@@ -335,9 +335,9 @@ const datatableStateMetricsOptionsSchema = {
             schema.literal('min'),
             schema.literal('max'),
           ],
-          { meta: { description: 'Type of summary function to apply to the column' } }
+          { meta: { description: 'Type of summary function to apply to the column.' } }
         ),
-        label: schema.maybe(schema.string({ meta: { description: 'Summary row label' } })),
+        label: schema.maybe(schema.string({ meta: { description: 'Summary row label.' } })),
       },
       { meta: { description: 'Summary row configuration' } }
     )
