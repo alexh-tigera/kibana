@@ -183,7 +183,7 @@ export const runtimeFieldSchema = schema.discriminatedUnion(
       id: 'kbn-runtime-field-schema-union',
       title: 'Runtime Field',
       description:
-        'A runtime field computed at query time. Use a primitive field for a single value or a composite field for multiple named subfields.',
+        'A [runtime field](https://www.elastic.co/docs/manage-data/data-store/mapping/runtime-fields) computed at query time, either as a primitive type (single value) or a composite type (multiple named subfields).',
     },
   }
 );
