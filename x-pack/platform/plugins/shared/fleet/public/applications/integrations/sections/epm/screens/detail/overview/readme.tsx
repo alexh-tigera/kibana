@@ -121,9 +121,7 @@ export function Readme({
         <EuiText grow={true}>
           <ReactMarkdown
             components={markdownRenderers(refs, handleImageUri)}
-            // @ts-expect-error unified plugin types are incompatible between versions
             rehypePlugins={[rehypeRaw, [rehypeSanitize]]}
-            // @ts-expect-error unified plugin types are incompatible between versions
             remarkPlugins={[remarkGfm]}
           >
             {processedMarkdown}
