@@ -67,7 +67,8 @@ const commonRuntimeFieldSchema = {
  */
 const commonFieldSchema = {
   /**
-   * The type of the runtime field.
+   * The type of the runtime field (e.g., 'keyword', 'long', 'date').
+   * Example: 'keyword'
    */
   type: schema.oneOf(
     PRIMITIVE_RUNTIME_FIELD_TYPES.map((type) => schema.literal(type)) as [
@@ -77,8 +78,7 @@ const commonFieldSchema = {
       meta: {
         id: 'kbn-runtime-field-type',
         title: 'Type',
-        description:
-          'The type of the runtime field. Accepted values: `keyword`, `long`, `double`, `date`, `ip`, `boolean`, `geo_point`.',
+        description: 'The type of the runtime field (e.g., "keyword", "long", "date").',
       },
     }
   ),
@@ -131,13 +131,7 @@ export const primitiveRuntimeFieldSchema = schema.object(
     ...commonFieldSchema,
     ...commonRuntimeFieldSchema,
   },
-  {
-    meta: {
-      id: 'kbn-runtime-field-schema',
-      title: 'Runtime field',
-      description: 'A single-value runtime field computed at query time by a Painless script.',
-    },
-  }
+  { meta: { id: 'kbn-runtime-field-schema', title: 'Runtime field' } }
 );
 
 export const compositeRuntimeFieldSchema = schema.object(
@@ -159,32 +153,14 @@ export const compositeRuntimeFieldSchema = schema.object(
         }),
         ...commonFieldSchema,
       }),
-      {
-        maxSize: 100,
-        meta: { description: 'Subfields of the composite runtime field.' },
-      }
+      { maxSize: 100 }
     ),
     ...commonRuntimeFieldSchema,
   },
-  {
-    meta: {
-      id: 'kbn-composite-runtime-field-schema',
-      title: 'Composite runtime field',
-      description:
-        'A multi-value runtime field with named subfields, each computed by the same Painless script.',
-    },
-  }
+  { meta: { id: 'kbn-composite-runtime-field-schema', title: 'Composite runtime field' } }
 );
 
-export const runtimeFieldSchema = schema.discriminatedUnion(
-  'type',
-  [primitiveRuntimeFieldSchema, compositeRuntimeFieldSchema],
-  {
-    meta: {
-      id: 'kbn-runtime-field-schema-union',
-      title: 'Runtime Field',
-      description:
-        'A [runtime field](https://www.elastic.co/docs/manage-data/data-store/mapping/runtime-fields) computed at query time, either as a primitive type (single value) or a composite type (multiple named subfields).',
-    },
-  }
-);
+export const runtimeFieldSchema = schema.discriminatedUnion('type', [
+  primitiveRuntimeFieldSchema,
+  compositeRuntimeFieldSchema,
+]);

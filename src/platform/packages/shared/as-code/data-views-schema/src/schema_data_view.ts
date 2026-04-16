@@ -21,13 +21,7 @@ export const dataViewReferenceSchema = schema.object(
       },
     }),
   },
-  {
-    meta: {
-      id: 'kbn-data-view-reference-schema',
-      title: 'Data view reference',
-      description: 'An existing saved data view, referenced by its ID.',
-    },
-  }
+  { meta: { id: 'kbn-data-view-reference-schema', title: 'Data view reference' } }
 );
 
 export const dataViewSpecSchema = schema.object(
@@ -47,32 +41,12 @@ export const dataViewSpecSchema = schema.object(
         },
       })
     ),
-    runtime_fields: schema.maybe(
-      schema.arrayOf(runtimeFieldSchema, {
-        maxSize: 100,
-        meta: { description: 'Runtime fields added to the data view.' },
-      })
-    ),
+    runtime_fields: schema.maybe(schema.arrayOf(runtimeFieldSchema, { maxSize: 100 })),
   },
-  {
-    meta: {
-      id: 'kbn-data-view-spec-schema',
-      title: 'Data view inline spec',
-      description:
-        'An ad-hoc data view defined inline using an index pattern. No saved object is created.',
-    },
-  }
+  { meta: { id: 'kbn-data-view-spec-schema', title: 'Data view inline spec' } }
 );
 
-export const dataViewSchema = schema.discriminatedUnion(
-  'type',
-  [dataViewReferenceSchema, dataViewSpecSchema],
-  {
-    meta: {
-      id: 'kbn-data-view-schema',
-      title: 'Data Source',
-      description:
-        'Data source for the visualization. Use `data_view_reference` to reference a saved data view by ID, or `data_view_spec` to define an ad-hoc data view inline.',
-    },
-  }
-);
+export const dataViewSchema = schema.discriminatedUnion('type', [
+  dataViewReferenceSchema,
+  dataViewSpecSchema,
+]);
