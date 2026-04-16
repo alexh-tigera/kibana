@@ -179,7 +179,7 @@ export const heatmapStateSchemaNoESQL = schema.object(
     meta: {
       id: 'heatmapNoESQL',
       title: 'Heatmap Chart (DSL)',
-      description: 'Heatmap configuration using a DSL data source.',
+      description: 'Heatmap configuration using a data view.',
     },
   }
 );

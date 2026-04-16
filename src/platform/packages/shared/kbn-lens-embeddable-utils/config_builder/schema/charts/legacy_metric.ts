@@ -105,7 +105,7 @@ export const legacyMetricStateSchemaNoESQL = schema.object(
       id: 'legacyMetricNoESQL',
       title: 'Legacy Metric Chart (DSL)',
       description:
-        'Legacy Metric configuration using a DSL data source. Use the Metric chart for new visualizations.',
+        'Legacy Metric configuration using a data view. Superseded by the Metric chart type.',
     },
   }
 );

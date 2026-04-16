@@ -103,7 +103,7 @@ export const tagcloudStateSchemaNoESQL = schema.object(
     meta: {
       id: 'tagcloudNoESQL',
       title: 'Tag Cloud Chart (DSL)',
-      description: 'Tag Cloud configuration using a DSL data source.',
+      description: 'Tag Cloud configuration using a data view.',
     },
   }
 );

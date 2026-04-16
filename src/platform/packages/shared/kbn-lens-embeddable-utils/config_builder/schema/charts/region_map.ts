@@ -49,7 +49,7 @@ export const regionMapStateSchemaNoESQL = schema.object(
       id: 'regionMapNoESQL',
       title: 'Region Map (DSL)',
       description:
-        'Region Map configuration using a DSL data source, mapping metric values to geographic regions by color.',
+        'Region Map configuration using a data view, mapping metric values to geographic regions by color.',
     },
   }
 );

@@ -181,7 +181,7 @@ export const gaugeStateSchemaNoESQL = schema.object(
     meta: {
       id: 'gaugeNoESQL',
       title: 'Gauge Chart (DSL)',
-      description: 'Gauge configuration using a DSL data source.',
+      description: 'Gauge configuration using a data view.',
     },
   }
 );
