@@ -99,9 +99,10 @@ export const AttackDiscoveryGeneration = z.object({
    */
   execution_uuid: z.string(),
   /**
-   * Generation loading message (kibana.alert.rule.execution.status)
+   * Generation loading message (kibana.alert.rule.execution.status).
+   * Only present while status is 'started'; omitted for terminal runs.
    */
-  loading_message: z.string(),
+  loading_message: z.string().optional(),
   /**
    * Structured error category from server classification (optional; absent for successful generations)
    */
@@ -123,7 +124,7 @@ export const AttackDiscoveryGeneration = z.object({
    */
   status: z.enum(['canceled', 'dismissed', 'failed', 'started', 'succeeded']),
   /**
-   * Workflow step lifecycle actions (filtered event.action values) used to infer stubbed per-step execution status
+   * Synthesized per-step lifecycle markers (e.g. step-start, step-complete, step-fail) derived from raw event.action values. The array is ordered by step sequence (alert retrieval, generation, validation), with each step contributing 0-2 tokens that indicate its execution status.
    */
   step_event_actions: z.array(z.string()).optional(),
   /**
@@ -134,6 +135,26 @@ export const AttackDiscoveryGeneration = z.object({
    * The workflow definition ID for deep linking
    */
   workflow_id: z.string().optional(),
+  /**
+   * Source metadata for scheduled generations (rule_id, rule_name, action_execution_uuid)
+   */
+  source_metadata: z
+    .object({
+      /**
+       * The action execution UUID from the alerting framework
+       */
+      action_execution_uuid: z.string().optional(),
+      /**
+       * The ID of the alerting rule that triggered this generation
+       */
+      rule_id: z.string().optional(),
+      /**
+       * The name of the alerting rule that triggered this generation
+       */
+      rule_name: z.string().optional(),
+    })
+    .nullable()
+    .optional(),
   /**
    * The workflow execution ID for monitoring
    */
