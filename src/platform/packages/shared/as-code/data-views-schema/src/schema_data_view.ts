@@ -25,7 +25,7 @@ export const dataViewReferenceSchema = schema.object(
     meta: {
       id: 'kbn-data-view-reference-schema',
       title: 'Data view reference',
-      description: 'Uses an existing saved Kibana data view as the data source, referenced by its ID.',
+      description: 'Existing saved data view, referenced by its ID.',
     },
   }
 );

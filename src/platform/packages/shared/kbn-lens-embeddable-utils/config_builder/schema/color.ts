@@ -197,7 +197,7 @@ export const colorByValueSchema = schema.oneOf(
     meta: {
       id: 'colorByValue',
       title: 'Color By Value',
-      description: 'Colors values dynamically based on numeric ranges. Supports absolute value ranges and percentage-based ranges.',
+      description: 'Dynamic color mapping by numeric range. Supports absolute and percentage-based ranges.',
     },
   }
 );
@@ -214,7 +214,7 @@ export const staticColorSchema = schema.object(
     meta: {
       id: 'staticColor',
       title: 'Static Color',
-      description: 'Applies a fixed color to all values in the dimension.',
+      description: 'Fixed color for all values in the dimension.',
     },
   }
 );
@@ -229,7 +229,7 @@ const colorFromPaletteSchema = schema.object(
     meta: {
       id: 'colorFromPalette',
       title: 'Color From Palette',
-      description: 'Selects a color by position index from a named color palette.',
+      description: 'Color at a fixed index position in a named palette.',
     },
   }
 );
@@ -305,7 +305,7 @@ const gradientColorMappingSchema = schema.object(
     meta: {
       id: 'gradientColorMapping',
       title: 'Gradient Color Mapping',
-      description: 'Assigns a gradient of palette colors across a range of categorical values.',
+      description: 'Gradient color mapping across categorical values.',
     },
   }
 );

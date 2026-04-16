@@ -83,7 +83,7 @@ const byteFormatSchema = schema.object(
     meta: {
       id: 'byteFormat',
       title: 'Byte Format',
-      description: 'Formats values as a data size in bits or bytes with optional decimal places and suffix.',
+      description: 'Data size format in bits or bytes, with optional decimal places and suffix.',
     },
   }
 );
@@ -122,7 +122,7 @@ const durationFormatSchema = schema.object(
     meta: {
       id: 'durationFormat',
       title: 'Duration Format',
-      description: 'Formats a numeric value as a human-readable duration by converting between time units.',
+      description: 'Duration format between time units.',
     },
   }
 );
@@ -143,7 +143,7 @@ const customFormatSchema = schema.object(
     meta: {
       id: 'customFormat',
       title: 'Custom Format',
-      description: 'Formats values using a Kibana field format pattern string.',
+      description: 'Custom format using a Kibana field format pattern string.',
     },
   }
 );
