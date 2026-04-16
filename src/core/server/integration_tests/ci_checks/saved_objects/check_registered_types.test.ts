@@ -10,36 +10,25 @@
 import type { ISavedObjectTypeRegistry } from '@kbn/core-saved-objects-server';
 import { getMigrationHash, getTypeHashes } from '@kbn/core-test-helpers-so-type-serializer';
 import type { Root } from '@kbn/core-root-server-internal';
-import {
-  createTestServers,
-  createRootWithCorePlugins,
-  type TestElasticsearchUtils,
-} from '@kbn/core-test-helpers-kbn-server';
+import type { InternalCoreSetup } from '@kbn/core-lifecycle-server-internal';
+import { createRootWithCorePlugins } from '@kbn/core-test-helpers-kbn-server';
 import { SAVED_OBJECT_TYPES_COUNT } from '@kbn/core-saved-objects-server-internal';
 import { sortBy } from 'lodash';
 import { getVirtualVersionMap } from '@kbn/core-saved-objects-base-server-internal';
 
 describe('checking migration metadata changes on all registered SO types', () => {
-  let esServer: TestElasticsearchUtils;
   let root: Root;
   let typeRegistry: ISavedObjectTypeRegistry;
 
   beforeAll(async () => {
-    const { startES } = createTestServers({
-      adjustTimeout: (t: number) => jest.setTimeout(t),
-    });
-
-    esServer = await startES();
     root = createRootWithCorePlugins({}, { oss: false });
     await root.preboot();
-    await root.setup();
-    const coreStart = await root.start();
-    typeRegistry = coreStart.savedObjects.getTypeRegistry();
+    const coreSetup: InternalCoreSetup = await root.setup();
+    typeRegistry = coreSetup.savedObjects.getTypeRegistry();
   });
 
   afterAll(async () => {
     await root?.shutdown();
-    await esServer?.stop();
   });
 
   // This test is meant to fail when any change is made in registered types that could potentially impact the SO migration.
@@ -119,7 +108,7 @@ describe('checking migration metadata changes on all registered SO types', () =>
         "fleet-cloud-connector": "4ba1a68000e83dfb9d9f92e840d9840274fdd15419d0dd7a805d90e0ee08fdce",
         "fleet-fleet-server-host": "edbc06c4a73586e7820549ab481244989af89ba9191b002cce97d0843a01008e",
         "fleet-message-signing-keys": "67aecd34e081183b2a99cc1451583977e4ad918074dc5b1579cc4b23750d3829",
-        "fleet-package-policies": "d20ae25a0aa3f20443bed2b35e463f3597f41c219a52a169580b13e3b413dcad",
+        "fleet-package-policies": "6668dcb4acb46593eaaba3836ffc5fbf2821a1b02782eb6e7220806f52a7c3c1",
         "fleet-preconfiguration-deletion-record": "1154f80d0ef53014ea52c7642131e31365f86909e93b265e7f38c2c317c645cf",
         "fleet-proxy": "b38a96aa9da6664ff35cd67c4470e0280dbd4b07e8d063a71d6e97dc077d9be4",
         "fleet-setup-lock": "df3c142ba8907c8ccf004d2240c79d476a70946db092ab4c485d3eb1a3f5bb82",
@@ -134,8 +123,8 @@ describe('checking migration metadata changes on all registered SO types', () =>
         "infrastructure-ui-source": "498c2ba7abd4329a0d8b40efd98b4b16991107512d38141707f9f2e10521b367",
         "ingest-agent-policies": "ce61ba4808deecd27dce770799be59f212ebe1c0d76bcc4298aafa4cfce7aa15",
         "ingest-download-sources": "c87e062ef293585e85fccec0c865d7cef48e0ff9a919d7781d5f7627d275484b",
-        "ingest-outputs": "b5c8354ebfb71f5d50322c19787bbee2c5bb8fff5bfff46dc5683d19e94797a3",
-        "ingest-package-policies": "f3adcf95faac913e8b46efe618783d01555ad4dcd13763d3216f4bdac9d485a8",
+        "ingest-outputs": "8ea9ade69e9ced03cf5700086f454adf3fc46918317b6150e127fdd5829a56a6",
+        "ingest-package-policies": "72914924011c63d019b8b299a632b7b3b8cb22a8d9ced79abcba4fcf30c61a87",
         "ingest_manager_settings": "6cd91fe6c52c516676d99021f51a4b3a162686880198ba3c556983f5fffbb5a3",
         "integration-config": "5f95ba3784d5d50d04d8ad3489fc4c0a50db34da049a69e754a48c80172ee948",
         "intercept_interaction_record": "02437dc1b92c7bc77563f8e8d758a13435080d493d21a5fd49d124d468cdeb20",
@@ -754,7 +743,7 @@ describe('checking migration metadata changes on all registered SO types', () =>
         "fleet-package-policies|mappings: 522009ae48bde00f65422a5aa7cb2b32bdf079d3",
         "fleet-package-policies|schemas: da39a3ee5e6b4b0d3255bfef95601890afd80709",
         "fleet-package-policies|10.9.0: 71dfd2851f09e17dab6974ccb7ee63ded5676ebfaf873659f935296c6847d132",
-        "fleet-package-policies|10.8.0: 4127c4f9bcadc083d93f566091e760bae40e6d37ad8e8006fd9a66d8a6cf3622",
+        "fleet-package-policies|10.8.0: 191ecbc9931d572f51bb9496bb2090fad3072c237be2579f90e90bf4d357d7eb",
         "fleet-package-policies|10.7.0: 175fe637899f2c70d1c5e2b2dbe459962d4b7048367b9930d393f280222093cf",
         "fleet-package-policies|10.6.0: ef0c3e9699868aa625f197708fda2114eac175a8d3c0f2984634102adf61cb15",
         "fleet-package-policies|10.5.0: d60de40b75a31ee199487f5a53329033afbfc78767c42d16d987e95173df9516",
@@ -853,8 +842,9 @@ describe('checking migration metadata changes on all registered SO types', () =>
         "ingest-download-sources|10.1.0: 7fce3be244f92bb99b17c8757c39a49aec078ff90cae70971e42e202a574348c",
         "================================================================================================",
         "ingest-outputs|global: 3e72116f17fda6ec9c5269cb42eb42e3f686b313",
-        "ingest-outputs|mappings: bdde67dc29cfd86a1195ed34a4417073728691c4",
+        "ingest-outputs|mappings: a48fa4cb62d321c8ed0ffe84c80db2cbf7f7258b",
         "ingest-outputs|schemas: da39a3ee5e6b4b0d3255bfef95601890afd80709",
+        "ingest-outputs|10.10.0: 25066fec2f6c80607e652ddd82d32976ec25492c26e18fec0b22b1c01c0eae65",
         "ingest-outputs|10.9.0: 50a325af05e7b9b3f7383f1e525388c9cecf00a14b9924409a262f6c3058840b",
         "ingest-outputs|10.8.0: 7fce3be244f92bb99b17c8757c39a49aec078ff90cae70971e42e202a574348c",
         "ingest-outputs|10.7.0: 2f5dfca42d489deaa60da45c020e92fdae21e5e3d0e5e60153c0d18039715bd7",
@@ -871,7 +861,7 @@ describe('checking migration metadata changes on all registered SO types', () =>
         "ingest-package-policies|mappings: 522009ae48bde00f65422a5aa7cb2b32bdf079d3",
         "ingest-package-policies|schemas: da39a3ee5e6b4b0d3255bfef95601890afd80709",
         "ingest-package-policies|10.23.0: 71dfd2851f09e17dab6974ccb7ee63ded5676ebfaf873659f935296c6847d132",
-        "ingest-package-policies|10.22.0: 4127c4f9bcadc083d93f566091e760bae40e6d37ad8e8006fd9a66d8a6cf3622",
+        "ingest-package-policies|10.22.0: 191ecbc9931d572f51bb9496bb2090fad3072c237be2579f90e90bf4d357d7eb",
         "ingest-package-policies|10.21.0: 175fe637899f2c70d1c5e2b2dbe459962d4b7048367b9930d393f280222093cf",
         "ingest-package-policies|10.20.0: 522700650b5a10db91d2337e8b82582841a3884049e40c20525aed0a1e1f475e",
         "ingest-package-policies|10.19.0: d60de40b75a31ee199487f5a53329033afbfc78767c42d16d987e95173df9516",
@@ -1490,7 +1480,7 @@ describe('checking migration metadata changes on all registered SO types', () =>
         "infrastructure-ui-source": "10.0.0",
         "ingest-agent-policies": "10.10.0",
         "ingest-download-sources": "10.1.0",
-        "ingest-outputs": "10.9.0",
+        "ingest-outputs": "10.10.0",
         "ingest-package-policies": "10.23.0",
         "ingest_manager_settings": "10.8.0",
         "integration-config": "10.3.0",
@@ -1655,7 +1645,7 @@ describe('checking migration metadata changes on all registered SO types', () =>
         "infrastructure-ui-source": "7.16.2",
         "ingest-agent-policies": "10.10.0",
         "ingest-download-sources": "10.1.0",
-        "ingest-outputs": "10.9.0",
+        "ingest-outputs": "10.10.0",
         "ingest-package-policies": "10.23.0",
         "ingest_manager_settings": "10.8.0",
         "integration-config": "10.3.0",
