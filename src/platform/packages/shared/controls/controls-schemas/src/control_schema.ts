@@ -35,7 +35,7 @@ export const dataControlSchema = schema.object({
     defaultValue: DEFAULT_DATA_CONTROL_STATE.ignore_validations,
     meta: {
       description:
-        'When `true`, the control skips field-level validation checks and renders even when the configured field does not exist in the data view. Defaults to `false`.',
+        'When `true`, the control skips selection validation and does not report which selections are responsible for returning zero results. Defaults to `false`.',
     },
   }),
 });
