@@ -5,8 +5,8 @@
  * 2.0.
  */
 import React from 'react';
-import styled from '@emotion/styled';
-import { EuiDescribedFormGroup } from '@elastic/eui';
+
+import { EuiFormRow } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n-react';
 
 import type { NewAgentPolicy, AgentPolicy } from '../../../../../common/types';
@@ -21,13 +21,6 @@ interface Props {
   isDisabled?: boolean;
 }
 
-// Fix to align description to top during empty state
-const DescribedFormGroup = styled(EuiDescribedFormGroup)`
-  .euiFlexGroup {
-    align-items: flex-start;
-  }
-`;
-
 export const PackagePolicyCustomFields: React.FunctionComponent<Props> = ({
   packagePolicy,
   updatePackagePolicy,
@@ -38,17 +31,15 @@ export const PackagePolicyCustomFields: React.FunctionComponent<Props> = ({
   };
 
   return (
-    <DescribedFormGroup
+    <EuiFormRow
       fullWidth
-      title={
-        <h3>
-          <FormattedMessage
-            id="xpack.fleet.packagePolicyForm.globalDataTagHeader"
-            defaultMessage="Custom fields"
-          />
-        </h3>
+      label={
+        <FormattedMessage
+          id="xpack.fleet.packagePolicyForm.globalDataTagHeader"
+          defaultMessage="Custom fields"
+        />
       }
-      description={
+      helpText={
         <FormattedMessage
           id="xpack.fleet.packagePolicyForm.globalDataTagDescription"
           defaultMessage="Add a field and value set to all data collected from this integration."
@@ -60,6 +51,6 @@ export const PackagePolicyCustomFields: React.FunctionComponent<Props> = ({
         updateAgentPolicy={handleTagsUpdate}
         globalDataTags={packagePolicy.global_data_tags ?? []}
       />
-    </DescribedFormGroup>
+    </EuiFormRow>
   );
 };
