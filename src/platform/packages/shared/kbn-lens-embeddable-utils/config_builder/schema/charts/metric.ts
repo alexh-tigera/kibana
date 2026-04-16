@@ -59,7 +59,7 @@ const compareToSchemaShared = schema.object(
   {
     palette: schema.maybe(
       schema.string({
-        meta: { description: 'Color palette.' },
+        meta: { description: 'Color palette name for the comparison indicator. Accepted values: `default`, `elastic_line_optimized`, `neutral`, `severity`, `cool`, `gray`, `red`, `green`, `warm`, `temperature`, `complementary`, `status`, `compare_to`, `log_level`. Defaults to `compare_to`.' },
         defaultValue: DEFAULT_SECONDARY_COMPARE_TO_PALETTE,
       })
     ),

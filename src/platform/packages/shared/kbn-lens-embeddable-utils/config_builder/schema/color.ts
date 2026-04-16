@@ -223,7 +223,7 @@ const colorFromPaletteSchema = schema.object(
   {
     type: schema.literal('from_palette'),
     index: schema.number({ meta: { description: 'The index of the color in the palette.' } }),
-    palette: schema.maybe(schema.string({ meta: { description: 'The palette name to use.' } })),
+    palette: schema.maybe(schema.string({ meta: { description: 'Name of the palette to select the color from. Accepted values: `default`, `elastic_line_optimized`, `neutral`, `severity`, `cool`, `gray`, `red`, `green`, `warm`, `temperature`, `complementary`, `status`, `compare_to`, `log_level`. When omitted, defaults to `default`.' } })),
   },
   {
     meta: {
@@ -258,7 +258,7 @@ const categoricalColorMappingSchema = schema.object(
   {
     mode: schema.literal('categorical'),
     palette: schema.string({
-      meta: { description: 'The palette name to use for color assignment.' },
+      meta: { description: 'Color palette name. Accepted values: `default`, `elastic_line_optimized`, `neutral`, `severity`, `cool`, `gray`, `red`, `green`, `warm`, `temperature`, `complementary`, `status`, `compare_to`, `log_level`. Defaults to `default`.' },
     }),
     mapping: schema.arrayOf(
       schema.object({
@@ -283,7 +283,7 @@ const gradientColorMappingSchema = schema.object(
   {
     mode: schema.literal('gradient'),
     palette: schema.string({
-      meta: { description: 'The palette name to use for color assignment.' },
+      meta: { description: 'Color palette name. Accepted values: `default`, `elastic_line_optimized`, `neutral`, `severity`, `cool`, `gray`, `red`, `green`, `warm`, `temperature`, `complementary`, `status`, `compare_to`, `log_level`. Defaults to `default`.' },
     }),
     sort: schema.maybe(
       schema.oneOf([schema.literal('asc'), schema.literal('desc')], {
