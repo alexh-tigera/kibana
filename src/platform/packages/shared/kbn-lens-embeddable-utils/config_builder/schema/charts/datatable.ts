@@ -187,7 +187,7 @@ const datatableStylingSchema = schema.object(
         ],
         {
           meta: {
-            description: 'Enables pagination and sets the number of rows to display per page.',
+            description: 'Rows per page when pagination is enabled.',
           },
         }
       )

@@ -67,7 +67,7 @@ const pieStylingSchema = schema.object(
           position: schema.maybe(
             schema.oneOf([schema.literal('inside'), schema.literal('outside')], {
               meta: {
-                description: 'Renders pie chart slice labels inside or outside the pie.',
+                description: 'Slice label position.',
               },
             })
           ),

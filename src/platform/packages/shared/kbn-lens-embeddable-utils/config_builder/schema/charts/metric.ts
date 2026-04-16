@@ -383,7 +383,7 @@ const metricStateSecondaryMetricOptionsSchema = {
         compareToSchemaShared.extends(
           {
             to: schema.literal('baseline'),
-            baseline: schema.number({ meta: { description: 'Baseline value' }, defaultValue: 0 }),
+            baseline: schema.number({ meta: { description: 'Baseline value.' }, defaultValue: 0 }),
           },
           { meta: { id: 'metricCompareToBaseline', title: 'Compare To Baseline' } }
         ),

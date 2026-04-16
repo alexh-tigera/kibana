@@ -13,7 +13,7 @@ import { LENS_FORMAT_NUMBER_DECIMALS_DEFAULT, LENS_FORMAT_COMPACT_DEFAULT } from
 const numericFormatSchema = schema.object(
   {
     type: schema.oneOf([schema.literal('number'), schema.literal('percent')], {
-      meta: { description: 'Format as a plain number (`number`) or as a percentage (`percent`).' },
+      meta: { description: 'Value format type: `number` for plain numbers, `percent` for percentages.' },
     }),
     /**
      * Number of decimals
@@ -57,7 +57,7 @@ const numericFormatSchema = schema.object(
 const byteFormatSchema = schema.object(
   {
     type: schema.oneOf([schema.literal('bits'), schema.literal('bytes')], {
-      meta: { description: 'Format as bits (`bits`) or bytes (`bytes`).' },
+      meta: { description: 'Data size unit: `bits` or `bytes`.' },
     }),
     /**
      * Number of decimals
