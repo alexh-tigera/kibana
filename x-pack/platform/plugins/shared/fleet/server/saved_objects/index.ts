@@ -931,7 +931,6 @@ export const getSavedObjectTypes = (
           bump_agent_policy_revision: { type: 'boolean' },
           latest_revision: { type: 'boolean' },
           package_agent_version_condition: { type: 'keyword' },
-          global_data_tags: { type: 'flattened', index: false },
         },
       },
       modelVersions: {
@@ -1159,16 +1158,6 @@ export const getSavedObjectTypes = (
             create: PackagePolicySchemaV22.extends({}, { unknowns: 'ignore' }),
           },
         },
-        '23': {
-          changes: [
-            {
-              type: 'mappings_addition',
-              addedMappings: {
-                global_data_tags: { type: 'flattened', index: false },
-              },
-            },
-          ],
-        },
       },
       migrations: {
         '7.10.0': migratePackagePolicyToV7100,
@@ -1236,7 +1225,6 @@ export const getSavedObjectTypes = (
           bump_agent_policy_revision: { type: 'boolean' },
           latest_revision: { type: 'boolean' },
           package_agent_version_condition: { type: 'keyword' },
-          global_data_tags: { type: 'flattened', index: false },
         },
       },
       modelVersions: {
@@ -1322,16 +1310,6 @@ export const getSavedObjectTypes = (
             forwardCompatibility: PackagePolicySchemaV22.extends({}, { unknowns: 'ignore' }),
             create: PackagePolicySchemaV22.extends({}, { unknowns: 'ignore' }),
           },
-        },
-        '9': {
-          changes: [
-            {
-              type: 'mappings_addition',
-              addedMappings: {
-                global_data_tags: { type: 'flattened', index: false },
-              },
-            },
-          ],
         },
       },
     },
