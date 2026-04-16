@@ -154,8 +154,12 @@ const layerSettingsSchemaWrapped = schema.object(layerSettingsSchema);
 export type LayerSettingsSchema = TypeOf<typeof layerSettingsSchemaWrapped>;
 
 export const axisTitleSchemaProps = {
-  text: schema.maybe(schema.string({ defaultValue: '', meta: { description: 'Axis title text.' } })),
-  visible: schema.maybe(schema.boolean({ meta: { description: 'When `true`, displays the title.' } })),
+  text: schema.maybe(
+    schema.string({ defaultValue: '', meta: { description: 'Axis title text.' } })
+  ),
+  visible: schema.maybe(
+    schema.boolean({ meta: { description: 'When `true`, displays the title.' } })
+  ),
 };
 
 export const legendTruncateAfterLinesSchema = schema.maybe(

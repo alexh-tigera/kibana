@@ -13,7 +13,9 @@ import { LENS_FORMAT_NUMBER_DECIMALS_DEFAULT, LENS_FORMAT_COMPACT_DEFAULT } from
 const numericFormatSchema = schema.object(
   {
     type: schema.oneOf([schema.literal('number'), schema.literal('percent')], {
-      meta: { description: 'Value format type: `number` for plain numbers, `percent` for percentages.' },
+      meta: {
+        description: 'Value format type: `number` for plain numbers, `percent` for percentages.',
+      },
     }),
     /**
      * Number of decimals
@@ -40,7 +42,8 @@ const numericFormatSchema = schema.object(
     compact: schema.boolean({
       defaultValue: LENS_FORMAT_COMPACT_DEFAULT,
       meta: {
-        description: 'When `true`, uses compact notation (for example, 1.2k instead of 1,200). Defaults to `false`.',
+        description:
+          'When `true`, uses compact notation (for example, 1.2k instead of 1,200). Defaults to `false`.',
       },
     }),
   },
@@ -96,7 +99,8 @@ const durationFormatSchema = schema.object(
      */
     from: schema.string({
       meta: {
-        description: 'Source time unit for conversion, for example `milliseconds`, `seconds`, `minutes`, `hours`, or `days`.',
+        description:
+          'Source time unit for conversion, for example `milliseconds`, `seconds`, `minutes`, `hours`, or `days`.',
       },
     }),
     /**
@@ -104,7 +108,8 @@ const durationFormatSchema = schema.object(
      */
     to: schema.string({
       meta: {
-        description: 'Display time unit after conversion, for example `seconds`, `minutes`, `hours`, or `days`.',
+        description:
+          'Display time unit after conversion, for example `seconds`, `minutes`, `hours`, or `days`.',
       },
     }),
     /**

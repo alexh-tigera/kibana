@@ -59,13 +59,24 @@ const compareToSchemaShared = schema.object(
   {
     palette: schema.maybe(
       schema.string({
-        meta: { description: 'Color palette name for the comparison indicator. Accepted values: `default`, `elastic_line_optimized`, `neutral`, `severity`, `cool`, `gray`, `red`, `green`, `warm`, `temperature`, `complementary`, `status`, `compare_to`, `log_level`. Defaults to `compare_to`.' },
+        meta: {
+          description:
+            'Color palette name for the comparison indicator. Accepted values: `default`, `elastic_line_optimized`, `neutral`, `severity`, `cool`, `gray`, `red`, `green`, `warm`, `temperature`, `complementary`, `status`, `compare_to`, `log_level`. Defaults to `compare_to`.',
+        },
         defaultValue: DEFAULT_SECONDARY_COMPARE_TO_PALETTE,
       })
     ),
-    icon: schema.maybe(schema.boolean({ meta: { description: 'When `true`, displays the icon.' }, defaultValue: true })),
+    icon: schema.maybe(
+      schema.boolean({
+        meta: { description: 'When `true`, displays the icon.' },
+        defaultValue: true,
+      })
+    ),
     value: schema.maybe(
-      schema.boolean({ meta: { description: 'When `true`, displays the metric value.' }, defaultValue: true })
+      schema.boolean({
+        meta: { description: 'When `true`, displays the metric value.' },
+        defaultValue: true,
+      })
     ),
   },
   {
@@ -183,7 +194,10 @@ const metricStylingSchema = schema.object(
            */
           alignment: schema.maybe(
             leftRightAlignmentSchema({
-              meta: { description: 'Icon alignment. Accepted values: `left`, `right`. Defaults to `right`.' },
+              meta: {
+                description:
+                  'Icon alignment. Accepted values: `left`, `right`. Defaults to `right`.',
+              },
               defaultValue: DEFAULT_PRIMARY_ICON_ALIGNMENT,
             })
           ),
@@ -253,7 +267,8 @@ const metricStylingSchema = schema.object(
               alignment: schema.maybe(
                 horizontalAlignmentSchema({
                   meta: {
-                    description: 'Alignment for the primary metric value. Accepted values: `left`, `center`, `right`. Defaults to `right`.',
+                    description:
+                      'Alignment for the primary metric value. Accepted values: `left`, `center`, `right`. Defaults to `right`.',
                   },
                   defaultValue: DEFAULT_PRIMARY_VALUE_ALIGNMENT,
                 })
@@ -324,7 +339,10 @@ const metricStylingSchema = schema.object(
                */
               alignment: schema.maybe(
                 horizontalAlignmentSchema({
-                  meta: { description: 'Alignment for secondary values. Accepted values: `left`, `center`, `right`. Defaults to `right`.' },
+                  meta: {
+                    description:
+                      'Alignment for secondary values. Accepted values: `left`, `center`, `right`. Defaults to `right`.',
+                  },
                   defaultValue: DEFAULT_SECONDARY_VALUE_ALIGNMENT,
                 })
               ),
@@ -396,8 +414,7 @@ const metricStateSecondaryMetricOptionsSchema = {
       ],
       {
         meta: {
-          description:
-            'Compare the secondary metric to a baseline value or to the primary metric.',
+          description: 'Compare the secondary metric to a baseline value or to the primary metric.',
         },
       }
     )

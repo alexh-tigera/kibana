@@ -23,7 +23,8 @@ export const partitionStateSchema = schema.oneOf(
     meta: {
       id: 'lensPartitionChart',
       title: 'Partition Chart',
-      description: 'Partition chart configuration for pie, mosaic, treemap, and waffle chart types.',
+      description:
+        'Partition chart configuration for pie, mosaic, treemap, and waffle chart types.',
     },
   }
 );

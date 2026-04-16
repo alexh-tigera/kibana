@@ -598,7 +598,10 @@ const xyDataLayerSchemaNoESQL = schema.object(
         color: schema.maybe(colorMappingSchema),
         aggregate_first: schema.maybe(
           schema.boolean({
-            meta: { description: 'When `true`, aggregates data before splitting into series. Defaults to `false`.' },
+            meta: {
+              description:
+                'When `true`, aggregates data before splitting into series. Defaults to `false`.',
+            },
           })
         ),
       })

@@ -56,7 +56,8 @@ export const bucketDateHistogramOperationSchema = schema.object(
     use_original_time_range: schema.boolean({
       defaultValue: LENS_DATE_HISTOGRAM_IGNORE_TIME_RANGE_DEFAULT,
       meta: {
-        description: 'When `true`, uses the original time range instead of the current query time range.',
+        description:
+          'When `true`, uses the original time range instead of the current query time range.',
       },
     }),
     /**

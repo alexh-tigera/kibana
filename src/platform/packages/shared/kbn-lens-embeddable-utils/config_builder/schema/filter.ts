@@ -13,7 +13,10 @@ export const filterSchema = schema.object(
   {
     language: schema.oneOf([schema.literal('kql'), schema.literal('lucene')], {
       defaultValue: 'kql',
-      meta: { description: 'Query language: `kql` (Kibana Query Language) or `lucene`. Defaults to `kql`.' },
+      meta: {
+        description:
+          'Query language: `kql` (Kibana Query Language) or `lucene`. Defaults to `kql`.',
+      },
     }),
     expression: schema.string({
       meta: {
@@ -25,7 +28,8 @@ export const filterSchema = schema.object(
     meta: {
       id: 'filterSimple',
       title: 'Filter',
-      description: 'A KQL or Lucene query that filters panel data. Applied on top of any dashboard-level filters.',
+      description:
+        'A KQL or Lucene query that filters panel data. Applied on top of any dashboard-level filters.',
     },
   }
 );

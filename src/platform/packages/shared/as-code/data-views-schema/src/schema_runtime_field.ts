@@ -77,7 +77,8 @@ const commonFieldSchema = {
       meta: {
         id: 'kbn-runtime-field-type',
         title: 'Type',
-        description: 'The type of the runtime field. Accepted values: `keyword`, `long`, `double`, `date`, `ip`, `boolean`, `geo_point`.',
+        description:
+          'The type of the runtime field. Accepted values: `keyword`, `long`, `double`, `date`, `ip`, `boolean`, `geo_point`.',
       },
     }
   ),

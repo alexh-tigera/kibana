@@ -39,7 +39,10 @@ import { objectUnion } from './utils/object_union';
  * so it uses a datatable-specific schema rather than the shared applyColorToSchema.
  */
 const applyColorToDatatableSchema = schema.oneOf([applyColorToSchema, schema.literal('badge')], {
-  meta: { description: 'Column color target: `value` for cell text, `background` for cell background, or `badge` for a badge overlay.' },
+  meta: {
+    description:
+      'Column color target: `value` for cell text, `background` for cell background, or `badge` for a badge overlay.',
+  },
 });
 
 /**
@@ -187,7 +190,8 @@ const datatableStylingSchema = schema.object(
         ],
         {
           meta: {
-            description: 'Rows per page. When set, pagination is enabled with the specified number of rows.',
+            description:
+              'Rows per page. When set, pagination is enabled with the specified number of rows.',
           },
         }
       )

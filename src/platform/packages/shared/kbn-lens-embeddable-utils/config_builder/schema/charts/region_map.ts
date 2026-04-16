@@ -73,7 +73,8 @@ export const regionMapStateSchemaESQL = schema.object(
     meta: {
       id: 'regionMapESQL',
       title: 'Region Map (ES|QL)',
-      description: 'Region Map configuration using an ES|QL query, mapping metric values to geographic regions by color.',
+      description:
+        'Region Map configuration using an ES|QL query, mapping metric values to geographic regions by color.',
     },
   }
 );
