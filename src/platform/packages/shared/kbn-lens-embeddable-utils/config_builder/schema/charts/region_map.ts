@@ -85,7 +85,7 @@ export const regionMapStateSchema = objectUnion(
       id: 'regionMapChart',
       title: 'Region Map',
       description:
-        'Choropleth map with geographic regions colored by the aggregated metric value.',
+        'A choropleth map with geographic regions colored by the aggregated metric value.',
     },
   }
 );

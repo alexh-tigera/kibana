@@ -139,7 +139,7 @@ export const tagcloudStateSchema = objectUnion(
     meta: {
       id: 'tagcloudChart',
       title: 'Tag Cloud Chart',
-      description: 'Word cloud with terms sized by metric value.',
+      description: 'A word cloud with terms sized by metric value.',
     },
   }
 );

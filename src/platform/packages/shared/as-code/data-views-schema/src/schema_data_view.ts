@@ -25,7 +25,7 @@ export const dataViewReferenceSchema = schema.object(
     meta: {
       id: 'kbn-data-view-reference-schema',
       title: 'Data view reference',
-      description: 'Existing saved data view, referenced by its ID.',
+      description: 'An existing saved data view, referenced by its ID.',
     },
   }
 );
@@ -59,7 +59,7 @@ export const dataViewSpecSchema = schema.object(
       id: 'kbn-data-view-spec-schema',
       title: 'Data view inline spec',
       description:
-        'Ad-hoc data view defined inline using an index pattern. No saved object is created.',
+        'An ad-hoc data view defined inline using an index pattern. No saved object is created.',
     },
   }
 );

@@ -307,7 +307,7 @@ export const metricOperationDefinitionSchema = schema.oneOf(
       id: 'lensMetricOperation',
       title: 'Metric Operation',
       description:
-        'Metric dimension configuration. Supports field-based aggregations (count, sum, average, median, standard deviation, unique count, last value), percentile operations, time-series operations (differences, moving average, cumulative sum, counter rate), and mathematical formulas.',
+        'Metric dimension configuration, supporting field-based aggregations (count, sum, average, median, standard deviation, unique count, last value), percentile operations, time-series operations (differences, moving average, cumulative sum, counter rate), and mathematical formulas.',
     },
   }
 );

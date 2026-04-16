@@ -113,7 +113,7 @@ export const complementaryVizSchemaNoESQL = schema.oneOf(
       id: 'metricComplementaryViz',
       title: 'Complementary Visualization',
       description:
-        'Secondary visualization displayed behind the primary metric value. Supports a bar chart (with optional max value) or a trend line.',
+        'Secondary visualization displayed behind the primary metric value, either a bar chart (with optional max value) or a trend line.',
     },
   }
 );

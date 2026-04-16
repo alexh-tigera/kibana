@@ -361,7 +361,7 @@ export const allColoringTypeSchema = schema.oneOf(
       id: 'allColoringType',
       title: 'Color Configuration',
       description:
-        'Color configuration for a dimension. Supports dynamic coloring by value range, a fixed static color, categorical or gradient color mapping, or no color.',
+        'Color configuration for a dimension, with options for value-range coloring, static color, categorical or gradient color mapping, or no color.',
     },
   }
 );
