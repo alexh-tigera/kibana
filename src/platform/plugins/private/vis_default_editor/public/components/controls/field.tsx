@@ -102,18 +102,16 @@ function FieldParamEditor({
     showErrorMessageImmediately = true;
   }
 
-  if (!value && !isDirty && indexedFields.length) {
-    errors.push(
-      i18n.translate('visDefaultEditor.controls.field.selectFieldError', {
-        defaultMessage: 'Field is required.',
-      })
-    );
-  }
-
   if (isDirty) {
     errors.push(
       i18n.translate('visDefaultEditor.controls.field.selectValidFieldError', {
         defaultMessage: 'Please select a valid field.',
+      })
+    );
+  } else if (!value && indexedFields.length) {
+    errors.push(
+      i18n.translate('visDefaultEditor.controls.field.selectFieldError', {
+        defaultMessage: 'Field is required.',
       })
     );
   }

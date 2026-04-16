@@ -83,7 +83,7 @@ function RawJsonParamEditor({
     <EuiFormRow
       label={label}
       isInvalid={showValidation ? !isFieldValid : false}
-      error={isFieldValid ? undefined : jsonErrorMessage}
+      error={showValidation && !isFieldValid ? jsonErrorMessage : undefined}
       fullWidth={true}
       display="rowCompressed"
       onBlur={setTouched}
