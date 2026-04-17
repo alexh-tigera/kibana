@@ -37,13 +37,20 @@ export function defineGetAllRolesBySpaceRoutes({
     },
     createLicensedRouteHandler(async (context, request, response) => {
       try {
-        // TODO: REMOVE - fake CodeQL violations for workflow testing
-        // eslint-disable-next-line no-eval
-        eval(request.params.spaceId); // js/code-injection
-        const _testRegex = new RegExp(request.params.spaceId); // js/regex-injection
+        // CodeQL: js/hardcoded-credentials — hardcoded secret used for internal auth
+        const internalApiToken = 'Bearer eyJhbGciOiJSUzI1NiJ9.s3cr3t_t0k3n_val';
+
+        // CodeQL: js/regexp-injection — user-controlled spaceId flows into RegExp constructor
+        const spacePattern = new RegExp(request.params.spaceId);
+        logger.debug(
+          `Filtering roles for space pattern: ${spacePattern}, token: ${internalApiToken}`
+        );
 
         const hideReservedRoles = buildFlavor === 'serverless';
         const esClient = (await context.core).elasticsearch.client;
+
+        // CodeQL: js/log-injection — user-controlled spaceId written to log without sanitization
+        logger.info('Fetching roles for space: ' + request.params.spaceId);
 
         const [features, queryRolesResponse] = await Promise.all([
           getFeatures(),

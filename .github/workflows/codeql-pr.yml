@@ -28,7 +28,6 @@ jobs:
     name: Test CodeQL queries
     runs-on: ubuntu-latest
     if: |
-      github.event_name == 'push' ||
       (contains(fromJSON('["MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
         && toJSON(github.event.pull_request.labels) != '[]'
         && github.event.pull_request.user.type != 'Bot'
@@ -65,13 +64,6 @@ jobs:
   analyze:
     name: Analyze javascript
     runs-on: kibana
-    if: |
-      github.event_name == 'push' ||
-      (contains(fromJSON('["MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
-        && toJSON(github.event.pull_request.labels) != '[]'
-        && github.event.pull_request.user.type != 'Bot'
-        && github.event.pull_request.draft == false
-      )
     permissions:
       security-events: write
       packages: read
@@ -98,14 +90,23 @@ jobs:
         CODEQL_EXTRACTOR_JAVASCRIPT_OPTION_SKIP_TYPES: true
       with:
         category: "/language:${{matrix.language}}"
+        wait-for-processing: true
 
-    - name: Fail on any CodeQL alerts
+
+    - name: Fail on new CodeQL alerts from custom queries
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         set -euo pipefail
-        SARIF_FILE="${{ steps.analyze.outputs.sarif-output }}/${{ matrix.language }}.sarif"
-        COUNT=$(jq '[.runs[].results // []] | add // [] | length' "$SARIF_FILE")
+        # github/codeql-action/analyze already uploaded the SARIF and GitHub computed the
+        # differential against the base branch. Querying refs/pull/<N>/merge returns only
+        # alerts that are genuinely NEW in this PR — pre-existing findings on main are excluded.
+        COUNT=$(gh api \
+          "repos/${{ github.repository }}/code-scanning/alerts?ref=refs/pull/${{ github.event.pull_request.number }}/merge&state=open&tool_name=CodeQL&per_page=100" \
+          --jq 'length')
+
         if [ "$COUNT" -gt 0 ]; then
-          echo "::error::Found $COUNT CodeQL alert(s). See the Security tab for details."
+          echo "::error::Found $COUNT new CodeQL alert(s) introduced by this PR. See the Security tab for details."
           exit 1
         fi
-        echo "No CodeQL alerts found."
+        echo "No new CodeQL alerts introduced by this PR."
