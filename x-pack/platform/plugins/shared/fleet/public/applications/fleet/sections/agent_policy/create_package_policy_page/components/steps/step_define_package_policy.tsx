@@ -29,8 +29,15 @@ import styled from 'styled-components';
 
 import { NamespaceComboBox } from '../../../../../../../components/namespace_combo_box';
 import { CloudConnectorSetup } from '../../../../../../../components/cloud_connector';
+
 import { PackagePolicyCustomFields } from '../../../../../components/custom_fields';
-import type { PackageInfo, NewPackagePolicy, RegistryVarsEntry } from '../../../../../types';
+import type {
+  PackageInfo,
+  NewPackagePolicy,
+  RegistryVarsEntry,
+  AgentPolicy,
+} from '../../../../../types';
+
 import { Loading } from '../../../../../components';
 import {
   useGetEpmDatastreams,
@@ -65,6 +72,7 @@ export const StepDefinePackagePolicy: React.FunctionComponent<{
   isEditPage?: boolean;
   noAdvancedToggle?: boolean;
   isAgentlessSelected?: boolean;
+  agentPolicies?: AgentPolicy[];
 }> = memo(
   ({
     namespacePlaceholder,
@@ -76,6 +84,7 @@ export const StepDefinePackagePolicy: React.FunctionComponent<{
     noAdvancedToggle = false,
     isEditPage = false,
     isAgentlessSelected = false,
+    agentPolicies,
   }) => {
     const { docLinks, cloud } = useStartServices();
     const { enableVarGroups } = ExperimentalFeaturesService.get();
@@ -188,8 +197,12 @@ export const StepDefinePackagePolicy: React.FunctionComponent<{
 
     const advancedOptionsTitleId = useGeneratedHtmlId();
 
-    // Managed policy
+    // True only if the package policy itself is managed (e.g. Synthetics-created policies).
+    // Controls the read-only callout, readonly name/description fields, and hidden advanced toggle.
     const isManaged = packagePolicy.is_managed;
+
+    // Output is also disabled when any parent agent policy is managed (e.g. Elastic Cloud Agent Policy).
+    const isOutputDisabled = isManaged || agentPolicies?.some((p) => p.is_managed) === true;
 
     return validationResults ? (
       <>
@@ -424,10 +437,27 @@ export const StepDefinePackagePolicy: React.FunctionComponent<{
                     <EuiFlexItem>
                       <EuiFormRow
                         label={
-                          <FormattedMessage
-                            id="xpack.fleet.createPackagePolicy.stepConfigure.packagePolicyOutputInputLabel"
-                            defaultMessage="Output"
-                          />
+                          <>
+                            <FormattedMessage
+                              id="xpack.fleet.createPackagePolicy.stepConfigure.packagePolicyOutputInputLabel"
+                              defaultMessage="Output"
+                            />
+                            {isOutputDisabled && (
+                              <>
+                                {' '}
+                                <EuiIconTip
+                                  type="question"
+                                  color="subdued"
+                                  content={
+                                    <FormattedMessage
+                                      id="xpack.fleet.createPackagePolicy.stepConfigure.packagePolicyOutputDisabledTooltip"
+                                      defaultMessage="Output cannot be modified because this integration is used by a managed agent policy."
+                                    />
+                                  }
+                                />
+                              </>
+                            )}
+                          </>
                         }
                         helpText={
                           <FormattedMessage
@@ -437,6 +467,7 @@ export const StepDefinePackagePolicy: React.FunctionComponent<{
                         }
                       >
                         <EuiSelect
+                          disabled={isOutputDisabled}
                           data-test-subj="packagePolicyOutputInput"
                           isLoading={isOutputsLoading}
                           options={[
