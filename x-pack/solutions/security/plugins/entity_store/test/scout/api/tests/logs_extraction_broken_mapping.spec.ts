@@ -292,6 +292,13 @@ apiTest.describe('Entity Store logs extraction broken mapping', { tag: ENTITY_ST
       [FF_ENABLE_ENTITY_STORE_V2]: true,
     });
 
+    // Ensure clean state in case a prior test left the store installed
+    await apiClient.post(ENTITY_STORE_ROUTES.public.UNINSTALL, {
+      headers: defaultHeaders,
+      responseType: 'json',
+      body: {},
+    });
+
     const installResponse = await apiClient.post(ENTITY_STORE_ROUTES.public.INSTALL, {
       headers: defaultHeaders,
       responseType: 'json',

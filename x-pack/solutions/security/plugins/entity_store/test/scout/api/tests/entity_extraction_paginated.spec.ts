@@ -45,13 +45,17 @@ apiTest.describe(
       const response = await apiClient.post(ENTITY_STORE_ROUTES.public.INSTALL, {
         headers: defaultHeaders,
         responseType: 'json',
-        body: {
-          logExtraction: {
-            docsLimit: 5,
-          },
-        },
+        body: {},
       });
       expect(response.statusCode).toBe(201);
+
+      // Set docsLimit via update (logExtraction removed from install)
+      const update = await apiClient.put(ENTITY_STORE_ROUTES.public.UPDATE, {
+        headers: defaultHeaders,
+        responseType: 'json',
+        body: { logExtraction: { docsLimit: 5 } },
+      });
+      expect(update.statusCode).toBe(200);
 
       await esArchiver.loadIfNeeded(
         'x-pack/solutions/security/plugins/entity_store/test/scout/api/es_archives/updates'

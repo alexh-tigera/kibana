@@ -62,12 +62,9 @@ apiTest.describe('Entity Store install - privilege checks', { tag: ENTITY_STORE_
     };
   };
 
-  const getRoleWithAllPrivileges = () => buildRoleDescriptor();
   const getRoleWithoutTargetIndexPrivileges = () => buildRoleDescriptor({ withTargetIndex: false });
   const getRoleWithoutSavedObjectCreate = () =>
     buildRoleDescriptor({ withSavedObjectCreate: false });
-
-  let additionalIndicesToCleanup: string[] = [];
 
   apiTest.beforeEach(async ({ kbnClient }) => {
     await kbnClient.uiSettings.update({
@@ -82,39 +79,9 @@ apiTest.describe('Entity Store install - privilege checks', { tag: ENTITY_STORE_
         headers: { ...credentials.cookieHeader, ...PUBLIC_HEADERS },
         body: {},
       }),
-      ...additionalIndicesToCleanup.map((index) =>
-        esClient.indices.delete({ index, ignore_unavailable: true })
-      ),
     ]);
-    additionalIndicesToCleanup = [];
     await clearEntityStoreIndices(esClient);
   });
-
-  apiTest(
-    'Should fail when user lacks permissions for source index patterns',
-    async ({ apiClient, esClient, requestAuth }) => {
-      const restrictedIndex = 'restricted-test-logs';
-      additionalIndicesToCleanup = [restrictedIndex];
-
-      await esClient.indices.create({ index: restrictedIndex });
-
-      const { apiKeyHeader } = await requestAuth.getApiKeyForCustomRole(getRoleWithAllPrivileges());
-
-      const response = await apiClient.post(ENTITY_STORE_ROUTES.public.INSTALL, {
-        headers: { ...PUBLIC_HEADERS, ...apiKeyHeader },
-        responseType: 'json',
-        body: { logExtraction: { additionalIndexPatterns: [restrictedIndex] } },
-      });
-
-      expect(response.statusCode).toBe(403);
-      expect(response.body.attributes).toMatchObject({
-        missing_elasticsearch_privileges: {
-          cluster: [],
-          index: [{ index: restrictedIndex, privileges: ENTITY_STORE_SOURCE_INDICES_PRIVILEGES }],
-        },
-      });
-    }
-  );
 
   apiTest(
     'Should fail when user lacks permissions for target index patterns',
