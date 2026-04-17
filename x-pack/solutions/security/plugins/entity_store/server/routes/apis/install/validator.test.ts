@@ -33,8 +33,6 @@ describe('BodySchema historySnapshot', () => {
   it('accepts empty body (only entityTypes and logExtraction optional)', () => {
     expect(BodySchema.safeParse({}).success).toBe(true);
     expect(BodySchema.safeParse({ entityTypes: ['host'] }).success).toBe(true);
-    expect(BodySchema.safeParse({ logExtraction: { filter: 'agent.type:foo' } }).success).toBe(
-      true
-    );
+    expect(BodySchema.safeParse({ logExtraction: { delay: '2m' } }).success).toBe(true);
   });
 });
