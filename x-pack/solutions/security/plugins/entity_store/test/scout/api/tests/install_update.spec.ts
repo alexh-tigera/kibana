@@ -176,7 +176,6 @@ apiTest.describe('Entity Store install / update API tests', { tag: ENTITY_STORE_
         body: { logExtraction: { delay: '2m', frequency: '1m' } },
       });
       expect(initialUpdate.statusCode).toBe(200);
-      });
 
       const update = await apiClient.put(ENTITY_STORE_ROUTES.public.UPDATE, {
         headers: defaultHeaders,
