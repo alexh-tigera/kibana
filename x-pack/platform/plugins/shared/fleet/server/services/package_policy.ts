@@ -1661,7 +1661,10 @@ class PackagePolicyClientImpl implements PackagePolicyClient {
       }
 
       // Validate that global_data_tags is only set on agentless package policies
-      if (packagePolicy.global_data_tags?.length && !packagePolicy.supports_agentless) {
+      if (
+        packagePolicy.global_data_tags?.length &&
+        !(packagePolicy.supports_agentless || agentPolicy?.supports_agentless)
+      ) {
         throw new PackagePolicyValidationError(
           '`global_data_tags` can only be set on agentless integration policies'
         );
