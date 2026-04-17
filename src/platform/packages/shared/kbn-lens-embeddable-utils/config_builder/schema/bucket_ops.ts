@@ -444,7 +444,6 @@ export const bucketOperationDefinitionSchema = schema.oneOf(
   ],
   {
     meta: {
-      id: 'lensBucketOperation',
       title: 'Breakdown Operation',
       description:
         'Breakdown dimension configuration using date histogram, terms, numeric histogram, value ranges, or custom filters.',
