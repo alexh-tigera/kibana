@@ -799,6 +799,67 @@ export class StreamsClient {
     };
   }
 
+  async getPrivilegesPerStream(
+    names: string[]
+  ): Promise<Record<string, { read_failure_store: boolean }>> {
+    if (!this.dependencies.isSecurityEnabled) {
+      // Security disabled - all streams have all privileges
+      const result: Record<string, { read_failure_store: boolean }> = {};
+      names.forEach((name) => {
+        result[name] = { read_failure_store: true };
+      });
+      return result;
+    }
+
+    const isServerless = this.dependencies.isServerless;
+    const REQUIRED_MANAGE_PRIVILEGES = [
+      'manage_index_templates',
+      'manage_ingest_pipelines',
+      'manage_pipeline',
+      'read_pipeline',
+    ];
+
+    if (!isServerless) {
+      REQUIRED_MANAGE_PRIVILEGES.push('monitor_text_structure');
+    }
+
+    const CREATE_SNAPSHOT_REPOSITORY_CLUSTER_PRIVILEGE = 'cluster:admin/repository/put';
+
+    const REQUIRED_INDEX_PRIVILEGES = [
+      'read',
+      'write',
+      'create',
+      'manage',
+      'monitor',
+      'view_index_metadata',
+      'manage_data_stream_lifecycle',
+      'read_failure_store',
+      'manage_failure_store',
+    ];
+    if (!isServerless) {
+      REQUIRED_INDEX_PRIVILEGES.push('manage_ilm');
+    }
+
+    const privileges = await this.dependencies.esClient.security.hasPrivileges({
+      cluster: [...REQUIRED_MANAGE_PRIVILEGES, CREATE_SNAPSHOT_REPOSITORY_CLUSTER_PRIVILEGE],
+      index: [
+        {
+          names,
+          privileges: REQUIRED_INDEX_PRIVILEGES,
+        },
+      ],
+    });
+
+    const result: Record<string, { read_failure_store: boolean }> = {};
+    names.forEach((name) => {
+      result[name] = {
+        read_failure_store: privileges.index[name]?.read_failure_store ?? false,
+      };
+    });
+
+    return result;
+  }
+
   /**
    * Creates an on-the-fly ingest stream definition
    * from a concrete data stream.

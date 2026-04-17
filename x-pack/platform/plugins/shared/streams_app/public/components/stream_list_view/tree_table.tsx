@@ -97,12 +97,10 @@ const TechnicalPreviewBadge = () => (
 export function StreamsTreeTable({
   loading,
   streams = [],
-  canReadFailureStore = false,
   wiredStreamsStatus,
   openFlyout,
 }: {
   streams?: ListStreamDetail[];
-  canReadFailureStore?: boolean;
   loading?: boolean;
   wiredStreamsStatus?: WiredStreamsStatus;
   openFlyout?: () => void;
@@ -126,9 +124,20 @@ export function StreamsTreeTable({
     pageSize: 25,
   });
 
+  // Build privilege map from streams
+  const privilegeMap = React.useMemo(() => {
+    const map = new Map<string, boolean>();
+    streams.forEach((streamDetail) => {
+      if (streamDetail.privileges?.canReadFailureStore !== undefined) {
+        map.set(streamDetail.stream.name, streamDetail.privileges.canReadFailureStore);
+      }
+    });
+    return map;
+  }, [streams]);
+
   const { getStreamDocCounts, getStreamHistogram } = useStreamDocCountsFetch({
     groupTotalCountByTimestamp: true,
-    canReadFailureStore,
+    getCanReadFailureStore: (streamName: string) => privilegeMap.get(streamName) ?? false,
     numDataPoints: STREAMS_HISTOGRAM_NUM_DATA_POINTS,
   });
 
@@ -501,7 +510,7 @@ export function StreamsTreeTable({
                 />
               )}
               {DOCUMENTS_COLUMN_HEADER}
-              {!canReadFailureStore && (
+              {privilegeMap.size === 0 && (
                 <EuiIconTip
                   content={FAILURE_STORE_PERMISSIONS_ERROR}
                   type="warning"
@@ -530,7 +539,7 @@ export function StreamsTreeTable({
           name: (
             <EuiFlexGroup alignItems="center" gutterSize="s">
               {DATA_QUALITY_COLUMN_HEADER}
-              {!canReadFailureStore && (
+              {privilegeMap.size === 0 && (
                 <EuiIconTip
                   content={FAILURE_STORE_PERMISSIONS_ERROR}
                   type="warning"
@@ -627,7 +636,7 @@ export function StreamsTreeTable({
           </div>
         ),
         filters:
-          qualityLoaded && canReadFailureStore
+          qualityLoaded && privilegeMap.size > 0
             ? [
                 {
                   type: 'field_value_selection',
