@@ -9,13 +9,11 @@ import { z } from '@kbn/zod/v4';
 import { EntityType, ALL_ENTITY_TYPES } from '../../../../common/domain/definitions/entity_schema';
 import { HistorySnapshotBodyParams } from '../../constants';
 import { parseDurationToMs } from '../../../infra/time';
-import { LogExtractionInstallSchema } from '../utils/log_extraction_validator';
 
 const MIN_HISTORY_SNAPSHOT_FREQUENCY_MS = 60 * 60 * 1000; // 1h
 
 export const BodySchema = z.object({
   entityTypes: z.array(EntityType).optional().default(ALL_ENTITY_TYPES),
-  logExtraction: LogExtractionInstallSchema,
   historySnapshot: HistorySnapshotBodyParams.optional().superRefine(validateHistorySnapshotParams),
 });
 
