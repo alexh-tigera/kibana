@@ -550,7 +550,6 @@ export default function (providerContext: FtrProviderContext) {
 
         // Update the package policy with new custom fields
         await apiClient.updatePackagePolicy(policy.item.id, {
-          ...packagePolicyBefore.item,
           global_data_tags: [{ name: 'client_id', value: 'updated' }],
         } as any);
 
@@ -595,7 +594,6 @@ export default function (providerContext: FtrProviderContext) {
               .auth('elastic', 'changeme')
               .set('kbn-xsrf', 'xxxx')
               .send({
-                ...packagePolicyRes.item,
                 global_data_tags: [{ name: 'client_id', value: 'acme' }],
               })
               .then((res) => {
