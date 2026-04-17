@@ -31,6 +31,7 @@ import {
   EngineDescriptorTypeName,
   type EngineDescriptor,
   type EngineDescriptorClient,
+  type EntityStoreGlobalState,
   type EntityStoreGlobalStateClient,
   HistorySnapshotState,
   LogExtractionConfig,
@@ -120,13 +121,19 @@ export class AssetManagerClient {
     historySnapshotParams?: HistorySnapshotBodyParams
   ) {
     try {
-      const logsExtraction = LogExtractionConfig.parse(logsExtractionParams ?? {});
       const historySnapshot = HistorySnapshotState.parse(historySnapshotParams ?? {});
+
+      // Only include logsExtraction if user explicitly sent params.
+      // This ensures re-installs (for additional entity types) preserve existing config.
+      const globalStatePayload: Partial<EntityStoreGlobalState> = { historySnapshot };
+      if (logsExtractionParams) {
+        globalStatePayload.logsExtraction = LogExtractionConfig.parse(logsExtractionParams);
+      }
 
       // Phase 1: Install shared ES assets and run independent setup tasks.
       // All component templates and index templates must exist before any index is created.
       await Promise.all([
-        this.globalStateClient.init({ historySnapshot, logsExtraction }),
+        this.globalStateClient.init(globalStatePayload),
 
         ...entityTypes.map((type) =>
           stopAndRemoveV1({
@@ -150,6 +157,10 @@ export class AssetManagerClient {
           namespace: this.namespace,
         }),
       ]);
+
+      // Read back effective config (defaults if new, existing if re-install, user-provided if sent)
+      const globalState = await this.globalStateClient.findOrThrow();
+      const logsExtraction = globalState.logsExtraction;
 
       // Phase 2: Create indices and start engines, now that templates are in place.
       await Promise.all([
