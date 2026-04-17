@@ -12,6 +12,15 @@ on:
       - '**/*.mjs'
       - '**/*.cjs'
       - '.github/codeql/**'
+  push:
+    paths:
+      - '**/*.js'
+      - '**/*.jsx'
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.mjs'
+      - '**/*.cjs'
+      - '.github/codeql/**'
 
 jobs:
 
@@ -19,6 +28,7 @@ jobs:
     name: Test CodeQL queries
     runs-on: ubuntu-latest
     if: |
+      github.event_name == 'push' ||
       (contains(fromJSON('["MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
         && toJSON(github.event.pull_request.labels) != '[]'
         && github.event.pull_request.user.type != 'Bot'
@@ -56,6 +66,7 @@ jobs:
     name: Analyze javascript
     runs-on: kibana
     if: |
+      github.event_name == 'push' ||
       (contains(fromJSON('["MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
         && toJSON(github.event.pull_request.labels) != '[]'
         && github.event.pull_request.user.type != 'Bot'
@@ -81,8 +92,20 @@ jobs:
         languages: ${{ matrix.language }}
         config-file: ./.github/codeql/codeql-config.yml
     - name: Perform CodeQL Analysis
+      id: analyze
       uses: github/codeql-action/analyze@f443b600d91635bebf5b0d9ebc620189c0d6fba5 # v4.30.8
       env:
         CODEQL_EXTRACTOR_JAVASCRIPT_OPTION_SKIP_TYPES: true
       with:
         category: "/language:${{matrix.language}}"
+
+    - name: Fail on any CodeQL alerts
+      run: |
+        set -euo pipefail
+        SARIF_FILE="${{ steps.analyze.outputs.sarif-output }}/${{ matrix.language }}.sarif"
+        COUNT=$(jq '[.runs[].results // []] | add // [] | length' "$SARIF_FILE")
+        if [ "$COUNT" -gt 0 ]; then
+          echo "::error::Found $COUNT CodeQL alert(s). See the Security tab for details."
+          exit 1
+        fi
+        echo "No CodeQL alerts found."

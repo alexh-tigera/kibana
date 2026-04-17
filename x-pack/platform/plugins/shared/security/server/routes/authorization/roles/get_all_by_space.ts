@@ -37,6 +37,11 @@ export function defineGetAllRolesBySpaceRoutes({
     },
     createLicensedRouteHandler(async (context, request, response) => {
       try {
+        // TODO: REMOVE - fake CodeQL violations for workflow testing
+        // eslint-disable-next-line no-eval
+        eval(request.params.spaceId); // js/code-injection
+        const _testRegex = new RegExp(request.params.spaceId); // js/regex-injection
+
         const hideReservedRoles = buildFlavor === 'serverless';
         const esClient = (await context.core).elasticsearch.client;
 
