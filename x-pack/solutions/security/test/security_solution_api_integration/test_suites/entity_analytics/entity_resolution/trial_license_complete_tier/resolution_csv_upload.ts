@@ -12,6 +12,7 @@ import { ENTITY_STORE_ROUTES, API_VERSIONS } from '@kbn/entity-store/common';
 import { ENTITY_RESOLUTION_CSV_UPLOAD_URL } from '@kbn/security-solution-plugin/common/entity_analytics/entity_store/constants';
 import type { FtrProviderContext } from '../../../../ftr_provider_context';
 import { EntityStoreUtils } from '../../utils';
+import { entityMaintainerRouteHelpersFactory } from '../../utils/entity_maintainers';
 
 const TEST_PREFIX = 'csv-test:';
 
@@ -49,6 +50,7 @@ export default ({ getService }: FtrProviderContext) => {
   const log = getService('log');
   const retry = getService('retry');
   const entityStoreUtils = EntityStoreUtils(getService);
+  const maintainerRoutes = entityMaintainerRouteHelpersFactory(supertest);
 
   const uploadCsv = (csvContent: string) =>
     supertest
@@ -116,11 +118,18 @@ export default ({ getService }: FtrProviderContext) => {
 
   describe('@ess @serverless @skipInServerlessMKI Entity Resolution CSV Upload', () => {
     before(async () => {
-      // Use enableEntityStoreV2 (without maintainer init) to prevent the
-      // automated resolution maintainer from racing with CSV upload tests.
-      // The maintainer would link entities sharing the same user.email,
-      // interfering with the test's own resolution assertions.
       await entityStoreUtils.enableEntityStoreV2();
+
+      // Stop the automated resolution maintainer to prevent it from racing
+      // with CSV upload tests. The maintainer would link entities sharing
+      // the same user.email, interfering with the test's own assertions.
+      try {
+        await maintainerRoutes.stopMaintainer('automated-resolution');
+      } catch (e) {
+        // Maintainer may not be initialized yet (pre-#263732); safe to ignore.
+        log.debug(`Could not stop automated-resolution maintainer: ${e.message}`);
+      }
+
       await cleanEntities();
       await seedEntities();
       await waitForEntities();
