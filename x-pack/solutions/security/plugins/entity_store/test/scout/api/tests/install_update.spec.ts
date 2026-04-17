@@ -173,7 +173,12 @@ apiTest.describe('Entity Store install / update API tests', { tag: ENTITY_STORE_
       // Set initial params via update (logExtraction removed from install)
       await apiClient.put(ENTITY_STORE_ROUTES.public.UPDATE, {
         headers: defaultHeaders,
+      const initialUpdate = await apiClient.put(ENTITY_STORE_ROUTES.public.UPDATE, {
+        headers: defaultHeaders,
         responseType: 'json',
+        body: { logExtraction: { delay: '2m', frequency: '1m' } },
+      });
+      expect(initialUpdate.statusCode).toBe(200);
         body: { logExtraction: { delay: '2m', frequency: '1m' } },
       });
 
