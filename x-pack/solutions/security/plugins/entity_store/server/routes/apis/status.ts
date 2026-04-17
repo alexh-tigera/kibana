@@ -53,13 +53,12 @@ function toPublicEngine(
   logsExtractionConfig: LogExtractionConfig
 ): StatusEngine {
   const { versionState, logExtractionState, ...rest } = engine;
-  const { delay, timeout, frequency, lookbackPeriod, fieldHistoryLength, filter, maxLogsPerPage } =
+  const { delay, timeout, frequency, lookbackPeriod, fieldHistoryLength, maxLogsPerPage } =
     logsExtractionConfig;
 
   return {
     ...rest,
     // TODO: Remove the legacy fields once we stop supporting V1.
-    filter,
     delay,
     timeout,
     frequency,
