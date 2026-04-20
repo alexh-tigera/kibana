@@ -129,9 +129,7 @@ export const markdownRenderers = (
         </EuiCodeBlock>
       );
     },
-    img: (
-      props: React.ClassAttributes<HTMLImageElement> & React.ImgHTMLAttributes<HTMLImageElement>
-    ) => {
+    img: ({ node, ...props }) => {
       const transformedSrc =
         transformImageUri && props.src ? transformImageUri(props.src) : props.src;
       return <img style={{ maxWidth: '100%' }} {...props} src={transformedSrc} alt={props.alt} />;

@@ -29,7 +29,7 @@ const MarkdownRenderer = React.lazy(async () => {
   const WrappedRenderer = ({ basePath, children }: MarkdownRendererProps) => (
     <ReactMarkdown
       components={{
-        a: ({ href, children: linkChildren, ...props }) => (
+        a: ({ node, href, children: linkChildren, ...props }) => (
           <a href={basePath.prepend(href || '')} {...props}>
             {linkChildren}
           </a>
