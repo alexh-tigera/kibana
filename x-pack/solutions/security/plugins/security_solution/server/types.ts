@@ -82,6 +82,7 @@ export interface SecuritySolutionApiRequestHandlerContext {
   getRiskScoreDataClient: () => RiskScoreDataClient;
   getAssetCriticalityDataClient: () => AssetCriticalityDataClient;
   getEntityStoreDataClient: () => EntityStoreDataClient;
+  getEntityStoreUpdateClient: () => EntityStoreUpdateClient;
   getPrivilegeMonitoringDataClient: () => PrivilegeMonitoringDataClient;
   getMonitoringEntitySourceDataClient: () => MonitoringEntitySourceDataClient;
   getPrivilegedUserMonitoringApiKeyManager: () => PrivilegedUsersApiKeyManager;
