@@ -11,6 +11,8 @@ import type { KibanaRequest } from '@kbn/core/server';
 import { analyticsServiceMock, coreMock } from '@kbn/core/server/mocks';
 import { loggerMock } from '@kbn/logging-mocks';
 
+import { dataViewsService } from '@kbn/data-views-plugin/server/mocks';
+
 import type { ActionsApiRequestHandlerContext } from '@kbn/actions-plugin/server';
 import type { AlertingApiRequestHandlerContext } from '@kbn/alerting-plugin/server';
 import { rulesClientMock } from '@kbn/alerting-plugin/server/mocks';
@@ -49,6 +51,7 @@ import { createProductFeaturesServiceMock } from '../../../product_features_serv
 import type { EndpointAppContextService } from '../../../../endpoint/endpoint_app_context_services';
 import { padPackageInstallationClientMock } from '../../../entity_analytics/privilege_monitoring/privileged_access_detection/pad_package_installation_client.mock';
 import { privilegeMonitorDataClientMock } from '../../../entity_analytics/privilege_monitoring/engine/data_client.mock';
+import { getMockRulesAuthz } from '../../rule_management/__mocks__/authz';
 
 export const createMockClients = () => {
   const core = coreMock.createRequestHandlerContext();
@@ -156,6 +159,7 @@ const createSecuritySolutionRequestContextMock = (
     getEndpointAuthz: jest.fn(async () =>
       getEndpointAuthzInitialStateMock(overrides.endpointAuthz)
     ),
+    getCheckOsqueryResponseActionAuthz: jest.fn(() => jest.fn()),
     getEndpointService: jest.fn(() => {
       if (overrides.endpointAppServices) {
         return overrides.endpointAppServices;
@@ -195,6 +199,7 @@ const createSecuritySolutionRequestContextMock = (
     getAuditLogger: jest.fn(() => mockAuditLogger),
     getLogger: jest.fn(() => clients.logger),
     getDataViewsService: jest.fn(),
+    getInternalDataViewsService: jest.fn(async () => dataViewsService),
     getEntityStoreApiKeyManager: jest.fn(),
     getPrivilegedUserMonitoringApiKeyManager: jest.fn(),
     getEntityStoreDataClient: jest.fn(() => clients.entityStoreDataClient),
@@ -211,6 +216,7 @@ const createSecuritySolutionRequestContextMock = (
     getMlAuthz: jest.fn(() => ({
       validateRuleType: jest.fn(async () => ({ valid: true, message: undefined })),
     })),
+    getRulesAuthz: jest.fn(() => getMockRulesAuthz()),
   };
 };
 
