@@ -19,6 +19,8 @@ import type {
   SecuritySolutionPluginStart,
 } from '../../plugin_contract';
 import type { UsageCollectionSetup } from '@kbn/usage-collection-plugin/server';
+import { SECURITY_SOLUTION_ENABLE_ASSET_INVENTORY_SETTING } from '@kbn/management-settings-ids';
+import { FF_ENABLE_ENTITY_STORE_V2 } from '@kbn/entity-store/common';
 
 const mockSecSolutionContext = {
   getEntityStoreDataClient: jest.fn(),
@@ -29,6 +31,9 @@ const mockSecSolutionContext = {
       client: {
         asInternalUser: {
           count: jest.fn(),
+          indices: {
+            exists: jest.fn(),
+          },
         },
       },
     },
@@ -80,7 +85,12 @@ describe('AssetInventoryDataClient', () => {
   describe('status function', () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      uiSettingsClientMock.get.mockResolvedValue(true);
+      // By default: asset inventory enabled, V2 disabled (V1 behaviour)
+      uiSettingsClientMock.get.mockImplementation((key: string) => {
+        if (key === FF_ENABLE_ENTITY_STORE_V2) return Promise.resolve(false);
+        if (key === SECURITY_SOLUTION_ENABLE_ASSET_INVENTORY_SETTING) return Promise.resolve(true);
+        return Promise.resolve(true);
+      });
       (mockSecSolutionContext.getSpaceId as jest.Mock).mockReturnValue('default');
       (
         mockSecSolutionContext.core.elasticsearch.client.asInternalUser.count as jest.Mock
@@ -383,6 +393,127 @@ describe('AssetInventoryDataClient', () => {
 
       expect(result).toEqual({ status: 'initializing' });
     });
+
+    describe('V2 behaviour', () => {
+      beforeEach(() => {
+        uiSettingsClientMock.get.mockImplementation((key: string) => {
+          if (key === FF_ENABLE_ENTITY_STORE_V2) return Promise.resolve(true);
+          return Promise.resolve(true);
+        });
+        (mockSecSolutionContext.getSpaceId as jest.Mock).mockReturnValue('default');
+        // Reset count mock — hasAnyEntitiesDocuments returns 0 by default in these tests
+        (
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.count as jest.Mock
+        ).mockResolvedValue({ count: 0 });
+      });
+
+      it('uses V2 index pattern when checking for entity documents', async () => {
+        (
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.count as jest.Mock
+        ).mockResolvedValue({ count: 5 });
+
+        const mockDataViewService = {
+          get: jest.fn().mockRejectedValue({ output: { statusCode: 404 } }),
+          createAndSave: jest.fn().mockResolvedValue({ id: 'asset-inventory-default' }),
+        };
+        (mockSecSolutionContext.getDataViewsService as jest.Mock).mockReturnValue(
+          mockDataViewService
+        );
+
+        const result = await client.status(mockSecSolutionContext, mockEntityStorePrivileges);
+
+        expect(result).toEqual({ status: 'ready' });
+        expect(
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.count
+        ).toHaveBeenCalledWith({
+          index: '.entities.v2.latest.security_default-*',
+        });
+      });
+
+      it('returns DISABLED when V2 index does not exist', async () => {
+        (
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.indices
+            .exists as jest.Mock
+        ).mockResolvedValue(false);
+
+        const result = await client.status(mockSecSolutionContext, mockEntityStorePrivileges);
+
+        expect(result).toEqual({ status: 'disabled' });
+        expect(
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.indices.exists
+        ).toHaveBeenCalledWith({
+          index: '.entities.v2.latest.security_default-*',
+        });
+      });
+
+      it('returns EMPTY when V2 index exists but has no documents', async () => {
+        (
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.indices
+            .exists as jest.Mock
+        ).mockResolvedValue(true);
+
+        const result = await client.status(mockSecSolutionContext, mockEntityStorePrivileges);
+
+        expect(result).toEqual({ status: 'empty' });
+      });
+
+      it('returns READY when V2 index has documents and installs data view with V2 pattern', async () => {
+        (
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.count as jest.Mock
+        ).mockResolvedValue({ count: 10 });
+
+        const mockDataViewService = {
+          get: jest.fn().mockRejectedValue({ output: { statusCode: 404 } }),
+          createAndSave: jest.fn().mockResolvedValue({ id: 'asset-inventory-default' }),
+        };
+        (mockSecSolutionContext.getDataViewsService as jest.Mock).mockReturnValue(
+          mockDataViewService
+        );
+
+        const result = await client.status(mockSecSolutionContext, mockEntityStorePrivileges);
+
+        expect(result).toEqual({ status: 'ready' });
+        // Data view created with V2 title
+        expect(mockDataViewService.createAndSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: '.entities.v2.latest.security_default-*',
+          }),
+          false,
+          true
+        );
+      });
+
+      it('returns DISABLED when V2 index existence check throws', async () => {
+        (
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.indices
+            .exists as jest.Mock
+        ).mockRejectedValue(new Error('ES error'));
+
+        const result = await client.status(mockSecSolutionContext, mockEntityStorePrivileges);
+
+        expect(result).toEqual({ status: 'disabled' });
+        expect(loggerMock.error).toHaveBeenCalledWith(
+          'Error checking Entity Store V2 index existence: ES error'
+        );
+      });
+
+      it('uses space-specific V2 index pattern', async () => {
+        (mockSecSolutionContext.getSpaceId as jest.Mock).mockReturnValue('my-space');
+        (
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.indices
+            .exists as jest.Mock
+        ).mockResolvedValue(false);
+
+        const result = await client.status(mockSecSolutionContext, mockEntityStorePrivileges);
+
+        expect(result).toEqual({ status: 'disabled' });
+        expect(
+          mockSecSolutionContext.core.elasticsearch.client.asInternalUser.indices.exists
+        ).toHaveBeenCalledWith({
+          index: '.entities.v2.latest.security_my-space-*',
+        });
+      });
+    });
   });
 
   describe('installAssetInventoryDataView function', () => {
@@ -393,6 +524,11 @@ describe('AssetInventoryDataClient', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
+      // Default: V1 mode (V2 disabled)
+      uiSettingsClientMock.get.mockImplementation((key: string) => {
+        if (key === FF_ENABLE_ENTITY_STORE_V2) return Promise.resolve(false);
+        return Promise.resolve(true);
+      });
       (mockSecSolutionContext.getDataViewsService as jest.Mock).mockReturnValue(
         mockDataViewService
       );
@@ -535,6 +671,62 @@ describe('AssetInventoryDataClient', () => {
       expect(mockDataViewService.get).toHaveBeenCalledWith('asset-inventory-default', false);
       expect(mockDataViewService.createAndSave).toHaveBeenCalled();
     });
+
+    describe('V2 behaviour', () => {
+      beforeEach(() => {
+        uiSettingsClientMock.get.mockImplementation((key: string) => {
+          if (key === FF_ENABLE_ENTITY_STORE_V2) return Promise.resolve(true);
+          return Promise.resolve(true);
+        });
+      });
+
+      it('should use V2 index pattern as the data view title in default space', async () => {
+        const notFoundError = { output: { statusCode: 404 } };
+        mockDataViewService.get.mockRejectedValue(notFoundError);
+        mockDataViewService.createAndSave.mockResolvedValue({ id: 'asset-inventory-default' });
+
+        await client.installAssetInventoryDataView(mockSecSolutionContext);
+
+        expect(mockDataViewService.createAndSave).toHaveBeenCalledWith(
+          {
+            id: 'asset-inventory-default',
+            title: '.entities.v2.latest.security_default-*',
+            name: 'Asset Inventory Data View - default',
+            namespaces: ['default'],
+            allowNoIndex: true,
+            timeFieldName: '@timestamp',
+            allowHidden: true,
+          },
+          false,
+          true
+        );
+      });
+
+      it('should use space-specific V2 index pattern for custom spaces', async () => {
+        (mockSecSolutionContext.getSpaceId as jest.Mock).mockReturnValue('custom-space');
+        const notFoundError = { output: { statusCode: 404 } };
+        mockDataViewService.get.mockRejectedValue(notFoundError);
+        mockDataViewService.createAndSave.mockResolvedValue({
+          id: 'asset-inventory-custom-space',
+        });
+
+        await client.installAssetInventoryDataView(mockSecSolutionContext);
+
+        expect(mockDataViewService.createAndSave).toHaveBeenCalledWith(
+          {
+            id: 'asset-inventory-custom-space',
+            title: '.entities.v2.latest.security_custom-space-*',
+            name: 'Asset Inventory Data View - custom-space',
+            namespaces: ['custom-space'],
+            allowNoIndex: true,
+            timeFieldName: '@timestamp',
+            allowHidden: true,
+          },
+          false,
+          true
+        );
+      });
+    });
   });
 
   describe('enable function', () => {
@@ -551,7 +743,11 @@ describe('AssetInventoryDataClient', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      uiSettingsClientMock.get.mockResolvedValue(true);
+      // Default: asset inventory enabled, V2 disabled (V1 behaviour)
+      uiSettingsClientMock.get.mockImplementation((key: string) => {
+        if (key === FF_ENABLE_ENTITY_STORE_V2) return Promise.resolve(false);
+        return Promise.resolve(true);
+      });
       (mockSecSolutionContext.getEntityStoreDataClient as jest.Mock).mockReturnValue(
         mockEntityStoreDataClient
       );
@@ -744,12 +940,81 @@ describe('AssetInventoryDataClient', () => {
       // Verify data view installation is attempted
       expect(mockDataViewService.createAndSave).toHaveBeenCalled();
     });
+
+    describe('V2 behaviour', () => {
+      beforeEach(() => {
+        uiSettingsClientMock.get.mockImplementation((key: string) => {
+          if (key === FF_ENABLE_ENTITY_STORE_V2) return Promise.resolve(true);
+          return Promise.resolve(true);
+        });
+      });
+
+      it('skips V1 entity store setup and installs data view with V2 index pattern', async () => {
+        mockDataViewService.get.mockRejectedValue({ output: { statusCode: 404 } });
+        mockDataViewService.createAndSave.mockResolvedValue({ id: 'asset-inventory-default' });
+
+        const result = await client.enable(
+          mockSecSolutionContext,
+          {} as InitEntityStoreRequestBody
+        );
+
+        // Entity store V1 APIs must NOT be called
+        expect(mockEntityStoreDataClient.enable).not.toHaveBeenCalled();
+        expect(mockEntityStoreDataClient.init).not.toHaveBeenCalled();
+        expect(mockEntityStoreDataClient.status).not.toHaveBeenCalled();
+
+        // Data view must be installed with the V2 index pattern
+        expect(mockDataViewService.createAndSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: '.entities.v2.latest.security_default-*',
+          }),
+          false,
+          true
+        );
+
+        expect(result).toEqual({ succeeded: true });
+      });
+
+      it('uses space-specific V2 index pattern in the data view title', async () => {
+        (mockSecSolutionContext.getSpaceId as jest.Mock).mockReturnValue('my-space');
+        mockDataViewService.get.mockRejectedValue({ output: { statusCode: 404 } });
+        mockDataViewService.createAndSave.mockResolvedValue({ id: 'asset-inventory-my-space' });
+
+        await client.enable(mockSecSolutionContext, {} as InitEntityStoreRequestBody);
+
+        expect(mockDataViewService.createAndSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: '.entities.v2.latest.security_my-space-*',
+          }),
+          false,
+          true
+        );
+      });
+
+      it('still returns succeeded when data view installation fails in V2 mode', async () => {
+        mockDataViewService.get.mockRejectedValue({ output: { statusCode: 404 } });
+        mockDataViewService.createAndSave.mockRejectedValue(new Error('Data view error'));
+
+        const result = await client.enable(
+          mockSecSolutionContext,
+          {} as InitEntityStoreRequestBody
+        );
+
+        expect(loggerMock.error).toHaveBeenCalledWith(
+          'Error installing asset inventory data view: Data view error'
+        );
+        expect(result).toEqual({ succeeded: true });
+      });
+    });
   });
 
   describe('delete function', () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      uiSettingsClientMock.get.mockResolvedValue(true);
+      uiSettingsClientMock.get.mockImplementation((key: string) => {
+        if (key === FF_ENABLE_ENTITY_STORE_V2) return Promise.resolve(false);
+        return Promise.resolve(true);
+      });
     });
 
     it('throws error when uisetting is disabled', async () => {

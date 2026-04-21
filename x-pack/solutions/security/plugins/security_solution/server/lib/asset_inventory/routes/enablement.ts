@@ -44,7 +44,7 @@ export const enableAssetInventoryRoute = (
         const siemResponse = buildSiemResponse(response);
 
         try {
-          // Criticality resources are required by the Entity Store transforms
+          // Asset criticality resources are required by the Entity Store enrichment pipeline
           await checkAndInitAssetCriticalityResources(context, logger);
 
           const secSol = await context.securitySolution;

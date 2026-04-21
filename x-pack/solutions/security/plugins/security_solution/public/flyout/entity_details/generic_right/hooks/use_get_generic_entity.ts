@@ -10,9 +10,12 @@ import type { IKibanaSearchRequest, IKibanaSearchResponse } from '@kbn/search-ty
 import type { estypes } from '@elastic/elasticsearch';
 import { lastValueFrom } from 'rxjs';
 import type { DataPublicPluginStart } from '@kbn/data-plugin/public';
+import { FF_ENABLE_ENTITY_STORE_V2, getLatestEntityIndexPattern } from '@kbn/entity-store/common';
+import { useUiSetting$ } from '@kbn/kibana-react-plugin/public';
 import { ASSET_INVENTORY_INDEX_PATTERN } from '../../../../asset_inventory/constants';
 import type { GenericEntityRecord } from '../../../../asset_inventory/types/generic_entity_record';
 import { useKibana } from '../../../../common/lib/kibana';
+import { useSpaceId } from '../../../../common/hooks/use_space_id';
 
 type GenericEntityRequest = IKibanaSearchRequest<estypes.SearchRequest>;
 type GenericEntityResponse = IKibanaSearchResponse<estypes.SearchResponse<GenericEntityRecord>>;
@@ -25,7 +28,8 @@ export type UseGetGenericEntityParams =
 
 export const fetchGenericEntity = async (
   dataService: DataPublicPluginStart,
-  { entityDocId, entityId }: UseGetGenericEntityParams
+  { entityDocId, entityId }: UseGetGenericEntityParams,
+  index: string
 ): Promise<GenericEntityResponse> => {
   const shouldClauses = [];
 
@@ -40,7 +44,7 @@ export const fetchGenericEntity = async (
   return lastValueFrom(
     dataService.search.search<GenericEntityRequest, GenericEntityResponse>({
       params: {
-        index: ASSET_INVENTORY_INDEX_PATTERN,
+        index,
         query: {
           bool: {
             should: shouldClauses,
@@ -55,12 +59,20 @@ export const fetchGenericEntity = async (
 
 export const useGetGenericEntity = (params: UseGetGenericEntityParams) => {
   const { data: dataService } = useKibana().services;
+  const [entityStoreV2Enabled] = useUiSetting$<boolean>(FF_ENABLE_ENTITY_STORE_V2, false);
+  const spaceId = useSpaceId();
 
   const { entityDocId, entityId } = params;
 
+  // Entity Store V2 stores all entity types (including generic) in a unified per-space index.
+  // Entity Store V1 uses the `entities-generic-latest` alias for generic entities.
+  const index = entityStoreV2Enabled
+    ? getLatestEntityIndexPattern(spaceId ?? 'default')
+    : ASSET_INVENTORY_INDEX_PATTERN;
+
   const getGenericEntity = useQuery({
-    queryKey: ['use-get-generic-entity-key', entityDocId, entityId],
-    queryFn: () => fetchGenericEntity(dataService, params),
+    queryKey: ['use-get-generic-entity-key', entityDocId, entityId, index],
+    queryFn: () => fetchGenericEntity(dataService, params, index),
     select: (response) => response.rawResponse.hits.hits[0], // extracting result out of ES
   });
 

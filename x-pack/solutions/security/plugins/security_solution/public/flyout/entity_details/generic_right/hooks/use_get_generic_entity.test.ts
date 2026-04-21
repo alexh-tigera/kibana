@@ -85,7 +85,7 @@ describe('fetchGenericEntity', () => {
     it('should build bool query with _id term when only entityDocId is provided', async () => {
       const entityDocId = 'test-doc-id';
 
-      await fetchGenericEntity(mockDataService, { entityDocId });
+      await fetchGenericEntity(mockDataService, { entityDocId }, ASSET_INVENTORY_INDEX_PATTERN);
 
       expect(mockDataService.search.search).toHaveBeenCalledWith({
         params: {
@@ -110,7 +110,7 @@ describe('fetchGenericEntity', () => {
     it('should build bool query with entity.id term when only entityId is provided', async () => {
       const entityId = 'test-entity-id';
 
-      await fetchGenericEntity(mockDataService, { entityId });
+      await fetchGenericEntity(mockDataService, { entityId }, ASSET_INVENTORY_INDEX_PATTERN);
 
       expect(mockDataService.search.search).toHaveBeenCalledWith({
         params: {
@@ -136,7 +136,11 @@ describe('fetchGenericEntity', () => {
       const entityDocId = 'test-doc-id';
       const entityId = 'test-entity-id';
 
-      await fetchGenericEntity(mockDataService, { entityDocId, entityId });
+      await fetchGenericEntity(
+        mockDataService,
+        { entityDocId, entityId },
+        ASSET_INVENTORY_INDEX_PATTERN
+      );
 
       expect(mockDataService.search.search).toHaveBeenCalledWith({
         params: {
@@ -166,7 +170,7 @@ describe('fetchGenericEntity', () => {
     it('should handle whitespace-only entityDocId as valid', async () => {
       const entityDocId = '   '; // whitespace only
 
-      await fetchGenericEntity(mockDataService, { entityDocId });
+      await fetchGenericEntity(mockDataService, { entityDocId }, ASSET_INVENTORY_INDEX_PATTERN);
 
       expect(mockDataService.search.search).toHaveBeenCalledWith({
         params: {
@@ -177,6 +181,32 @@ describe('fetchGenericEntity', () => {
                 {
                   term: {
                     _id: '   ',
+                  },
+                },
+              ],
+              minimum_should_match: 1,
+            },
+          },
+          fields: ['*'],
+        },
+      });
+    });
+
+    it('should use V2 index pattern when provided', async () => {
+      const entityDocId = 'test-doc-id';
+      const v2Index = '.entities.v2.latest.security_default-*';
+
+      await fetchGenericEntity(mockDataService, { entityDocId }, v2Index);
+
+      expect(mockDataService.search.search).toHaveBeenCalledWith({
+        params: {
+          index: v2Index,
+          query: {
+            bool: {
+              should: [
+                {
+                  term: {
+                    _id: entityDocId,
                   },
                 },
               ],

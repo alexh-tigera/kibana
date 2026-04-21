@@ -9,6 +9,7 @@ import type { UsageCollectionSetup } from '@kbn/usage-collection-plugin/server';
 import type { IScopedClusterClient, Logger, CoreStart } from '@kbn/core/server';
 import type { IUiSettingsClient } from '@kbn/core-ui-settings-server';
 import { SECURITY_SOLUTION_ENABLE_ASSET_INVENTORY_SETTING } from '@kbn/management-settings-ids';
+import { FF_ENABLE_ENTITY_STORE_V2, getLatestEntityIndexPattern } from '@kbn/entity-store/common';
 
 import type { EntityAnalyticsPrivileges } from '../../../common/api/entity_analytics';
 import { EntityType } from '../../../common/api/entity_analytics';
@@ -137,13 +138,20 @@ export class AssetInventoryDataClient {
     if (!dataViewExists) {
       logger.debug('Installing Asset Inventory DataView');
 
+      const isV2 = await this.isV2Enabled();
+      // For Entity Store V2, the index pattern already embeds the space ID (e.g.
+      // `.entities.v2.latest.security_default-*`), so we pass it as a title override to
+      // avoid the default `${indexPattern}${spaceId}` concatenation used for V1.
+      const titleOverride = isV2 ? getLatestEntityIndexPattern(currentSpaceId) : undefined;
+
       return installDataView(
         currentSpaceId,
         dataViewService,
         ASSET_INVENTORY_DATA_VIEW_NAME,
         ASSET_INVENTORY_INDEX_PATTERN,
         ASSET_INVENTORY_DATA_VIEW_ID_PREFIX,
-        logger
+        logger,
+        titleOverride
       );
     } else {
       logger.debug('DataView is already installed. Skipping installation.');
@@ -163,6 +171,33 @@ export class AssetInventoryDataClient {
       if (!(await this.checkUISettingEnabled())) {
         throw new Error('uiSetting');
       }
+
+      const isV2 = await this.isV2Enabled();
+
+      if (isV2) {
+        // Entity Store V2 install is handled automatically by the `useInstallEntityStoreV2` hook
+        // at app startup. The enable action only needs to create the space-scoped data view.
+        logger.debug(`Entity Store V2 enabled — skipping V1 engine setup`);
+
+        try {
+          await installDataView(
+            secSolutionContext.getSpaceId(),
+            secSolutionContext.getDataViewsService(),
+            ASSET_INVENTORY_DATA_VIEW_NAME,
+            ASSET_INVENTORY_INDEX_PATTERN,
+            ASSET_INVENTORY_DATA_VIEW_ID_PREFIX,
+            logger,
+            getLatestEntityIndexPattern(secSolutionContext.getSpaceId())
+          );
+        } catch (error) {
+          logger.error(`Error installing asset inventory data view: ${error.message}`);
+        }
+
+        logger.debug(`Enabled asset inventory (V2 mode)`);
+        return { succeeded: true };
+      }
+
+      // --- Entity Store V1 flow ---
 
       // Retrieve entity store status
       const entityStoreStatus = await secSolutionContext.getEntityStoreDataClient().status({
@@ -257,6 +292,8 @@ export class AssetInventoryDataClient {
       return { status: ASSET_INVENTORY_STATUS.INACTIVE_FEATURE };
     }
 
+    const isV2 = await this.isV2Enabled();
+
     // Determine the ready status based on the presence of generic documents
     try {
       const hasAnyEntitiesDocuments = await this.hasAnyEntitiesDocuments(secSolutionContext);
@@ -281,6 +318,33 @@ export class AssetInventoryDataClient {
         privileges: entityStorePrivileges,
       };
     }
+
+    if (isV2) {
+      // Entity Store V2: determine status by checking the V2 entities index directly.
+      // The V2 entities index is created when the entity store is initialised; if it
+      // does not yet exist the entity store has not been installed.
+      try {
+        const spaceId = secSolutionContext.getSpaceId();
+        const v2IndexPattern = getLatestEntityIndexPattern(spaceId);
+        const elasticsearchClient = secSolutionContext.core.elasticsearch.client;
+        const indexExists = await elasticsearchClient.asInternalUser.indices.exists({
+          index: v2IndexPattern,
+        });
+
+        if (!indexExists) {
+          return { status: ASSET_INVENTORY_STATUS.DISABLED };
+        }
+
+        // Index exists but has no data yet — entity store is running but hasn't processed
+        // any documents yet.
+        return { status: ASSET_INVENTORY_STATUS.EMPTY };
+      } catch (error) {
+        logger.error(`Error checking Entity Store V2 index existence: ${error.message}`);
+        return { status: ASSET_INVENTORY_STATUS.DISABLED };
+      }
+    }
+
+    // --- Entity Store V1 flow ---
 
     // Retrieve entity store status
     const entityStoreStatus = await secSolutionContext.getEntityStoreDataClient().status({
@@ -330,6 +394,10 @@ export class AssetInventoryDataClient {
     return isAssetInventoryEnabled;
   }
 
+  private async isV2Enabled(): Promise<boolean> {
+    return this.options.uiSettingsClient.get<boolean>(FF_ENABLE_ENTITY_STORE_V2, false);
+  }
+
   // Type guard to check if an entity engine is a generic entity engine
   private isGenericEntityEngine(
     engine: EntityStoreEngineStatus
@@ -365,10 +433,16 @@ export class AssetInventoryDataClient {
 
     const spaceId = secSolutionContext.getSpaceId();
 
-    const entitiesIndexCurrentSpace = `${ASSET_INVENTORY_INDEX_PATTERN}${spaceId}`;
+    const isV2 = await this.isV2Enabled();
+
+    // Entity Store V2 uses a unified index per namespace (space), whereas V1 appended the
+    // space ID to the generic index pattern prefix.
+    const index = isV2
+      ? getLatestEntityIndexPattern(spaceId)
+      : `${ASSET_INVENTORY_INDEX_PATTERN}${spaceId}`;
 
     const response = await elasticsearchClient.asInternalUser.count({
-      index: entitiesIndexCurrentSpace,
+      index,
     });
 
     return response.count > 0;

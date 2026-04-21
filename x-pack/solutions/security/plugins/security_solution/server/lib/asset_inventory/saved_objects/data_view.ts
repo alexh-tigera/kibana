@@ -16,17 +16,24 @@ export const installDataView = async (
   dataViewName: string,
   indexPattern: string,
   dataViewId: string,
-  logger: Logger
+  logger: Logger,
+  /**
+   * When provided, used as the full data view title instead of the default
+   * `${indexPattern}${currentSpaceId}` construction. Use this for Entity Store V2
+   * index patterns that already embed the space ID (e.g. `.entities.v2.latest.security_default-*`).
+   */
+  titleOverride?: string
 ) => {
   try {
     const currentSpaceDataViewId = `${dataViewId}-${currentSpaceId}`;
+    const title = titleOverride ?? `${indexPattern}${currentSpaceId}`;
 
     logger.info(`Creating and saving data view with ID: ${currentSpaceDataViewId}`);
 
     return await dataViewsService.createAndSave(
       {
         id: currentSpaceDataViewId,
-        title: `${indexPattern}${currentSpaceId}`,
+        title,
         name: `${dataViewName} - ${currentSpaceId}`,
         namespaces: [currentSpaceId],
         allowNoIndex: true,
