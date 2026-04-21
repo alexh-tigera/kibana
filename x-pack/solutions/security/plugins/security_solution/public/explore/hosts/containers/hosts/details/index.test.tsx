@@ -98,10 +98,9 @@ describe('useHostDetails', () => {
     mockUseUiSetting.mockReturnValue(true);
     mockUseEntityStoreEuidApi.mockReturnValue({ euid: {} });
 
-    renderHook(
-      () => useHostDetails({ ...defaultProps, hostName: '', entityId: undefined }),
-      { wrapper: TestProviders }
-    );
+    renderHook(() => useHostDetails({ ...defaultProps, hostName: '', entityId: undefined }), {
+      wrapper: TestProviders,
+    });
 
     expect(mockSearch).not.toHaveBeenCalled();
   });
