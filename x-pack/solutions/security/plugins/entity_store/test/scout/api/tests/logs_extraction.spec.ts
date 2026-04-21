@@ -792,14 +792,36 @@ apiTest.describe('Entity Store Main logs extraction', { tag: ENTITY_STORE_TAGS }
       const from = '2026-03-18T20:00:00Z';
       const to = '2026-03-18T21:00:00Z';
 
-      // Excluded user names per user.ts: root, bin, daemon, sys, nobody, jenkins, ansible, deploy,
-      // terraform, gitlab-runner, postgres, mysql, redis, elasticsearch, kafka, admin, operator, service.
+      // Excluded user names per user_entity_constants.ts:
+      // Linux: root, bin, daemon, sys, nobody, syslog, man, sshd, _apt, messagebus, _chrony, systemd-resolve
+      // CI/automation: jenkins, ansible, deploy, terraform, gitlab-runner
+      // DB/middleware: postgres, mysql, redis, elasticsearch, kafka
+      // Generic: admin, operator, service
+      // Windows: ADMIN, ADMINISTRATOR, SYSTEM, ROOT, ANONYMOUS, AUTHENTICATED USER, NETWORK, NULL, LOCAL SYSTEM, LOCALSYSTEM, NETWORK SERVICE
       // Non-IDP docs only (user.name + host.id, no event.kind=asset, no event.category=iam).
-      const excludedNames = ['root', 'jenkins', 'ansible', 'postgres', 'admin', 'service'];
+      const excludedNames = [
+        'root',
+        'jenkins',
+        'ansible',
+        'postgres',
+        'admin',
+        'service',
+        'syslog',
+        'sshd',
+        '_apt',
+        'messagebus',
+        '_chrony',
+        'systemd-resolve',
+        'ADMINISTRATOR',
+        'SYSTEM',
+        'LOCALSYSTEM',
+        'NETWORK SERVICE',
+      ];
       for (let i = 0; i < excludedNames.length; i++) {
         const name = excludedNames[i];
+        const minute = String(i + 1).padStart(2, '0');
         await ingestDoc(esClient, {
-          '@timestamp': `2026-03-18T20:0${i + 1}:00Z`,
+          '@timestamp': `2026-03-18T20:${minute}:00Z`,
           event: { kind: 'event', category: 'network', outcome: 'success' },
           user: { name },
           host: { id: `excluded-host-${name}`, name: 'server' },
@@ -808,7 +830,7 @@ apiTest.describe('Entity Store Main logs extraction', { tag: ENTITY_STORE_TAGS }
 
       // Valid non-IDP user for comparison
       await ingestDoc(esClient, {
-        '@timestamp': '2026-03-18T20:10:00Z',
+        '@timestamp': '2026-03-18T20:30:00Z',
         event: { kind: 'event', category: 'network', outcome: 'success' },
         user: { name: 'allowed.user' },
         host: { id: 'excluded-host-allowed', name: 'workstation' },
