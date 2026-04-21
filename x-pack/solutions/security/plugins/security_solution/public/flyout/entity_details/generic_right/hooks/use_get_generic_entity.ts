@@ -66,13 +66,20 @@ export const useGetGenericEntity = (params: UseGetGenericEntityParams) => {
 
   // Entity Store V2 stores all entity types (including generic) in a unified per-space index.
   // Entity Store V1 uses the `entities-generic-latest` alias for generic entities.
+  // When V2 is enabled, the query is disabled until the space ID resolves (async).
   const index = entityStoreV2Enabled
-    ? getLatestEntityIndexPattern(spaceId ?? 'default')
+    ? spaceId
+      ? getLatestEntityIndexPattern(spaceId)
+      : undefined
     : ASSET_INVENTORY_INDEX_PATTERN;
 
   const getGenericEntity = useQuery({
     queryKey: ['use-get-generic-entity-key', entityDocId, entityId, index],
-    queryFn: () => fetchGenericEntity(dataService, params, index),
+    queryFn: () => {
+      if (!index) throw new Error('Cannot determine entity index: space ID is not yet available');
+      return fetchGenericEntity(dataService, params, index);
+    },
+    enabled: !!index,
     select: (response) => response.rawResponse.hits.hits[0], // extracting result out of ES
   });
 

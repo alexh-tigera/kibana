@@ -254,7 +254,7 @@ export class AssetInventoryDataClient {
         logger.error(`Error installing asset inventory data view: ${error.message}`);
       }
 
-      logger.debug(`Enabled asset inventory`);
+      logger.debug(`Enabled asset inventory (V1 mode)`);
 
       return entityStoreEnablementResponse;
     } catch (err) {
@@ -335,8 +335,9 @@ export class AssetInventoryDataClient {
           return { status: ASSET_INVENTORY_STATUS.DISABLED };
         }
 
-        // Index exists but has no data yet — entity store is running but hasn't processed
-        // any documents yet.
+        // At this point we know the V2 index exists AND that there are no entity documents
+        // (the early `hasAnyEntitiesDocuments` check above would have returned READY if there
+        // were any). The entity store is therefore initialised but has not yet processed data.
         return { status: ASSET_INVENTORY_STATUS.EMPTY };
       } catch (error) {
         logger.error(`Error checking Entity Store V2 index existence: ${error.message}`);
