@@ -8,6 +8,7 @@
 import type { ISearchRequestParams } from '@kbn/search-types';
 import { cloudFieldsMap, hostFieldsMap } from '@kbn/securitysolution-ecs';
 import { euid } from '@kbn/entity-store/common/euid_helpers';
+import { isEmpty } from 'lodash';
 import type { HostDetailsRequestOptions } from '../../../../../../common/search_strategy/security_solution';
 import { createQueryFilterClauses, reduceFields } from '../../../../../utils/build_query';
 import { HOST_DETAILS_FIELDS, buildFieldsTermAggregation } from './helpers';
@@ -27,7 +28,7 @@ export const buildHostDetailsQuery = ({
   });
 
   // When no filter query is defined, we default to using the host name
-  const hostNameFilter = !filterQuery ? { term: { 'host.name': hostName } } : undefined;
+  const hostNameFilter = isEmpty(filterQuery) ? { term: { 'host.name': hostName } } : undefined;
 
   const filter = [
     ...(entityStoreV2 ? [euid.dsl.getEuidDocumentsContainsIdFilter('host')] : []),

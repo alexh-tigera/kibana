@@ -21,6 +21,13 @@ describe('buildHostDetailsQuery', () => {
     expect(result.query).toMatchSnapshot();
   });
 
+  test('includes host.name filter when filterQuery is an empty object', () => {
+    const result = buildHostDetailsQuery({ ...mockOptions, filterQuery: {} });
+
+    const filters = (result.query as { bool: { filter: unknown[] } }).bool.filter;
+    expect(filters).toContainEqual({ term: { 'host.name': mockOptions.hostName } });
+  });
+
   test('uses filterQuery when defined', () => {
     const filterQuery = JSON.stringify({ term: { entity_id: 'some-entity-id' } });
     const result = buildHostDetailsQuery({ ...mockOptions, filterQuery });

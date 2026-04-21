@@ -20,6 +20,13 @@ describe('buildUserDetailsQuery', () => {
     expect(result.query).toMatchSnapshot();
   });
 
+  test('includes user.name filter when filterQuery is an empty object', () => {
+    const result = buildObservedUserDetailsQuery({ ...mockOptions, filterQuery: {} });
+
+    const filters = (result.query as { bool: { filter: unknown[] } }).bool.filter;
+    expect(filters).toContainEqual({ term: { 'user.name': mockOptions.userName } });
+  });
+
   test('uses filterQuery when defined', () => {
     const filterQuery = JSON.stringify({ term: { entity_id: 'some-entity-id' } });
     const result = buildObservedUserDetailsQuery({ ...mockOptions, filterQuery });

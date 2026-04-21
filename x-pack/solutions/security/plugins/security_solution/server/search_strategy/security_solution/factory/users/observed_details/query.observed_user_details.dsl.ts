@@ -8,6 +8,7 @@
 import type { QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
 import type { ISearchRequestParams } from '@kbn/search-types';
 import { euid } from '@kbn/entity-store/common/euid_helpers';
+import { isEmpty } from 'lodash';
 import type { ObservedUserDetailsRequestOptions } from '../../../../../../common/api/search_strategy';
 import { createQueryFilterClauses } from '../../../../../utils/build_query';
 import { buildFieldsTermAggregation } from '../../hosts/details/helpers';
@@ -23,7 +24,7 @@ export const buildObservedUserDetailsQuery = ({
   entityStoreV2,
 }: ObservedUserDetailsRequestOptions): ISearchRequestParams => {
   // When no filter query is defined, we default to using the user name
-  const userNameFilter = !filterQuery ? { term: { 'user.name': userName } } : undefined;
+  const userNameFilter = isEmpty(filterQuery) ? { term: { 'user.name': userName } } : undefined;
 
   const filter: QueryDslQueryContainer[] = [
     ...(entityStoreV2 ? [euid.dsl.getEuidDocumentsContainsIdFilter('user')] : []),
