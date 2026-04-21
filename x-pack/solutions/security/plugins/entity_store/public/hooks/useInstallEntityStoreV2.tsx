@@ -20,10 +20,6 @@ export interface Services {
   spaces: SpacesPluginStart;
 }
 
-interface EntityStoreV1StatusResponse {
-  status: EntityStoreStatus;
-}
-
 const statusRequestQuery = {
   include_components: false,
 } as const satisfies StatusRequestQuery;
@@ -31,10 +27,6 @@ const statusRequestQuery = {
 const getStatusRequest: HttpFetchOptionsWithPath = {
   path: ENTITY_STORE_ROUTES.public.STATUS,
   query: statusRequestQuery,
-};
-
-const getStatusV1Request: HttpFetchOptionsWithPath = {
-  path: '/api/entity_store/status',
 };
 
 const installAllEntitiesRequest: HttpFetchOptionsWithPath = {
@@ -88,7 +80,10 @@ const isEntityStoreInstalled = (status: EntityStoreStatus): boolean =>
   status !== EntityStoreStatus.enum.not_installed;
 
 export const isEntityStoreV1Installed = async (http: HttpSetup): Promise<boolean> => {
-  const response = await http.get<EntityStoreV1StatusResponse>(getStatusV1Request);
+  const response = await http.fetch<{ total: number }>('/api/saved_objects/_find', {
+    method: 'GET',
+    query: { type: 'entity-engine-status', per_page: 0 },
+  });
 
-  return isEntityStoreInstalled(response.status);
+  return response.total > 0;
 };
