@@ -50,6 +50,7 @@ import type { ProductFeaturesService } from './lib/product_features_service';
 import type { MonitoringEntitySourceDataClient } from './lib/entity_analytics/privilege_monitoring/data_sources/monitoring_entity_source_data_client';
 import type { MlAuthz } from './lib/machine_learning/authz';
 import type { SiemMigrationClients } from './lib/siem_migrations/types';
+import type { EntityStoreCRUDClient as EntityStoreUpdateClient } from '@kbn/entity-store/server';
 import type { CheckOsqueryResponseActionAuthz } from './endpoint/services/actions/utils/rule_response_actions_validators';
 import type { DetectionRulesAuthz } from '../common/detection_engine/rule_management/authz';
 
@@ -82,6 +83,7 @@ export interface SecuritySolutionApiRequestHandlerContext {
   getRiskScoreDataClient: () => RiskScoreDataClient;
   getAssetCriticalityDataClient: () => AssetCriticalityDataClient;
   getEntityStoreDataClient: () => EntityStoreDataClient;
+  getEntityStoreUpdateClient: () => EntityStoreUpdateClient;
   getPrivilegeMonitoringDataClient: () => PrivilegeMonitoringDataClient;
   getMonitoringEntitySourceDataClient: () => MonitoringEntitySourceDataClient;
   getPrivilegedUserMonitoringApiKeyManager: () => PrivilegedUsersApiKeyManager;
