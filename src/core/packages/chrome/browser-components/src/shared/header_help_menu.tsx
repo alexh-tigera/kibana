@@ -7,20 +7,19 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { Fragment, useCallback, useState } from 'react';
+import type { MouseEvent } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
-import type { EuiButtonEmptyProps } from '@elastic/eui';
+import type { EuiContextMenuPanelItemDescriptor } from '@elastic/eui';
 import {
-  EuiButtonEmpty,
+  EuiContextMenu,
+  EuiContextMenuItem,
   EuiFlexGroup,
   EuiFlexItem,
   EuiHeaderSectionItemButton,
   EuiIcon,
   EuiPopover,
-  EuiPopoverFooter,
-  EuiPopoverTitle,
-  EuiSpacer,
   useEuiTheme,
 } from '@elastic/eui';
 import { useIsServerless, useKibanaVersion } from '@kbn/react-env';
@@ -28,20 +27,56 @@ import { css } from '@emotion/react';
 import { isModifiedOrPrevented } from './nav_link';
 import { useNavigateToUrl } from './chrome_hooks';
 import { useHelpLinks } from './help_links_hooks';
+import type { HelpMenuLinkItem } from './help_menu_links';
 
-const createCustomLink = (
-  index: number,
-  text: React.ReactNode,
-  addSpacer?: boolean,
-  buttonProps?: EuiButtonEmptyProps
-) => (
-  <Fragment key={`helpButton${index}`}>
-    <EuiButtonEmpty {...buttonProps} size="s" flush="left">
-      {text}
-    </EuiButtonEmpty>
-    {addSpacer && <EuiSpacer size="xs" />}
-  </Fragment>
-);
+type ItemClickHandler = (opts: {
+  onClick?: () => void;
+  href?: string;
+  isExternal?: boolean;
+}) => (e: MouseEvent) => void;
+
+const createItemClickHandler =
+  ({
+    closeMenu,
+    navigateToUrl,
+  }: {
+    closeMenu: () => void;
+    navigateToUrl: (url: string) => void;
+  }): ItemClickHandler =>
+  ({ onClick, href, isExternal }) =>
+  (e: MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    } else if (
+      href &&
+      !isExternal &&
+      !isModifiedOrPrevented(e as MouseEvent<HTMLElement>) &&
+      e.button === 0
+    ) {
+      e.preventDefault();
+      navigateToUrl(href);
+    }
+    closeMenu();
+  };
+
+const createMenuItem = (
+  options: HelpMenuLinkItem,
+  onItemClick: ItemClickHandler
+): EuiContextMenuPanelItemDescriptor => ({
+  name: options.name,
+  key: options.key,
+  icon: options.icon,
+  'data-test-subj': options.dataTestSubj,
+  ...(options.href ? { href: options.href } : {}),
+  target: options.target,
+  rel: options.rel,
+  onClick: onItemClick({
+    onClick: options.onClick,
+    href: options.href,
+    isExternal: options.isExternal,
+  }),
+});
 
 interface HeaderHelpMenuProps {
   renderButton?: (props: {
@@ -51,118 +86,64 @@ interface HeaderHelpMenuProps {
 }
 
 export const HeaderHelpMenu = ({ renderButton }: HeaderHelpMenuProps = {}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const closeMenu = useCallback(() => setIsOpen(false), []);
-  const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
-
   const navigateToUrl = useNavigateToUrl();
   const { euiTheme } = useEuiTheme();
+  const [isOpen, setIsOpen] = useState(false);
   const isServerless = useIsServerless();
   const kibanaVersion = useKibanaVersion();
 
+  const appNameStyle = useMemo(
+    () => css`
+      font-weight: ${euiTheme.font.weight.bold};
+    `,
+    [euiTheme.font.weight.bold]
+  );
+
   const {
-    global: globalHelpLinks,
-    default: defaultContentLinks,
+    global: globalHelpLinks = [],
+    default: defaultContentLinks = [],
     extension: helpExtensionLinks,
   } = useHelpLinks();
-  const extensionLinks = helpExtensionLinks?.items ?? [];
 
-  const createOnClickHandler = useCallback(
-    (href: string) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      if (!isModifiedOrPrevented(event) && event.button === 0) {
-        event.preventDefault();
-        closeMenu();
-        navigateToUrl(href);
-      }
-    },
+  const closeMenu = useCallback(() => setIsOpen(false), []);
+  const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
+
+  const handleItemClick = useMemo(
+    () => createItemClickHandler({ closeMenu, navigateToUrl }),
     [closeMenu, navigateToUrl]
   );
 
-  const euiThemePadding = css`
-    padding: ${euiTheme.size.s};
-  `;
+  const items = useMemo(() => {
+    const menuItems: EuiContextMenuPanelItemDescriptor[] = [];
 
-  const defaultContent = (
-    <Fragment>
-      {defaultContentLinks.map(
-        ({ href, label, onClick: _onClick, 'data-test-subj': dataTestSubj, target }, idx) => {
-          if (href && _onClick) {
-            throw new Error(
-              'Only one of `href` and `onClick` should be provided for the help menu link.'
-            );
-          }
+    // Global extension links (e.g. cloud data migration)
+    globalHelpLinks.forEach((link) => {
+      menuItems.push(createMenuItem(link, handleItemClick));
+    });
 
-          const hrefProps = href ? { href, target } : {};
-          const onClick = () => {
-            if (!_onClick) return;
-            _onClick();
-            closeMenu();
-          };
+    // Default links (Kibana docs, Ask Elastic, GitHub)
+    defaultContentLinks.forEach((link) => {
+      menuItems.push(createMenuItem(link, handleItemClick));
+    });
 
-          const isLast = idx === defaultContentLinks.length - 1;
-          return (
-            <Fragment key={`defaultHelpLink${idx}`}>
-              <EuiButtonEmpty
-                {...hrefProps}
-                onClick={onClick}
-                size="s"
-                flush="left"
-                data-test-subj={dataTestSubj}
-              >
-                {label}
-              </EuiButtonEmpty>
-              {!isLast && <EuiSpacer size="xs" />}
-            </Fragment>
-          );
-        }
-      )}
-    </Fragment>
-  );
+    // App-specific extension links
+    if (helpExtensionLinks) {
+      menuItems.push({ isSeparator: true, key: 'extension-separator' });
 
-  const globalCustomContent = globalHelpLinks.map((link, index) =>
-    createCustomLink(index, link.label, true, {
-      href: link.href,
-      onClick:
-        link.onClick ??
-        (link.href && !link.isExternal ? createOnClickHandler(link.href) : undefined),
-      rel: link.rel,
-      target: link.target,
-      'data-test-subj': link['data-test-subj'],
-    })
-  );
+      menuItems.push({
+        renderItem: () => (
+          <EuiContextMenuItem css={appNameStyle}>{helpExtensionLinks?.label}</EuiContextMenuItem>
+        ),
+        key: 'extension-title',
+      });
 
-  let customContent: React.ReactNode = null;
-  if (helpExtensionLinks) {
-    const customLinks = extensionLinks.map((link, index) =>
-      createCustomLink(index, link.label, index < extensionLinks.length - 1, {
-        href: link.href,
-        onClick:
-          link.onClick ??
-          (link.href && !link.isExternal ? createOnClickHandler(link.href) : undefined),
-        rel: link.rel,
-        target: link.target,
-        'data-test-subj': link['data-test-subj'],
-      })
-    );
+      helpExtensionLinks.items?.forEach((link) => {
+        menuItems.push(createMenuItem(link, handleItemClick));
+      });
+    }
 
-    const extensionContent =
-      helpExtensionLinks.renderContent?.({ hideHelpMenu: closeMenu }) ?? null;
-
-    customContent = (
-      <>
-        <EuiPopoverTitle>
-          <h3>{helpExtensionLinks.label}</h3>
-        </EuiPopoverTitle>
-        {customLinks}
-        {extensionContent && (
-          <>
-            {extensionLinks.length > 0 && <EuiSpacer size="xs" />}
-            {extensionContent}
-          </>
-        )}
-      </>
-    );
-  }
+    return menuItems;
+  }, [helpExtensionLinks, defaultContentLinks, globalHelpLinks, handleItemClick, appNameStyle]);
 
   const button = renderButton ? (
     renderButton({ isOpen, toggleMenu })
@@ -181,9 +162,6 @@ export const HeaderHelpMenu = ({ renderButton }: HeaderHelpMenuProps = {}) => {
 
   return (
     <EuiPopover
-      aria-label={i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuPopoverAriaLabel', {
-        defaultMessage: 'Help menu',
-      })}
       anchorPosition="downRight"
       button={button}
       closePopover={closeMenu}
@@ -191,43 +169,40 @@ export const HeaderHelpMenu = ({ renderButton }: HeaderHelpMenuProps = {}) => {
       id="headerHelpMenu"
       isOpen={isOpen}
       repositionOnScroll
+      panelPaddingSize="none"
+      aria-label={i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuAriaLabel', {
+        defaultMessage: 'Help menu',
+      })}
     >
-      <EuiPopoverTitle>
-        <EuiFlexGroup responsive={false}>
-          <EuiFlexItem>
-            <h2>
-              <FormattedMessage
-                id="core.ui.chrome.headerGlobalNav.helpMenuTitle"
-                defaultMessage="Help"
-              />
-            </h2>
-          </EuiFlexItem>
-          {!isServerless && (
-            <EuiFlexItem
-              grow={false}
-              css={{ textTransform: 'none' }}
-              data-test-subj="kbnVersionString"
-            >
-              <FormattedMessage
-                id="core.ui.chrome.headerGlobalNav.helpMenuVersion"
-                defaultMessage="v {version}"
-                values={{ version: kibanaVersion }}
-              />
-            </EuiFlexItem>
-          )}
-        </EuiFlexGroup>
-      </EuiPopoverTitle>
-
-      <div style={{ maxWidth: 240 }}>
-        {globalCustomContent}
-        {defaultContent}
-        {customContent && (
-          <>
-            <EuiPopoverFooter css={euiThemePadding} />
-            {customContent}
-          </>
-        )}
-      </div>
+      <EuiContextMenu
+        initialPanelId="helpMenu"
+        size="s"
+        panels={[
+          {
+            id: 'helpMenu',
+            title: (
+              <EuiFlexGroup responsive={false}>
+                <EuiFlexItem>
+                  <FormattedMessage
+                    id="core.ui.chrome.headerGlobalNav.helpMenuTitle"
+                    defaultMessage="Help"
+                  />
+                </EuiFlexItem>
+                {!isServerless && (
+                  <EuiFlexItem grow={false} data-test-subj="kbnVersionString">
+                    <FormattedMessage
+                      id="core.ui.chrome.headerGlobalNav.helpMenuVersion"
+                      defaultMessage="v {version}"
+                      values={{ version: kibanaVersion }}
+                    />
+                  </EuiFlexItem>
+                )}
+              </EuiFlexGroup>
+            ),
+            items,
+          },
+        ]}
+      />
     </EuiPopover>
   );
 };

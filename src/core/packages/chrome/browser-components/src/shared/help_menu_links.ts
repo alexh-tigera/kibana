@@ -7,7 +7,6 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { ReactNode } from 'react';
 import type {
   ChromeGlobalHelpExtensionMenuLink,
   ChromeHelpExtension,
@@ -15,6 +14,7 @@ import type {
   ChromeStyle,
 } from '@kbn/core-chrome-browser';
 import type { DocLinksStart } from '@kbn/core-doc-links-browser';
+import type { IconType } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 
 interface HelpData {
@@ -26,14 +26,15 @@ interface HelpData {
 }
 
 export interface HelpMenuLinkItem {
-  id: string;
-  label: ReactNode;
+  name: string;
+  key: string;
+  icon?: IconType;
   href?: string;
-  onClick?: () => void;
-  'data-test-subj'?: string;
-  isExternal?: boolean;
-  rel?: string;
   target?: string;
+  rel?: string;
+  onClick?: () => void;
+  isExternal?: boolean;
+  dataTestSubj?: string;
 }
 
 export interface HelpLinks {
@@ -42,7 +43,6 @@ export interface HelpLinks {
   extension?: {
     label?: string;
     items: HelpMenuLinkItem[];
-    renderContent?: ChromeHelpExtension['content'];
   };
 }
 
@@ -87,14 +87,15 @@ export const buildHelpLinks = ({
 }): HelpLinks => {
   const global = [...helpData.globalExtensionMenuLinks]
     .sort((a, b) => b.priority - a.priority)
-    .map(({ content, external, priority, ...link }, index) => ({
-      id: `help-global-${index}`,
-      label: content,
+    .map((link) => ({
+      name: link.content,
+      key: `global-${link.href}`,
       href: link.href,
-      'data-test-subj': link['data-test-subj'],
-      isExternal: external || link.target === '_blank',
-      rel: link.rel,
       target: link.target,
+      rel: link.rel,
+      icon: link.iconType,
+      isExternal: link.external,
+      dataTestSubj: link['data-test-subj'],
     }));
 
   const rawDefaultLinks =
@@ -106,43 +107,39 @@ export const buildHelpLinks = ({
           helpSupportUrl: helpData.supportUrl,
         });
 
-  const defaultLinks = rawDefaultLinks.map(({ title, href, onClick, dataTestSubj }, index) => ({
-    id: `help-default-${index}`,
-    label: title,
-    href,
-    onClick,
-    'data-test-subj': dataTestSubj,
-    isExternal: Boolean(href),
-    target: href ? '_blank' : undefined,
-  }));
+  const defaultLinks = rawDefaultLinks.map(
+    ({ title, href, onClick, dataTestSubj, iconType }, index) => ({
+      name: title,
+      key: `default-${index}`,
+      icon: iconType,
+      href,
+      target: href ? '_blank' : undefined,
+      onClick,
+      isExternal: Boolean(href),
+      dataTestSubj,
+    })
+  );
 
   const extensionItems = helpData.extension?.links?.map((link, index) => {
-    if (link.linkType === 'documentation') {
-      return {
-        id: `help-extension-${index}`,
-        label: i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuDocumentation', {
-          defaultMessage: 'Documentation',
-        }),
-        href: link.href,
-        'data-test-subj': link['data-test-subj'],
-        isExternal: true,
-        rel: link.rel ?? 'noopener',
-        target: link.target ?? '_blank',
-      };
-    }
-
+    const isDocumentation = link.linkType === 'documentation';
     return {
-      id: `help-extension-${index}`,
-      label: link.content,
+      name: isDocumentation
+        ? i18n.translate('core.ui.chrome.headerGlobalNav.helpMenuDocumentation', {
+            defaultMessage: 'Documentation',
+          })
+        : link.content,
+      key: `extension-${index}`,
+      icon: link.iconType,
       href: link.href,
-      'data-test-subj': link['data-test-subj'],
-      isExternal: link.external || link.target === '_blank',
-      rel: link.rel,
-      target: link.target,
+      target: link.target ?? (isDocumentation ? '_blank' : undefined),
+      rel: link.rel ?? (isDocumentation ? 'noopener' : undefined),
+      onClick: !isDocumentation ? link.onClick : undefined,
+      isExternal: isDocumentation || link.external,
+      dataTestSubj: link['data-test-subj'],
     };
   });
 
-  const hasExtension = (extensionItems?.length ?? 0) > 0 || helpData.extension?.content;
+  const hasExtension = (extensionItems?.length ?? 0) > 0;
 
   return {
     global,
@@ -152,7 +149,6 @@ export const buildHelpLinks = ({
           extension: {
             label: helpData.extension?.appName,
             items: extensionItems ?? [],
-            renderContent: helpData.extension?.content,
           },
         }
       : {}),
