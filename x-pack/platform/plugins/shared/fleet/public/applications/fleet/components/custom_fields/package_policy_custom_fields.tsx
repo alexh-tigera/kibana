@@ -42,7 +42,7 @@ export const PackagePolicyCustomFields: React.FunctionComponent<Props> = ({
       helpText={
         <FormattedMessage
           id="xpack.fleet.packagePolicyForm.globalDataTagDescription"
-          defaultMessage="Add a field and value set to all data collected from this integration."
+          defaultMessage="Add a field-value pair to all data collected from this integration."
         />
       }
     >
