@@ -191,6 +191,7 @@ const FlyoutRiskSummaryComponent = <T extends EntityType>({
   const { data: resolutionGroup } = useResolutionGroup(entityId ?? '', {
     enabled: Boolean(entityId),
   });
+  const hasRealResolutionGroup = (resolutionGroup?.group_size ?? 0) > 1;
   const resolutionTargetEntityId = useMemo(
     () => (resolutionGroup?.target ? getEntityId(resolutionGroup.target) : undefined),
     [resolutionGroup?.target]
@@ -214,7 +215,7 @@ const FlyoutRiskSummaryComponent = <T extends EntityType>({
     filterQuery: resolutionRiskFilterQueryDsl,
     onlyLatest: false,
     pagination: FIRST_RECORD_PAGINATION,
-    skip: !resolutionTargetEntityId,
+    skip: !hasRealResolutionGroup || !resolutionTargetEntityId,
   });
   const resolutionRiskData =
     resolutionRiskScoreData.data && resolutionRiskScoreData.data.length > 0
@@ -225,7 +226,7 @@ const FlyoutRiskSummaryComponent = <T extends EntityType>({
     () => getItems(resolutionEntityData, isPrivmonModifierEnabled, isWatchlistEnabled),
     [resolutionEntityData, isPrivmonModifierEnabled, isWatchlistEnabled]
   );
-  const showResolutionRiskSummary = Boolean(resolutionEntityData?.risk);
+  const showResolutionRiskSummary = hasRealResolutionGroup && Boolean(resolutionEntityData?.risk);
   const resolutionLensAttributes = useMemo(() => {
     if (!resolutionTargetEntityId) {
       return undefined;
