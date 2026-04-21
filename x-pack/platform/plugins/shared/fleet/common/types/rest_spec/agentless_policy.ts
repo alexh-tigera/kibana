@@ -46,7 +46,10 @@ export const CreateAgentlessPolicyRequestSchema = {
           value: schema.oneOf([schema.string(), schema.number()], {
             meta: { description: 'The value of the custom field.' },
           }),
-        })
+        }),
+        {
+          maxSize: 100,
+        }
       )
     ),
     // Cloud connector configuration - all connector settings go here
