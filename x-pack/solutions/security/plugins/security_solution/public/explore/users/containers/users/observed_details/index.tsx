@@ -53,7 +53,7 @@ export const useObservedUserDetails = ({
   const shouldSkip =
     skip ||
     (!entityStoreV2Enabled && isEmpty(userName)) ||
-    (entityStoreV2Enabled && (!euidApi?.euid || isEmpty(entityId)));
+    (entityStoreV2Enabled && (!euidApi?.euid || (isEmpty(entityId) && isEmpty(userName))));
 
   const euidFilter = useMemo(() => {
     if (shouldSkip) {
@@ -65,7 +65,12 @@ export const useObservedUserDetails = ({
       return { term: { 'user.name': userName } };
     } else {
       // For entity store v2, query by entity_id (runtime field)
-      return { term: { entity_id: entityId } };
+      if (entityId) {
+        return { term: { entity_id: entityId } };
+      } else if (userName) {
+        // If entityId is not available, fall back to user.name for querying
+        return { term: { 'user.name': userName } };
+      }
     }
   }, [entityStoreV2Enabled, shouldSkip, userName, entityId]);
 

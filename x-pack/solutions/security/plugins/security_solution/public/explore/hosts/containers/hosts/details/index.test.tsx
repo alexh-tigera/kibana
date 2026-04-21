@@ -94,13 +94,29 @@ describe('useHostDetails', () => {
     expect(mockSearch).not.toHaveBeenCalled();
   });
 
-  it('does not run search when entityId is undefined and entity store v2 is enabled', () => {
+  it('does not run search when both entityId and hostName are empty and entity store v2 is enabled', () => {
+    mockUseUiSetting.mockReturnValue(true);
+    mockUseEntityStoreEuidApi.mockReturnValue({ euid: {} });
+
+    renderHook(
+      () => useHostDetails({ ...defaultProps, hostName: '', entityId: undefined }),
+      { wrapper: TestProviders }
+    );
+
+    expect(mockSearch).not.toHaveBeenCalled();
+  });
+
+  it('runs search with host.name filter when entity store v2 is enabled and entityId is undefined but hostName is provided', () => {
     mockUseUiSetting.mockReturnValue(true);
     mockUseEntityStoreEuidApi.mockReturnValue({ euid: {} });
 
     renderHook(() => useHostDetails(defaultProps), { wrapper: TestProviders });
 
-    expect(mockSearch).not.toHaveBeenCalled();
+    expect(mockSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        filterQuery: JSON.stringify({ term: { 'host.name': 'my-macbook' } }),
+      })
+    );
   });
 
   it('does not run search when entity store v2 is enabled and entity Id is specified but euidApi.euid is undefined', () => {

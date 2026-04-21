@@ -55,7 +55,7 @@ export const useHostDetails = ({
   const shouldSkip =
     skip ||
     (!entityStoreV2Enabled && isEmpty(hostName)) ||
-    (entityStoreV2Enabled && (!euidApi?.euid || isEmpty(entityId)));
+    (entityStoreV2Enabled && (!euidApi?.euid || (isEmpty(entityId) && isEmpty(hostName))));
 
   const euidFilter = useMemo(() => {
     if (shouldSkip) {
@@ -67,7 +67,12 @@ export const useHostDetails = ({
       return { term: { 'host.name': hostName } };
     } else {
       // For entity store v2, query by entity_id (runtime field)
-      return { term: { entity_id: entityId } };
+      if (entityId) {
+        return { term: { entity_id: entityId } };
+      } else if (hostName) {
+        // If entityId is not available, fall back to host.name for querying
+        return { term: { 'host.name': hostName } };
+      }
     }
   }, [entityStoreV2Enabled, shouldSkip, hostName, entityId]);
 
