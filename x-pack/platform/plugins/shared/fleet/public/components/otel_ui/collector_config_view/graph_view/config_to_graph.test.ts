@@ -5,9 +5,11 @@
  * 2.0.
  */
 
-import type { OTelCollectorConfig } from '../../../../common/types';
+import type { OTelCollectorConfig } from '../../../../../common/types';
 
-import { configToGraph, ALL_PIPELINES, SIGNAL_PREFIX, getSignalType } from './config_to_graph';
+import { ALL_PIPELINES, SIGNAL_PREFIX, getSignalType } from '../utils';
+
+import { configToGraph } from './config_to_graph';
 
 describe('configToGraph', () => {
   it('returns empty nodes and edges for empty config', () => {

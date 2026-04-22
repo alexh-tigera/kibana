@@ -8,12 +8,9 @@
 import type { Node, Edge } from '@xyflow/react';
 
 import type { OTelCollectorConfig } from '../../../../../common/types';
-
-import type { OTelComponentType, OTelGraphNodeData } from './constants';
-
 import { ALL_PIPELINES, SIGNAL_PREFIX, getSignalType } from '../utils';
 
-export { ALL_PIPELINES, SIGNAL_PREFIX, getSignalType };
+import type { OTelComponentType, OTelGraphNodeData } from './constants';
 
 export interface OTelPipelineGroupNodeData {
   label: string;
