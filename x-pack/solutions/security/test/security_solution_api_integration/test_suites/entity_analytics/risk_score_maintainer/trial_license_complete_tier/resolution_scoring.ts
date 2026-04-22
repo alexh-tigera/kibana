@@ -399,18 +399,8 @@ export default ({ getService }: FtrProviderContext): void => {
           },
         });
 
-        await entityStoreUtils.forceUpdateEntityViaCrud({
-          entityType: 'user',
-          body: {
-            entity: {
-              id: aliasUser.expectedEuid,
-              relationships: {
-                resolution: {
-                  resolved_to: null,
-                },
-              },
-            },
-          },
+        await entityStoreUtils.unlinkEntitiesViaResolutionApi({
+          entityIds: [aliasUser.expectedEuid],
         });
         await waitForResolutionRelationshipCleared(aliasUser.expectedEuid);
 
