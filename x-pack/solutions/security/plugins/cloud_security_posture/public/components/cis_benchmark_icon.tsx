@@ -35,25 +35,11 @@ const getBenchmarkIdIconType = (type: BenchmarkId): string | undefined => {
   }
 };
 
-const getDefaultBenchmarkLabel = (type: BenchmarkId): string | undefined => {
-  switch (type) {
-    case 'cis_eks':
-      return 'Amazon Elastic Kubernetes Service (EKS)';
-    case 'cis_azure':
-      return 'Microsoft Azure';
-    case 'cis_aws':
-      return 'Amazon Web Services';
-    case 'cis_gcp':
-      return 'Google Cloud Platform';
-    case 'cis_k8s':
-      return 'Kubernetes';
-  }
-};
-
 export const CISBenchmarkIcon = (props: Props) => {
   const iconType = getBenchmarkIdIconType(props.type);
   if (!iconType) return <></>;
 
-  const label = props.name || getDefaultBenchmarkLabel(props.type);
-  return <EuiIconTip content={label} type={iconType} size={props.size || 'xl'} css={props.style} />;
+  return (
+    <EuiIconTip content={props.name} type={iconType} size={props.size || 'xl'} css={props.style} />
+  );
 };
