@@ -22,6 +22,7 @@ import {
   EuiPopoverTitle,
   useGeneratedHtmlId,
 } from '@elastic/eui';
+import { i18n } from '@kbn/i18n';
 import type { TypedLensByValueInput } from '@kbn/lens-plugin/public';
 
 export type LensAttributesByType<VizType> = Extract<
@@ -196,7 +197,9 @@ export function AttributesMenu({
 
   return (
     <EuiPopover
-      aria-label="Lens Attributes"
+      aria-label={i18n.translate('testingEmbeddedLens.attributesMenu.ariaLabel', {
+        defaultMessage: 'Lens Attributes',
+      })}
       button={
         <EuiButton
           data-test-subj="lns-example-change-attributes"
