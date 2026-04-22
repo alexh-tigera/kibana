@@ -59,13 +59,12 @@ export const buildLookupSyncOperationsForPage = ({
           '@timestamp': now,
         });
       }
-      continue;
-    }
-
-    // Lookup rows are derived state owned by risk scoring. Remove stale rows
-    // when an entity is no longer resolved and is not a confirmed target.
-    if (!resolutionTargetIdSet.has(entityId)) {
-      deleteSet.add(entityId);
+    } else {
+      // Lookup rows are derived state owned by risk scoring. Remove stale rows
+      // when an entity is no longer resolved and is not a confirmed target.
+      if (!resolutionTargetIdSet.has(entityId)) {
+        deleteSet.add(entityId);
+      }
     }
   }
 
