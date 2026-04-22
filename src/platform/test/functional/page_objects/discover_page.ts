@@ -298,6 +298,10 @@ export class DiscoverPageObject extends FtrService {
     await this.savedObjectsFinder.filterEmbeddableNames(`"${searchName.replace('-', ' ')}"`);
     await this.testSubjects.click(`savedObjectTitle${searchName.split(' ').join('-')}`);
     await this.header.waitUntilLoadingHasFinished();
+    await this.retry.waitFor(`saved search ${searchName} is loaded`, async () => {
+      const currentName = await this.getCurrentQueryName();
+      return currentName === searchName;
+    });
   }
 
   public async clickNewSearchButton({ isInOverflowMenu }: { isInOverflowMenu?: boolean } = {}) {
