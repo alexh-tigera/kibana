@@ -44,7 +44,11 @@ export const Rules = ({ match: { params } }: RouteComponentProps<PageUrlParams>)
             <EuiFlexItem>
               <EuiFlexGroup gutterSize="s">
                 <EuiFlexItem grow={false} css={{ marginBottom: 6 }}>
-                  <CISBenchmarkIcon type={params.benchmarkId} name={getBenchmarkApplicableTo(params.benchmarkId)} size={'l'} />
+                  <CISBenchmarkIcon
+                    type={params.benchmarkId}
+                    name={getBenchmarkApplicableTo(params.benchmarkId)}
+                    size={'l'}
+                  />
                 </EuiFlexItem>
                 <EuiFlexItem>
                   <CloudPosturePageTitle
