@@ -273,7 +273,7 @@ const categoricalColorMappingSchema = schema.object(
     palette: schema.string({
       meta: {
         description:
-          'Color palette name. Accepted values: 'default', 'elastic_line_optimized', 'severity', 'eui_amsterdam', 'kibana_v7_legacy', 'elastic_brand_2023'. Defaults to `default`.',
+          "Color palette name. Accepted values: 'default', 'elastic_line_optimized', 'severity', 'eui_amsterdam', 'kibana_v7_legacy', 'elastic_brand_2023'. Defaults to `default`.",
       },
     }),
     mapping: schema.arrayOf(
@@ -301,7 +301,7 @@ const gradientColorMappingSchema = schema.object(
     palette: schema.string({
       meta: {
         description:
-          'Color palette name. Accepted values: 'default', 'elastic_line_optimized', 'severity', 'eui_amsterdam', 'kibana_v7_legacy', 'elastic_brand_2023'. Defaults to `default`.',
+          "Color palette name. Accepted values: 'default', 'elastic_line_optimized', 'severity', 'eui_amsterdam', 'kibana_v7_legacy', 'elastic_brand_2023'. Defaults to `default`.",
       },
     }),
     sort: schema.maybe(
