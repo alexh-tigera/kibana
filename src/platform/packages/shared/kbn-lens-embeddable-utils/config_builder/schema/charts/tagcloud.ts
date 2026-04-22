@@ -21,7 +21,7 @@ import {
 } from './shared';
 import { objectUnion } from './utils/object_union';
 
-const tagcloudStateTagsByOptionsSchema = {
+const tagcloudConfigTagsByOptionsSchema = {
   /**
    * Color configuration
    */
@@ -82,7 +82,7 @@ const tagcloudStylingSchema = schema.object(
   }
 );
 
-export const tagcloudStateSchemaNoESQL = schema.object(
+export const tagcloudConfigSchemaNoESQL = schema.object(
   {
     type: schema.literal('tag_cloud'),
     ...sharedPanelInfoSchema,
@@ -97,7 +97,7 @@ export const tagcloudStateSchemaNoESQL = schema.object(
     /**
      * Configure how to break down to tags
      */
-    tag_by: mergeAllBucketsWithChartDimensionSchema(tagcloudStateTagsByOptionsSchema),
+    tag_by: mergeAllBucketsWithChartDimensionSchema(tagcloudConfigTagsByOptionsSchema),
   },
   {
     meta: {
@@ -108,7 +108,7 @@ export const tagcloudStateSchemaNoESQL = schema.object(
   }
 );
 
-export const tagcloudStateSchemaESQL = schema.object(
+export const tagcloudConfigSchemaESQL = schema.object(
   {
     type: schema.literal('tag_cloud'),
     ...sharedPanelInfoSchema,
@@ -122,7 +122,7 @@ export const tagcloudStateSchemaESQL = schema.object(
     /**
      * Configure how to break down the metric (e.g. show one metric per term).
      */
-    tag_by: esqlColumnWithFormatSchema.extends(tagcloudStateTagsByOptionsSchema),
+    tag_by: esqlColumnWithFormatSchema.extends(tagcloudConfigTagsByOptionsSchema),
   },
   {
     meta: {
@@ -133,8 +133,8 @@ export const tagcloudStateSchemaESQL = schema.object(
   }
 );
 
-export const tagcloudStateSchema = objectUnion(
-  [tagcloudStateSchemaNoESQL, tagcloudStateSchemaESQL],
+export const tagcloudConfigSchema = objectUnion(
+  [tagcloudConfigSchemaNoESQL, tagcloudConfigSchemaESQL],
   {
     meta: {
       id: 'tagcloudChart',
@@ -144,6 +144,6 @@ export const tagcloudStateSchema = objectUnion(
   }
 );
 
-export type TagcloudState = TypeOf<typeof tagcloudStateSchema>;
-export type TagcloudStateNoESQL = TypeOf<typeof tagcloudStateSchemaNoESQL>;
-export type TagcloudStateESQL = TypeOf<typeof tagcloudStateSchemaESQL>;
+export type TagcloudConfig = TypeOf<typeof tagcloudConfigSchema>;
+export type TagcloudConfigNoESQL = TypeOf<typeof tagcloudConfigSchemaNoESQL>;
+export type TagcloudConfigESQL = TypeOf<typeof tagcloudConfigSchemaESQL>;

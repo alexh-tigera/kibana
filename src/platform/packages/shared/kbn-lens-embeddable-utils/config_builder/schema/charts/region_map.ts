@@ -19,7 +19,7 @@ import { dslOnlyPanelInfoSchema, layerSettingsSchema, sharedPanelInfoSchema } fr
 import { mergeAllBucketsWithChartDimensionSchema } from './shared';
 import { objectUnion } from './utils/object_union';
 
-const regionMapStateRegionOptionsSchema = {
+const regionMapConfigRegionOptionsSchema = {
   ems: schema.maybe(
     schema.object({
       boundaries: schema.string({ meta: { description: 'EMS boundaries' } }),
@@ -28,7 +28,7 @@ const regionMapStateRegionOptionsSchema = {
   ),
 };
 
-export const regionMapStateSchemaNoESQL = schema.object(
+export const regionMapConfigSchemaNoESQL = schema.object(
   {
     type: schema.literal('region_map'),
     ...sharedPanelInfoSchema,
@@ -42,7 +42,7 @@ export const regionMapStateSchemaNoESQL = schema.object(
     /**
      * Configure how to break down to regions
      */
-    region: mergeAllBucketsWithChartDimensionSchema(regionMapStateRegionOptionsSchema),
+    region: mergeAllBucketsWithChartDimensionSchema(regionMapConfigRegionOptionsSchema),
   },
   {
     meta: {
@@ -54,7 +54,7 @@ export const regionMapStateSchemaNoESQL = schema.object(
   }
 );
 
-export const regionMapStateSchemaESQL = schema.object(
+export const regionMapConfigSchemaESQL = schema.object(
   {
     type: schema.literal('region_map'),
     ...sharedPanelInfoSchema,
@@ -67,7 +67,7 @@ export const regionMapStateSchemaESQL = schema.object(
     /**
      * Configure how to break down to regions
      */
-    region: esqlColumnSchema.extends(regionMapStateRegionOptionsSchema),
+    region: esqlColumnSchema.extends(regionMapConfigRegionOptionsSchema),
   },
   {
     meta: {
@@ -79,8 +79,8 @@ export const regionMapStateSchemaESQL = schema.object(
   }
 );
 
-export const regionMapStateSchema = objectUnion(
-  [regionMapStateSchemaNoESQL, regionMapStateSchemaESQL],
+export const regionMapConfigSchema = objectUnion(
+  [regionMapConfigSchemaNoESQL, regionMapConfigSchemaESQL],
   {
     meta: {
       id: 'regionMapChart',
@@ -91,6 +91,6 @@ export const regionMapStateSchema = objectUnion(
   }
 );
 
-export type RegionMapState = TypeOf<typeof regionMapStateSchema>;
-export type RegionMapStateNoESQL = TypeOf<typeof regionMapStateSchemaNoESQL>;
-export type RegionMapStateESQL = TypeOf<typeof regionMapStateSchemaESQL>;
+export type RegionMapConfig = TypeOf<typeof regionMapConfigSchema>;
+export type RegionMapConfigNoESQL = TypeOf<typeof regionMapConfigSchemaNoESQL>;
+export type RegionMapConfigESQL = TypeOf<typeof regionMapConfigSchemaESQL>;
