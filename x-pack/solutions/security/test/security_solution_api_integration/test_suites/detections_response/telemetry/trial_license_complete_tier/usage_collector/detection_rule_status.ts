@@ -46,7 +46,6 @@ export default ({ getService }: FtrProviderContext) => {
   const retry = getService('retry');
   const es = getService('es');
 
-
   // Makes sure that "execution-metrics" event is available to be read by usage collector.
   const assertExecutionMetricsAvailable = async (ruleCategory: string): Promise<void> => {
     const { count } = await es.count({
