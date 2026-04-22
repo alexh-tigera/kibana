@@ -73,13 +73,6 @@ const SCATTERPLOT_MATRIX_DEFAULT_FETCH_SIZE = 1000;
 const SCATTERPLOT_MATRIX_DEFAULT_FETCH_MIN_SIZE = 1;
 const SCATTERPLOT_MATRIX_DEFAULT_FETCH_MAX_SIZE = 10000;
 
-const TOGGLE_ON = i18n.translate('xpack.ml.splom.toggleOn', {
-  defaultMessage: 'On',
-});
-const TOGGLE_OFF = i18n.translate('xpack.ml.splom.toggleOff', {
-  defaultMessage: 'Off',
-});
-
 const sampleSizeOptions = [100, 1000, 10000].map((d) => ({ value: d, text: '' + d }));
 
 interface OptionLabelWithIconTipProps {
@@ -513,7 +506,10 @@ export const ScatterplotMatrix: FC<ScatterplotMatrixProps> = ({
                 <EuiSwitch
                   data-test-subj="mlScatterplotMatrixRandomizeQuerySwitch"
                   name="mlScatterplotMatrixRandomizeQuery"
-                  label={randomizeQuery ? TOGGLE_ON : TOGGLE_OFF}
+                  label={i18n.translate('xpack.ml.splom.randomScoringLabel', {
+                    defaultMessage: 'Random scoring',
+                  })}
+                  showLabel={false}
                   checked={randomizeQuery}
                   onChange={randomizeQueryOnChange}
                   disabled={isLoading}
@@ -538,7 +534,10 @@ export const ScatterplotMatrix: FC<ScatterplotMatrixProps> = ({
                 >
                   <EuiSwitch
                     name="mlScatterplotMatrixDynamicSize"
-                    label={dynamicSize ? TOGGLE_ON : TOGGLE_OFF}
+                    label={i18n.translate('xpack.ml.splom.dynamicSizeLabel', {
+                      defaultMessage: 'Dynamic size',
+                    })}
+                    showLabel={false}
                     checked={dynamicSize}
                     onChange={dynamicSizeOnChange}
                     disabled={isLoading}
