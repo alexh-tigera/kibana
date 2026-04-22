@@ -10,7 +10,7 @@ import { type NodeProps, type Node } from '@xyflow/react';
 import { useEuiTheme, EuiText } from '@elastic/eui';
 import { css } from '@emotion/react';
 
-import type { OTelPipelineGroupNodeData } from '../config_to_graph';
+import type { OTelPipelineGroupNodeData } from './config_to_graph';
 
 type PipelineGroupNodeType = Node<OTelPipelineGroupNodeData, 'pipelineGroup'>;
 
