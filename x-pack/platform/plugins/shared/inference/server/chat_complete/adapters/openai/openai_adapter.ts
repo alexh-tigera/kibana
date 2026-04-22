@@ -114,11 +114,15 @@ export const openAIAdapter: InferenceConnectorAdapter = {
       request.messages = request.messages.map((msg) => {
         if (msg.role === 'assistant' && 'tool_calls' in msg && msg.tool_calls?.length) {
           // Convert assistant tool_call messages to plain text
-          const toolCallText = msg.tool_calls.map((tc) => {
-            const args = typeof tc.function.arguments === 'string'
-              ? tc.function.arguments : JSON.stringify(tc.function.arguments);
-            return `[Called tool ${tc.function.name} with args: ${args}]`;
-          }).join('\n');
+          const toolCallText = msg.tool_calls
+            .map((tc) => {
+              const args =
+                typeof tc.function.arguments === 'string'
+                  ? tc.function.arguments
+                  : JSON.stringify(tc.function.arguments);
+              return `[Called tool ${tc.function.name} with args: ${args}]`;
+            })
+            .join('\n');
           return {
             role: 'assistant' as const,
             content: [msg.content, toolCallText].filter(Boolean).join('\n'),
@@ -128,7 +132,9 @@ export const openAIAdapter: InferenceConnectorAdapter = {
           // Convert tool result messages to user messages with the result as text
           return {
             role: 'user' as const,
-            content: `[Tool result for ${('tool_call_id' in msg ? msg.tool_call_id : 'unknown')}]: ${typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)}`,
+            content: `[Tool result for ${'tool_call_id' in msg ? msg.tool_call_id : 'unknown'}]: ${
+              typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)
+            }`,
           };
         }
         return msg;
