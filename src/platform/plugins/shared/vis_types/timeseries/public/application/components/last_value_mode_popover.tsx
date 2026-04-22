@@ -8,7 +8,13 @@
  */
 import React, { useCallback, useState } from 'react';
 import { i18n } from '@kbn/i18n';
-import { EuiButtonIcon, EuiPopover, EuiPopoverTitle, EuiSwitch, useGeneratedHtmlId } from '@elastic/eui';
+import {
+  EuiButtonIcon,
+  EuiPopover,
+  EuiPopoverTitle,
+  EuiSwitch,
+  useGeneratedHtmlId,
+} from '@elastic/eui';
 import { css } from '@emotion/react';
 
 interface LastValueModePopoverProps {
