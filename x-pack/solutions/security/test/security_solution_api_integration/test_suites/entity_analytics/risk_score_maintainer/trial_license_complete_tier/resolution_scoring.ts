@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import expect from '@kbn/expect/expect';
+import expect from '@kbn/expect';
 import { v4 as uuidv4 } from 'uuid';
 import { deleteAllAlerts, deleteAllRules } from '@kbn/detections-response-ftr-services';
 import { getEntitiesAlias, ENTITY_LATEST } from '@kbn/entity-store/common';
