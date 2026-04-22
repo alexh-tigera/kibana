@@ -118,6 +118,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         await dashboard.waitForRenderComplete();
         const rows = await dataGrid.getDocTableRows();
         expect(rows.length).to.be.above(0);
+        await header.waitUntilLoadingHasFinished();
         await dashboardAddPanel.openAddPanelFlyout();
 
         const events = await ebtUIHelper.getEvents(Number.MAX_SAFE_INTEGER, {
