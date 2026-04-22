@@ -84,23 +84,26 @@ export const HubSpotConnector: ConnectorSpec = {
         const paramsOrBody: Record<string, unknown> = {
           limit: input.limit ?? 10,
         };
-        if (input.properties && input.properties.length > 0) {
-          paramsOrBody.properties = input.properties;
-        }
         if (input.after) {
           paramsOrBody.after = input.after;
         }
 
         let response: AxiosResponse;
         if (input.query) {
-          // Use the CRM search API when a query is provided
+          // Use the CRM search API when a query is provided (body accepts `properties` as string[])
           paramsOrBody.query = input.query;
+          if (input.properties?.length) {
+            paramsOrBody.properties = input.properties;
+          }
           response = await ctx.client.post(
             `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}/search`,
             paramsOrBody
           );
         } else {
-          // Use the list API when no query is provided
+          // Use the list API when no query is provided (query param `properties` is comma-separated)
+          if (input.properties?.length) {
+            paramsOrBody.properties = input.properties.join(',');
+          }
           response = await ctx.client.get(
             `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}`,
             { params: paramsOrBody }
