@@ -68,13 +68,13 @@ const compareToSchemaShared = schema.object(
     ),
     icon: schema.maybe(
       schema.boolean({
-        meta: { description: 'When `true`, displays the icon.' },
+        meta: { description: 'When `true`, displays the icon for the secondary value.' },
         defaultValue: true,
       })
     ),
     value: schema.maybe(
       schema.boolean({
-        meta: { description: 'When `true`, displays the metric value.' },
+        meta: { description: 'When `true`, displays the secondary value.' },
         defaultValue: true,
       })
     ),
