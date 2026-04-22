@@ -70,6 +70,7 @@ const Template: StoryFn<FC<ColorMappingProps>> = (args) => {
           })}
       </ol>
       <EuiFlyout
+        aria-label="Color mapping"
         style={{ width: 350, minInlineSize: 366, padding: '8px', overflow: 'auto' }}
         onClose={() => {}}
         hideCloseButton

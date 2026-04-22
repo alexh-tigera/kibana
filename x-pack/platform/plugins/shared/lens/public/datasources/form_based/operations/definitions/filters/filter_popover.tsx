@@ -64,6 +64,9 @@ export const FilterPopover = ({
 
   return (
     <EuiPopover
+      aria-label={i18n.translate('xpack.lens.indexPattern.filtersEditor.filterPopoverAriaLabel', {
+        defaultMessage: 'Filter query editor',
+      })}
       data-test-subj="indexPattern-filters-existingFilterContainer"
       panelStyle={{
         width: '960px',

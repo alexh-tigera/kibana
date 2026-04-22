@@ -1548,6 +1548,9 @@ const SubtypeSwitch = ({
   return (
     <>
       <EuiPopover
+        aria-label={i18n.translate('xpack.lens.xyChart.stackingOptionsPopoverAriaLabel', {
+          defaultMessage: 'Stacking options',
+        })}
         ownFocus
         panelPaddingSize="none"
         button={
