@@ -196,9 +196,11 @@ const FlyoutRiskSummaryComponent = <T extends EntityType>({
     () => (resolutionGroup?.target ? getEntityId(resolutionGroup.target) : undefined),
     [resolutionGroup?.target]
   );
+  const shouldFetchResolutionRiskScore =
+    hasRealResolutionGroup && Boolean(resolutionTargetEntityId);
   const resolutionRiskFilterQueryDsl = useMemo(
     () =>
-      resolutionTargetEntityId
+      shouldFetchResolutionRiskScore && resolutionTargetEntityId
         ? {
             bool: {
               filter: [
@@ -208,14 +210,14 @@ const FlyoutRiskSummaryComponent = <T extends EntityType>({
             },
           }
         : undefined,
-    [entityType, resolutionTargetEntityId]
+    [entityType, resolutionTargetEntityId, shouldFetchResolutionRiskScore]
   );
   const resolutionRiskScoreData = useRiskScore({
     riskEntity: entityType,
     filterQuery: resolutionRiskFilterQueryDsl,
     onlyLatest: false,
     pagination: FIRST_RECORD_PAGINATION,
-    skip: !hasRealResolutionGroup || !resolutionTargetEntityId,
+    skip: !shouldFetchResolutionRiskScore,
   });
   const resolutionRiskData =
     resolutionRiskScoreData.data && resolutionRiskScoreData.data.length > 0
