@@ -8,6 +8,7 @@
  */
 
 import { i18n } from '@kbn/i18n';
+import type { AxiosResponse } from 'axios';
 import type { ConnectorSpec } from '../../connector_spec';
 import {
   SearchCrmObjectsInputSchema,
@@ -80,58 +81,46 @@ export const HubSpotConnector: ConnectorSpec = {
       handler: async (ctx, input: SearchCrmObjectsInput) => {
         let contacts: Array<{ id: string; properties: Record<string, unknown> }> | undefined;
 
-        if (input.query) {
-          // Use the CRM search API when a query is provided
-          const body: Record<string, unknown> = {
-            query: input.query,
-            limit: input.limit ?? 10,
-          };
-          if (input.properties && input.properties.length > 0) {
-            body.properties = input.properties;
-          }
-          if (input.after) {
-            body.after = input.after;
-          }
-          const response = await ctx.client.post(
-            `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}/search`,
-            body
-          );
-          if (input.objectType === 'contacts' && input.includeAssociatedDeals) {
-            contacts = response.data?.results ?? [];
-          } else {
-            return response.data;
-          }
-        } else {
-          // Use the list API when no query is provided
-          const params: Record<string, unknown> = {
-            limit: input.limit ?? 10,
-          };
-          if (input.properties && input.properties.length > 0) {
-            params.properties = input.properties.join(',');
-          }
-          if (input.after) {
-            params.after = input.after;
-          }
-          const response = await ctx.client.get(
-            `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}`,
-            { params }
-          );
-          if (input.objectType === 'contacts' && input.includeAssociatedDeals) {
-            contacts = response.data?.results ?? [];
-          } else {
-            return response.data;
-          }
+        const paramsOrBody: Record<string, unknown> = {
+          limit: input.limit ?? 10,
+        };
+        if (input.properties && input.properties.length > 0) {
+          paramsOrBody.properties = input.properties;
+        }
+        if (input.after) {
+          paramsOrBody.after = input.after;
         }
 
-        // Fetch associated deals for matched contacts
-        if (!contacts || contacts.length === 0) {
-          return { contacts: [], associated_deals: [] };
+        let response: AxiosResponse;
+        if (input.query) {
+          // Use the CRM search API when a query is provided
+          paramsOrBody.query = input.query;
+          response = await ctx.client.post(
+            `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}/search`,
+            paramsOrBody
+          );
+        } else {
+          // Use the list API when no query is provided
+          response = await ctx.client.get(
+            `${HUBSPOT_API_BASE}/crm/v3/objects/${input.objectType}`,
+            { params: paramsOrBody }
+          );
         }
-        const assocResponse = await ctx.client.post(
-          `${HUBSPOT_API_BASE}/crm/v3/associations/contacts/deals/batch/read`,
-          { inputs: contacts.map(({ id }) => ({ id })) }
-        );
-        return { contacts, associated_deals: assocResponse.data?.results ?? [] };
+
+        if (input.objectType === 'contacts' && input.includeAssociatedDeals) {
+          contacts = response.data?.results ?? [];
+          // Fetch associated deals for matched contacts
+          if (!contacts || contacts.length === 0) {
+            return { contacts: [], associated_deals: [] };
+          }
+          const assocResponse = await ctx.client.post(
+            `${HUBSPOT_API_BASE}/crm/v3/associations/contacts/deals/batch/read`,
+            { inputs: contacts.map(({ id }) => ({ id })) }
+          );
+          return { contacts, associated_deals: assocResponse.data?.results ?? [] };
+        } else {
+          return response.data;
+        }
       },
     },
 
