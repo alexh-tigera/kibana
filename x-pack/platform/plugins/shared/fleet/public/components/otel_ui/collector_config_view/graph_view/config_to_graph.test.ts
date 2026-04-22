@@ -7,7 +7,7 @@
 
 import type { OTelCollectorConfig } from '../../../../../common/types';
 
-import { ALL_PIPELINES, SIGNAL_PREFIX, getSignalType } from '../utils';
+import { ALL_PIPELINES, SIGNAL_PREFIX } from '../utils';
 
 import { configToGraph } from './config_to_graph';
 
@@ -554,20 +554,6 @@ describe('configToGraph', () => {
 
       const crossEdges = result.edges.filter((e) => e.data?.isCrossGroup);
       expect(crossEdges).toHaveLength(0);
-    });
-  });
-
-  describe('getSignalType', () => {
-    it('extracts signal type from a simple pipeline id', () => {
-      expect(getSignalType('logs')).toBe('logs');
-    });
-
-    it('extracts signal type from a namespaced pipeline id', () => {
-      expect(getSignalType('metrics/stream-1')).toBe('metrics');
-    });
-
-    it('extracts signal type from a deeply namespaced pipeline id', () => {
-      expect(getSignalType('traces/region/us-east')).toBe('traces');
     });
   });
 });
