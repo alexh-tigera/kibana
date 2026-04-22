@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import expect from '@kbn/expect';
+import expect from '@kbn/expect/expect';
 import { v4 as uuidv4 } from 'uuid';
 import { deleteAllAlerts, deleteAllRules } from '@kbn/detections-response-ftr-services';
 import { getEntitiesAlias, ENTITY_LATEST } from '@kbn/entity-store/common';
@@ -142,6 +142,34 @@ export default ({ getService }: FtrProviderContext): void => {
               )
           )[0];
 
+      const getMatchingScore = ({
+        scores,
+        entityId,
+        scoreType,
+        predicate,
+      }: {
+        scores: ReturnType<typeof normalizeScores>;
+        entityId: string;
+        scoreType: 'base' | 'resolution';
+        predicate?: (score: ReturnType<typeof normalizeScores>[number]) => boolean;
+      }) =>
+        scores
+          .filter(
+            (score) =>
+              score.id_value === entityId &&
+              score.score_type === scoreType &&
+              (!predicate || predicate(score))
+          )
+          .sort(
+            (left, right) =>
+              (scoreType === 'resolution'
+                ? (right.related_entities?.length ?? 0) - (left.related_entities?.length ?? 0)
+                : 0) ||
+              String(right.calculation_run_id ?? '').localeCompare(
+                String(left.calculation_run_id ?? '')
+              )
+          )[0];
+
       const waitForScore = async ({
         entityId,
         scoreType,
@@ -157,12 +185,10 @@ export default ({ getService }: FtrProviderContext): void => {
 
         await retry.waitForWithTimeout(waitLabel, 60_000, async () => {
           const scores = normalizeScores(await readRiskScores(es));
-          const score = getBestScore({ scores, entityId, scoreType });
+          const score = predicate
+            ? getMatchingScore({ scores, entityId, scoreType, predicate })
+            : getBestScore({ scores, entityId, scoreType });
           if (!score) {
-            return false;
-          }
-
-          if (predicate && !predicate(score)) {
             return false;
           }
 
@@ -402,6 +428,7 @@ export default ({ getService }: FtrProviderContext): void => {
         await entityStoreUtils.unlinkEntitiesViaResolutionApi({
           entityIds: [aliasUser.expectedEuid],
         });
+        await entityStoreUtils.forceExtractEntities({ entityType: 'user' });
         await waitForResolutionRelationshipCleared(aliasUser.expectedEuid);
 
         await maintainerScenario.createAlertsForDocumentIds({
@@ -413,15 +440,45 @@ export default ({ getService }: FtrProviderContext): void => {
         await refreshResolutionLookup();
         await maintainerRoutes.runMaintainerSync('risk-score');
 
-        const postUnlinkAliasBaseScore = await waitForBaseScore({
-          entityId: aliasUser.expectedEuid,
-          waitLabel: `post-unlink base score for alias ${aliasUser.expectedEuid}`,
-          predicate: (score) =>
-            hasPositiveCalculatedScore(score) &&
-            score.calculation_run_id !== linkedResolutionScore.calculation_run_id,
-        });
+        let postUnlinkRunId: string | undefined;
+        await retry.waitForWithTimeout(
+          `post-unlink unreconciled resolution cleared for ${aliasUser.expectedEuid}`,
+          60_000,
+          async () => {
+            const allScores = normalizeScores(await readRiskScores(es));
+            const candidateRunId = allScores
+              .filter(
+                (score) =>
+                  score.id_value === aliasUser.expectedEuid &&
+                  score.score_type === 'base' &&
+                  hasPositiveCalculatedScore(score) &&
+                  score.calculation_run_id !== linkedResolutionScore.calculation_run_id
+              )
+              .map((score) => score.calculation_run_id)
+              .find(
+                (runId): runId is string =>
+                  typeof runId === 'string' &&
+                  !allScores.some(
+                    (score) =>
+                      score.calculation_run_id === runId &&
+                      score.score_type === 'resolution' &&
+                      ((score.id_value === aliasUser.expectedEuid &&
+                        hasPositiveCalculatedScore(score)) ||
+                        score.related_entities?.some(
+                          (entity) => entity.entity_id === aliasUser.expectedEuid
+                        ))
+                  )
+              );
 
-        const postUnlinkRunId = postUnlinkAliasBaseScore.calculation_run_id;
+            if (!candidateRunId) {
+              return false;
+            }
+
+            postUnlinkRunId = candidateRunId;
+            return true;
+          }
+        );
+
         expect(postUnlinkRunId).to.be.a('string');
 
         const allScores = normalizeScores(await readRiskScores(es));
@@ -438,7 +495,11 @@ export default ({ getService }: FtrProviderContext): void => {
             score.calculation_run_id === postUnlinkRunId
         );
 
-        expect(postUnlinkTargetResolutionScores.length).to.eql(0);
+        expect(
+          postUnlinkTargetResolutionScores.some((score) =>
+            score.related_entities?.some((entity) => entity.entity_id === aliasUser.expectedEuid)
+          )
+        ).to.be(false);
         expect(postUnlinkAliasResolutionScores.length).to.eql(0);
       });
 

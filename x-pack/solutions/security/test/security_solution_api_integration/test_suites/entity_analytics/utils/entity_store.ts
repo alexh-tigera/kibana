@@ -404,6 +404,37 @@ export const EntityStoreUtils = (
     return response;
   };
 
+  const forceExtractEntities = async ({
+    entityType,
+    fromDateISO = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    toDateISO = new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+  }: {
+    entityType: EntityType;
+    fromDateISO?: string;
+    toDateISO?: string;
+  }) => {
+    let url = `/internal/security/entity_store/${entityType}/force_log_extraction`;
+    if (namespace !== 'default') {
+      url = `/s/${namespace}${url}`;
+    }
+
+    log.info(`Force extracting entities for type: ${entityType}`);
+    const response = await supertest
+      .post(url)
+      .set('kbn-xsrf', 'true')
+      .set('x-elastic-internal-origin', 'Kibana')
+      .set('elastic-api-version', '2')
+      .send({ fromDateISO, toDateISO });
+
+    log.info(
+      `Force extraction for ${entityType}: status=${response.status}, body=${JSON.stringify(
+        response.body
+      )}`
+    );
+    expect([200, 202]).to.contain(response.status);
+    return response;
+  };
+
   return {
     cleanEngines,
     deleteEntityV2,
@@ -417,6 +448,7 @@ export const EntityStoreUtils = (
     installEntityStoreV2,
     forceUpdateEntityViaCrud,
     unlinkEntitiesViaResolutionApi,
+    forceExtractEntities,
     waitForEngineStatus,
     initEntityEngineForEntityType,
   };
