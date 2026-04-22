@@ -384,7 +384,7 @@ export const EntityStoreUtils = (
   };
 
   const unlinkEntitiesViaResolutionApi = async ({ entityIds }: { entityIds: string[] }) => {
-    let url = ENTITY_STORE_ROUTES.public.RESOLUTION_UNLINK;
+    let url: string = ENTITY_STORE_ROUTES.public.RESOLUTION_UNLINK;
     if (namespace !== 'default') {
       url = `/s/${namespace}${url}`;
     }
