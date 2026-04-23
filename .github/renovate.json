@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "baseBranches": ["8.19"],
+  "enabled": false,
+  "enabledManagers": ["npm", "github-actions"],
+  "ignorePaths": ["**/__fixtures__/**", "**/fixtures/**"],
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
+  "rangeStrategy": "bump",
+  "semanticCommits": "disabled",
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "vulnerability", "renovate"]
+  },
+  "osvVulnerabilityAlerts": true,
+  "lockFileMaintenance": {
+    "enabled": false
+  }
+}
