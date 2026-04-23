@@ -16,6 +16,7 @@
   ],
   "vulnerabilityAlerts": {
     "enabled": true,
+    "rangeStrategy": "update-lockfile",
     "labels": ["security", "vulnerability", "renovate"]
   },
   "osvVulnerabilityAlerts": true,
