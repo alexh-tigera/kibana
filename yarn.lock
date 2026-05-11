@@ -8584,13 +8584,12 @@
     "@langchain/google-common" "2.1.24"
     google-auth-library "^10.1.0"
 
-"@langchain/google-genai@2.1.24":
-  version "2.1.24"
-  resolved "https://registry.yarnpkg.com/@langchain/google-genai/-/google-genai-2.1.24.tgz#cc7cc26946faf392f04a8974497840b1ce061280"
-  integrity sha512-gBuYWIrTiT4S8U3AxaAMl6SKeGKtB10fXc+m0p2BPSvTfCaTbIlycH7IZjZUTD1L92dQMi/SULwCWffq5OIBgQ==
+"@langchain/google-genai@2.1.30":
+  version "2.1.30"
+  resolved "https://registry.yarnpkg.com/@langchain/google-genai/-/google-genai-2.1.30.tgz#0073a176eb7fe2b4674258a74241e4aca78dcf75"
+  integrity sha512-0wKgy1NvV89fw5MwYiOOhh18SnUEH20z6MZrPV6Tj2hMAA3jAHVSLlIcCQ2mDRJo2r1aHLV8MDXhzkvD1tEHoQ==
   dependencies:
     "@google/generative-ai" "^0.24.0"
-    uuid "^11.1.0"
 
 "@langchain/google-vertexai@2.1.24":
   version "2.1.24"
