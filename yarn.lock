@@ -8552,10 +8552,10 @@
   optionalDependencies:
     langsmith ">=0.4.0 <1.0.0"
 
-"@langchain/core@1.1.31":
-  version "1.1.31"
-  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-1.1.31.tgz#81882c7be8dfe138015da67b93aa73c6ab0f6962"
-  integrity sha512-FxsgIUONjKaRpjx59sISgmb0OMCbAetPGyhzjGa2kX0y1f8LZ5xm9VB2db7W9HYWyLvzRWcMA51Uu4OSTJmtZQ==
+"@langchain/core@1.1.45":
+  version "1.1.45"
+  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-1.1.45.tgz#b36ea7d0b93b89447108d18b100e7b7dfa1f9618"
+  integrity sha512-Y/wvuglLTMKJahkl4QD9dBIdF/z/CxZJWdTfHJF/q2jtlJtoFf6Mb5JpGxZfsi3mBY6NSG941FSLTcqhCKrhBA==
   dependencies:
     "@cfworker/json-schema" "^4.0.2"
     "@standard-schema/spec" "^1.1.0"
@@ -8566,7 +8566,6 @@
     langsmith ">=0.5.0 <1.0.0"
     mustache "^4.2.0"
     p-queue "^6.6.2"
-    uuid "^11.1.0"
     zod "^3.25.76 || ^4"
 
 "@langchain/google-common@2.1.24":
