@@ -202,7 +202,7 @@
     "@smithy/util-utf8" "^2.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-bedrock-agent-runtime@3.994.0", "@aws-sdk/client-bedrock-agent-runtime@^3.991.0":
+"@aws-sdk/client-bedrock-agent-runtime@3.994.0", "@aws-sdk/client-bedrock-agent-runtime@^3.1022.0":
   version "3.994.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-bedrock-agent-runtime/-/client-bedrock-agent-runtime-3.994.0.tgz#432f5ff8a615d07f0ff0b0057ac118096b3566fc"
   integrity sha512-XqrErEq7he7ut0IOhvKtkSD2CCW96gYN8TnNjHqz1bYBtXa/QMACJgnBeMXdY8CWlPxiPvowqKABmwGrxNoZ1w==
@@ -250,7 +250,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-bedrock-runtime@3.994.0", "@aws-sdk/client-bedrock-runtime@^3.989.0":
+"@aws-sdk/client-bedrock-runtime@3.994.0", "@aws-sdk/client-bedrock-runtime@^3.1006.0":
   version "3.994.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-bedrock-runtime/-/client-bedrock-runtime-3.994.0.tgz#44d0ef727c2f258d5a5c14db68c2b44c1d73aa8c"
   integrity sha512-ag7Qx78m1K3Dv7xlFgeHS4jBdopGZUISgVBMUy7Cj4fIgVH9EBmsc5K4hWozL8BJQctWke8Wsl96O7Gd+HCGhg==
@@ -303,7 +303,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-kendra@3.994.0", "@aws-sdk/client-kendra@^3.750.0":
+"@aws-sdk/client-kendra@3.994.0", "@aws-sdk/client-kendra@^3.1006.0":
   version "3.994.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-kendra/-/client-kendra-3.994.0.tgz#f23d75be95e4c9d03427e0accf30f43df779bc03"
   integrity sha512-ohOQT3TG/6CEY1uabgLTyw5seMygqqNWh3UUM97ZAKqe+Cn5fH2Pbm4ooIIGwUJMf8nt2AAjb5t6qjYmg7hMDw==
@@ -428,7 +428,7 @@
     "@smithy/types" "^4.13.0"
     tslib "^2.6.2"
 
-"@aws-sdk/credential-provider-node@3.972.10", "@aws-sdk/credential-provider-node@^3.972.10":
+"@aws-sdk/credential-provider-node@3.972.10", "@aws-sdk/credential-provider-node@^3.972.10", "@aws-sdk/credential-provider-node@^3.972.29":
   version "3.972.10"
   resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-node/-/credential-provider-node-3.972.10.tgz#577df01a8511ef6602b090e96832fc612bc81b03"
   integrity sha512-70nCESlvnzjo4LjJ8By8MYIiBogkYPSXl3WmMZfH9RZcB/Nt9qVWbFpYj6Fk1vLa4Vk8qagFVeXgxdieMxG1QA==
@@ -8525,15 +8525,15 @@
   resolved "https://registry.yarnpkg.com/@kwsites/promise-deferred/-/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
   integrity sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==
 
-"@langchain/aws@1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@langchain/aws/-/aws-1.3.1.tgz#1ba67fe14701062cce563e9ed213ccb59af6d4cc"
-  integrity sha512-Cuabe3J8QmsUzpC8dswyzfwRHf44GHXKk/d4d9Op1OOJSgJNlq4yiqj3f2t37EgjDRWEnzGkeQ1WROYoOh6R9w==
+"@langchain/aws@1.3.7":
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/@langchain/aws/-/aws-1.3.7.tgz#9a094b3f231bd599d7b6a3fcb9be9a5fd394d51c"
+  integrity sha512-T3/3UK7/Sdn22jNNFp9kGi4S6l7ZiXQZm98YUh4DwAw5oxVRaGwt0sxkTruXtNdLXaVpteCozgHuL/jbi/fw4g==
   dependencies:
-    "@aws-sdk/client-bedrock-agent-runtime" "^3.991.0"
-    "@aws-sdk/client-bedrock-runtime" "^3.989.0"
-    "@aws-sdk/client-kendra" "^3.750.0"
-    "@aws-sdk/credential-provider-node" "^3.972.10"
+    "@aws-sdk/client-bedrock-agent-runtime" "^3.1022.0"
+    "@aws-sdk/client-bedrock-runtime" "^3.1006.0"
+    "@aws-sdk/client-kendra" "^3.1006.0"
+    "@aws-sdk/credential-provider-node" "^3.972.29"
 
 "@langchain/classic@1.0.22":
   version "1.0.22"
