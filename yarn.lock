@@ -8614,12 +8614,10 @@
     p-queue "^6.6.2"
     zod "^3.25.76 || ^4"
 
-"@langchain/google-common@2.1.24":
-  version "2.1.24"
-  resolved "https://registry.yarnpkg.com/@langchain/google-common/-/google-common-2.1.24.tgz#49beb223d5e194e9411e1f7451d40bebfe69e705"
-  integrity sha512-TUHndpIYA2Cy1G6WAz549SGE665rZRQcGZjVFewhWJZL7GidMxYG9CLU4QwBEjJndAtc+LAy7Of3QhooJPpkpg==
-  dependencies:
-    uuid "^10.0.0"
+"@langchain/google-common@2.1.24", "@langchain/google-common@2.1.30":
+  version "2.1.30"
+  resolved "https://registry.yarnpkg.com/@langchain/google-common/-/google-common-2.1.30.tgz#487a67d638240c1ec3539297c5f169b392c8a8c0"
+  integrity sha512-IYxGeJbhzBi7+fW9sbkWGqpSSDDf05Kd1DvCM0RoDeYJx4zQk2aPbmB/PI6uUWl9NHISkEZ4dxbZmBSrVelckw==
 
 "@langchain/google-gauth@2.1.24":
   version "2.1.24"
