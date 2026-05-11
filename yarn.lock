@@ -12143,18 +12143,23 @@
   resolved "https://registry.yarnpkg.com/@storybook/preview-api/-/preview-api-8.6.17.tgz#92fa66f495c520074c88c3373be73e57f2803a5c"
   integrity sha512-vpTCTkw11wXerYnlG5Q0y4SbFqG9O6GhR0hlYgCn3Z9kcHlNjK/xuwd3h4CvwNXxRNWZGT8qYYCLn5gSSrX6fA==
 
-"@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0", "@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.cd77847.0":
-  version "1.0.6--canary.9.cd77847.0"
-  resolved "https://registry.yarnpkg.com/@storybook/react-docgen-typescript-plugin/-/react-docgen-typescript-plugin-1.0.6--canary.9.cd77847.0.tgz#35beed1bd0813569fc8852b372c92069fe74a448"
-  integrity sha512-I4oBYmnUCX5IsrZhg+ST72dubSIV4wdwY+SfqJiJ3NHvDpdb240ZjdHAmjIy/yJh5rh42Fl4jbG8Tr4SzwV53Q==
+"@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0", "@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.f9c48c0.0":
+  version "1.0.6--canary.9.f9c48c0.0"
+  resolved "https://registry.yarnpkg.com/@storybook/react-docgen-typescript-plugin/-/react-docgen-typescript-plugin-1.0.6--canary.9.f9c48c0.0.tgz#46534bf2d4889c2d9ccb6493f34ac18c441e653f"
+  integrity sha512-Pvj3kFXdJDPRSRbbyDF2SuHes/5Gm2890vohdWU/vW/x1RR4Z0Fznk/V1wuUrNV1adHOqeug5I1W0fRWxcU0iQ==
   dependencies:
+    "@storybook/react-docgen-typescript" "^2.2.4-next.1"
     debug "^4.1.1"
     endent "^2.0.1"
     find-cache-dir "^3.3.1"
     flat-cache "^3.0.4"
     micromatch "^4.0.2"
-    react-docgen-typescript "^2.2.2"
     tslib "^2.0.0"
+
+"@storybook/react-docgen-typescript@^2.2.4-next.1":
+  version "2.2.4-next.1"
+  resolved "https://registry.yarnpkg.com/@storybook/react-docgen-typescript/-/react-docgen-typescript-2.2.4-next.1.tgz#13617a4edab8d1a0345cfd45929096e7d3f8d254"
+  integrity sha512-zLESd0HGH/6WbLX675TjDz1Ol+eae9e0mD39aLg6eCRB0MF64OV2POsuMqm3VYtrHrTmKyakuvrxtDOftZqxSg==
 
 "@storybook/react-dom-shim@8.6.17":
   version "8.6.17"
@@ -28713,11 +28718,6 @@ react-diff-view@3.3.1:
     lodash "^4.17.21"
     shallow-equal "^3.1.0"
     warning "^4.0.3"
-
-react-docgen-typescript@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/react-docgen-typescript/-/react-docgen-typescript-2.2.2.tgz#4611055e569edc071204aadb20e1c93e1ab1659c"
-  integrity sha512-tvg2ZtOpOi6QDwsb3GZhOjDkkX0h8Z2gipvTg6OVMUyoYoURhEiRNePT8NZItTVCDh39JJHnLdfCOkzoLbFnTg==
 
 react-docgen@^7.0.0:
   version "7.1.1"
