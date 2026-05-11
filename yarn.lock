@@ -12615,10 +12615,10 @@
   resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.25.tgz#8439f7cde2627e34a15897eb80878835dbea2421"
   integrity sha512-O6Th/DI18XjrL9TX8LO9F/g26qAz5vynmQqlXt/qLGrskvzCKXKc5/tATz3G2N6lM8eOf3M8/StB14FncAmocg==
 
-"@types/aws4@1.11.3":
-  version "1.11.3"
-  resolved "https://registry.yarnpkg.com/@types/aws4/-/aws4-1.11.3.tgz#a7856fe4e30a7b6411335a73d5440e8b91afc662"
-  integrity sha512-Ka2xKf04xZUH0N7wIYpqcNdavgfPQnaJ1T6GieZs1ydo21vao93aCbHyrA6uKXnaTXzvBcMJkgMsBfT9XvypFQ==
+"@types/aws4@1.11.6":
+  version "1.11.6"
+  resolved "https://registry.yarnpkg.com/@types/aws4/-/aws4-1.11.6.tgz#164d36a10e8bb70727ffd90a7069a3f0316bef93"
+  integrity sha512-5CnVUkHNyLGpD9AnOcK66YyP0qvIh6nhJJoeK8zSl5YKikUcUbdB7SlHevUYVqicgeh6j5AJa1qa/h08dSZHoA==
   dependencies:
     "@types/node" "*"
 
