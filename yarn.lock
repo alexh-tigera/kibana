@@ -12884,10 +12884,10 @@
   resolved "https://registry.yarnpkg.com/@types/cssstyle/-/cssstyle-2.2.4.tgz#3d333ab9f8e6c40183ad1d6ebeebfcb8da2bfe4b"
   integrity sha512-FTGMeuHZtLB7hRm+NGvOLZElslR1UkKvZmEmFevOZe/e7Av0nFleka1s8ZwoX+QvbJ2y7r9NDZXIzyqpRWDJXQ==
 
-"@types/d3-array@2.12.3":
-  version "2.12.3"
-  resolved "https://registry.yarnpkg.com/@types/d3-array/-/d3-array-2.12.3.tgz#8d16d51fb04ad5a5a8ebe14eb8263a579f1efdd1"
-  integrity sha512-hN879HLPTVqZV3FQEXy7ptt083UXwguNbnxdTGzVW4y4KjX5uyNKljrQixZcSJfLyFirbpUokxpXtvR+N5+KIg==
+"@types/d3-array@2.12.8":
+  version "2.12.8"
+  resolved "https://registry.yarnpkg.com/@types/d3-array/-/d3-array-2.12.8.tgz#bfa8888fb5a06138109029fc7c8aae587ae2f405"
+  integrity sha512-k+ozvEjpOc1etEyZYq/HnUtuuXuhc5OWgD2Dfvo1eLvuDTq3X2S+t8CaqNMzYxeGB6zhrQt+h8Lh8psRs3wMCA==
 
 "@types/d3-brush@3.0.1":
   version "3.0.1"
