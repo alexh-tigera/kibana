@@ -8782,17 +8782,6 @@
     "@math.gl/polygon" "^3.5.1"
     pbf "^3.2.1"
 
-"@loaders.gl/gis@3.4.7":
-  version "3.4.7"
-  resolved "https://registry.yarnpkg.com/@loaders.gl/gis/-/gis-3.4.7.tgz#e61190b714eb97d64e5ecea3cee1e1aafeacaa19"
-  integrity sha512-mHZiike8c8zVp6ninNTHBZ/bEioHeKszXyRJqD+i+PBPkQNbQayItt+G6JNEgagdxqIHdgmDwjJZWQ8cvWbjBg==
-  dependencies:
-    "@loaders.gl/loader-utils" "3.4.7"
-    "@loaders.gl/schema" "3.4.7"
-    "@mapbox/vector-tile" "^1.3.1"
-    "@math.gl/polygon" "^3.5.1"
-    pbf "^3.2.1"
-
 "@loaders.gl/json@3.4.15":
   version "3.4.15"
   resolved "https://registry.yarnpkg.com/@loaders.gl/json/-/json-3.4.15.tgz#3ea853ea366ee3f7acf18812f04cc178499d04af"
@@ -8827,21 +8816,14 @@
   dependencies:
     "@types/geojson" "^7946.0.7"
 
-"@loaders.gl/schema@3.4.7":
-  version "3.4.7"
-  resolved "https://registry.yarnpkg.com/@loaders.gl/schema/-/schema-3.4.7.tgz#1e984a0e3663e1b13ccd5eba23ff5b6eb0703770"
-  integrity sha512-w429HMLt/NTtREbC2zFO2Fy36cOdQfYE2Ztjo9MJyv+takmZiVzwCRfYrAjOPFWcTLVwcbTkAF2r55+IyNGNeA==
+"@loaders.gl/shapefile@3.4.15":
+  version "3.4.15"
+  resolved "https://registry.yarnpkg.com/@loaders.gl/shapefile/-/shapefile-3.4.15.tgz#fa938333d865dc88b798b0c438de127cba46a252"
+  integrity sha512-U/X77nwmNpp5Yd1zXH/RnPgtIOWjG1Nd6trgDeycPMR58kxD3F5fxSVjE7l3aZFyh8ncavyv3cp8UKvRztslvw==
   dependencies:
-    "@types/geojson" "^7946.0.7"
-
-"@loaders.gl/shapefile@3.4.7":
-  version "3.4.7"
-  resolved "https://registry.yarnpkg.com/@loaders.gl/shapefile/-/shapefile-3.4.7.tgz#9302f06e61029e0be176e021890791210b825ba2"
-  integrity sha512-HdE3IWjdj8b+iq/yC8WcRhlR2JYSf5LBms0ZrNKOg8MD6Xfh+xfbY3GSK3XnPhs2PC/gfBIkriFRM5VksuJATg==
-  dependencies:
-    "@loaders.gl/gis" "3.4.7"
-    "@loaders.gl/loader-utils" "3.4.7"
-    "@loaders.gl/schema" "3.4.7"
+    "@loaders.gl/gis" "3.4.15"
+    "@loaders.gl/loader-utils" "3.4.15"
+    "@loaders.gl/schema" "3.4.15"
     "@math.gl/proj4" "^3.5.1"
 
 "@loaders.gl/worker-utils@3.4.15":
