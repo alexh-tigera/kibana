@@ -8593,10 +8593,10 @@
     p-queue "^6.6.2"
     zod "^3.25.76 || ^4"
 
-"@langchain/google-common@2.1.24", "@langchain/google-common@2.1.30":
-  version "2.1.30"
-  resolved "https://registry.yarnpkg.com/@langchain/google-common/-/google-common-2.1.30.tgz#487a67d638240c1ec3539297c5f169b392c8a8c0"
-  integrity sha512-IYxGeJbhzBi7+fW9sbkWGqpSSDDf05Kd1DvCM0RoDeYJx4zQk2aPbmB/PI6uUWl9NHISkEZ4dxbZmBSrVelckw==
+"@langchain/google-common@2.1.24", "@langchain/google-common@2.1.31":
+  version "2.1.31"
+  resolved "https://registry.yarnpkg.com/@langchain/google-common/-/google-common-2.1.31.tgz#bd0018da45540f6e998f123e70df28e64862d69c"
+  integrity sha512-UZylzgnG7pGq3KdLZy2UHIB5BO5ssQXL69OwQurvwJxsbZ1gg8eixB345o0fw9/AuJkOulgRMJWm8Lmr3vDI9w==
 
 "@langchain/google-gauth@2.1.24":
   version "2.1.24"
