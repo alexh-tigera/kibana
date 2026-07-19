@@ -12951,7 +12951,12 @@
   dependencies:
     "@types/d3-path" "^2"
 
-"@types/d3-time@2.1.1", "@types/d3-time@^2":
+"@types/d3-time@2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@types/d3-time/-/d3-time-2.1.4.tgz#43587aa57d565ab60a1d2201edeebc497d5c1252"
+  integrity sha512-BTfLsxTeo7yFxI/haOOf1ZwJ6xKgQLT9dCp+EcmQv87Gox6X+oKl4mLKfO6fnWm3P22+A6DknMNEZany8ql2Rw==
+
+"@types/d3-time@^2":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@types/d3-time/-/d3-time-2.1.1.tgz#743fdc821c81f86537cbfece07093ac39b4bc342"
   integrity sha512-9MVYlmIgmRR31C5b4FVSWtuMmBHh2mOWQYfl7XAYOa8dsnb7iEmUmRSWSFgXFtkjxO65d7hTUHQC+RhR/9IWFg==
