@@ -13100,10 +13100,10 @@
   dependencies:
     extract-zip "*"
 
-"@types/fetch-mock@7.3.1":
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/@types/fetch-mock/-/fetch-mock-7.3.1.tgz#df7421e8bcb351b430bfbfa5c52bb353826ac94f"
-  integrity sha512-2U4vZWHNbsbK7TRmizgr/pbKe0FKopcxu+hNDtIBDiM1wvrKRItybaYj7VQ6w/hZJStU/JxRiNi5ww4YDEvKbA==
+"@types/fetch-mock@7.3.8":
+  version "7.3.8"
+  resolved "https://registry.yarnpkg.com/@types/fetch-mock/-/fetch-mock-7.3.8.tgz#2fd769cb7881ac029d06ab2c23a254a9f208a034"
+  integrity sha512-ztsIGiyUvD0GaqPc9/hb8k20gnr6lupqA6SFtqt+8v2mtHhNO/Ebb6/b7N6af/7x0A7s1C8nxrEGzajMBqz8qA==
 
 "@types/file-saver@2.0.0":
   version "2.0.0"
